@@ -92,14 +92,29 @@ def norm_org_token(t: str) -> str:
 def is_bad_org_token(t: str) -> bool:
     if not t or len(t) < 2:
         return True
+    
+    org_stop_words = set(CFG.get("org_filter_stop_words", []))
     s_lower = t.lower()
-    if s_lower in ORG_STOP:
+
+    if s_lower in org_stop_words:
         return True
-    for pat in ORG_BAD_PATTERNS:
+    
+    noise_patterns = [
+        r"^\d{1,4}(년|월|분기|일)$",
+        r"^\d+(hz|w|mah|nm|mm|cm|kg|g|인치|형|세대|위|종|개국|명|가지)$",
+        r"^\d+-\w+-\d+",
+        r"^\d{1,3}(천|만|억|조)?(원|달러|위안|엔)$",
+        r"^\d+$"
+    ]
+    
+    if re.fullmatch(r"^[0-9\W_]+$", s_lower):
+        return True
+        
+    for pat in ORG_BAD_PATTERNS + noise_patterns:
         if re.fullmatch(pat, s_lower, re.I):
             return True
     return False
-
+    
 def extract_orgs(text: str, alias_map: Dict[str, str]) -> List[str]:
     if not text:
         return []
@@ -152,6 +167,11 @@ def load_topic_labels(topics_obj: dict, topn: int) -> list[dict]:
 def export_company_topic_matrix(meta_items: List[Dict[str,Any]], topics_obj: dict, cfg: dict) -> None:
     os.makedirs("outputs/export", exist_ok=True)
     
+    topn_words = int(cfg.get("matrix_topic_top_n_words", 30))
+    topic_labels = load_topic_labels(topics_obj, topn=topn_words)
+    # 토픽 단어셋을 소문자로 통일하여 매핑 정확도 향상
+    topic_wordsets = {tl["topic_id"]: {w.lower() for w in tl.get("words", [])} for tl in topic_labels}
+    
     # [개선안] 엔티티 정규화를 위한 별칭(alias) 맵 로드
     alias_cfg = cfg.get("alias", {})
     alias_product = load_json("data/dictionaries/product_alias.json", {})
@@ -160,11 +180,6 @@ def export_company_topic_matrix(meta_items: List[Dict[str,Any]], topics_obj: dic
         for v in variants:
             full_alias_map[v] = can
             full_alias_map[v.lower()] = can
-
-    # [개선안] 토픽 축 안정화 (Top-N 단어만 사용)
-    topn_words = int(cfg.get("matrix_topic_top_n_words", 30))
-    topic_labels = load_topic_labels(topics_obj, topn=topn_words)
-    topic_wordsets = {tl["topic_id"]: set(tl.get("words", [])) for tl in topic_labels}
 
     matrix = defaultdict(lambda: defaultdict(int))
     
@@ -487,9 +502,11 @@ def load_context_for_prompt() -> Dict[str, Any]:
         with open(events_path, "r", encoding="utf-8") as f:
             rdr = csv.DictReader(f)
             for r in rdr:
-                et = r.get("type")
-                if et:
-                    evt_summary[et] += 1
+                # 'types'와 'type'을 모두 안전하게 처리
+                types_str = r.get("types") or r.get("type") or ""
+                if types_str:
+                    for etype in types_str.split(','):
+                        evt_summary[etype.strip()] += 1
     except Exception:
         pass
     events_simple = dict(evt_summary)
@@ -541,14 +558,16 @@ def load_trend_strength_csv(path: str) -> List[Dict[str,Any]]:
         with open(path, "r", encoding="utf-8") as f:
             rdr = csv.DictReader(f)
             for r in rdr:
-                r["term"] = r.get("term","")
-                r["cur"] = int(r.get("cur", 0) or 0)
                 try:
+                    r["cur"] = int(r.get("cur", 0) or 0)
+                    r["prev"] = int(r.get("prev", 0) or 0)
+                    r["diff"] = int(r.get("diff", 0) or 0)
+                    r["total"] = int(r.get("total", 0) or 0)
+                    r["ma7"] = float(r.get("ma7", 0.0) or 0.0)
                     r["z_like"] = float(r.get("z_like", 0.0) or 0.0)
-                except Exception:
-                    r["z_like"] = 0.0
-                r["total"] = int(r.get("total", 0) or 0)
-                rows.append(r)
+                    rows.append(r)
+                except (ValueError, TypeError):
+                    continue
     except Exception:
         pass
     return rows
@@ -684,8 +703,11 @@ def main():
     trend_rows = load_trend_strength_csv("outputs/export/trend_strength.csv")
     events_rows = load_events_csv("outputs/export/events.csv")
 
+    # 로그 보강
+    print(f"[INFO] Loaded context data | trend_rows={len(trend_rows)}, events_rows={len(events_rows)}")
+
+    topic_labels = load_topic_labels(topics_obj, topn=5) 
     try:
-        # topics_obj와 CFG를 전달하도록 수정
         export_company_topic_matrix(meta_items, topics_obj, CFG)
         print("[INFO] company_topic_matrix.csv exported")
     except Exception as e:
