@@ -22,10 +22,36 @@ def norm_tok(s):
     s = re.sub(r"\s+", " ", s)
     return s
 
-def tokenize(t):
-    toks = re.findall(r"[가-힣A-Za-z0-9]{2,}", t or "")
-    toks = [norm_tok(x) for x in toks if x and x not in STOP_EXT]
-    return toks
+EN_STOP |= {"news","press","corp","ltd","inc","co","group","update","daily","today"}
+KO_FUNC |= {"기자","사진","자료","제공","종합","속보","단독","전문","영상","인터뷰","리뷰","광고","pr","홍보","출처","보도","보도자료","이벤트","공지","알림"}
+STOP_EXT = set(EN_STOP) | set(KO_FUNC)
+
+def _is_mostly_numeric(tok: str) -> bool:
+    digits = sum(c.isdigit() for c in tok)
+    return digits >= max(2, int(len(tok) * 0.6))
+
+def _looks_noise(tok: str) -> bool:
+    if len(tok) < 2:
+        return True
+    if _is_mostly_numeric(tok):
+        return True
+    if re.match(r"^\d+(cm|mm|kg|g|m|km|년|월|일|%|p)$", tok, flags=re.IGNORECASE):
+        return True
+    if tok in {"주식회사", "홀딩스", "그룹", "센터", "본부", "사업부"}:
+        return True
+    return False
+
+def tokenize(text: str):
+    toks = re.findall(r"[가-힣A-Za-z0-9]{2,}", text or "")
+    out = []
+    for x in toks:
+        x = x.lower()
+        if x in STOP_EXT:
+            continue
+        if _looks_noise(x):
+            continue
+        out.append(x)
+    return out
 
 def to_date(s: str) -> str:
     today = datetime.date.today()
@@ -132,12 +158,13 @@ def moving_avg(vals, w=7):
     return out
 
 def z_like(vals, ma):
-    # 편차 / (sqrt(ma)+1) 간단화
     z = []
     for v, m in zip(vals, ma):
-        z.append((v - m) / ( (m**0.5) + 1.0 ))
-    return z
-
+        denom = (m**0.5) + 1.0  # 안정화
+        z.append((v - m) / denom)
+    # 사후 클리핑: z_like 값이 -5 ~ 5 사이를 벗어나지 않도록 보정합니다.
+    return [max(-5.0, min(5.0, float(x))) for x in z]
+       
 def to_rows(dc):
     # dc: date -> Counter
     # terms universe
@@ -167,41 +194,46 @@ def to_rows(dc):
 
 def export_trend_strength(rows):
     os.makedirs("outputs/export", exist_ok=True)
-    
-    # 1. 최종 파일 경로와 임시 파일 경로를 미리 준비합니다.
     final_path = "outputs/export/trend_strength.csv"
     tmp_path = "outputs/export/trend_strength_tmp.csv"
 
-    # 2. 임시 파일에 안전하게 내용을 모두 씁니다.
+    filtered = []
+    for r in rows:
+        # 강한 신호의 최소 기준: 전체 언급 5회 이상, 현재 언급 2회 이상, 이전 대비 1 이상 증가
+        if r["total"] >= 5 and r["cur"] >= 2 and r["diff"] >= 1:
+            r["z_like"] = max(-5.0, min(5.0, float(r["z_like"]))) # z_like 안정화
+            r["ma7"] = float(r["ma7"])
+            filtered.append(r)
+
+    filtered.sort(key=lambda x: (x["z_like"], x["diff"], x["cur"]), reverse=True)
+
     with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["term", "cur", "prev", "diff", "ma7", "z_like", "total"])
-        # 스파이크 기준 상위만
-        for r in sorted(rows, key=lambda x: (x["z_like"], x["diff"], x["cur"]), reverse=True)[:300]:
+        for r in filtered[:300]:
             w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(r["ma7"], 3), round(r["z_like"], 3), r["total"]])
 
-    # 3. 작업이 성공적으로 끝나면, 임시 파일의 이름을 최종 파일 이름으로 변경합니다. (덮어쓰기)
     os.rename(tmp_path, final_path)
     
 def export_weak_signals(rows):
-    # 희소하면서 최근 증가세인 용어
-    cand = []
-    for r in rows:
-        if r["total"] <= 15 and r["cur"] >= 2 and r["z_like"] > 0.8:
-            cand.append(r)
-
-    # 1. 최종 파일과 임시 파일 경로를 준비합니다.
     final_path = "outputs/export/weak_signals.csv"
     tmp_path = "outputs/export/weak_signals_tmp.csv"
 
-    # 2. 임시 파일에 안전하게 내용을 모두 씁니다.
+    cand = []
+    for r in rows:
+        # 약한 신호의 기준: 전체 언급 20회 이하, 현재 언급 2회 이상, z_like 1.0 초과
+        if r["total"] <= 20 and r["cur"] >= 2 and float(r["z_like"]) > 1.0:
+            r["z_like"] = max(-5.0, min(5.0, float(r["z_like"]))) # z_like 안정화
+            cand.append(r)
+
+    cand.sort(key=lambda x: (x["z_like"], x["cur"], "total"), reverse=True)
+
     with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["term", "cur", "prev", "diff", "ma7", "z_like", "total"])
-        for r in sorted(cand, key=lambda x: (x["z_like"], x["cur"]), reverse=True)[:200]:
-            w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(r["ma7"], 3), round(r["z_like"], 3), r["total"]])
+        for r in cand[:200]:
+            w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(float(r["ma7"]), 3), round(float(r["z_like"]), 3), r["total"]])
 
-    # 3. 작업이 끝나면 임시 파일의 이름을 최종 파일 이름으로 변경합니다.
     os.rename(tmp_path, final_path)
     
 # ===== 이벤트 추출/저장 =====
