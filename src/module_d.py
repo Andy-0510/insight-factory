@@ -537,9 +537,15 @@ def enrich_with_signals(ideas: List[Dict[str,Any]],
     trend_idx = {r.get("term",""): r for r in trend_rows}
     event_hit = defaultdict(int)
     for r in events_rows:
-        et = r.get("type");
-        if et: event_hit[et] += 1
-    
+        # 1. 'types' 컬럼을 읽어옵니다.
+        types_str = r.get("types", "")
+        if types_str:
+            # 2. 쉼표(,)로 구분된 문자열을 개별 타입 리스트로 분리합니다.
+            event_types = types_str.split(',')
+            # 3. 각 타입에 대해 카운트를 1씩 증가시킵니다.
+            for etype in event_types:
+                event_hit[etype.strip()] += 1
+
     ts_cur_vals, ts_z_vals = [], []
     for it in ideas:
         term = it.get("idea","")
