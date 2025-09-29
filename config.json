@@ -57,7 +57,8 @@
     "qd oled":"QD-OLED","qdoled":"QD-OLED","QD OLED":"QD-OLED",
     "올레도스": "OLEDos",
     "레도스": "LEDos",
-    "oxide tft":"Oxide","산화물 tft":"Oxide"
+    "oxide tft":"Oxide","산화물 tft":"Oxide",
+    "소비자연맹지": "소비자"
   },
 
   "weights": {
