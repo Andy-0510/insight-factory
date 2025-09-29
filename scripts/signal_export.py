@@ -180,13 +180,21 @@ def export_weak_signals(rows):
     for r in rows:
         if r["total"] <= 15 and r["cur"] >= 2 and r["z_like"] > 0.8:
             cand.append(r)
-    with open("outputs/export/weak_signals.csv", "w", encoding="utf-8", newline="") as f:
+
+    # 1. 최종 파일과 임시 파일 경로를 준비합니다.
+    final_path = "outputs/export/weak_signals.csv"
+    tmp_path = "outputs/export/weak_signals_tmp.csv"
+
+    # 2. 임시 파일에 안전하게 내용을 모두 씁니다.
+    with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["term", "cur", "prev", "diff", "ma7", "z_like", "total"])
         for r in sorted(cand, key=lambda x: (x["z_like"], x["cur"]), reverse=True)[:200]:
-            w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(r["ma7"],3), round(r["z_like"],3), r["total"]])
+            w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(r["ma7"], 3), round(r["z_like"], 3), r["total"]])
 
-
+    # 3. 작업이 끝나면 임시 파일의 이름을 최종 파일 이름으로 변경합니다.
+    os.rename(tmp_path, final_path)
+    
 # ===== 이벤트 추출/저장 =====
 EVENT_MAP = {
     "LAUNCH":      [r"출시", r"론칭", r"발표", r"선보이", r"공개"],
@@ -260,18 +268,25 @@ def export_events(out_path="outputs/export/events.csv"):
     except Exception as e:
         print("[WARN] events: meta load failed:", repr(e))
         items = []
-    
+
     rows = _detect_events_from_items(items)
     rows = _dedup_events(rows)
-    
-    with open(out_path, "w", encoding="utf-8", newline="") as f:
+
+    # 1. 최종 파일과 임시 파일 경로를 준비합니다.
+    final_path = out_path
+    tmp_path = os.path.join(os.path.dirname(out_path), "events_tmp.csv")
+
+    # 2. 임시 파일에 안전하게 내용을 모두 씁니다.
+    with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["date", "types", "title", "url"])
         w.writeheader()
         for r in rows:
             w.writerow(r)
             
-    print(f"[INFO] events.csv exported | rows={len(rows)}")
+    # 3. 작업이 끝나면 임시 파일의 이름을 최종 파일 이름으로 변경합니다.
+    os.rename(tmp_path, final_path)
 
+    print(f"[INFO] events.csv exported | rows={len(rows)}")
 
 # ================= 메인 =================
 def main():
