@@ -5,9 +5,9 @@
     "OLED 패널", "QD-OLED", "MicroLED", "폴더블 디스플레이",
     "차량용 디스플레이", "AR VR 디스플레이", "LTPO",
     "삼성디스플레이", "LG디스플레이", "애플", "삼성", "LG",
-    "OLED", "LCD", "TV", "스마트폰", "노트북", "모니터"
+    "OLED", "LCD"
   ],
-  "per_query_display": 20,
+  "per_query_display": 10,
   "pages": 1,
   "top_n_keywords": 20,
 
@@ -145,6 +145,16 @@
     "차량용", "자동차", "스마트폰", "모니터", "사이니지", "헤드셋", "안경",
     "ar", "vr", "xr", "메타버스", "microled"
   ],
-  
+
+  "llm_context_max_topics": 12,
+  "score_weights": {
+    "priority_llm_weight": 0.25,
+    "market_weight": 0.40,
+    "urgency_weight": 0.35,
+    "feasibility_weight": 0.25,
+    "risk_penalty": 1.0
+  },
+
+
   "timezone": "Asia/Seoul"
 }
