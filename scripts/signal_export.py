@@ -167,12 +167,22 @@ def to_rows(dc):
 
 def export_trend_strength(rows):
     os.makedirs("outputs/export", exist_ok=True)
-    with open("outputs/export/trend_strength.csv", "w", encoding="utf-8", newline="") as f:
+    
+    # 1. 최종 파일 경로와 임시 파일 경로를 미리 준비합니다.
+    final_path = "outputs/export/trend_strength.csv"
+    tmp_path = "outputs/export/trend_strength_tmp.csv"
+
+    # 2. 임시 파일에 안전하게 내용을 모두 씁니다.
+    with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["term", "cur", "prev", "diff", "ma7", "z_like", "total"])
         # 스파이크 기준 상위만
         for r in sorted(rows, key=lambda x: (x["z_like"], x["diff"], x["cur"]), reverse=True)[:300]:
-            w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(r["ma7"],3), round(r["z_like"],3), r["total"]])
+            w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(r["ma7"], 3), round(r["z_like"], 3), r["total"]])
+
+    # 3. 작업이 성공적으로 끝나면, 임시 파일의 이름을 최종 파일 이름으로 변경합니다. (덮어쓰기)
+    os.rename(tmp_path, final_path)
+    
 
 def export_weak_signals(rows):
     # 희소하면서 최근 증가세인 용어
