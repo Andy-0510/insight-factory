@@ -27,6 +27,30 @@ def tokenize(t):
     toks = [norm_tok(x) for x in toks if x and x not in STOP_EXT]
     return toks
 
+def to_date(s: str) -> str:
+    today = datetime.date.today()
+    if not s or not isinstance(s, str): return today.strftime("%Y-%m-%d")
+    s = s.strip()
+    try:
+        iso = s.replace("Z", "+00:00")
+        dt = datetime.datetime.fromisoformat(iso)
+        d = dt.date()
+    except Exception:
+        try:
+            from email.utils import parsedate_to_datetime
+            dt = parsedate_to_datetime(s)
+            d = dt.date()
+        except Exception:
+            m = re.search(r"(\d{4}).*?(\d{1,2}).*?(\d{1,2})", s)
+            if m:
+                y, mm, dd = int(m.group(1)), int(m.group(2)), int(m.group(3))
+                try: d = datetime.date(y, mm, dd)
+                except Exception: d = today
+            else:
+                d = today
+    if d > today: d = today
+    return d.strftime("%Y-%m-%d")
+
 # ================= 데이터 로더 (모듈 C와 로직 통일) =================
 def select_latest_files_per_day(glob_pattern: str):
     all_files = sorted(glob.glob(glob_pattern))
@@ -190,8 +214,9 @@ def _detect_events_from_items(items: list) -> list:
         body  = (it.get("body") or it.get("description") or it.get("description_og") or "").strip()
         text  = f"{title}\n{body}"
         
+        # 새로 추가한 to_date 함수를 사용하여 날짜를 정확하게 변환합니다.
         date_raw = it.get("published_time") or it.get("pubDate_raw") or ""
-        date = date_raw[:10]
+        date = to_date(date_raw)
         url = it.get("url") or ""
         
         detected_types = []
@@ -209,17 +234,20 @@ def _detect_events_from_items(items: list) -> list:
                 "url": url
             })
     return rows
-    
+
 def _dedup_events(rows: list) -> list:
-    seen, out = set(), []
+    seen_titles, seen_urls, out = set(), set(), []
     for r in rows:
-        key = r.get("url","")
-        if not key or key in seen:
+        title = r.get("title", "")
+        url = r.get("url", "")
+        
+        if not title or not url or title in seen_titles or url in seen_urls:
             continue
-        seen.add(key)
+        seen_titles.add(title)
+        seen_urls.add(url)
         out.append(r)
     return out
-
+    
 def export_events(out_path="outputs/export/events.csv"):
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     meta_path = _pick_meta_path()
