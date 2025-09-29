@@ -2,7 +2,7 @@
   "dry_run": true,
   "use_pro": false,
   "queries": [
-    "OLED 패널", "QD-OLED", "MicroLED", "폴더블 디스플레이",
+    "OLED 패널", "QD-OLED", "MicroLED", "폴더블",
     "차량용 디스플레이", "AR VR 디스플레이", "LTPO",
     "삼성디스플레이", "LG디스플레이", "애플", "삼성", "LG",
     "OLED", "LCD"
