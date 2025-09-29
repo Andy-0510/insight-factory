@@ -232,27 +232,6 @@ def export_weak_signals(rows):
             w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(float(r["ma7"]),3), round(float(r["z_like"]),3), r["total"]])
             
     
-def export_weak_signals(rows):
-    final_path = "outputs/export/weak_signals.csv"
-    tmp_path = "outputs/export/weak_signals_tmp.csv"
-
-    cand = []
-    for r in rows:
-        # 약한 신호의 기준: 전체 언급 20회 이하, 현재 언급 2회 이상, z_like 1.0 초과
-        if r["total"] <= 20 and r["cur"] >= 2 and float(r["z_like"]) > 1.0:
-            r["z_like"] = max(-5.0, min(5.0, float(r["z_like"]))) # z_like 안정화
-            cand.append(r)
-
-    cand.sort(key=lambda x: (x["z_like"], x["cur"], "total"), reverse=True)
-
-    with open(tmp_path, "w", encoding="utf-8", newline="") as f:
-        w = csv.writer(f)
-        w.writerow(["term", "cur", "prev", "diff", "ma7", "z_like", "total"])
-        for r in cand[:200]:
-            w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(float(r["ma7"]), 3), round(float(r["z_like"]), 3), r["total"]])
-
-    os.rename(tmp_path, final_path)
-    
 # ===== 이벤트 추출/저장 =====
 EVENT_MAP = {
     "LAUNCH":      [r"출시", r"론칭", r"발표", r"선보이", r"공개"],
