@@ -28,6 +28,7 @@ EN_STOP |= {"news","press","corp","ltd","inc","co","group","update","daily","tod
 KO_FUNC |= {"기자","사진","자료","제공","종합","속보","단독","전문","영상","인터뷰","리뷰","광고","pr","홍보","출처","보도","보도자료","이벤트","공지","알림"}
 STOP_EXT = set(EN_STOP) | set(KO_FUNC)
 
+
 def _is_mostly_numeric(tok: str) -> bool:
     digits = sum(c.isdigit() for c in tok)
     return digits >= max(2, int(len(tok) * 0.6))
@@ -37,22 +38,23 @@ def _looks_noise(tok: str) -> bool:
         return True
     if _is_mostly_numeric(tok):
         return True
-    if re.match(r"^\d+(cm|mm|kg|g|m|km|년|월|일|%|p)$", tok, flags=re.IGNORECASE):
+    # 숫자와 단위가 결합된 형태 (예: 7개국, 3분기)를 제거
+    if re.match(r"^\d+(cm|mm|kg|g|m|km|년|월|일|분기|개국|위|종|가지)$", tok, flags=re.IGNORECASE):
         return True
     if tok in {"주식회사", "홀딩스", "그룹", "센터", "본부", "사업부"}:
         return True
     return False
 
-def tokenize(text: str):
-    toks = re.findall(r"[가-힣A-Za-z0-9]{2,}", text or "")
+def tokenize(t):
+    toks = re.findall(r"[가-힣A-Za-z0-9]{2,}", t or "")
     out = []
     for x in toks:
-        x = x.lower()
-        if x in STOP_EXT:
+        x_norm = norm_tok(x)
+        if x_norm in STOP_EXT:
             continue
-        if _looks_noise(x):
+        if _looks_noise(x_norm):
             continue
-        out.append(x)
+        out.append(x_norm)
     return out
 
 def to_date(s: str) -> str:
