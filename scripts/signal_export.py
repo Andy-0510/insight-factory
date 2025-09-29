@@ -2,7 +2,7 @@ import os
 import re
 import glob
 import json
-import csvj
+import csv
 import datetime
 import unicodedata
 from collections import defaultdict, Counter
