@@ -189,27 +189,32 @@ def _detect_events_from_items(items: list) -> list:
         title = (it.get("title") or it.get("title_og") or "").strip()
         body  = (it.get("body") or it.get("description") or it.get("description_og") or "").strip()
         text  = f"{title}\n{body}"
-        date  = (it.get("date") or it.get("pubDate") or "")[:10]
-        url   = it.get("url") or ""
-        src   = it.get("source") or it.get("press") or ""
+        
+        date_raw = it.get("published_time") or it.get("pubDate_raw") or ""
+        date = date_raw[:10]
+        url = it.get("url") or ""
+        
+        detected_types = []
         for etype, pats in EVENT_MAP.items():
             for pat in pats:
                 if re.search(pat, text, flags=re.IGNORECASE):
-                    rows.append({
-                        "date": date or "",
-                        "type": etype,
-                        "title": title[:300],
-                        "url": url,
-                        "source": src
-                    })
-                    break
+                    detected_types.append(etype)
+                    break 
+        
+        if detected_types:
+            rows.append({
+                "date": date or "",
+                "types": ",".join(sorted(detected_types)),
+                "title": title[:300],
+                "url": url
+            })
     return rows
-
+    
 def _dedup_events(rows: list) -> list:
     seen, out = set(), []
     for r in rows:
-        key = (r.get("date",""), r.get("type",""), r.get("title",""))
-        if key in seen:
+        key = r.get("url","")
+        if not key or key in seen:
             continue
         seen.add(key)
         out.append(r)
@@ -227,14 +232,18 @@ def export_events(out_path="outputs/export/events.csv"):
     except Exception as e:
         print("[WARN] events: meta load failed:", repr(e))
         items = []
+    
     rows = _detect_events_from_items(items)
     rows = _dedup_events(rows)
+    
     with open(out_path, "w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["date","type","title","url","source"])
+        w = csv.DictWriter(f, fieldnames=["date", "types", "title", "url"])
         w.writeheader()
         for r in rows:
             w.writerow(r)
+            
     print(f"[INFO] events.csv exported | rows={len(rows)}")
+
 
 # ================= 메인 =================
 def main():
