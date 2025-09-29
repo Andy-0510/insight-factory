@@ -183,7 +183,6 @@ def export_trend_strength(rows):
     # 3. 작업이 성공적으로 끝나면, 임시 파일의 이름을 최종 파일 이름으로 변경합니다. (덮어쓰기)
     os.rename(tmp_path, final_path)
     
-
 def export_weak_signals(rows):
     # 희소하면서 최근 증가세인 용어
     cand = []
