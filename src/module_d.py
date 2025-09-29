@@ -63,9 +63,6 @@ def to_kst_date_str(s: str) -> str:
     return d.strftime("%Y-%m-%d")
 
 # ========== 회사×토픽 매트릭스: ORG 잡음 제거 ==========
-# src/module_d.py
-
-# ========== 회사×토픽 매트릭스: ORG 잡음 제거 ==========
 ORG_BAD_PATTERNS = [
     r"^\d{1,2}월$", r"^\d{4}년$", r"^\d{4}$",
     r"^\d+(억|조)?(원|달러|위안|엔)$",
@@ -92,13 +89,24 @@ def norm_org_token(t: str) -> str:
 def is_bad_org_token(t: str) -> bool:
     if not t or len(t) < 2:
         return True
-    base = t.lower()
-    if base in ORG_STOP:
+    
+    # 숫자/단위/기간 등 노이즈 패턴 강화
+    noise_patterns = [
+        r"^\d{1,4}(년|월|분기|일)$",
+        r"^\d+(hz|w|mah|nm|mm|cm|kg|g|인치|형|세대|위|종|개국|명)$",
+        r"^\d+-\w+-\d+",
+        r"^\d{1,3}(천|만|억|조)?(원|달러|위안|엔)$"
+    ]
+    
+    s_lower = t.lower()
+    if s_lower in ORG_STOP:
         return True
-    if re.fullmatch(r"^[0-9\W_]+$", base):
+    
+    if re.fullmatch(r"^[0-9\W_]+$", s_lower):
         return True
-    for pat in ORG_BAD_PATTERNS:
-        if re.fullmatch(pat, t):
+        
+    for pat in ORG_BAD_PATTERNS + noise_patterns:
+        if re.fullmatch(pat, s_lower, re.I):
             return True
     return False
 
@@ -145,37 +153,49 @@ def load_topic_labels(topics_obj: dict, topn: int = 5) -> list[dict]:
         words = [w.get("word","") for w in (t.get("top_words") or []) if w.get("word")][:topn]
         labels.append({"topic_id": int(t.get("topic_id", 0)), "words": words})
     return labels
-#
+
 def export_company_topic_matrix(meta_items: List[Dict[str,Any]], topic_labels: List[Dict[str,Any]]) -> None:
     os.makedirs("outputs/export", exist_ok=True)
     topic_wordsets = []
     for tl in topic_labels:
-        ws = set([w for w in tl["words"] if w])
+        ws = set([w for w in tl.get("words", []) if w])
         topic_wordsets.append((tl["topic_id"], ws))
 
     matrix = defaultdict(lambda: defaultdict(int))
+    org_counts = Counter()
+    
     for it in meta_items:
         text = (it.get("body") or it.get("description") or "") or ""
         if not text:
             continue
-        orgs = [o for o in extract_orgs(text) if not is_bad_org_token(o)]
-        low = text.lower()
+        
+        # org 추출 후 노이즈 필터링 강화
+        raw_orgs = extract_orgs(text)
+        orgs = [org for org in raw_orgs if not is_bad_org_token(org)]
+        
         for org in orgs:
+            org_counts[org] += 1
+
+        low = text.lower()
+        for org in set(orgs): # 문서 내 중복 org는 한 번만 처리
             for tid, ws in topic_wordsets:
-                hit = 0
-                for w in ws:
-                    if w and (w.lower() in low):
-                        hit += 1
+                hit = sum(1 for w in ws if w and w.lower() in low)
                 if hit > 0:
                     matrix[org][tid] += hit
-
-    all_tids = sorted(set([tid for _, d in matrix.items() for tid in d.keys()]))
+    
+    # 최종 org 목록 필터링: 전체 문서에서 최소 2번 이상 등장한 org만 포함
+    final_orgs = {org for org, count in org_counts.items() if count >= 2}
+    
+    all_tids = sorted(set([tid for org in final_orgs for tid in matrix.get(org, {}).keys()]))
+    
     with open("outputs/export/company_topic_matrix.csv", "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["org"] + [f"topic_{tid}" for tid in all_tids])
-        for org, row in sorted(matrix.items(), key=lambda x: x[0].lower()):
+        for org in sorted(list(final_orgs)):
+            row = matrix.get(org, {})
             w.writerow([org] + [row.get(tid, 0) for tid in all_tids])
-
+            
+            
 # ========== 스코어링/증거 ==========
 def clamp01(x): 
     return max(0.0, min(1.0, float(x)))
