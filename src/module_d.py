@@ -63,11 +63,8 @@ def to_kst_date_str(s: str) -> str:
     return d.strftime("%Y-%m-%d")
 
 # ========== 회사×토픽 매트릭스: ORG 잡음 제거 ==========
-# src/module_d.py (해당 부분을 아래 코드로 전체 덮어쓰기)
+# 패턴은 코드에 유지하되, 단어 목록은 config.json에서 관리 (유지보수성)
 
-# ========== 회사×토픽 매트릭스: ORG 잡음 제거 ==========
-
-# [개선안] 숫자/기간/단위 등 노이즈 패턴 대폭 강화
 ORG_BAD_PATTERNS = [
     r"^\d{1,4}(년|월|분기|일)$",
     r"^\d+(hz|w|mah|nm|mm|cm|kg|g|인치|형|세대|위|종|개국|명|가지)$",
@@ -75,11 +72,6 @@ ORG_BAD_PATTERNS = [
     r"^\d{1,3}(천|만|억|조)?(원|달러|위안|엔)$",
     r"^\d+$"
 ]
-ORG_STOP = {
-    "국내","대한민국","서울","경제자유구역","개선","경쟁력","거래일보다", "kbo리그", "선발투수", "손흥민",
-    "기업","시장","브랜드","글로벌","전문","최대","지난해","최근","일자리","지역","생활","기술","디지털","스마트",
-    "tv","tv와","전자","디스플레이","11일","이라며","이라고", "같은", "것으로", "통해", "그러나", "있다"
-}
 
 def norm_org_token(t: str) -> str:
     t = (t or "").strip()
@@ -89,73 +81,52 @@ def norm_org_token(t: str) -> str:
         t = t[:-1]
     return t
 
-def is_bad_org_token(t: str) -> bool:
+def is_bad_org_token(t: str, org_stop_words: set) -> bool:
     if not t or len(t) < 2:
         return True
     
-    org_stop_words = set(CFG.get("org_filter_stop_words", []))
     s_lower = t.lower()
-
     if s_lower in org_stop_words:
         return True
-    
-    noise_patterns = [
-        r"^\d{1,4}(년|월|분기|일)$",
-        r"^\d+(hz|w|mah|nm|mm|cm|kg|g|인치|형|세대|위|종|개국|명|가지)$",
-        r"^\d+-\w+-\d+",
-        r"^\d{1,3}(천|만|억|조)?(원|달러|위안|엔)$",
-        r"^\d+$"
-    ]
     
     if re.fullmatch(r"^[0-9\W_]+$", s_lower):
         return True
         
-    for pat in ORG_BAD_PATTERNS + noise_patterns:
+    for pat in ORG_BAD_PATTERNS:
         if re.fullmatch(pat, s_lower, re.I):
             return True
     return False
-    
-def extract_orgs(text: str, alias_map: Dict[str, str]) -> List[str]:
+
+def extract_orgs(text: str, alias_map: Dict[str, str], whitelist: set, org_stop_words: set) -> List[str]:
     if not text:
         return []
+    
     toks = re.findall(r"[가-힣A-Za-z0-9\-\+\.]{2,}", text)
     
-    # [개선안] 엔티티 정규화 (동의어/오탈자 처리)
     normalized_toks = []
     for t in toks:
-        # 'LG디스플레' -> 'LG디스플레이' 등으로 별칭을 먼저 적용
+        # 별칭을 먼저 적용하여 'LG디스플레' -> 'LG디스플레이' 등으로 표준화
         normalized = alias_map.get(t, t)
         normalized = alias_map.get(normalized.lower(), normalized)
         normalized_toks.append(normalized)
 
-    # 화이트리스트 로드
-    def _load_lines(p):
-        try:
-            with open(p, encoding="utf-8") as f:
-                return {x.strip() for x in f if x.strip()}
-        except Exception:
-            return set()
-    ENT_ORG = _load_lines("data/dictionaries/entities_org.txt")
-    BRANDS  = _load_lines("data/dictionaries/brands.txt")
-    WHITELIST = ENT_ORG | BRANDS
-
     cand = []
     for t in normalized_toks:
         # 화이트리스트에 있으면 노이즈 필터를 통과
-        if t in WHITELIST:
+        if t in whitelist:
             cand.append(t)
             continue
         # 화이트리스트에 없으면 노이즈 필터 적용
-        if is_bad_org_token(t):
+        if is_bad_org_token(t, org_stop_words):
             continue
         cand.append(t)
 
     cnt = Counter(cand)
-    out = [w for w, c in cnt.most_common(50) if c >= 2 and len(w) >= 2 and w not in WHITELIST]
+    # 화이트리스트 외 단어는 2번 이상 등장해야 후보로 인정
+    out = [w for w, c in cnt.most_common(50) if c >= 2 and w not in whitelist]
     
-    # 최종 결과는 화이트리스트 + 자주 등장한 단어 목록
-    return list(WHITELIST.intersection(set(normalized_toks))) + out
-
+    # 최종 결과: (문서 내 화이트리스트 단어) + (자주 등장한 비-노이즈 단어)
+    return list(whitelist.intersection(set(normalized_toks))) + out
 
 def load_topic_labels(topics_obj: dict, topn: int) -> list[dict]:
     labels = []
@@ -167,12 +138,7 @@ def load_topic_labels(topics_obj: dict, topn: int) -> list[dict]:
 def export_company_topic_matrix(meta_items: List[Dict[str,Any]], topics_obj: dict, cfg: dict) -> None:
     os.makedirs("outputs/export", exist_ok=True)
     
-    topn_words = int(cfg.get("matrix_topic_top_n_words", 30))
-    topic_labels = load_topic_labels(topics_obj, topn=topn_words)
-    # 토픽 단어셋을 소문자로 통일하여 매핑 정확도 향상
-    topic_wordsets = {tl["topic_id"]: {w.lower() for w in tl.get("words", [])} for tl in topic_labels}
-    
-    # [개선안] 엔티티 정규화를 위한 별칭(alias) 맵 로드
+    # --- 사전 및 설정 로드 ---
     alias_cfg = cfg.get("alias", {})
     alias_product = load_json("data/dictionaries/product_alias.json", {})
     full_alias_map = dict(alias_cfg)
@@ -180,7 +146,18 @@ def export_company_topic_matrix(meta_items: List[Dict[str,Any]], topics_obj: dic
         for v in variants:
             full_alias_map[v] = can
             full_alias_map[v.lower()] = can
+            
+    ent_org = set(_load_lines("data/dictionaries/entities_org.txt"))
+    brands  = set(_load_lines("data/dictionaries/brands.txt"))
+    whitelist = ent_org | brands
+    org_stop_words = set(cfg.get("org_filter_stop_words", []))
 
+    # --- 토픽 데이터 준비 ---
+    topn_words = int(cfg.get("matrix_topic_top_n_words", 30))
+    topic_labels = load_topic_labels(topics_obj, topn=topn_words)
+    topic_wordsets = {tl["topic_id"]: {w.lower() for w in tl.get("words", [])} for tl in topic_labels}
+
+    # --- 매트릭스 생성 ---
     matrix = defaultdict(lambda: defaultdict(int))
     
     for it in meta_items:
@@ -188,24 +165,25 @@ def export_company_topic_matrix(meta_items: List[Dict[str,Any]], topics_obj: dic
         if not text:
             continue
         
-        orgs = extract_orgs(text, full_alias_map)
-        low = text.lower()
+        orgs = extract_orgs(text, full_alias_map, whitelist, org_stop_words)
+        low_text = text.lower()
         
         for org in set(orgs):
             for tid, ws in topic_wordsets.items():
-                hit = sum(1 for w in ws if w and w.lower() in low)
+                hit = sum(1 for w in ws if w and w in low_text)
                 if hit > 0:
                     matrix[org][tid] += hit
 
+    # --- CSV 파일 작성 ---
     all_tids = sorted(topic_wordsets.keys())
     
     with open("outputs/export/company_topic_matrix.csv", "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["org"] + [f"topic_{tid}" for tid in all_tids])
         
-        # [개선안] 행 기준 품질 필터 (org가 노이즈이면 최종 결과에서 제외)
         for org in sorted(matrix.keys()):
-            if is_bad_org_token(org):
+            # 최종 단계에서 한번 더 노이즈 필터링
+            if is_bad_org_token(org, org_stop_words):
                 continue
             row = matrix[org]
             w.writerow([org] + [row.get(tid, 0) for tid in all_tids])
