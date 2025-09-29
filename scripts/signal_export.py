@@ -22,6 +22,8 @@ def norm_tok(s):
     s = re.sub(r"\s+", " ", s)
     return s
 
+EN_STOP = set()
+KO_FUNC = set()
 EN_STOP |= {"news","press","corp","ltd","inc","co","group","update","daily","today"}
 KO_FUNC |= {"기자","사진","자료","제공","종합","속보","단독","전문","영상","인터뷰","리뷰","광고","pr","홍보","출처","보도","보도자료","이벤트","공지","알림"}
 STOP_EXT = set(EN_STOP) | set(KO_FUNC)
