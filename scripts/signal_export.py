@@ -2,13 +2,14 @@ import os
 import re
 import glob
 import json
-import csv
+import csvj
 import datetime
 import unicodedata
 from collections import defaultdict, Counter
 
 # =================== 설정 및 정규식 패턴 정의 ===================
 DICT_DIR = "data/dictionaries"
+MIN_OBSERVED_DAYS = 7  # 최소 관측일수 조건
 
 def _load_lines(p):
     try:
@@ -36,7 +37,6 @@ def _looks_like_noise(tok: str) -> bool:
     if RE_COUNT.match(tok): return True
     if RE_FORM.match(tok): return True
     if any(c.isdigit() for c in tok) and any(c.isalpha() for c in tok):
-        # 화이트리스트에 없는 숫자+문자 조합은 노이즈로 간주 (예: 8gb)
         if tok not in WHITELIST_KEYWORDS:
             return True
     return False
@@ -188,12 +188,10 @@ def to_rows(dc):
     return rows
 
 # ================= CSV 출력 (안정성 강화 최종 버전) =================
-MIN_OBSERVED_DAYS = 7 # 최소 관측일수 조건
-
 def export_trend_strength(rows):
     os.makedirs("outputs/export", exist_ok=True)
     final_path = "outputs/export/trend_strength.csv"
-    tmp_path = "outputs/export/trend_strength_tmp.csv"
+    tmp_path = os.path.join(os.path.dirname(final_path), "trend_strength_tmp.csv")
     
     filtered = []
     for r in rows:
@@ -208,7 +206,7 @@ def export_trend_strength(rows):
             
     filtered.sort(key=lambda x: (x["z_like"], x["diff"], x["cur"]), reverse=True)
     
-    with open(tmp_path,"w",encoding="utf-8",newline="") as f:
+    with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["term","cur","prev","diff","ma7","z_like","total"])
         for r in filtered[:300]:
@@ -219,7 +217,7 @@ def export_trend_strength(rows):
 def export_weak_signals(rows):
     os.makedirs("outputs/export", exist_ok=True)
     final_path = "outputs/export/weak_signals.csv"
-    tmp_path = "outputs/export/weak_signals_tmp.csv"
+    tmp_path = os.path.join(os.path.dirname(final_path), "weak_signals_tmp.csv")
 
     cand = []
     for r in rows:
@@ -243,12 +241,12 @@ def export_weak_signals(rows):
 
     cand.sort(key=lambda x: (x["z_like"], x["cur"], -x["total"]), reverse=True)
     
-    with open(tmp_path,"w",encoding="utf-8",newline="") as f:
+    with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["term","cur","prev","diff","ma7","z_like","total"])
         for r in cand[:200]:
             w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(float(r["ma7"]),3), round(float(r["z_like"]),3), r["total"]])
-
+    
     os.rename(tmp_path, final_path)
 
 # ================= 이벤트 추출/저장 (기존과 동일) =================
