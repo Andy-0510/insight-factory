@@ -56,6 +56,30 @@ def tokenize(text: str):
         out.append(x_lower)
     return out
 
+def to_date(s: str) -> str:
+    today = datetime.date.today()
+    if not s or not isinstance(s, str): return today.strftime("%Y-%m-%d")
+    s = s.strip()
+    try:
+        iso = s.replace("Z", "+00:00")
+        dt = datetime.datetime.fromisoformat(iso)
+        d = dt.date()
+    except Exception:
+        try:
+            from email.utils import parsedate_to_datetime
+            dt = parsedate_to_datetime(s)
+            d = dt.date()
+        except Exception:
+            m = re.search(r"(\d{4}).*?(\d{1,2}).*?(\d{1,2})", s)
+            if m:
+                y, mm, dd = int(m.group(1)), int(m.group(2)), int(m.group(3))
+                try: d = datetime.date(y, mm, dd)
+                except Exception: d = today
+            else:
+                d = today
+    if d > today: d = today
+    return d.strftime("%Y-%m-%d")
+
 # ================= 데이터 로더 (기존 안정화 버전) =================
 def select_latest_files_per_day(glob_pattern: str):
     all_files = sorted(glob.glob(glob_pattern))
