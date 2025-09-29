@@ -179,18 +179,34 @@ def normalize_score(x, lo, hi):
 
 NEG_WORDS = ["논란", "우려", "리스크", "규제", "지연", "지적", "하락", "부진", "적자", "연기"]
 
-def pick_evidence(term: str, items: List[Dict[str,Any]], limit=3):
+def extract_keywords_from_idea(idea_text: str, keywords_obj: dict) -> List[str]:
+    """아이디어 문장에서 핵심 키워드를 추출합니다."""
+    top_keywords = {k.get("keyword", "") for k in keywords_obj.get("keywords", [])}
+    found_keywords = []
+    for kw in top_keywords:
+        if kw and kw.lower() in idea_text.lower():
+            found_keywords.append(kw)
+    
+    nouns = re.findall(r"[가-힣A-Za-z]{2,}", idea_text)
+    if not found_keywords and nouns:
+        return nouns[:3]
+    return found_keywords
+
+def pick_evidence(idea_keywords: List[str], items: List[Dict[str,Any]], limit=3) -> List[Dict[str,Any]]:
     ev = []
-    term_low = (term or "").lower()
+    if not idea_keywords:
+        return ev
+    
     for it in items:
         base = (it.get("raw_body") or it.get("body") or it.get("description") or "")
         if not base:
             continue
+        
         low = base.lower()
-        if term_low in low:
+        if any(kw.lower() in low for kw in idea_keywords):
             sents = re.split(r"(?<=[\.!?다])\s+", base)
             for s in sents:
-                if term_low in (s or "").lower():
+                if any(kw.lower() in (s or "").lower() for kw in idea_keywords):
                     ev.append({
                         "sentence": (s or "").strip()[:400],
                         "url": it.get("url") or "",
@@ -525,7 +541,8 @@ def enrich_with_signals(ideas: List[Dict[str,Any]],
                         meta_items: List[Dict[str,Any]],
                         trend_rows: List[Dict[str,Any]],
                         events_rows: List[Dict[str,str]],
-                        cfg: Dict[str, Any]) -> List[Dict[str,Any]]:
+                        cfg: Dict[str, Any],
+                        keywords_obj: dict) -> List[Dict[str,Any]]:
     
     weights = cfg.get("score_weights", {})
     prio_w = float(weights.get("priority_llm_weight", 0.25))
@@ -537,65 +554,45 @@ def enrich_with_signals(ideas: List[Dict[str,Any]],
     trend_idx = {r.get("term",""): r for r in trend_rows}
     event_hit = defaultdict(int)
     for r in events_rows:
-        # 1. 'types' 컬럼을 읽어옵니다.
         types_str = r.get("types", "")
         if types_str:
-            # 2. 쉼표(,)로 구분된 문자열을 개별 타입 리스트로 분리합니다.
-            event_types = types_str.split(',')
-            # 3. 각 타입에 대해 카운트를 1씩 증가시킵니다.
-            for etype in event_types:
+            for etype in types_str.split(','):
                 event_hit[etype.strip()] += 1
-
-    ts_cur_vals, ts_z_vals = [], []
-    for it in ideas:
-        term = it.get("idea","")
-        tr = trend_idx.get(term, {})
-        ts_cur_vals.append(int(tr.get("cur",0)))
-        try:
-            ts_z_vals.append(float(tr.get("z_like",0.0)))
-        except Exception:
-            ts_z_vals.append(0.0)
-            
-    cur_hi = max([1] + ts_cur_vals) if ts_cur_vals else 1
-    cur_lo = min([0] + ts_cur_vals) if ts_cur_vals else 0
-    z_hi  = max([0.0] + ts_z_vals) if ts_z_vals else 0.0
-    z_lo  = min([0.0] + ts_z_vals) if ts_z_vals else 0.0
 
     out = []
     for it in ideas:
-        term = (it.get("idea") or "").strip()
-        tr = trend_idx.get(term, {})
-        cur = int(tr.get("cur", 0))
-        z   = float(tr.get("z_like", 0.0) or 0.0)
+        idea_text = (it.get("idea") or "").strip()
+        idea_keywords = extract_keywords_from_idea(idea_text, keywords_obj)
         
-        s_trend = 1.0 - prio_w
-        s_market = (s_trend * normalize_score(cur, cur_lo, cur_hi)) + (prio_w * normalize_score(it.get("priority_score",0.0), 0.0, 5.0))
-        s_urg = normalize_score(z, z_lo, z_hi)
-        evt_boost = 0.0
-        if event_hit.get("LAUNCH",0)>0: evt_boost += 0.10
-        if event_hit.get("PARTNERSHIP",0)>0: evt_boost += 0.08
-        if event_hit.get("INVEST",0)>0: evt_boost += 0.07
-        if event_hit.get("ORDER",0)>0: evt_boost += 0.06
-        if event_hit.get("CERT",0)>0: evt_boost += 0.05
-        if event_hit.get("REGUL",0)>0: evt_boost += 0.04
+        cur, z = 0, 0.0
+        if idea_keywords:
+            related_trends = [trend_idx.get(kw, {}) for kw in idea_keywords]
+            if related_trends:
+                cur_list = [int(t.get("cur", 0)) for t in related_trends]
+                z_list = [float(t.get("z_like", 0.0)) for t in related_trends]
+                if cur_list: cur = max(cur_list)
+                if z_list: z = max(z_list)
+
+        s_market = ((1.0 - prio_w) * (cur / 10.0)) + (prio_w * normalize_score(it.get("priority_score", 0.0), 0.0, 5.0))
+        s_urg = z / 5.0 
+        evt_boost = sum(0.10 for etype in ["LAUNCH", "PARTNERSHIP"] if event_hit.get(etype, 0) > 0)
         s_urg = clamp01(s_urg + evt_boost)
         s_feas = 0.6
-        evid = pick_evidence(term, meta_items, limit=3)
-        risk = sum(0.10 for e in evid if any(nw in (e.get("sentence") or "") for nw in NEG_WORDS))
+        
+        it["evidence"] = pick_evidence(idea_keywords, meta_items, limit=3)
+        risk = sum(0.10 for e in it["evidence"] if any(nw in (e.get("sentence") or "") for nw in NEG_WORDS))
         risk = clamp01(risk)
         
         score100 = 100.0 * (mkt_w * s_market + urg_w * s_urg + feas_w * s_feas) - (100.0 * risk_p * risk)
-        score100 = max(0.0, min(100.0, score100))
-
-        it["score"] = round(score100, 2)
-        it["score_breakdown"] = {
-            "market": round(s_market, 3),
-            "urgency": round(s_urg, 3),
-            "feasibility": round(s_feas, 3),
-            "risk": round(risk, 3),
-            "notes": {"cur": cur, "z_like": round(z,3), "events_any": sum(event_hit.values())}
-        }
-        it["evidence"] = evid if isinstance(evid, list) else []
+        it["score"] = round(max(0.0, min(100.0, score100)), 2)
+        it["score_breakdown"] = {"market": round(s_market, 3), "urgency": round(s_urg, 3), "feasibility": round(s_feas, 3), "risk": round(risk, 3), "notes": {"cur": cur, "z_like": z}}
+        
+        it["title"] = it.get("title") or it.get("idea") or ""
+        it["problem"] = it.get("problem") or f"{idea_text} 관련 과제가 상존함."
+        it["target_customer"] = it.get("target_customer") or "기업(B2B)"
+        it["value_prop"] = it.get("value_prop") or f"{it['idea']} 도입 가치(비용/품질/경험 개선)."
+        it["solution"] = it.get("solution") or ["파일럿→제휴→인증 확보"]
+        it["risks"] = it.get("risks") or ["규제/표준 불확실성", "비용/ROI 불확실성"]
         out.append(it)
         
     return out
@@ -654,7 +651,6 @@ def main():
     os.makedirs("outputs", exist_ok=True)
     os.makedirs("outputs/export", exist_ok=True)
 
-    meta_path = latest("data/news_meta_*.json")
     meta_items = load_json(latest("data/news_meta_*.json"), [])
     keywords_obj = load_json("outputs/keywords.json", {"keywords":[]})
     topics_obj   = load_json("outputs/topics.json", {"topics":[]})
@@ -674,8 +670,8 @@ def main():
         print("[ERROR] LLM stage failed:", repr(e))
         ideas_llm = []
 
-    # main 함수에서 enrich_with_signals 호출 시 cfg 전달 및 최종 정렬 수정
-    ideas_with_scores = enrich_with_signals(ideas_llm, meta_items, trend_rows, events_rows, CFG)
+    # enrich_with_signals 호출 시 keywords_obj를 추가로 전달합니다.
+    ideas_with_scores = enrich_with_signals(ideas_llm, meta_items, trend_rows, events_rows, CFG, keywords_obj)
     ideas_with_scores.sort(key=lambda x: x.get("score", 0.0), reverse=True)
     
     ideas_final = fill_opportunities_to_five(ideas_with_scores, keywords_obj, want=5)
