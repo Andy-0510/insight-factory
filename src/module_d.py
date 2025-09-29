@@ -63,19 +63,22 @@ def to_kst_date_str(s: str) -> str:
     return d.strftime("%Y-%m-%d")
 
 # ========== 회사×토픽 매트릭스: ORG 잡음 제거 ==========
-ORG_BAD_PATTERNS = [
-    r"^\d{1,2}월$", r"^\d{4}년$", r"^\d{4}$",
-    r"^\d+(억|조)?(원|달러|위안|엔)$",
-    r"^\d{1,3}(천|만|억|조)$",
-    r"^\d+(종|가지|분기|세대|인치|형)$",
-    r"^\d+(hz|g|w)$"
-]
+# src/module_d.py (해당 부분을 아래 코드로 전체 덮어쓰기)
 
+# ========== 회사×토픽 매트릭스: ORG 잡음 제거 ==========
+
+# [개선안] 숫자/기간/단위 등 노이즈 패턴 대폭 강화
+ORG_BAD_PATTERNS = [
+    r"^\d{1,4}(년|월|분기|일)$",
+    r"^\d+(hz|w|mah|nm|mm|cm|kg|g|인치|형|세대|위|종|개국|명|가지)$",
+    r"^\d+-\w+-\d+",
+    r"^\d{1,3}(천|만|억|조)?(원|달러|위안|엔)$",
+    r"^\d+$"
+]
 ORG_STOP = {
-    "국내","대한민국","서울","경제자유구역","경제자유구역은","개선","경쟁력","거래일보다",
+    "국내","대한민국","서울","경제자유구역","개선","경쟁력","거래일보다", "kbo리그", "선발투수", "손흥민",
     "기업","시장","브랜드","글로벌","전문","최대","지난해","최근","일자리","지역","생활","기술","디지털","스마트",
-    "tv","tv와","전자","디스플레이","11일","이라며","이라고",
-    "1위", "2분기", "3분기", "4분기"
+    "tv","tv와","전자","디스플레이","11일","이라며","이라고", "같은", "것으로", "통해", "그러나", "있다"
 }
 
 def norm_org_token(t: str) -> str:
@@ -89,112 +92,108 @@ def norm_org_token(t: str) -> str:
 def is_bad_org_token(t: str) -> bool:
     if not t or len(t) < 2:
         return True
-    
-    # 숫자/단위/기간 등 노이즈 패턴 강화
-    noise_patterns = [
-        r"^\d{1,4}(년|월|분기|일)$",
-        r"^\d+(hz|w|mah|nm|mm|cm|kg|g|인치|형|세대|위|종|개국|명)$",
-        r"^\d+-\w+-\d+",
-        r"^\d{1,3}(천|만|억|조)?(원|달러|위안|엔)$"
-    ]
-    
     s_lower = t.lower()
     if s_lower in ORG_STOP:
         return True
-    
-    if re.fullmatch(r"^[0-9\W_]+$", s_lower):
-        return True
-        
-    for pat in ORG_BAD_PATTERNS + noise_patterns:
+    for pat in ORG_BAD_PATTERNS:
         if re.fullmatch(pat, s_lower, re.I):
             return True
     return False
 
-def extract_orgs(text: str) -> List[str]:
+def extract_orgs(text: str, alias_map: Dict[str, str]) -> List[str]:
     if not text:
         return []
     toks = re.findall(r"[가-힣A-Za-z0-9\-\+\.]{2,}", text)
-    toks = [norm_org_token(t) for t in toks if t and len(t.strip()) >= 2]
+    
+    # [개선안] 엔티티 정규화 (동의어/오탈자 처리)
+    normalized_toks = []
+    for t in toks:
+        # 'LG디스플레' -> 'LG디스플레이' 등으로 별칭을 먼저 적용
+        normalized = alias_map.get(t, t)
+        normalized = alias_map.get(normalized.lower(), normalized)
+        normalized_toks.append(normalized)
 
-    # 화이트리스트(있으면 우선)
+    # 화이트리스트 로드
     def _load_lines(p):
         try:
             with open(p, encoding="utf-8") as f:
-                return [x.strip() for x in f if x.strip()]
+                return {x.strip() for x in f if x.strip()}
         except Exception:
-            return []
-    ENT_ORG = set(_load_lines("data/dictionaries/entities_org.txt"))
-    BRANDS  = set(_load_lines("data/dictionaries/brands.txt"))
+            return set()
+    ENT_ORG = _load_lines("data/dictionaries/entities_org.txt")
+    BRANDS  = _load_lines("data/dictionaries/brands.txt")
+    WHITELIST = ENT_ORG | BRANDS
 
     cand = []
-    for t in toks:
-        if is_bad_org_token(t):
+    for t in normalized_toks:
+        # 화이트리스트에 있으면 노이즈 필터를 통과
+        if t in WHITELIST:
+            cand.append(t)
             continue
-        if re.match(r"^[가-힣A-Za-z]+[0-9]{1,3}[A-Za-z]?$", t):  # 모델형 제외
+        # 화이트리스트에 없으면 노이즈 필터 적용
+        if is_bad_org_token(t):
             continue
         cand.append(t)
 
     cnt = Counter(cand)
-    out = []
-    for w, c in cnt.most_common(50):
-        if w in ENT_ORG or w in BRANDS:
-            out.append(w)
-        elif c >= 2 and len(w) >= 2:
-            out.append(w)
-        if len(out) >= 15:
-            break
-    # 최종 보호막
-    out = [o for o in out if not is_bad_org_token(o)]
-    return out
+    out = [w for w, c in cnt.most_common(50) if c >= 2 and len(w) >= 2 and w not in WHITELIST]
+    
+    # 최종 결과는 화이트리스트 + 자주 등장한 단어 목록
+    return list(WHITELIST.intersection(set(normalized_toks))) + out
 
-def load_topic_labels(topics_obj: dict, topn: int = 5) -> list[dict]:
+
+def load_topic_labels(topics_obj: dict, topn: int) -> list[dict]:
     labels = []
     for t in (topics_obj.get("topics") or []):
         words = [w.get("word","") for w in (t.get("top_words") or []) if w.get("word")][:topn]
         labels.append({"topic_id": int(t.get("topic_id", 0)), "words": words})
     return labels
 
-def export_company_topic_matrix(meta_items: List[Dict[str,Any]], topic_labels: List[Dict[str,Any]]) -> None:
+def export_company_topic_matrix(meta_items: List[Dict[str,Any]], topics_obj: dict, cfg: dict) -> None:
     os.makedirs("outputs/export", exist_ok=True)
-    topic_wordsets = []
-    for tl in topic_labels:
-        ws = set([w for w in tl.get("words", []) if w])
-        topic_wordsets.append((tl["topic_id"], ws))
+    
+    # [개선안] 엔티티 정규화를 위한 별칭(alias) 맵 로드
+    alias_cfg = cfg.get("alias", {})
+    alias_product = load_json("data/dictionaries/product_alias.json", {})
+    full_alias_map = dict(alias_cfg)
+    for can, variants in alias_product.items():
+        for v in variants:
+            full_alias_map[v] = can
+            full_alias_map[v.lower()] = can
+
+    # [개선안] 토픽 축 안정화 (Top-N 단어만 사용)
+    topn_words = int(cfg.get("matrix_topic_top_n_words", 30))
+    topic_labels = load_topic_labels(topics_obj, topn=topn_words)
+    topic_wordsets = {tl["topic_id"]: set(tl.get("words", [])) for tl in topic_labels}
 
     matrix = defaultdict(lambda: defaultdict(int))
-    org_counts = Counter()
     
     for it in meta_items:
         text = (it.get("body") or it.get("description") or "") or ""
         if not text:
             continue
         
-        # org 추출 후 노이즈 필터링 강화
-        raw_orgs = extract_orgs(text)
-        orgs = [org for org in raw_orgs if not is_bad_org_token(org)]
-        
-        for org in orgs:
-            org_counts[org] += 1
-
+        orgs = extract_orgs(text, full_alias_map)
         low = text.lower()
-        for org in set(orgs): # 문서 내 중복 org는 한 번만 처리
-            for tid, ws in topic_wordsets:
+        
+        for org in set(orgs):
+            for tid, ws in topic_wordsets.items():
                 hit = sum(1 for w in ws if w and w.lower() in low)
                 if hit > 0:
                     matrix[org][tid] += hit
-    
-    # 최종 org 목록 필터링: 전체 문서에서 최소 2번 이상 등장한 org만 포함
-    final_orgs = {org for org, count in org_counts.items() if count >= 2}
-    
-    all_tids = sorted(set([tid for org in final_orgs for tid in matrix.get(org, {}).keys()]))
+
+    all_tids = sorted(topic_wordsets.keys())
     
     with open("outputs/export/company_topic_matrix.csv", "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["org"] + [f"topic_{tid}" for tid in all_tids])
-        for org in sorted(list(final_orgs)):
-            row = matrix.get(org, {})
+        
+        # [개선안] 행 기준 품질 필터 (org가 노이즈이면 최종 결과에서 제외)
+        for org in sorted(matrix.keys()):
+            if is_bad_org_token(org):
+                continue
+            row = matrix[org]
             w.writerow([org] + [row.get(tid, 0) for tid in all_tids])
-            
             
 # ========== 스코어링/증거 ==========
 def clamp01(x): 
@@ -685,9 +684,9 @@ def main():
     trend_rows = load_trend_strength_csv("outputs/export/trend_strength.csv")
     events_rows = load_events_csv("outputs/export/events.csv")
 
-    topic_labels = load_topic_labels(topics_obj, topn=5)
     try:
-        export_company_topic_matrix(meta_items, topic_labels)
+        # topics_obj와 CFG를 전달하도록 수정
+        export_company_topic_matrix(meta_items, topics_obj, CFG)
         print("[INFO] company_topic_matrix.csv exported")
     except Exception as e:
         print("[WARN] company_topic_matrix export failed:", repr(e))
