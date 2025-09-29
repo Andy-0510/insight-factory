@@ -7,81 +7,58 @@ import datetime
 import unicodedata
 from collections import defaultdict, Counter
 
+# =================== 설정 및 정규식 패턴 정의 ===================
 DICT_DIR = "data/dictionaries"
+
 def _load_lines(p):
     try:
         with open(p, encoding="utf-8") as f:
-            return [x.strip() for x in f if x.strip()]
+            return {x.strip().lower() for x in f if x.strip()}
     except Exception:
-        return []
-STOP_EXT = set(_load_lines(os.path.join(DICT_DIR, "stopwords_ext.txt")))
+        return set()
 
-def norm_tok(s):
-    s = unicodedata.normalize("NFKC", s or "")
-    s = s.lower().strip()
-    s = re.sub(r"\s+", " ", s)
-    return s
+# 불용어 및 화이트리스트 로드
+STOP_EXT = _load_lines(os.path.join(DICT_DIR, "stopwords_ext.txt"))
+WHITELIST_KEYWORDS = _load_lines(os.path.join(DICT_DIR, "keyword_whitelist.txt"))
+STOP_EXT |= {"news","press","corp","ltd","inc","co","group","update","daily","today",
+             "기자","사진","자료","제공","종합","속보","단독","전문","영상","인터뷰",
+             "리뷰","광고","pr","홍보","출처","보도","보도자료","이벤트","공지","알림"}
 
-EN_STOP = set()
-KO_FUNC = set()
-EN_STOP |= {"news","press","corp","ltd","inc","co","group","update","daily","today"}
-KO_FUNC |= {"기자","사진","자료","제공","종합","속보","단독","전문","영상","인터뷰","리뷰","광고","pr","홍보","출처","보도","보도자료","이벤트","공지","알림"}
-STOP_EXT = set(EN_STOP) | set(KO_FUNC)
+# 노이즈 패턴 정규식
+RE_UNIT = re.compile(r"^\d+(hz|w|mah|nm|mm|cm|kg|g|gb|인치|니트)$", re.I)
+RE_PERIOD = re.compile(r"^\d{1,4}(년|월|분기|차)$")
+RE_COUNT = re.compile(r"^\d+(위|종|개국|명|가지)$")
+RE_FORM = re.compile(r"^\d+-in-\d+$", re.I)
 
-
-def _is_mostly_numeric(tok: str) -> bool:
-    digits = sum(c.isdigit() for c in tok)
-    return digits >= max(2, int(len(tok) * 0.6))
-
-def _looks_noise(tok: str) -> bool:
-    if len(tok) < 2:
-        return True
-    if _is_mostly_numeric(tok):
-        return True
-    # 숫자와 단위가 결합된 형태 (예: 7개국, 3분기)를 제거
-    if re.match(r"^\d+(cm|mm|kg|g|m|km|년|월|일|분기|개국|위|종|가지)$", tok, flags=re.IGNORECASE):
-        return True
-    if tok in {"주식회사", "홀딩스", "그룹", "센터", "본부", "사업부"}:
+def _looks_like_noise(tok: str) -> bool:
+    if len(tok) < 2: return True
+    if RE_UNIT.match(tok): return True
+    if RE_PERIOD.match(tok): return True
+    if RE_COUNT.match(tok): return True
+    if RE_FORM.match(tok): return True
+    # 순수 숫자 또는 숫자와 문자가 섞인 단어 (예: 8gb)
+    if tok.isdigit() or (any(c.isdigit() for c in tok) and any(c.isalpha() for c in tok)):
         return True
     return False
 
-def tokenize(t):
-    toks = re.findall(r"[가-힣A-Za-z0-9]{2,}", t or "")
+def tokenize(text: str):
+    toks = re.findall(r"[가-힣A-Za-z0-9\-]{2,}", text or "")
     out = []
     for x in toks:
-        x_norm = norm_tok(x)
-        if x_norm in STOP_EXT:
+        x_lower = x.lower()
+        if x_lower in STOP_EXT:
             continue
-        if _looks_noise(x_norm):
+        # 화이트리스트에 있는 단어는 노이즈 필터를 통과
+        if x_lower in WHITELIST_KEYWORDS:
+            out.append(x_lower)
             continue
-        out.append(x_norm)
+        # 화이트리스트에 없으면 노이즈 필터 검사
+        if _looks_like_noise(x_lower):
+            continue
+        out.append(x_lower)
     return out
 
-def to_date(s: str) -> str:
-    today = datetime.date.today()
-    if not s or not isinstance(s, str): return today.strftime("%Y-%m-%d")
-    s = s.strip()
-    try:
-        iso = s.replace("Z", "+00:00")
-        dt = datetime.datetime.fromisoformat(iso)
-        d = dt.date()
-    except Exception:
-        try:
-            from email.utils import parsedate_to_datetime
-            dt = parsedate_to_datetime(s)
-            d = dt.date()
-        except Exception:
-            m = re.search(r"(\d{4}).*?(\d{1,2}).*?(\d{1,2})", s)
-            if m:
-                y, mm, dd = int(m.group(1)), int(m.group(2)), int(m.group(3))
-                try: d = datetime.date(y, mm, dd)
-                except Exception: d = today
-            else:
-                d = today
-    if d > today: d = today
-    return d.strftime("%Y-%m-%d")
-
-# ================= 데이터 로더 (모듈 C와 로직 통일) =================
+# ================= 데이터 로더 (기존 안정화 버전) =================
 def select_latest_files_per_day(glob_pattern: str):
     all_files = sorted(glob.glob(glob_pattern))
     daily_files = defaultdict(list)
@@ -145,7 +122,8 @@ def load_stable_warehouse_data(days: int = 30):
         
     return rows
 
-# ================= 통계 계산 함수들 =================
+
+# ================= 통계 계산 (z_like 안정화 적용) =================
 def daily_counts(rows):
     by_day = defaultdict(Counter)
     for d, toks in rows:
@@ -164,13 +142,12 @@ def moving_avg(vals, w=7):
 def z_like(vals, ma):
     z = []
     for v, m in zip(vals, ma):
-        denom = (m ** 0.5) + 1.0
+        denom = (m ** 0.5) + 1.0  # 분모 안정화
         z.append((v - m) / denom)
-    # z_like 값을 -4.0 ~ 4.0 사이로 안정화(클리핑)
+    # 극단값 클리핑
     return [max(-4.0, min(4.0, float(x))) for x in z]
 
 def to_rows(dc):
-    # ... (기존과 동일)
     terms = set()
     for d, c in dc.items():
         terms.update(c.keys())
@@ -190,15 +167,13 @@ def to_rows(dc):
         })
     return rows
 
+# ================= CSV 출력 (필터링 강화 및 백업 규칙 적용) =================
 def export_trend_strength(rows):
     os.makedirs("outputs/export", exist_ok=True)
     filtered = []
     for r in rows:
-        # 필터 기준 상향: total >= 8, cur >= 3, diff >= 1
+        # 강화된 필터 기준 적용
         if r["total"] >= 8 and r["cur"] >= 3 and r["diff"] >= 1:
-            # 랭킹/기간 패턴 단어는 강한 신호에서 제외
-            if re.match(r"^\d+(위|개국|종|분기|월|년)$", r["term"]):
-                continue
             filtered.append(r)
             
     filtered.sort(key=lambda x: (x["z_like"], x["diff"], x["cur"]), reverse=True)
@@ -210,19 +185,27 @@ def export_trend_strength(rows):
             w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(r["ma7"],3), round(r["z_like"],3), r["total"]])
 
 def export_weak_signals(rows):
+    os.makedirs("outputs/export", exist_ok=True)
     cand = []
-    # 관측 일수가 14일 미만인 단어는 불안정하므로 제외
-    min_observed_days = 14
     
+    # 완화된 필터 기준 적용
     for r in rows:
-        observed_days = sum(1 for c in r['counts'] if c > 0)
-        if observed_days < min_observed_days:
-            continue
-            
-        # 약한 신호 필터 기준 적용
-        if r["total"] <= 30 and r["cur"] >= 2 and float(r["z_like"]) > 1.2:
+        if r["total"] <= 40 and r["cur"] >= 2 and float(r["z_like"]) > 0.8:
             cand.append(r)
-            
+    
+    # 백업 규칙: 필터링 결과가 없으면, z_like 상위 후보에서 최소한의 결과라도 보여줌
+    if not cand:
+        backup_cand = []
+        # z_like 점수 순으로 정렬
+        sorted_by_z = sorted(rows, key=lambda x: x.get("z_like", 0.0), reverse=True)
+        for r in sorted_by_z:
+            # 최소한의 노이즈 필터만 적용
+            if r["total"] >= 2 and not _looks_like_noise(r["term"]):
+                backup_cand.append(r)
+                if len(backup_cand) >= 30:
+                    break
+        cand = backup_cand
+
     cand.sort(key=lambda x: (x["z_like"], x["cur"], -x["total"]), reverse=True)
     
     with open("outputs/export/weak_signals.csv","w",encoding="utf-8",newline="") as f:
@@ -230,9 +213,8 @@ def export_weak_signals(rows):
         w.writerow(["term","cur","prev","diff","ma7","z_like","total"])
         for r in cand[:200]:
             w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(float(r["ma7"]),3), round(float(r["z_like"]),3), r["total"]])
-            
-    
-# ===== 이벤트 추출/저장 =====
+
+# ================= 이벤트 추출/저장 (기존과 동일) =================
 EVENT_MAP = {
     "LAUNCH":      [r"출시", r"론칭", r"발표", r"선보이", r"공개"],
     "PARTNERSHIP": [r"제휴", r"파트너십", r"업무협약", r"\bMOU\b", r"맞손"],
@@ -327,9 +309,7 @@ def export_events(out_path="outputs/export/events.csv"):
 
 # ================= 메인 =================
 def main():
-    # 하루 1파일 및 D+D+1 안정성 정책이 적용된 함수를 호출합니다.
     rows = load_stable_warehouse_data(days=30)
-    
     dc = daily_counts(rows)
     rows2 = to_rows(dc)
     export_trend_strength(rows2)
@@ -339,3 +319,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+    
