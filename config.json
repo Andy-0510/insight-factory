@@ -156,6 +156,7 @@
     "risk_penalty": 1.0
   },
 
+  "matrix_topic_top_n_words": 30,
 
   "timezone": "Asia/Seoul"
 }
