@@ -164,14 +164,13 @@ def moving_avg(vals, w=7):
 def z_like(vals, ma):
     z = []
     for v, m in zip(vals, ma):
-        denom = (m**0.5) + 1.0  # 안정화
+        denom = (m ** 0.5) + 1.0
         z.append((v - m) / denom)
-    # 사후 클리핑: z_like 값이 -5 ~ 5 사이를 벗어나지 않도록 보정합니다.
-    return [max(-5.0, min(5.0, float(x))) for x in z]
-       
+    # z_like 값을 -4.0 ~ 4.0 사이로 안정화(클리핑)
+    return [max(-4.0, min(4.0, float(x))) for x in z]
+
 def to_rows(dc):
-    # dc: date -> Counter
-    # terms universe
+    # ... (기존과 동일)
     terms = set()
     for d, c in dc.items():
         terms.update(c.keys())
@@ -181,43 +180,57 @@ def to_rows(dc):
         counts = [dc[d].get(t, 0) for d in dates]
         ma7 = moving_avg(counts, 7)
         z = z_like(counts, ma7)
-        # 최근 값
         cur = counts[-1] if counts else 0
         prev = counts[-2] if len(counts) >= 2 else 0
         diff = cur - prev
         rows.append({
-            "term": t,
-            "dates": dates,
-            "counts": counts,
-            "cur": cur, "prev": prev, "diff": diff,
-            "ma7": ma7[-1] if ma7 else 0.0,
-            "z_like": z[-1] if z else 0.0,
-            "total": sum(counts)
+            "term": t, "dates": dates, "counts": counts, "cur": cur, "prev": prev,
+            "diff": diff, "ma7": ma7[-1] if ma7 else 0.0,
+            "z_like": z[-1] if z else 0.0, "total": sum(counts)
         })
     return rows
 
 def export_trend_strength(rows):
     os.makedirs("outputs/export", exist_ok=True)
-    final_path = "outputs/export/trend_strength.csv"
-    tmp_path = "outputs/export/trend_strength_tmp.csv"
-
     filtered = []
     for r in rows:
-        # 강한 신호의 최소 기준: 전체 언급 5회 이상, 현재 언급 2회 이상, 이전 대비 1 이상 증가
-        if r["total"] >= 5 and r["cur"] >= 2 and r["diff"] >= 1:
-            r["z_like"] = max(-5.0, min(5.0, float(r["z_like"]))) # z_like 안정화
-            r["ma7"] = float(r["ma7"])
+        # 필터 기준 상향: total >= 8, cur >= 3, diff >= 1
+        if r["total"] >= 8 and r["cur"] >= 3 and r["diff"] >= 1:
+            # 랭킹/기간 패턴 단어는 강한 신호에서 제외
+            if re.match(r"^\d+(위|개국|종|분기|월|년)$", r["term"]):
+                continue
             filtered.append(r)
-
+            
     filtered.sort(key=lambda x: (x["z_like"], x["diff"], x["cur"]), reverse=True)
-
-    with open(tmp_path, "w", encoding="utf-8", newline="") as f:
+    
+    with open("outputs/export/trend_strength.csv","w",encoding="utf-8",newline="") as f:
         w = csv.writer(f)
-        w.writerow(["term", "cur", "prev", "diff", "ma7", "z_like", "total"])
+        w.writerow(["term","cur","prev","diff","ma7","z_like","total"])
         for r in filtered[:300]:
-            w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(r["ma7"], 3), round(r["z_like"], 3), r["total"]])
+            w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(r["ma7"],3), round(r["z_like"],3), r["total"]])
 
-    os.rename(tmp_path, final_path)
+def export_weak_signals(rows):
+    cand = []
+    # 관측 일수가 14일 미만인 단어는 불안정하므로 제외
+    min_observed_days = 14
+    
+    for r in rows:
+        observed_days = sum(1 for c in r['counts'] if c > 0)
+        if observed_days < min_observed_days:
+            continue
+            
+        # 약한 신호 필터 기준 적용
+        if r["total"] <= 30 and r["cur"] >= 2 and float(r["z_like"]) > 1.2:
+            cand.append(r)
+            
+    cand.sort(key=lambda x: (x["z_like"], x["cur"], -x["total"]), reverse=True)
+    
+    with open("outputs/export/weak_signals.csv","w",encoding="utf-8",newline="") as f:
+        w = csv.writer(f)
+        w.writerow(["term","cur","prev","diff","ma7","z_like","total"])
+        for r in cand[:200]:
+            w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(float(r["ma7"]),3), round(float(r["z_like"]),3), r["total"]])
+            
     
 def export_weak_signals(rows):
     final_path = "outputs/export/weak_signals.csv"
