@@ -17,14 +17,12 @@ def _load_lines(p):
     except Exception:
         return set()
 
-# 불용어 및 화이트리스트 로드
 STOP_EXT = _load_lines(os.path.join(DICT_DIR, "stopwords_ext.txt"))
 WHITELIST_KEYWORDS = _load_lines(os.path.join(DICT_DIR, "keyword_whitelist.txt"))
 STOP_EXT |= {"news","press","corp","ltd","inc","co","group","update","daily","today",
              "기자","사진","자료","제공","종합","속보","단독","전문","영상","인터뷰",
              "리뷰","광고","pr","홍보","출처","보도","보도자료","이벤트","공지","알림"}
 
-# 노이즈 패턴 정규식
 RE_UNIT = re.compile(r"^\d+(hz|w|mah|nm|mm|cm|kg|g|gb|인치|니트)$", re.I)
 RE_PERIOD = re.compile(r"^\d{1,4}(년|월|분기|차)$")
 RE_COUNT = re.compile(r"^\d+(위|종|개국|명|가지)$")
@@ -32,13 +30,15 @@ RE_FORM = re.compile(r"^\d+-in-\d+$", re.I)
 
 def _looks_like_noise(tok: str) -> bool:
     if len(tok) < 2: return True
+    if tok.isdigit(): return True
     if RE_UNIT.match(tok): return True
     if RE_PERIOD.match(tok): return True
     if RE_COUNT.match(tok): return True
     if RE_FORM.match(tok): return True
-    # 순수 숫자 또는 숫자와 문자가 섞인 단어 (예: 8gb)
-    if tok.isdigit() or (any(c.isdigit() for c in tok) and any(c.isalpha() for c in tok)):
-        return True
+    if any(c.isdigit() for c in tok) and any(c.isalpha() for c in tok):
+        # 화이트리스트에 없는 숫자+문자 조합은 노이즈로 간주 (예: 8gb)
+        if tok not in WHITELIST_KEYWORDS:
+            return True
     return False
 
 def tokenize(text: str):
@@ -48,11 +48,9 @@ def tokenize(text: str):
         x_lower = x.lower()
         if x_lower in STOP_EXT:
             continue
-        # 화이트리스트에 있는 단어는 노이즈 필터를 통과
         if x_lower in WHITELIST_KEYWORDS:
             out.append(x_lower)
             continue
-        # 화이트리스트에 없으면 노이즈 필터 검사
         if _looks_like_noise(x_lower):
             continue
         out.append(x_lower)
@@ -122,7 +120,6 @@ def load_stable_warehouse_data(days: int = 30):
         
     return rows
 
-
 # ================= 통계 계산 (z_like 안정화 적용) =================
 def daily_counts(rows):
     by_day = defaultdict(Counter)
@@ -142,9 +139,8 @@ def moving_avg(vals, w=7):
 def z_like(vals, ma):
     z = []
     for v, m in zip(vals, ma):
-        denom = (m ** 0.5) + 1.0  # 분모 안정화
+        denom = (m ** 0.5) + 1.0
         z.append((v - m) / denom)
-    # 극단값 클리핑
     return [max(-4.0, min(4.0, float(x))) for x in z]
 
 def to_rows(dc):
@@ -167,39 +163,54 @@ def to_rows(dc):
         })
     return rows
 
-# ================= CSV 출력 (필터링 강화 및 백업 규칙 적용) =================
+# ================= CSV 출력 (안정성 강화 최종 버전) =================
+MIN_OBSERVED_DAYS = 7 # 최소 관측일수 조건
+
 def export_trend_strength(rows):
     os.makedirs("outputs/export", exist_ok=True)
+    final_path = "outputs/export/trend_strength.csv"
+    tmp_path = "outputs/export/trend_strength_tmp.csv"
+    
     filtered = []
     for r in rows:
-        # 강화된 필터 기준 적용
+        observed_days = sum(1 for c in r['counts'] if c > 0)
+        if observed_days < MIN_OBSERVED_DAYS:
+            continue
+
         if r["total"] >= 8 and r["cur"] >= 3 and r["diff"] >= 1:
+            if _looks_like_noise(r["term"]):
+                continue
             filtered.append(r)
             
     filtered.sort(key=lambda x: (x["z_like"], x["diff"], x["cur"]), reverse=True)
     
-    with open("outputs/export/trend_strength.csv","w",encoding="utf-8",newline="") as f:
+    with open(tmp_path,"w",encoding="utf-8",newline="") as f:
         w = csv.writer(f)
         w.writerow(["term","cur","prev","diff","ma7","z_like","total"])
         for r in filtered[:300]:
             w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(r["ma7"],3), round(r["z_like"],3), r["total"]])
+    
+    os.rename(tmp_path, final_path)
 
 def export_weak_signals(rows):
     os.makedirs("outputs/export", exist_ok=True)
+    final_path = "outputs/export/weak_signals.csv"
+    tmp_path = "outputs/export/weak_signals_tmp.csv"
+
     cand = []
-    
-    # 완화된 필터 기준 적용
     for r in rows:
+        observed_days = sum(1 for c in r['counts'] if c > 0)
+        if observed_days < MIN_OBSERVED_DAYS:
+            continue
+        
         if r["total"] <= 40 and r["cur"] >= 2 and float(r["z_like"]) > 0.8:
-            cand.append(r)
+            if not _looks_like_noise(r["term"]):
+                cand.append(r)
     
-    # 백업 규칙: 필터링 결과가 없으면, z_like 상위 후보에서 최소한의 결과라도 보여줌
     if not cand:
         backup_cand = []
-        # z_like 점수 순으로 정렬
         sorted_by_z = sorted(rows, key=lambda x: x.get("z_like", 0.0), reverse=True)
         for r in sorted_by_z:
-            # 최소한의 노이즈 필터만 적용
             if r["total"] >= 2 and not _looks_like_noise(r["term"]):
                 backup_cand.append(r)
                 if len(backup_cand) >= 30:
@@ -208,11 +219,13 @@ def export_weak_signals(rows):
 
     cand.sort(key=lambda x: (x["z_like"], x["cur"], -x["total"]), reverse=True)
     
-    with open("outputs/export/weak_signals.csv","w",encoding="utf-8",newline="") as f:
+    with open(tmp_path,"w",encoding="utf-8",newline="") as f:
         w = csv.writer(f)
         w.writerow(["term","cur","prev","diff","ma7","z_like","total"])
         for r in cand[:200]:
             w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(float(r["ma7"]),3), round(float(r["z_like"]),3), r["total"]])
+
+    os.rename(tmp_path, final_path)
 
 # ================= 이벤트 추출/저장 (기존과 동일) =================
 EVENT_MAP = {
@@ -319,4 +332,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-    
