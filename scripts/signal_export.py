@@ -23,7 +23,7 @@ STOP_EXT = _load_lines(os.path.join(DICT_DIR, "stopwords_ext.txt"))
 WHITELIST_KEYWORDS = _load_lines(os.path.join(DICT_DIR, "keyword_whitelist.txt"))
 ROOT_COMPANY_NAMES = {"삼성", "lg", "sk", "현대"}
 COMMON_BUSINESS_VERBS = {"본격화", "확대", "강화", "전망", "출시", "발표", "계획", "지원"}
-WEAK_SIGNAL_SPECIFIC_STOPWORDS = {"미국", "유럽", "산업", "공급", "업계", "tv", "it", "모바일"}
+WEAK_SIGNAL_SPECIFIC_STOPWORDS = {"산업", "공급", "업계", "시장", "관련", "분야", "업체"}
 
 # 범용 불용어 목록 확장 (A)
 STOP_EXT.update(ROOT_COMPANY_NAMES)
