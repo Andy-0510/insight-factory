@@ -220,8 +220,8 @@ def export_weak_signals(rows):
         term = r["term"]
         if term in generic_stop:
             continue
-        # 살짝 완화: total≤30, z>1..05, prev≤1, diff≥1
-        if r["total"] <= 30 and r["cur"] >= 2 and r["prev"] <= 1 and r["diff"] >= 1 and float(r["z_like"]) > 1.05:
+        # 살짝 완화: total≤30, z>1.02, prev≤1, diff≥1
+        if r["total"] <= 30 and r["cur"] >= 2 and r["prev"] <= 1 and r["diff"] >= 1 and float(r["z_like"]) > 1.02:
             cand.append(r)
 
     # 2단 컷: 후보가 많을 때만 더 조여서 품질 유지
