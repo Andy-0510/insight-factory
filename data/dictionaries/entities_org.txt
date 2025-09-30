@@ -4,13 +4,55 @@ BOE
 CSOT
 샤프
 Sharp
+Visionox
+Tianma
+Truly
+JDI
+Sharp
+AUO
+Innolux
 삼성전자
+샤오미
+Dell
+ASUS
+Acer
 LG전자
 애플
 하이센스
 하이얼
 미디어
-샤오미
+미디어텍
+Apple Silicon
+Corning
+Schott
+AGC
+Nitto
+Sumitomo Chemical
+Toray
+UDC
+Idemitsu
+Merck
+LG화학
+Canon Tokki
+VTE
+SFA
+Jusung
+기아
+폭스바겐
+BYD
+리오토
+니오
+샤오펑
+Magna
+Continental
+Bosch
+Harman
+원익IPS
+한미반도체
+AP Systems
+아이씨디
+ICD
+한화솔루션
 화웨이
 레노버
 LENOVER
