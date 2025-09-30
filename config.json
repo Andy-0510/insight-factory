@@ -45,6 +45,7 @@
   "domain_hints": [
     "디스플레이 제조","공정 자동화","AR/VR","OLED","MicroLED","MiniLED","LTPO","LTPS","QD","수율",
     "폴더블","롤러블","스트레처블","자동차용 디스플레이","게이밍","비전프로","FMM","WOLED","QD-OLED",
+    "베젤리스", "휴머노이드", 
     "TFE","MLA","유리기판","패널","ITO","TADF","PHOLED","TFT","IGZO","Oxide"
   ],
 
