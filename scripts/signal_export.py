@@ -212,6 +212,30 @@ def export_weak_signals(rows):
     return cand, backup_fired
 
 # ================= 이벤트 추출/저장 (기존과 동일) =================
+def to_date(s: str) -> str:
+    today = datetime.date.today()
+    if not s or not isinstance(s, str): return today.strftime("%Y-%m-%d")
+    s = s.strip()
+    try:
+        iso = s.replace("Z", "+00:00")
+        dt = datetime.datetime.fromisoformat(iso)
+        d = dt.date()
+    except Exception:
+        try:
+            from email.utils import parsedate_to_datetime
+            dt = parsedate_to_datetime(s)
+            d = dt.date()
+        except Exception:
+            m = re.search(r"(\d{4}).*?(\d{1,2}).*?(\d{1,2})", s)
+            if m:
+                y, mm, dd = int(m.group(1)), int(m.group(2)), int(m.group(3))
+                try: d = datetime.date(y, mm, dd)
+                except Exception: d = today
+            else:
+                d = today
+    if d > today: d = today
+    return d.strftime("%Y-%m-%d")
+
 EVENT_MAP = {
     "LAUNCH":      [r"출시", r"론칭", r"발표", r"선보이", r"공개"],
     "PARTNERSHIP": [r"제휴", r"파트너십", r"업무협약", r"\bMOU\b", r"맞손"],
