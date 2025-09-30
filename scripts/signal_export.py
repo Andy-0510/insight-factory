@@ -179,21 +179,23 @@ def export_trend_strength(rows):
     os.makedirs("outputs/export", exist_ok=True)
     final_path = "outputs/export/trend_strength.csv"
     tmp_path = os.path.join(os.path.dirname(final_path), "trend_strength_tmp.csv")
+
+    bad_generic = {"공급","산업","업계","시장","관련","분야"}
+
+    # 1) 세이프가드로 필터링
+    filtered = [r for r in rows if r["term"] not in bad_generic]
+
+    # 2) 정렬 후 상한
+    filtered.sort(key=lambda x: (x["z_like"], x["diff"], x["cur"]), reverse=True)
+    topk = filtered[:300]
     
     with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["term", "cur", "prev", "diff", "ma7", "z_like", "total"])
-        
-        ## ⭐️ 4. trend_strength 세이프가드 적용
-        bad_generic = {"공급","산업","업계","시장","관련","분야"}
-        
-        for r in sorted(rows, key=lambda x: (x["z_like"], x["diff"], x["cur"]), reverse=True)[:300]:
-            term = r["term"]
-            if term in bad_generic: 
-                continue
-            w.writerow([term, r["cur"], r["prev"], r["diff"], round(r["ma7"],3), round(r["z_like"],3), r["total"]])
-            
+        for r in topk:
+            w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(r["ma7"],3), round(r["z_like"],3), r["total"]])
     os.replace(tmp_path, final_path)
+    
 
 ## ⭐️ 3. weak_signals 필터 조정
 def export_weak_signals(rows):
@@ -274,7 +276,7 @@ def _dedup_events(rows: list) -> list:
     
 def export_events():
     final_path = "outputs/export/events.csv"
-    tmp_path = os.path.join(os.path.dirname(final_path), "events_tmp.csv")
+    tmp_path = final_path + ".tmp"
     os.makedirs(os.path.dirname(final_path), exist_ok=True)
     
     meta_path = _pick_meta_path()
@@ -283,7 +285,8 @@ def export_events():
         return
         
     try:
-        with open(meta_path, "r", encoding="utf-8") as f: items = json.load(f)
+        with open(meta_path, "r", encoding="utf-8") as f:
+            items = json.load(f)
     except Exception as e:
         print(f"[WARN] events: meta load failed: {repr(e)}")
         items = []
@@ -291,16 +294,14 @@ def export_events():
     rows = _detect_events_from_items(items)
     rows = _dedup_events(rows)
     
-    ## ⭐️ 5. 이벤트 저장도 원자성으로 변경
-    tmp_path = out_path + ".tmp"
     with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["date", "types", "title", "url"])
         w.writeheader()
         for r in rows:
             w.writerow(r)
-    os.replace(tmp_path, out_path)
+    os.replace(tmp_path, final_path)
     print(f"[INFO] events.csv exported | rows={len(rows)}")
-
+    
 
 ## ⭐️ --- 메인 실행 로직 ---
 def main():
