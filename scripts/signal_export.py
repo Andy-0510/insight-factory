@@ -9,21 +9,23 @@ from collections import defaultdict, Counter
 
 # =================== 설정 및 정규식 패턴 정의 ===================
 DICT_DIR = "data/dictionaries"
-MIN_OBSERVED_DAYS = 7  # 최소 관측일수 조건
+MIN_OBSERVED_DAYS = 5  # 최소 관측일수 조건
 
 def _load_lines(p):
     try:
-        with open(p, encoding="utf-8") as f:
+        with open(p, "r", encoding="utf-8") as f:
             return {x.strip().lower() for x in f if x.strip()}
     except Exception:
         return set()
 
+# 불용어, 화이트리스트, 필터링용 단어 목록 로드
 STOP_EXT = _load_lines(os.path.join(DICT_DIR, "stopwords_ext.txt"))
 WHITELIST_KEYWORDS = _load_lines(os.path.join(DICT_DIR, "keyword_whitelist.txt"))
-STOP_EXT |= {"news","press","corp","ltd","inc","co","group","update","daily","today",
-             "기자","사진","자료","제공","종합","속보","단독","전문","영상","인터뷰",
-             "리뷰","광고","pr","홍보","출처","보도","보도자료","이벤트","공지","알림"}
+ROOT_COMPANY_NAMES = {"삼성", "lg", "sk", "현대"}
+COMMON_BUSINESS_VERBS = {"본격화", "확대", "강화", "전망", "출시", "발표", "계획", "지원"}
+STOP_EXT.update(ROOT_COMPANY_NAMES, COMMON_BUSINESS_VERBS)
 
+# 노이즈 패턴 정규식
 RE_UNIT = re.compile(r"^\d+(hz|w|mah|nm|mm|cm|kg|g|gb|인치|니트)$", re.I)
 RE_PERIOD = re.compile(r"^\d{1,4}(년|월|분기|차)$")
 RE_COUNT = re.compile(r"^\d+(위|종|개국|명|가지)$")
@@ -56,30 +58,6 @@ def tokenize(text: str):
         out.append(x_lower)
     return out
 
-def to_date(s: str) -> str:
-    today = datetime.date.today()
-    if not s or not isinstance(s, str): return today.strftime("%Y-%m-%d")
-    s = s.strip()
-    try:
-        iso = s.replace("Z", "+00:00")
-        dt = datetime.datetime.fromisoformat(iso)
-        d = dt.date()
-    except Exception:
-        try:
-            from email.utils import parsedate_to_datetime
-            dt = parsedate_to_datetime(s)
-            d = dt.date()
-        except Exception:
-            m = re.search(r"(\d{4}).*?(\d{1,2}).*?(\d{1,2})", s)
-            if m:
-                y, mm, dd = int(m.group(1)), int(m.group(2)), int(m.group(3))
-                try: d = datetime.date(y, mm, dd)
-                except Exception: d = today
-            else:
-                d = today
-    if d > today: d = today
-    return d.strftime("%Y-%m-%d")
-
 # ================= 데이터 로더 (기존 안정화 버전) =================
 def select_latest_files_per_day(glob_pattern: str):
     all_files = sorted(glob.glob(glob_pattern))
@@ -87,7 +65,6 @@ def select_latest_files_per_day(glob_pattern: str):
     for f in all_files:
         date_key = os.path.basename(f)[:10]
         daily_files[date_key].append(f)
-    
     latest_daily_files = []
     for date_key in sorted(daily_files.keys()):
         latest_file_for_day = sorted(daily_files[date_key])[-1]
@@ -95,33 +72,23 @@ def select_latest_files_per_day(glob_pattern: str):
     return latest_daily_files
 
 def load_stable_warehouse_data(days: int = 30):
-    """
-    D일자와 D+1일자 규칙을 적용하여 안정적인 시계열 데이터를 로드합니다.
-    """
     warehouse_files = select_latest_files_per_day("data/warehouse/*.jsonl")
     file_map = {os.path.basename(f)[:10]: f for f in warehouse_files}
-    
-    if not file_map:
-        return []
+    if not file_map: return []
     
     sorted_dates = sorted(file_map.keys())
-    # 분석 시작일은 요청일수(days)만큼 과거로 설정
     start_date = datetime.datetime.strptime(sorted_dates[-1], "%Y-%m-%d").date() - datetime.timedelta(days=days)
-    # 마지막 날짜는 D+1일이 없으므로, 그 전날까지만 계산합니다.
     end_date = datetime.datetime.strptime(sorted_dates[-1], "%Y-%m-%d").date() - datetime.timedelta(days=1)
     
     rows = []
     current_date = start_date
-
     while current_date <= end_date:
         date_str_d = current_date.strftime("%Y-%m-%d")
         date_str_d_plus_1 = (current_date + datetime.timedelta(days=1)).strftime("%Y-%m-%d")
         
         files_to_check = []
-        if date_str_d in file_map:
-            files_to_check.append(file_map[date_str_d])
-        if date_str_d_plus_1 in file_map:
-            files_to_check.append(file_map[date_str_d_plus_1])
+        if date_str_d in file_map: files_to_check.append(file_map[date_str_d])
+        if date_str_d_plus_1 in file_map: files_to_check.append(file_map[date_str_d_plus_1])
             
         for fp in files_to_check:
             try:
@@ -131,17 +98,13 @@ def load_stable_warehouse_data(days: int = 30):
                             obj = json.loads(line)
                             d_raw = obj.get("published") or obj.get("created_at") or os.path.basename(fp)[:10]
                             published_date = d_raw[:10]
-                            
                             if published_date == date_str_d:
                                 title = (obj.get("title") or "").strip()
                                 toks = tokenize(title)
                                 rows.append((date_str_d, toks))
-                        except Exception:
-                            continue
-            except Exception:
-                continue
+                        except Exception: continue
+            except Exception: continue
         current_date += datetime.timedelta(days=1)
-        
     return rows
 
 # ================= 통계 계산 (z_like 안정화 적용) =================
@@ -198,21 +161,21 @@ def export_trend_strength(rows):
         observed_days = sum(1 for c in r['counts'] if c > 0)
         if observed_days < MIN_OBSERVED_DAYS:
             continue
-
         if r["total"] >= 8 and r["cur"] >= 3 and r["diff"] >= 1:
             if _looks_like_noise(r["term"]):
                 continue
             filtered.append(r)
             
-    filtered.sort(key=lambda x: (x["z_like"], x["diff"], x["cur"]), reverse=True)
+    filtered.sort(key=lambda x: (x["z_like"], x["diff"], x["cur"], x["total"]/10), reverse=True)
     
-    with open(tmp_path, "w", encoding="utf-8", newline="") as f:
+    with open(tmp_path,"w",encoding="utf-8",newline="") as f:
         w = csv.writer(f)
         w.writerow(["term","cur","prev","diff","ma7","z_like","total"])
         for r in filtered[:300]:
             w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(r["ma7"],3), round(r["z_like"],3), r["total"]])
     
-    os.rename(tmp_path, final_path)
+    os.replace(tmp_path, final_path)
+    return filtered
 
 def export_weak_signals(rows):
     os.makedirs("outputs/export", exist_ok=True)
@@ -221,21 +184,19 @@ def export_weak_signals(rows):
 
     cand = []
     for r in rows:
-        observed_days = sum(1 for c in r['counts'] if c > 0)
-        if observed_days < MIN_OBSERVED_DAYS:
-            continue
-        
-        if r["total"] <= 40 and r["cur"] >= 2 and float(r["z_like"]) > 0.8:
-            if not _looks_like_noise(r["term"]):
+        if r["total"] <= 35 and r["cur"] >= 2 and r["prev"] <= 1 and float(r["z_like"]) > 1.0 and r["diff"] >= 1:
+             if not _looks_like_noise(r["term"]):
                 cand.append(r)
-    
+
+    backup_fired = False
     if not cand:
+        backup_fired = True
         backup_cand = []
         sorted_by_z = sorted(rows, key=lambda x: x.get("z_like", 0.0), reverse=True)
         for r in sorted_by_z:
-            if r["total"] >= 2 and not _looks_like_noise(r["term"]):
+            if r["total"] >= 2 and not _looks_like_noise(r["term"]) and r["term"] not in ROOT_COMPANY_NAMES:
                 backup_cand.append(r)
-                if len(backup_cand) >= 30:
+                if len(backup_cand) >= 50:
                     break
         cand = backup_cand
 
@@ -246,8 +207,9 @@ def export_weak_signals(rows):
         w.writerow(["term","cur","prev","diff","ma7","z_like","total"])
         for r in cand[:200]:
             w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(float(r["ma7"]),3), round(float(r["z_like"]),3), r["total"]])
-    
-    os.rename(tmp_path, final_path)
+
+    os.replace(tmp_path, final_path)
+    return cand, backup_fired
 
 # ================= 이벤트 추출/저장 (기존과 동일) =================
 EVENT_MAP = {
@@ -344,13 +306,26 @@ def export_events(out_path="outputs/export/events.csv"):
 
 # ================= 메인 =================
 def main():
-    rows = load_stable_warehouse_data(days=30)
-    dc = daily_counts(rows)
-    rows2 = to_rows(dc)
-    export_trend_strength(rows2)
-    export_weak_signals(rows2)
+    rows_raw = load_stable_warehouse_data(days=30)
+    dc = daily_counts(rows_raw)
+    rows_stat = to_rows(dc)
+    
+    print(f"[INFO] signal_export | total_terms={len(rows_stat)}")
+    
+    trends = export_trend_strength(rows_stat)
+    weaks, backup_fired = export_weak_signals(rows_stat)
+    
+    print(f"[INFO] > Trend Strength: {len(trends)} candidates found.")
+    if trends:
+        preview = trends[0]
+        print(f"[INFO] > Top Trend: {preview['term']} (z={preview['z_like']:.2f}, cur={preview['cur']}, total={preview['total']})")
+
+    print(f"[INFO] > Weak Signals: {len(weaks)} candidates found. (backup_fired={backup_fired})")
+    if weaks:
+        preview = weaks[0]
+        print(f"[INFO] > Top Weak: {preview['term']} (z={preview['z_like']:.2f}, cur={preview['cur']}, total={preview['total']})")
+        
     export_events()
-    print("[INFO] signal_export | terms=", len(rows2))
 
 if __name__ == "__main__":
     main()
