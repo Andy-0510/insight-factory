@@ -9,7 +9,7 @@ from collections import defaultdict, Counter
 
 # =================== 설정 및 정규식 패턴 정의 ===================
 DICT_DIR = "data/dictionaries"
-MIN_OBSERVED_DAYS = 5  # 최소 관측일수 조건
+MIN_OBSERVED_DAYS = 7  # 최소 관측일수 조건 강화
 
 def _load_lines(p):
     try:
@@ -18,12 +18,15 @@ def _load_lines(p):
     except Exception:
         return set()
 
-# 불용어, 화이트리스트, 필터링용 단어 목록 로드
+# 범용 불용어 및 화이트리스트 로드
 STOP_EXT = _load_lines(os.path.join(DICT_DIR, "stopwords_ext.txt"))
 WHITELIST_KEYWORDS = _load_lines(os.path.join(DICT_DIR, "keyword_whitelist.txt"))
+
+# signal_export 전용 필터링 단어 목록
 ROOT_COMPANY_NAMES = {"삼성", "lg", "sk", "현대"}
-COMMON_BUSINESS_VERBS = {"본격화", "확대", "강화", "전망", "출시", "발표", "계획", "지원"}
-STOP_EXT.update(ROOT_COMPANY_NAMES, COMMON_BUSINESS_VERBS)
+COMMON_BUSINESS_VERBS = {"본격화", "확대", "강화", "전망", "출시", "발표", "계획", "지원", "업계"}
+WEAK_SIGNAL_SPECIFIC_STOPWORDS = {"미국", "유럽", "산업", "공급"}
+STOP_EXT.update(COMMON_BUSINESS_VERBS)
 
 # 노이즈 패턴 정규식
 RE_UNIT = re.compile(r"^\d+(hz|w|mah|nm|mm|cm|kg|g|gb|인치|니트)$", re.I)
@@ -161,8 +164,10 @@ def export_trend_strength(rows):
         observed_days = sum(1 for c in r['counts'] if c > 0)
         if observed_days < MIN_OBSERVED_DAYS:
             continue
+
         if r["total"] >= 8 and r["cur"] >= 3 and r["diff"] >= 1:
-            if _looks_like_noise(r["term"]):
+            term = r["term"]
+            if _looks_like_noise(term) or term in ROOT_COMPANY_NAMES:
                 continue
             filtered.append(r)
             
@@ -182,30 +187,40 @@ def export_weak_signals(rows):
     final_path = "outputs/export/weak_signals.csv"
     tmp_path = os.path.join(os.path.dirname(final_path), "weak_signals_tmp.csv")
 
+    # 1차 필터: 제안된 강화된 규칙 적용
     cand = []
     for r in rows:
-        if r["total"] <= 35 and r["cur"] >= 2 and r["prev"] <= 1 and float(r["z_like"]) > 1.0 and r["diff"] >= 1:
-             if not _looks_like_noise(r["term"]):
+        if r["total"] <= 25 and r["cur"] >= 2 and float(r["z_like"]) > 1.2 and r["diff"] >= 1 and r["prev"] <= 1:
+             term = r["term"]
+             if not _looks_like_noise(term) and term not in ROOT_COMPANY_NAMES and term not in WEAK_SIGNAL_SPECIFIC_STOPWORDS:
                 cand.append(r)
+    
+    # 2단 컷: 후보가 60개 이상이면 더 엄격한 기준으로 추가 필터링
+    if len(cand) > 60:
+        cand = [r for r in cand if float(r["z_like"]) > 1.4 and r["total"] <= 20]
 
+    # 백업 규칙: 필터링 결과가 없으면, 차선책으로 최소한의 결과라도 보여줌
     backup_fired = False
     if not cand:
         backup_fired = True
         backup_cand = []
+        # z_like 점수 순으로 정렬
         sorted_by_z = sorted(rows, key=lambda x: x.get("z_like", 0.0), reverse=True)
         for r in sorted_by_z:
-            if r["total"] >= 2 and not _looks_like_noise(r["term"]) and r["term"] not in ROOT_COMPANY_NAMES:
+            term = r["term"]
+            if r["total"] >= 2 and not _looks_like_noise(term) and term not in ROOT_COMPANY_NAMES and term not in WEAK_SIGNAL_SPECIFIC_STOPWORDS:
                 backup_cand.append(r)
-                if len(backup_cand) >= 50:
+                if len(backup_cand) >= 30:
                     break
         cand = backup_cand
 
-    cand.sort(key=lambda x: (x["z_like"], x["cur"], -x["total"]), reverse=True)
+    # 최종 정렬: z_like, cur 순으로 정렬하되 total과 prev가 낮은 것에 가산점
+    cand.sort(key=lambda x: (x["z_like"], x["cur"], -x["total"], -x["prev"]), reverse=True)
     
     with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["term","cur","prev","diff","ma7","z_like","total"])
-        for r in cand[:200]:
+        for r in cand[:80]: # 최대 출력 개수 80으로 축소
             w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(float(r["ma7"]),3), round(float(r["z_like"]),3), r["total"]])
 
     os.replace(tmp_path, final_path)
