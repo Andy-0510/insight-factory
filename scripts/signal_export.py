@@ -227,6 +227,92 @@ def export_weak_signals(rows):
     os.replace(tmp_path, final_path) # (E) 파일 쓰기 안정성
     return cand, backup_fired
 
+
+# ================= 이벤트 추출/저장 (기존과 동일) =================
+def to_date(s: str) -> str:
+    today = datetime.date.today()
+    if not s or not isinstance(s, str): return today.strftime("%Y-%m-%d")
+    s = s.strip()
+    try:
+        iso = s.replace("Z", "+00:00")
+        dt = datetime.datetime.fromisoformat(iso)
+        d = dt.date()
+    except Exception:
+        try:
+            from email.utils import parsedate_to_datetime
+            dt = parsedate_to_datetime(s)
+            d = dt.date()
+        except Exception:
+            m = re.search(r"(\d{4}).*?(\d{1,2}).*?(\d{1,2})", s)
+            if m:
+                y, mm, dd = int(m.group(1)), int(m.group(2)), int(m.group(3))
+                try: d = datetime.date(y, mm, dd)
+                except Exception: d = today
+            else:
+                d = today
+    if d > today: d = today
+    return d.strftime("%Y-%m-%d")
+
+EVENT_MAP = {
+    "LAUNCH":      [r"출시", r"론칭", r"발표", r"선보이", r"공개"],
+    "PARTNERSHIP": [r"제휴", r"파트너십", r"업무협약", r"\bMOU\b", r"맞손"],
+    "INVEST":      [r"투자", r"유치", r"라운드", r"시리즈 [ABCD]"],
+    "ORDER":       [r"수주", r"계약 체결", r"납품 계약", r"공급 계약", r"수의 계약"],
+    "CERT":        [r"인증", r"허가", r"승인", r"적합성 평가", r"CE ?인증", r"FDA ?승인"],
+    "REGUL":       [r"규제", r"가이드라인", r"행정예고", r"고시", r"지침", r"제정", r"개정"],
+}
+
+def _latest(path_glob: str):
+    files = sorted(glob.glob(path_glob))
+    return files[-1] if files else None
+
+def _pick_meta_path():
+    p1 = "outputs/debug/news_meta_latest.json"
+    if os.path.exists(p1):
+        return p1
+    return _latest("data/news_meta_*.json")
+
+def _detect_events_from_items(items: list) -> list:
+    rows = []
+    for it in items:
+        title = (it.get("title") or it.get("title_og") or "").strip()
+        body  = (it.get("body") or it.get("description") or it.get("description_og") or "").strip()
+        text  = f"{title}\n{body}"
+        
+        # 새로 추가한 to_date 함수를 사용하여 날짜를 정확하게 변환합니다.
+        date_raw = it.get("published_time") or it.get("pubDate_raw") or ""
+        date = to_date(date_raw)
+        url = it.get("url") or ""
+        
+        detected_types = []
+        for etype, pats in EVENT_MAP.items():
+            for pat in pats:
+                if re.search(pat, text, flags=re.IGNORECASE):
+                    detected_types.append(etype)
+                    break 
+        
+        if detected_types:
+            rows.append({
+                "date": date or "",
+                "types": ",".join(sorted(detected_types)),
+                "title": title[:300],
+                "url": url
+            })
+    return rows
+
+def _dedup_events(rows: list) -> list:
+    seen_titles, seen_urls, out = set(), set(), []
+    for r in rows:
+        title = r.get("title", "")
+        url = r.get("url", "")
+        
+        if not title or not url or title in seen_titles or url in seen_urls:
+            continue
+        seen_titles.add(title)
+        seen_urls.add(url)
+        out.append(r)
+    return out
+    
 def export_events(out_path="outputs/export/events.csv"):
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
     meta_path = _pick_meta_path()
@@ -283,5 +369,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
-    
