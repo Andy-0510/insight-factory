@@ -151,7 +151,7 @@ def z_like(vals, ma):
     z = []
     for v, m in zip(vals, ma):
         zv = (v - m) / ((m**0.5) + 1.0)
-        # 클리핑
+        # 과도 스파이크 억제
         z.append(max(-4.0, min(4.0, float(zv))))
     return z
 
@@ -201,30 +201,34 @@ def export_weak_signals(rows):
     final_path = "outputs/export/weak_signals.csv"
     tmp_path = os.path.join(os.path.dirname(final_path), "weak_signals_tmp.csv")
 
-    generic_stop = {"미국","유럽","산업","업계","공급","시장","관련","분야"}
+    # 약신호 전용 범주형 금칙(어휘집 정제 이후에도 안전망)
+    generic_stop = {"미국","유럽","산업","업계","공급","시장","관련","분야","글로벌","국내","해외","업체"}
 
+    # 1차 필터: '작지만 가파른' 급등 신호
     cand = []
     for r in rows:
         term = r["term"]
         if term in generic_stop:
             continue
-        if r["total"] <= 25 and r["cur"] >= 2 and r["prev"] <= 1 and r["diff"] >= 1 and float(r["z_like"]) > 1.2:
+        # 살짝 완화: total≤30, z>1.1, prev≤1, diff≥1
+        if r["total"] <= 30 and r["cur"] >= 2 and r["prev"] <= 1 and r["diff"] >= 1 and float(r["z_like"]) > 1.1:
             cand.append(r)
 
-    if len(cand) > 50:
-        cand = [r for r in cand if float(r["z_like"]) > 1.5 and r["total"] <= 20]
+    # 2단 컷: 후보가 많을 때만 더 조여서 품질 유지
+    if len(cand) > 40:
+        cand = [r for r in cand if float(r["z_like"]) > 1.4 and r["total"] <= 20]
 
+    # 정렬: 급등성(z), 현재강도(cur), 변화량(diff) 우선, 대형어는 하방(-total, -prev)
     cand.sort(key=lambda x: (x["z_like"], x["cur"], x["diff"], -x["total"], -x["prev"]), reverse=True)
 
+    # 출력 상한 50
     with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["term","cur","prev","diff","ma7","z_like","total"])
-        for r in cand[:80]:
+        for r in cand[:50]:
             w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(float(r["ma7"]),3), round(float(r["z_like"]),3), r["total"]])
-            
     os.replace(tmp_path, final_path)
     return cand
-
 
 ## ⭐️ --- 이벤트 추출/저장 ---
 EVENT_MAP = {
@@ -288,12 +292,13 @@ def export_events():
     rows = _dedup_events(rows)
     
     ## ⭐️ 5. 이벤트 저장도 원자성으로 변경
+    tmp_path = out_path + ".tmp"
     with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         w = csv.DictWriter(f, fieldnames=["date", "types", "title", "url"])
         w.writeheader()
-        w.writerows(rows)
-        
-    os.replace(tmp_path, final_path)
+        for r in rows:
+            w.writerow(r)
+    os.replace(tmp_path, out_path)
     print(f"[INFO] events.csv exported | rows={len(rows)}")
 
 
@@ -301,24 +306,25 @@ def export_events():
 def main():
     # 1. '신호 어휘집' 동적 생성
     signal_vocab = load_signal_vocabulary()
-    print(f"[INFO] 신호 어휘집 로드: {len(signal_vocab)}개 단어")
-    
-    ## ⭐️ 1. 어휘집 생성 후 저품질 토큰 여과
-    bad_generic = {"미국","유럽","산업","업계","공급","시장","관련","분야"}
-    RE_UNIT = re.compile(r"^\d+(hz|w|mah|nm|mm|cm|kg|g|gb)$", re.I)
-    RE_PERIOD = re.compile(r"^\d{1,4}(년|월|분기)$")
-    RE_COUNT = re.compile(r"^\d+(위|종|개국|명|가지)$")
-    RE_MIXED = re.compile(r"^\d+[a-z가-힣]+$", re.I)
+    print(f"[INFO] 신호 어휘집 로드 완료: {len(signal_vocab)}개 단어")
+
+    # ▼▼ 어휘집 1차 정제: 범주형 일반어·숫자/단위/기간 컷 ▼▼
+    _GENERIC_STOP = {"미국","유럽","산업","업계","공급","시장","관련","분야","글로벌","국내","해외","업체"}
+    _RE_UNIT   = re.compile(r"^\d+(hz|w|mah|nm|mm|cm|kg|g|gb|tb|mhz|ghz)$", re.I)
+    _RE_PERIOD = re.compile(r"^\d{1,4}(년|월|분기)$")
+    _RE_COUNT  = re.compile(r"^\d+(위|종|개국|명|가지)$")
+    _RE_MIXED  = re.compile(r"^\d+[a-z가-힣]+$", re.I)
 
     def _vocab_noise(x: str) -> bool:
-        if x in bad_generic: return True
+        if x in _GENERIC_STOP: return True
         if x.isdigit(): return True
-        if RE_UNIT.match(x) or RE_PERIOD.match(x) or RE_COUNT.match(x) or RE_MIXED.match(x): return True
+        if _RE_UNIT.match(x) or _RE_PERIOD.match(x) or _RE_COUNT.match(x) or _RE_MIXED.match(x):
+            return True
         return False
 
     signal_vocab = {t for t in signal_vocab if not _vocab_noise(t)}
     print(f"[INFO] 신호 어휘집 정제 후: {len(signal_vocab)}개 단어")
-
+    
     # 2. 데이터 로드 및 '신호 어휘집' 기반 필터링
     rows = load_stable_warehouse_data(days=30)
     filtered_rows = []
