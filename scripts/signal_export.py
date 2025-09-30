@@ -182,23 +182,28 @@ def export_trend_strength(rows):
 
     bad_generic = {"공급","산업","업계","시장","관련","분야"}
 
-    # 1) 세이프가드로 필터링
-    filtered = [r for r in rows if r["term"] not in bad_generic
-                          and (r["cur"] + r["prev"] > 0)
-                          and (r["total"] >= 2 or r["ma7"] > 0.2)]
+    # 세이프가드 + 최소 최근성
+    filtered = []
+    for r in rows:
+        term = r["term"]
+        if term in bad_generic:
+            continue
+        if r["cur"] < 1:  # 현재 노출 0이면 제외
+            continue
+        if r["diff"] < 0:  # 하락 항목은 제외
+            continue
+        filtered.append(r)
     
-
-    # 2) 정렬 후 상한
-    filtered.sort(key=lambda x: (x["z_like"], x["diff"], x["cur"]), reverse=True)
+    filtered.sort(key=lambda x: (x["z_like"], x["diff"], x["cur"], x["total"]/10), reverse=True)
     topk = filtered[:300]
     
     with open(tmp_path, "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["term", "cur", "prev", "diff", "ma7", "z_like", "total"])
+        w.writerow(["term","cur","prev","diff","ma7","z_like","total"])
         for r in topk:
             w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(r["ma7"],3), round(r["z_like"],3), r["total"]])
     os.replace(tmp_path, final_path)
-    
+
 
 ## ⭐️ 3. weak_signals 필터 조정
 def export_weak_signals(rows):
