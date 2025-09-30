@@ -1,6 +1,12 @@
 아이폰
 iPhone
+에어팟
+픽셀
+픽셀폴드
+서피스
 갤럭시
+갤럭시z폴드
+갤럭시z플립
 Galaxy
 맥북
 MacBook
@@ -9,6 +15,11 @@ iPad
 애플워치
 Apple Watch
 올레드
+WOLED
+W-OLED
+qd올레드
+QD OLED
+QD-OLED
 OLED
 마그니트
 Magnit
