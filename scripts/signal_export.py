@@ -183,7 +183,10 @@ def export_trend_strength(rows):
     bad_generic = {"공급","산업","업계","시장","관련","분야"}
 
     # 1) 세이프가드로 필터링
-    filtered = [r for r in rows if r["term"] not in bad_generic]
+    filtered = [r for r in rows if r["term"] not in bad_generic
+                          and (r["cur"] + r["prev"] > 0)
+                          and (r["total"] >= 2 or r["ma7"] > 0.2)]
+    
 
     # 2) 정렬 후 상한
     filtered.sort(key=lambda x: (x["z_like"], x["diff"], x["cur"]), reverse=True)
@@ -212,12 +215,12 @@ def export_weak_signals(rows):
         term = r["term"]
         if term in generic_stop:
             continue
-        # 살짝 완화: total≤30, z>1.1, prev≤1, diff≥1
-        if r["total"] <= 30 and r["cur"] >= 2 and r["prev"] <= 1 and r["diff"] >= 1 and float(r["z_like"]) > 1.1:
+        # 살짝 완화: total≤30, z>1..05, prev≤1, diff≥1
+        if r["total"] <= 30 and r["cur"] >= 2 and r["prev"] <= 1 and r["diff"] >= 1 and float(r["z_like"]) > 1.05:
             cand.append(r)
 
     # 2단 컷: 후보가 많을 때만 더 조여서 품질 유지
-    if len(cand) > 40:
+    if len(cand) > 50:
         cand = [r for r in cand if float(r["z_like"]) > 1.4 and r["total"] <= 20]
 
     # 정렬: 급등성(z), 현재강도(cur), 변화량(diff) 우선, 대형어는 하방(-total, -prev)
@@ -300,8 +303,7 @@ def export_events():
         for r in rows:
             w.writerow(r)
     os.replace(tmp_path, final_path)
-    print(f"[INFO] events.csv exported | rows={len(rows)}")
-    
+    print(f"[INFO] events.csv exported | rows={len(rows)}")    
 
 ## ⭐️ --- 메인 실행 로직 ---
 def main():
