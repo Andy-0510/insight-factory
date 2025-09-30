@@ -30,6 +30,13 @@ def save_json(path: str, obj: Any):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, ensure_ascii=False, indent=2)
 
+def _load_lines(p: str) -> set:
+    try:
+        with open(p, "r", encoding="utf-8") as f:
+            return {x.strip() for x in f if x.strip()}
+    except Exception:
+        return set()
+
 def clean_text(t: str) -> str:
     if not t:
         return ""
