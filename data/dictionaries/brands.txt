@@ -76,3 +76,53 @@ Pad
 메이트북
 MateBook
 ULED
+갤럭시
+갤럭시z폴드
+갤럭시z플립
+아이폰
+아이패드
+맥북
+아이맥
+애플워치
+에어팟
+픽셀
+픽셀폴드
+서피스
+메이트
+홍몽
+홍멍
+HarmonyOS
+MIUI
+올레드TV
+QLED TV
+QD-OLED TV
+Mini LED TV
+Micro LED TV
+사이니지
+비디오월
+게이밍모니터
+울트라와이드
+Vision Pro
+Meta Quest
+Quest 3
+Quest Pro
+Hololens
+Magic Leap
+폴더블
+롤러블
+슬라이더블
+듀얼스크린
+Hyperscreen
+Pivi Pro
+MBUX
+CarPlay
+Android Auto
+eMirror
+Cluster
+HUD
+AR-HUD
+RSE
+OLED 마더글래스
+증착기
+마스크 얼라이너
+스퍼터링 장비
