@@ -30,6 +30,13 @@ def save_json(path: str, obj: Any):
     with open(path, "w", encoding="utf-8") as f:
         json.dump(obj, f, ensure_ascii=False, indent=2)
 
+def _load_lines(p: str) -> set:
+    try:
+        with open(p, "r", encoding="utf-8") as f:
+            return {x.strip() for x in f if x.strip()}
+    except Exception:
+        return set()
+
 def clean_text(t: str) -> str:
     if not t:
         return ""
@@ -63,15 +70,15 @@ def to_kst_date_str(s: str) -> str:
     return d.strftime("%Y-%m-%d")
 
 # ========== 회사×토픽 매트릭스: ORG 잡음 제거 ==========
+# 패턴은 코드에 유지하되, 단어 목록은 config.json에서 관리 (유지보수성)
+
 ORG_BAD_PATTERNS = [
-    r"^\d{1,2}일$", r"^\d{4}$", r"^\d+(억원|조원|달러|원)$",
-    r"^[0-9,\.]+(달러|원)$", r"^\d{1,3}(천|만|억|조)"
+    r"^\d{1,4}(년|월|분기|일)$",
+    r"^\d+(hz|w|mah|nm|mm|cm|kg|g|인치|형|세대|위|종|개국|명|가지)$",
+    r"^\d+-\w+-\d+",
+    r"^\d{1,3}(천|만|억|조)?(원|달러|위안|엔)$",
+    r"^\d+$"
 ]
-ORG_STOP = {
-    "국내","대한민국","서울","경제자유구역","경제자유구역은","개선","경쟁력","거래일보다",
-    "기업","시장","브랜드","글로벌","전문","최대","지난해","최근","일자리","지역","생활","기술","디지털","스마트",
-    "tv","tv와","전자","디스플레이","11일","이라며","이라고"
-}
 
 def norm_org_token(t: str) -> str:
     t = (t or "").strip()
@@ -81,93 +88,113 @@ def norm_org_token(t: str) -> str:
         t = t[:-1]
     return t
 
-def is_bad_org_token(t: str) -> bool:
+def is_bad_org_token(t: str, org_stop_words: set) -> bool:
     if not t or len(t) < 2:
         return True
-    base = t.lower()
-    if base in ORG_STOP:
+    
+    s_lower = t.lower()
+    if s_lower in org_stop_words:
         return True
-    if re.fullmatch(r"^[0-9\W_]+$", base):
+    
+    if re.fullmatch(r"^[0-9\W_]+$", s_lower):
         return True
+        
     for pat in ORG_BAD_PATTERNS:
-        if re.fullmatch(pat, t):
+        if re.fullmatch(pat, s_lower, re.I):
             return True
     return False
 
-def extract_orgs(text: str) -> List[str]:
+def extract_orgs(text: str, alias_map: Dict[str, str], whitelist: set, org_stop_words: set) -> List[str]:
     if not text:
         return []
+    
     toks = re.findall(r"[가-힣A-Za-z0-9\-\+\.]{2,}", text)
-    toks = [norm_org_token(t) for t in toks if t and len(t.strip()) >= 2]
-
-    # 화이트리스트(있으면 우선)
-    def _load_lines(p):
-        try:
-            with open(p, encoding="utf-8") as f:
-                return [x.strip() for x in f if x.strip()]
-        except Exception:
-            return []
-    ENT_ORG = set(_load_lines("data/dictionaries/entities_org.txt"))
-    BRANDS  = set(_load_lines("data/dictionaries/brands.txt"))
+    
+    normalized_toks = []
+    for t in toks:
+        # 별칭을 먼저 적용하여 'LG디스플레' -> 'LG디스플레이' 등으로 표준화
+        normalized = alias_map.get(t, t)
+        normalized = alias_map.get(normalized.lower(), normalized)
+        normalized_toks.append(normalized)
 
     cand = []
-    for t in toks:
-        if is_bad_org_token(t):
+    for t in normalized_toks:
+        # 화이트리스트에 있으면 노이즈 필터를 통과
+        if t in whitelist:
+            cand.append(t)
             continue
-        if re.match(r"^[가-힣A-Za-z]+[0-9]{1,3}[A-Za-z]?$", t):  # 모델형 제외
+        # 화이트리스트에 없으면 노이즈 필터 적용
+        if is_bad_org_token(t, org_stop_words):
             continue
         cand.append(t)
 
     cnt = Counter(cand)
-    out = []
-    for w, c in cnt.most_common(50):
-        if w in ENT_ORG or w in BRANDS:
-            out.append(w)
-        elif c >= 2 and len(w) >= 2:
-            out.append(w)
-        if len(out) >= 15:
-            break
-    # 최종 보호막
-    out = [o for o in out if not is_bad_org_token(o)]
-    return out
+    # 화이트리스트 외 단어는 2번 이상 등장해야 후보로 인정
+    out = [w for w, c in cnt.most_common(50) if c >= 2 and w not in whitelist]
+    
+    # 최종 결과: (문서 내 화이트리스트 단어) + (자주 등장한 비-노이즈 단어)
+    return list(whitelist.intersection(set(normalized_toks))) + out
 
-def load_topic_labels(topics_obj: dict, topn: int = 5) -> list[dict]:
+def load_topic_labels(topics_obj: dict, topn: int) -> list[dict]:
     labels = []
     for t in (topics_obj.get("topics") or []):
         words = [w.get("word","") for w in (t.get("top_words") or []) if w.get("word")][:topn]
         labels.append({"topic_id": int(t.get("topic_id", 0)), "words": words})
     return labels
-#
-def export_company_topic_matrix(meta_items: List[Dict[str,Any]], topic_labels: List[Dict[str,Any]]) -> None:
-    os.makedirs("outputs/export", exist_ok=True)
-    topic_wordsets = []
-    for tl in topic_labels:
-        ws = set([w for w in tl["words"] if w])
-        topic_wordsets.append((tl["topic_id"], ws))
 
+def export_company_topic_matrix(meta_items: List[Dict[str,Any]], topics_obj: dict, cfg: dict) -> None:
+    os.makedirs("outputs/export", exist_ok=True)
+    
+    # --- 사전 및 설정 로드 ---
+    alias_cfg = cfg.get("alias", {})
+    alias_product = load_json("data/dictionaries/product_alias.json", {})
+    full_alias_map = dict(alias_cfg)
+    for can, variants in alias_product.items():
+        for v in variants:
+            full_alias_map[v] = can
+            full_alias_map[v.lower()] = can
+            
+    ent_org = set(_load_lines("data/dictionaries/entities_org.txt"))
+    brands  = set(_load_lines("data/dictionaries/brands.txt"))
+    whitelist = ent_org | brands
+    org_stop_words = set(cfg.get("org_filter_stop_words", []))
+
+    # --- 토픽 데이터 준비 ---
+    topn_words = int(cfg.get("matrix_topic_top_n_words", 30))
+    topic_labels = load_topic_labels(topics_obj, topn=topn_words)
+    topic_wordsets = {tl["topic_id"]: {w.lower() for w in tl.get("words", [])} for tl in topic_labels}
+
+    # --- 매트릭스 생성 ---
     matrix = defaultdict(lambda: defaultdict(int))
+    
     for it in meta_items:
         text = (it.get("body") or it.get("description") or "") or ""
         if not text:
             continue
-        orgs = [o for o in extract_orgs(text) if not is_bad_org_token(o)]
-        low = text.lower()
-        for org in orgs:
-            for tid, ws in topic_wordsets:
-                hit = 0
-                for w in ws:
-                    if w and (w.lower() in low):
-                        hit += 1
+        
+        orgs = extract_orgs(text, full_alias_map, whitelist, org_stop_words)
+        low_text = text.lower()
+        
+        for org in set(orgs):
+            for tid, ws in topic_wordsets.items():
+                hit = sum(1 for w in ws if w and w in low_text)
                 if hit > 0:
                     matrix[org][tid] += hit
 
-    all_tids = sorted(set([tid for _, d in matrix.items() for tid in d.keys()]))
+    # --- CSV 파일 작성 ---
+    all_tids = sorted(topic_wordsets.keys())
+    
     with open("outputs/export/company_topic_matrix.csv", "w", encoding="utf-8", newline="") as f:
         w = csv.writer(f)
         w.writerow(["org"] + [f"topic_{tid}" for tid in all_tids])
-        for org, row in sorted(matrix.items(), key=lambda x: x[0].lower()):
+        
+        for org in sorted(matrix.keys()):
+            # 최종 단계에서 한번 더 노이즈 필터링
+            if is_bad_org_token(org, org_stop_words):
+                continue
+            row = matrix[org]
             w.writerow([org] + [row.get(tid, 0) for tid in all_tids])
-
+            
 # ========== 스코어링/증거 ==========
 def clamp01(x): 
     return max(0.0, min(1.0, float(x)))
@@ -460,9 +487,11 @@ def load_context_for_prompt() -> Dict[str, Any]:
         with open(events_path, "r", encoding="utf-8") as f:
             rdr = csv.DictReader(f)
             for r in rdr:
-                et = r.get("type")
-                if et:
-                    evt_summary[et] += 1
+                # 'types'와 'type'을 모두 안전하게 처리
+                types_str = r.get("types") or r.get("type") or ""
+                if types_str:
+                    for etype in types_str.split(','):
+                        evt_summary[etype.strip()] += 1
     except Exception:
         pass
     events_simple = dict(evt_summary)
@@ -514,14 +543,16 @@ def load_trend_strength_csv(path: str) -> List[Dict[str,Any]]:
         with open(path, "r", encoding="utf-8") as f:
             rdr = csv.DictReader(f)
             for r in rdr:
-                r["term"] = r.get("term","")
-                r["cur"] = int(r.get("cur", 0) or 0)
                 try:
+                    r["cur"] = int(r.get("cur", 0) or 0)
+                    r["prev"] = int(r.get("prev", 0) or 0)
+                    r["diff"] = int(r.get("diff", 0) or 0)
+                    r["total"] = int(r.get("total", 0) or 0)
+                    r["ma7"] = float(r.get("ma7", 0.0) or 0.0)
                     r["z_like"] = float(r.get("z_like", 0.0) or 0.0)
-                except Exception:
-                    r["z_like"] = 0.0
-                r["total"] = int(r.get("total", 0) or 0)
-                rows.append(r)
+                    rows.append(r)
+                except (ValueError, TypeError):
+                    continue
     except Exception:
         pass
     return rows
@@ -657,9 +688,12 @@ def main():
     trend_rows = load_trend_strength_csv("outputs/export/trend_strength.csv")
     events_rows = load_events_csv("outputs/export/events.csv")
 
-    topic_labels = load_topic_labels(topics_obj, topn=5)
+    # 로그 보강
+    print(f"[INFO] Loaded context data | trend_rows={len(trend_rows)}, events_rows={len(events_rows)}")
+
+    topic_labels = load_topic_labels(topics_obj, topn=5) 
     try:
-        export_company_topic_matrix(meta_items, topic_labels)
+        export_company_topic_matrix(meta_items, topics_obj, CFG)
         print("[INFO] company_topic_matrix.csv exported")
     except Exception as e:
         print("[WARN] company_topic_matrix export failed:", repr(e))

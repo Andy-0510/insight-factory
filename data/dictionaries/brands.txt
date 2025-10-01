@@ -1,6 +1,13 @@
 아이폰
 iPhone
+에어팟
+픽셀
+픽셀폴드
+서피스
+Surface
 갤럭시
+갤럭시z폴드
+갤럭시z플립
 Galaxy
 맥북
 MacBook
@@ -10,6 +17,11 @@ iPad
 Apple Watch
 올레드
 OLED
+WOLED
+W-OLED
+qd올레드
+QD OLED
+QD-OLED
 마그니트
 Magnit
 사이니지
@@ -24,8 +36,6 @@ Z폴드
 Galaxy Z Fold
 Z플립
 Galaxy Z Flip
-서피스
-Surface
 씽크패드
 ThinkPad
 비보북
@@ -65,3 +75,120 @@ Pad
 메이트북
 MateBook
 ULED
+홍몽
+홍멍
+HarmonyOS
+MIUI
+올레드TV
+QLED TV
+QD-OLED TV
+Mini LED TV
+Micro LED TV
+비디오월
+게이밍모니터
+울트라와이드
+Vision Pro
+Meta Quest
+Quest 3
+Quest Pro
+Hololens
+Magic Leap
+폴더블
+롤러블
+슬라이더블
+듀얼스크린
+Hyperscreen
+Pivi Pro
+MBUX
+CarPlay
+Android Auto
+eMirror
+Cluster
+HUD
+AR-HUD
+RSE
+OLED 마더글래스
+증착기
+마스크 얼라이너
+스퍼터링 장비
+SamsungDisplay
+삼성디스플레이
+LGDisplay
+LG디스플레이
+BOE
+샤프
+Sharp
+Sony
+소니
+Apple
+애플
+TCL
+하이센스
+Hisense
+필립스
+Philips
+델
+Dell
+HP
+레노버
+Lenovo
+샤오미
+Xiaomi
+화웨이
+Huawei
+구글
+Google
+마이크로소프트
+Microsoft
+퀄컴
+Qualcomm
+인텔
+Intel
+엔비디아
+NVIDIA
+AMD
+TSMC
+지멘스
+Siemens
+보쉬
+Bosch
+에릭슨
+Ericsson
+노키아
+Nokia
+시스코
+Cisco
+파나소닉
+Panasonic
+LG전자
+삼성전자
+LG화학
+LGChem
+SK온
+MicroLED
+QLED
+MiniLED
+E Ink
+AMOLED
+플렉시블디스플레이
+FlexibleDisplay
+폴더블디스플레이
+FoldableDisplay
+투명디스플레이
+TransparentDisplay
+롤러블디스플레이
+RollableDisplay
+마이크로OLED
+MicroOLED
+ARVR디스플레이
+ARVRDisplay
+8K
+HDR
+터치ID
+TouchID
+언더디스플레이카메라
+UnderDisplayCamera
+OLED온글래스
+OLEDOnGlass
+퀀텀닷
+QuantumDot
