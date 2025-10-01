@@ -1,9 +1,9 @@
 {
   "dry_run": true,
-  "use_pro": false,
+  "use_pro": true,
   "queries": [
     "OLED 패널", "QD-OLED", "MicroLED", "폴더블",
-    "차량용 디스플레이", "AR VR 디스플레이", "LTPO",
+    "차량용 디스플레이", "AR", "LTPO",
     "삼성디스플레이", "LG디스플레이", "애플", "삼성", "LG",
     "OLED", "LCD"
   ],
@@ -45,10 +45,6 @@
   "domain_hints": [
     "디스플레이 제조","공정 자동화","AR/VR","OLED","MicroLED","MiniLED","LTPO","LTPS","QD","수율",
     "폴더블","롤러블","스트레처블","자동차용 디스플레이","게이밍","비전프로","FMM","WOLED","QD-OLED",
-    "베젤리스", "휴머노이드", "Encapsulation", "UDC", "CoE", "Tandem OLED", "Bottom Emission", "Top Emission",
-    "RGB", "pentile", "펜타일", "MLA", "Micro Lens Array", "증착", "8.6세대", "8.6G", "잉크젯 프린팅",
-    "응답속도", "고주사율", "저반사", "Anti-Glare", "Anti-Reflection", "Pillar to Pillar", "Curved Cluster",
-    "AOI", "머신비전", "디지털트윈", "MES", "SPC", "수율 향상", "결함 검사",
     "TFE","MLA","유리기판","패널","ITO","TADF","PHOLED","TFT","IGZO","Oxide"
   ],
 
@@ -61,8 +57,7 @@
     "qd oled":"QD-OLED","qdoled":"QD-OLED","QD OLED":"QD-OLED",
     "올레도스": "OLEDos",
     "레도스": "LEDos",
-    "oxide tft":"Oxide","산화물 tft":"Oxide",
-    "소비자연맹지": "소비자"
+    "oxide tft":"Oxide","산화물 tft":"Oxide"
   },
 
   "weights": {
@@ -142,8 +137,6 @@
   "pro_topic_min_size": 5,
   "pro_nr_topics": 10,
 
-  "pro_topic_min_size": 5,
-  "pro_nr_topics": 10,
   "pro_topic_core_keywords": [
     "디스플레이", "패널", "oled", "lcd", "led", "화면", "화질", "기판", "백플레인", "수율",
     "삼성", "lg", "애플", "아이폰", "갤럭시", "폴더블", "롤러블", "스트레처블", 
@@ -160,14 +153,6 @@
     "risk_penalty": 1.0
   },
 
-  "org_filter_stop_words": [
-    "국내","대한민국","서울","경제자유구역","개선","경쟁력","거래일보다",
-    "기업","시장","브랜드","글로벌","전문","최대","지난해","최근","일자리","지역","생활","기술","디지털","스마트",
-    "tv","tv와","전자","디스플레이","11일","이라며","이라고",
-    "1위", "2분기", "3분기", "4분기", "ai", "ar", "vr", "xr"
-  ],
-
-  "matrix_topic_top_n_words": 30,
 
   "timezone": "Asia/Seoul"
 }
