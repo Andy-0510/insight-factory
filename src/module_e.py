@@ -478,16 +478,17 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
     import pandas as pd
     import glob
 
-    # --- 새로운 매트릭스 섹션을 생성하는 내부 함수 (안정성 강화 버전) ---
+    # --- 새로운 매트릭스 섹션을 생성하는 내부 함수 (인코딩 문제 해결 버전) ---
     def _generate_matrix_section(topics_obj):
         try:
             csv_path = "outputs/export/company_topic_matrix_wide.csv"
             if not os.path.exists(csv_path):
                 return ""
 
-            df = pd.read_csv(csv_path)
+            # --- ▼▼▼ 바로 이 부분에 encoding='utf-8-sig' 옵션을 추가했습니다 ▼▼▼ ---
+            df = pd.read_csv(csv_path, encoding='utf-8-sig')
             
-            # --- ▼▼▼ 안전장치 1: 데이터프레임이 비었거나, 토픽 컬럼이 없는 경우 즉시 종료 ▼▼▼ ---
+            # --- 안전장치 1: 데이터프레임이 비었거나, 토픽 컬럼이 없는 경우 즉시 종료 ---
             topic_cols = [col for col in df.columns if col.startswith('topic_')]
             if df.empty or not topic_cols:
                 return "\n## 기업×토픽 집중도 매트릭스 (주간)\n\n- (분석할 유효 데이터가 없습니다.)\n"
@@ -495,22 +496,22 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
             # --- 키 하이라이트 자동 생성 ---
             df_numeric = df.copy()
             for col in topic_cols:
-                df_numeric[col] = df[col].astype(str).str.split(' ').str[0].replace('', '0').astype(float)
+                # fillna('')를 추가하여 빈 값(NaN)으로 인한 오류 방지
+                df_numeric[col] = df[col].fillna('').astype(str).str.split(' ').str[0].replace('', '0').astype(float)
 
-            # --- ▼▼▼ 안전장치 2: 각 분석 단계별 데이터 유효성 검사 추가 ▼▼▼ ---
+            # --- 안전장치 2: 각 분석 단계별 데이터 유효성 검사 추가 ---
             
             # 1. 가장 경쟁이 치열한 토픽 찾기
             competitive_scores = df_numeric[topic_cols].gt(0).sum()
-            top_competitive_topic_id = competitive_scores.idxmax() if not competitive_scores.empty else "N/A"
+            top_competitive_topic_id = competitive_scores.idxmax() if not competitive_scores.empty and competitive_scores.max() > 0 else "N/A"
 
             # 2. 가장 집중도가 높은 기업 찾기
             df_numeric['total_score'] = df_numeric[topic_cols].sum(axis=1)
-            top_focused_org = df_numeric.loc[df_numeric['total_score'].idxmax()]['org'] if not df_numeric['total_score'].empty else "N/A"
+            top_focused_org = df_numeric.loc[df_numeric['total_score'].idxmax()]['org'] if not df_numeric['total_score'].empty and df_numeric['total_score'].max() > 0 else "N/A"
 
             # 3. 가장 높은 단일 점수를 기록한 토픽-기업 조합 찾기
             max_score = 0
             rising_star_info = "N/A"
-            # 전체 점수 중 최대값이 0보다 클 때만 탐색
             if df_numeric[topic_cols].max().max() > 0:
                 for col in topic_cols:
                     if df_numeric[col].max() > max_score:
@@ -535,8 +536,8 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
             return "\n".join(section_lines)
 
         except Exception as e:
-            # 예상치 못한 다른 오류가 발생하더라도, 상세 메시지를 포함하여 보고서는 정상 생성
             return f"\n## 기업×토픽 집중도 매트릭스 (주간)\n\n- (데이터 처리 중 예외 오류가 발생했습니다: {e})\n"
+
 
     # --- ✨✨ 새로운 시각화 섹션 생성 함수 (신규 추가) ✨✨ ---
     def _generate_visual_analysis_section(fig_dir="fig"):
