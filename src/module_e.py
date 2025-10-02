@@ -473,7 +473,111 @@ def _truncate(s, n=80):
     s = (s or "").strip().replace("\n", " ")
     return s if len(s) <= n else s[:n-1] + "…"
 
+
 def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="outputs/report.md"):
+    import pandas as pd
+    import glob
+
+    # --- 새로운 매트릭스 섹션을 생성하는 내부 함수 (안정성 강화 버전) ---
+    def _generate_matrix_section(topics_obj):
+        try:
+            csv_path = "outputs/export/company_topic_matrix_wide.csv"
+            if not os.path.exists(csv_path):
+                return ""
+
+            df = pd.read_csv(csv_path)
+            
+            # --- ▼▼▼ 안전장치 1: 데이터프레임이 비었거나, 토픽 컬럼이 없는 경우 즉시 종료 ▼▼▼ ---
+            topic_cols = [col for col in df.columns if col.startswith('topic_')]
+            if df.empty or not topic_cols:
+                return "\n## 기업×토픽 집중도 매트릭스 (주간)\n\n- (분석할 유효 데이터가 없습니다.)\n"
+
+            # --- 키 하이라이트 자동 생성 ---
+            df_numeric = df.copy()
+            for col in topic_cols:
+                df_numeric[col] = df[col].astype(str).str.split(' ').str[0].replace('', '0').astype(float)
+
+            # --- ▼▼▼ 안전장치 2: 각 분석 단계별 데이터 유효성 검사 추가 ▼▼▼ ---
+            
+            # 1. 가장 경쟁이 치열한 토픽 찾기
+            competitive_scores = df_numeric[topic_cols].gt(0).sum()
+            top_competitive_topic_id = competitive_scores.idxmax() if not competitive_scores.empty else "N/A"
+
+            # 2. 가장 집중도가 높은 기업 찾기
+            df_numeric['total_score'] = df_numeric[topic_cols].sum(axis=1)
+            top_focused_org = df_numeric.loc[df_numeric['total_score'].idxmax()]['org'] if not df_numeric['total_score'].empty else "N/A"
+
+            # 3. 가장 높은 단일 점수를 기록한 토픽-기업 조합 찾기
+            max_score = 0
+            rising_star_info = "N/A"
+            # 전체 점수 중 최대값이 0보다 클 때만 탐색
+            if df_numeric[topic_cols].max().max() > 0:
+                for col in topic_cols:
+                    if df_numeric[col].max() > max_score:
+                        max_score = df_numeric[col].max()
+                        org_name = df_numeric.loc[df_numeric[col].idxmax()]['org']
+                        rising_star_info = f"{org_name} @ {col}"
+
+            topic_map = {f"topic_{t.get('topic_id')}": ", ".join([w.get('word', '') for w in t.get('top_words', [])[:2]]) for t in topics_obj.get('topics', [])}
+
+            # --- 마크다운 텍스트 생성 ---
+            section_lines = ["\n## 기업×토픽 집중도 매트릭스 (주간)\n"]
+            section_lines.append("**핵심 요약:**\n")
+            section_lines.append(f"- **가장 경쟁이 치열한 토픽:** **{topic_map.get(top_competitive_topic_id, top_competitive_topic_id)}** (가장 많은 기업들이 주목)\n")
+            section_lines.append(f"- **가장 집중도가 높은 기업:** **{top_focused_org}** (다양한 토픽에 걸쳐 높은 관련성)\n")
+            section_lines.append(f"- **주목할 만한 조합:** **{rising_star_info}** (가장 높은 단일 연관 점수 기록)\n")
+            
+            section_lines.append("각 기업별 상위 8개 토픽의 연관 점수와 해당 토픽 내에서의 점유율(%)을 나타냅니다.\n")
+            section_lines.append(df.to_markdown(index=False))
+            section_lines.append("\n**코멘트 및 액션 힌트:**\n")
+            section_lines.append(f"> 특정 토픽에서 높은 점유율을 보이는 기업은 해당 분야의 '주도자(Leader)'일 가능성이 높습니다. 반면, 특정 기업이 소수의 토픽에 높은 점수를 집중하고 있다면, 이는 해당 기업의 '핵심 전략 분야'를 시사합니다. 경쟁사 및 파트너사의 집중 분야를 파악하여 우리의 전략을 점검해볼 수 있습니다.\n")
+
+            return "\n".join(section_lines)
+
+        except Exception as e:
+            # 예상치 못한 다른 오류가 발생하더라도, 상세 메시지를 포함하여 보고서는 정상 생성
+            return f"\n## 기업×토픽 집중도 매트릭스 (주간)\n\n- (데이터 처리 중 예외 오류가 발생했습니다: {e})\n"
+
+    # --- ✨✨ 새로운 시각화 섹션 생성 함수 (신규 추가) ✨✨ ---
+    def _generate_visual_analysis_section(fig_dir="fig"):
+        section_lines = ["\n## 기업×토픽 시각적 분석\n"]
+        has_content = False
+
+        # 1. 히트맵 이미지 추가
+        heatmap_path = f"outputs/{fig_dir}/matrix_heatmap.png"
+        if os.path.exists(heatmap_path):
+            section_lines.append("### 전체 시장 구도 (Heatmap)\n")
+            section_lines.append(f"![Heatmap]({fig_dir}/matrix_heatmap.png)\n")
+            section_lines.append("> 전체 기업과 토픽 간의 관계를 한눈에 보여줍니다. 색이 진할수록 연관성이 높습니다.\n")
+            has_content = True
+
+        # 2. 토픽 점유율 파이차트 추가
+        share_images = sorted(glob.glob(f"outputs/{fig_dir}/topic_share_*.png"))
+        if share_images:
+            section_lines.append("### 주요 토픽별 경쟁 구도 (Pie Charts)\n")
+            section_lines.append("> 가장 뜨거운 주제를 두고 어떤 기업들이 경쟁하는지 점유율을 보여줍니다.\n")
+            for img_path in share_images:
+                img_name = os.path.basename(img_path)
+                section_lines.append(f"![Topic Share]({fig_dir}/{img_name})")
+            section_lines.append("\n")
+            has_content = True
+
+        # 3. 기업 집중도 바차트 추가
+        focus_images = sorted(glob.glob(f"outputs/{fig_dir}/company_focus_*.png"))
+        if focus_images:
+            section_lines.append("### 주요 기업별 전략 분석 (Bar Charts)\n")
+            section_lines.append("> 시장을 주도하는 주요 기업들이 어떤 토픽에 집중하고 있는지 보여줍니다.\n")
+            for img_path in focus_images:
+                img_name = os.path.basename(img_path)
+                section_lines.append(f"![Company Focus]({fig_dir}/{img_name})")
+            section_lines.append("\n")
+            has_content = True
+
+        if not has_content:
+            return "" # 생성된 이미지가 없으면 섹션 자체를 추가하지 않음
+        
+        return "\n".join(section_lines)
+
     klist = keywords.get("keywords", [])[:15]
     tlist = topics.get("topics", [])
     daily = ts.get("daily", [])
@@ -482,11 +586,13 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
     total_cnt = sum(int(x.get("count", 0)) for x in daily)
     date_range = f"{daily[0].get('date','?')} ~ {daily[-1].get('date','?')}" if n_days > 0 else "-"
     today = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+    
     lines = []
     lines.append(f"# Weekly/New Biz Report ({today})\n")
     lines.append("## Executive Summary\n")
     lines.append("- 이번 기간 핵심 토픽과 키워드, 주요 시사점을 요약합니다.\n")
     if summary: lines.append(summary + "\n")
+    
     lines.append("## Key Metrics\n")
     num_docs = keywords.get("stats", {}).get("num_docs", "N/A")
     num_docs_disp = _fmt_int(num_docs) if isinstance(num_docs, (int, float)) or str(num_docs).isdigit() else str(num_docs)
@@ -496,6 +602,7 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
     lines.append(f"- 키워드 수(상위): {len(klist)}")
     lines.append(f"- 토픽 수: {len(tlist)}")
     lines.append(f"- 시계열 데이터 일자 수: {n_days}\n")
+    
     lines.append("## Top Keywords\n")
     lines.append(f"![Word Cloud]({fig_dir}/wordcloud.png)\n")
     if klist:
@@ -509,13 +616,13 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
         lines.append("- (데이터 없음)")
     lines.append(f"\n![Top Keywords]({fig_dir}/top_keywords.png)\n")
     lines.append(f"![Keyword Network]({fig_dir}/keyword_network.png)\n")
+    
     lines.append("## Topics\n")
     if tlist:
         for t in tlist:
             tid = t.get("topic_id")
             top_words = [w.get("word", "") for w in t.get("top_words", []) if w.get("word")]
             head = (t.get("topic_name") or ", ".join(top_words[:3]) or f"Topic #{tid}")
-            # 대표 단어 3~6개 병기
             words_preview = ", ".join(top_words[:6])
             lines.append(f"- {head} (#{tid})")
             if words_preview:
@@ -526,12 +633,19 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
     else:
         lines.append("- (데이터 없음)")
     lines.append(f"\n![Topics]({fig_dir}/topics.png)\n")
-    lines.append("## Trend\n")
-    lines.append("- 최근 14~30일 기사 수 추세와 7일 이동평균선을 제공합니다.")
+
+    # --- ✨ 새로운 매트릭스 섹션 추가 ---
+    lines.append(_generate_matrix_section(topics))
+    lines.append(_generate_visual_analysis_section(fig_dir))
+    
+    lines.append("\n## Trend\n")
+    lines.append("- 최근 기사 수 추세와 7일 이동평균선을 제공합니다.")
     lines.append(f"\n![Timeseries]({fig_dir}/timeseries.png)\n")
+    
     lines.append("## Insights\n")
     if summary: lines.append(summary + "\n")
     else: lines.append("- (요약 없음)\n")
+    
     lines.append("## Opportunities (Top 5)\n")
     ideas_all = (opps.get("ideas", []) or [])
     if ideas_all:
@@ -553,6 +667,7 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
             lines.append(f"| {idea} | {tgt} | {vp} | {sc} |")
     else:
         lines.append("- (아이디어 없음)")
+        
     lines.append("\n## Appendix\n")
     lines.append("- 데이터: keywords.json, topics.json, trend_timeseries.json, trend_insights.json, biz_opportunities.json")
     Path(out_md).parent.mkdir(parents=True, exist_ok=True)

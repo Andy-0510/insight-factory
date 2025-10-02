@@ -110,6 +110,7 @@ def build_steps():
         ("export",   [PY, "-m", "scripts.signal_export"]),
         ("d",        [PY, "-m", "src.module_d"]),
         ("check_d",  [PY, "-m", "src.check_d"]),
+        ("gen_visual",        [PY, "-m", "scripts.generate_visuals"]),
         ("preflight",[PY, "-m", "scripts.preflight"]),
         ("e",        [PY, "-m", "src.module_e"]),
         ("check_e",  [PY, "-m", "src.check_e"]),
