@@ -169,6 +169,7 @@ MicroLED
 QLED
 MiniLED
 E Ink
+E-Ink
 AMOLED
 플렉시블디스플레이
 FlexibleDisplay
@@ -182,6 +183,7 @@ RollableDisplay
 MicroOLED
 ARVR디스플레이
 ARVRDisplay
+4K
 8K
 HDR
 터치ID

@@ -1,6 +1,6 @@
 {
   "dry_run": true,
-  "use_pro": true,
+  "use_pro": false,
   "queries": [
     "OLED 패널", "QD-OLED", "MicroLED", "폴더블",
     "차량용 디스플레이", "AR", "LTPO",
@@ -57,6 +57,10 @@
     "qd oled":"QD-OLED","qdoled":"QD-OLED","QD OLED":"QD-OLED",
     "올레도스": "OLEDos",
     "레도스": "LEDos",
+    "samsung": "삼성전자", "samsung electronics": "삼성전자",
+    "lg": "LG전자", "lg elec": "LG전자",
+    "apple": "애플",
+    "meta": "메타", "facebook": "메타",
     "oxide tft":"Oxide","산화물 tft":"Oxide"
   },
 

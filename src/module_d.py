@@ -7,6 +7,8 @@ import glob
 import unicodedata
 import datetime
 import time
+import pandas as pd
+import numpy as np
 from typing import List, Dict, Any, Tuple, Optional
 from collections import defaultdict, Counter
 from src.config import load_config, llm_config
@@ -142,58 +144,124 @@ def load_topic_labels(topics_obj: dict, topn: int) -> list[dict]:
         labels.append({"topic_id": int(t.get("topic_id", 0)), "words": words})
     return labels
 
-def export_company_topic_matrix(meta_items: List[Dict[str,Any]], topics_obj: dict, cfg: dict) -> None:
+def export_company_topic_matrix(meta_items: List[Dict[str, Any]], topics_obj: dict, cfg: dict) -> None:
+    print("[INFO] Generating Company-Topic Matrix with advanced filtering & scoring...")
     os.makedirs("outputs/export", exist_ok=True)
-    
-    # --- 사전 및 설정 로드 ---
-    alias_cfg = cfg.get("alias", {})
-    alias_product = load_json("data/dictionaries/product_alias.json", {})
-    full_alias_map = dict(alias_cfg)
-    for can, variants in alias_product.items():
-        for v in variants:
-            full_alias_map[v] = can
-            full_alias_map[v.lower()] = can
-            
-    ent_org = set(_load_lines("data/dictionaries/entities_org.txt"))
-    brands  = set(_load_lines("data/dictionaries/brands.txt"))
-    whitelist = ent_org | brands
-    org_stop_words = set(cfg.get("org_filter_stop_words", []))
 
-    # --- 토픽 데이터 준비 ---
-    topn_words = int(cfg.get("matrix_topic_top_n_words", 30))
-    topic_labels = load_topic_labels(topics_obj, topn=topn_words)
-    topic_wordsets = {tl["topic_id"]: {w.lower() for w in tl.get("words", [])} for tl in topic_labels}
-
-    # --- 매트릭스 생성 ---
-    matrix = defaultdict(lambda: defaultdict(int))
+    # --- 1. 사전 및 설정 로드 (개선됨) ---
+    # 별칭, 브랜드→회사 매핑, 제외할 엔티티, 화이트리스트 로드
+    alias_map = cfg.get("alias", {})
+    brand_to_company = load_json("data/dictionaries/brand_to_company.json", {})
+    topic_like_entities = _load_lines("data/dictionaries/topic_like_entities.txt")
     
+    ent_org = _load_lines("data/dictionaries/entities_org.txt")
+    brands = _load_lines("data/dictionaries/brands.txt")
+    # 최종 화이트리스트: 순수 회사/기관명만 남김
+    whitelist = {alias_map.get(w.lower(), w) for w in ent_org} - set(topic_like_entities)
+
+    # --- 2. 최근성 시그널 로드 (하이브리드 점수용) ---
+    trend_signals = {}
+    try:
+        trends_df = pd.read_csv("outputs/export/trend_strength.csv")
+        for _, row in trends_df.iterrows():
+            trend_signals[row['term']] = {
+                'z_like': row.get('z_like', 0.0),
+                'diff': row.get('diff', 0)
+            }
+        print(f"[DEBUG] Loaded {len(trend_signals)} trend signals for hybrid scoring.")
+    except Exception:
+        print("[WARN] trend_strength.csv not found. Skipping hybrid score calculation.")
+
+    # --- 3. 문서별 org 및 토픽 점수 계산 (개선됨) ---
+    topic_wordsets = {tl["topic_id"]: set(tl.get("words", [])) for tl in load_topic_labels(topics_obj, 30)}
+    doc_results = []
+
     for it in meta_items:
-        text = (it.get("body") or it.get("description") or "") or ""
-        if not text:
-            continue
-        
-        orgs = extract_orgs(text, full_alias_map, whitelist, org_stop_words)
-        low_text = text.lower()
-        
-        for org in set(orgs):
-            for tid, ws in topic_wordsets.items():
-                hit = sum(1 for w in ws if w and w in low_text)
-                if hit > 0:
-                    matrix[org][tid] += hit
+        text = it.get("body") or it.get("description") or ""
+        if not text: continue
 
-    # --- CSV 파일 작성 ---
-    all_tids = sorted(topic_wordsets.keys())
-    
-    with open("outputs/export/company_topic_matrix.csv", "w", encoding="utf-8", newline="") as f:
-        w = csv.writer(f)
-        w.writerow(["org"] + [f"topic_{tid}" for tid in all_tids])
+        raw_toks = re.findall(r"[가-힣A-Za-z0-9\-\+\.]{2,}", text)
+        mentioned_orgs = set()
+        for t in raw_toks:
+            norm_t = alias_map.get(t.lower(), t)
+            # 브랜드 -> 회사로 매핑
+            mapped_org = brand_to_company.get(norm_t, norm_t)
+            # 최종 org가 화이트리스트에 있고, 토픽성 엔티티가 아니면 추가
+            if mapped_org in whitelist and mapped_org not in topic_like_entities:
+                mentioned_orgs.add(mapped_org)
         
-        for org in sorted(matrix.keys()):
-            # 최종 단계에서 한번 더 노이즈 필터링
-            if is_bad_org_token(org, org_stop_words):
-                continue
-            row = matrix[org]
-            w.writerow([org] + [row.get(tid, 0) for tid in all_tids])
+        if not mentioned_orgs: continue
+
+        low_text_words = set(text.lower().split())
+        doc_topic_scores = {tid: len(ws.intersection(low_text_words)) for tid, ws in topic_wordsets.items()}
+        
+        for org in mentioned_orgs:
+            doc_results.append({"org": org, **doc_topic_scores})
+
+    if not doc_results:
+        print("[WARN] No valid org-topic relationships found. Skipping matrix generation.")
+        return
+
+    # --- 4. 데이터프레임 집계 및 IDF 보정 ---
+    df = pd.DataFrame(doc_results)
+    matrix_df = df.groupby("org").sum()
+
+    N = len(matrix_df)
+    df_topics = (matrix_df > 0).sum(axis=0)
+    idf = np.log(1 + N / (df_topics + 1))
+    base_score_df = matrix_df * idf
+
+    # --- 5. 하이브리드 점수 및 상대 지표 계산 (신규) ---
+    long_format_data = []
+    
+    # 지표 계산을 위해 전체 데이터프레임 melt
+    melted_df = base_score_df.reset_index().melt(id_vars='org', var_name='topic_id', value_name='base_score')
+    melted_df = melted_df[melted_df['base_score'] > 0].copy()
+
+    # 토픽 점유율 (Topic Share)
+    topic_total_scores = melted_df.groupby('topic_id')['base_score'].transform('sum')
+    melted_df['topic_share'] = melted_df['base_score'] / (topic_total_scores + 1e-9)
+
+    # 기업 집중도 (Company Focus / L2 Norm)
+    org_total_scores_sq = (melted_df.groupby('org')['base_score'].transform(lambda x: np.linalg.norm(x, 2)))
+    melted_df['company_focus'] = melted_df['base_score'] / (org_total_scores_sq + 1e-9)
+    
+    # 하이브리드 점수 (Hybrid Score)
+    def get_hybrid_score(row):
+        base_score = row['base_score']
+        term = row['org'] # org 자체가 시그널의 대상이 될 수 있음
+        
+        z_like = trend_signals.get(term, {}).get('z_like', 0.0)
+        diff = trend_signals.get(term, {}).get('diff', 0)
+        
+        # 람다 값 (조정 가능)
+        lambda1 = 0.20
+        lambda2 = 0.05
+        
+        # 최근성 보정 계수 (0 이상일 때만 적용)
+        recency_boost = (1 + lambda1 * max(0, z_like) + lambda2 * (1 if diff > 0 else 0))
+        return base_score * recency_boost
+
+    melted_df['hybrid_score'] = melted_df.apply(get_hybrid_score, axis=1)
+
+    # --- 6. 최종 결과 저장 (Wide & Long) ---
+    
+    # Long 포맷 저장 (모든 지표 포함)
+    melted_df.rename(columns={'topic_id': 'topic'}, inplace=True)
+    melted_df.sort_values(by=["org", "hybrid_score"], ascending=[True, False], inplace=True)
+    melted_df.to_csv("outputs/export/company_topic_matrix_long.csv", index=False, float_format='%.4f', encoding="utf-8-sig")
+    print(f"[INFO] Saved company_topic_matrix_long.csv with rich metrics.")
+
+    # Wide 포맷 저장 (가독성 중심)
+    TOP_K_TOPICS = 8
+    wide_df = melted_df.groupby('org').apply(lambda x: x.nlargest(TOP_K_TOPICS, 'hybrid_score')).reset_index(drop=True)
+    
+    # 점수와 점유율을 함께 표기 (예: 15.78 (25%))
+    wide_df['score_with_share'] = wide_df.apply(lambda row: f"{row['hybrid_score']:.2f} ({row['topic_share']:.0%})", axis=1)
+    
+    final_wide_df = wide_df.pivot(index='org', columns='topic', values='score_with_share').fillna("")
+    final_wide_df.to_csv("outputs/export/company_topic_matrix_wide.csv", encoding="utf-8-sig")
+    print(f"[INFO] Saved company_topic_matrix_wide.csv with Top-{TOP_K_TOPICS} topics per org.")
             
 # ========== 스코어링/증거 ==========
 def clamp01(x): 
