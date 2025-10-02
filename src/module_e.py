@@ -4,6 +4,18 @@ import glob
 import re
 import datetime
 from pathlib import Path
+from scripts.plot_font import set_kr_font, get_kr_font_path
+from wordcloud import WordCloud
+from matplotlib import pyplot as plt
+
+
+# 1) 일반 그래프 폰트 설정(다른 플롯도 한글 OK)
+_ = set_kr_font()
+
+# 2) 워드클라우드 전용 폰트 경로
+font_path = get_kr_font_path()
+print(f"[INFO] wordcloud font_path: {font_path}")
+
 
 def load_json(path, default=None):
     if default is None:
@@ -82,28 +94,50 @@ def apply_plot_style():
 def plot_wordcloud_from_keywords(keywords_obj, out_path="outputs/fig/wordcloud.png"):
     from wordcloud import WordCloud
     import matplotlib.pyplot as plt
-    ensure_fonts(); apply_plot_style()
+    import os
+
+    # 네 스타일/폰트 초기화 로직은 그대로 유지
+    ensure_fonts()
+    apply_plot_style()
+
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
+
     items = (keywords_obj or {}).get("keywords") or []
     if not items:
-        plt.figure(figsize=(8, 5)); plt.text(0.5, 0.5, "워드클라우드 데이터 없음", ha="center", va="center")
-        plt.axis("off"); plt.savefig(out_path, dpi=150, bbox_inches="tight"); plt.close(); return
+        plt.figure(figsize=(8, 5))
+        plt.text(0.5, 0.5, "워드클라우드 데이터 없음", ha="center", va="center")
+        plt.axis("off")
+        plt.savefig(out_path, dpi=150, bbox_inches="tight")
+        plt.close()
+        return
+
+    # 상위 N개만 사용(기존 로직 유지)
     freqs = {}
     for it in items[:200]:
         w = (it.get("keyword") or "").strip()
         s = float(it.get("score", 0) or 0)
-        if w: freqs[w] = freqs.get(w, 0.0) + max(s, 0.0)
-    candidates = [
-        "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
-        "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
-        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
-        "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
-    ]
-    font_path = next((p for p in candidates if os.path.exists(p)), None)
-    wc = WordCloud(width=1200, height=600, background_color="white",
-                   font_path=font_path, colormap="tab20",
-                   prefer_horizontal=0.9, min_font_size=10, max_words=200,
-                   relative_scaling=0.5, normalize_plurals=False).generate_from_frequencies(freqs)
+        if w:
+            freqs[w] = freqs.get(w, 0.0) + max(s, 0.0)
+
+    # 핵심: 워드클라우드용 폰트 파일 경로 확보 (번들/시스템 자동 탐색)
+    font_path = get_kr_font_path()
+    if not font_path:
+        # 최후의 보루(환경 따라 다를 수 있어서 경고만)
+        print("[WARN] font_path를 찾지 못했어요. assets/fonts에 TTF/OTF 넣거나 scripts/plot_font.py 확인 플리즈.")
+
+    wc = WordCloud(
+        width=1200,
+        height=600,
+        background_color="white",
+        font_path=font_path,           # 여기만 추가되면 한글 안 깨짐!
+        colormap="tab20",
+        prefer_horizontal=0.9,
+        min_font_size=10,
+        max_words=200,
+        relative_scaling=0.5,
+        normalize_plurals=False
+    ).generate_from_frequencies(freqs)
+
     wc.to_file(out_path)
 
 def plot_top_keywords(keywords, out_path="outputs/fig/top_keywords.png", topn=15):
