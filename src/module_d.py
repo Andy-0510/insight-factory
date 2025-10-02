@@ -256,9 +256,12 @@ def export_company_topic_matrix(meta_items: List[Dict[str, Any]], topics_obj: di
     TOP_K_TOPICS = 8
     wide_df = melted_df.groupby('org').apply(lambda x: x.nlargest(TOP_K_TOPICS, 'hybrid_score')).reset_index(drop=True)
     
+    
     # 점수와 점유율을 함께 표기 (예: 15.78 (25%))
     wide_df['score_with_share'] = wide_df.apply(lambda row: f"{row['hybrid_score']:.2f} ({row['topic_share']:.0%})", axis=1)
-    
+    # 숫자 토픽 ID를 'topic_X' 형태의 문자열로 변환합니다.
+    wide_df['topic'] = 'topic_' + wide_df['topic'].astype(str)
+
     final_wide_df = wide_df.pivot(index='org', columns='topic', values='score_with_share').fillna("")
     final_wide_df.to_csv("outputs/export/company_topic_matrix_wide.csv", encoding="utf-8-sig")
     print(f"[INFO] Saved company_topic_matrix_wide.csv with Top-{TOP_K_TOPICS} topics per org.")
