@@ -6,3 +6,22 @@
 
 - 로컬의 원격브랜치 목록과 깃 브랜치 목록을 동기화 하는 코드 : 1. 로컬에서 페치 실행, 2. 터미널에서 git remote prune origin 실행
 
+- ✅ 브랜치 연결 (로컬 ↔ 원격)
+    1. 현재 로컬 브랜치 확인
+      VS Code 소스 제어 창 하단 또는 Ctrl + Shift + P → Git: Checkout to... 명령으로 현재 브랜치를 확인하거나 전환할 수 있어요.
+
+    2. 원격 브랜치와 연결하기
+        터미널에서 아래 명령어를 사용하면 로컬 브랜치를 원격 브랜치와 연결할 수 있습니다:
+
+        bash
+        git branch --set-upstream-to=origin/브랜치이름
+        예시:
+
+        bash
+        git branch --set-upstream-to=origin/Active_developing Active_developing
+        git branch --set-upstream-to=origin/Base_0910-2_full-text-article Base_0910-2_full-text-article
+        git branch --set-upstream-to=origin/Base_0912_Full_Version_1 Base_0912_Full_Version_1
+        git branch --set-upstream-to=origin/main main
+
+    이렇게 하면 각 로컬 브랜치가 대응되는 원격 브랜치와 연결되어 git pull, git push 명령이 자동으로 동작합니다.
+    
