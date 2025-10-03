@@ -6,6 +6,8 @@
 
 - 로컬에서 실행: python main.py --only a
 
+- 로컬-깃허브 브랜치들 연결 상태 확인: git branch -vv  
+
 - 로컬의 원격브랜치 목록과 깃 브랜치 목록을 동기화 하는 코드 : 1. 로컬에서 페치 실행, 2. 터미널에서 git remote prune origin 실행
 
 - ✅ 브랜치 연결 (로컬 ↔ 원격)
