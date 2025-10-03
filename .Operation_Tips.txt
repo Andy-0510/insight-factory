@@ -23,5 +23,4 @@
         git branch --set-upstream-to=origin/Base_0912_Full_Version_1 Base_0912_Full_Version_1
         git branch --set-upstream-to=origin/main main
 
-    이렇게 하면 각 로컬 브랜치가 대응되는 원격 브랜치와 연결되어 git pull, git push 명령이 자동으로 동작합니다.
-    
+    이렇게 하면 각 로컬 브랜치가 대응되는 원격 브랜치와 연결되어 git pull, git push 명령이 자동으로 동작합니다
