@@ -275,7 +275,15 @@ def normalize_score(x, lo, hi):
         return 0.0
     return clamp01((x - lo) / (hi - lo))
 
-NEG_WORDS = ["논란", "우려", "리스크", "규제", "지연", "지적", "하락", "부진", "적자", "연기"]
+NEG_WORDS = [
+    "논란", "우려", "리스크", "규제", "지연", "지적", "하락", "부진", "적자", "연기",
+    "보안", "개인정보", "불확실성", "기술 미성숙", "높은 비용", "복잡한 인증", "법적 리스크",
+    "시장 불안정", "공급망 리스크", "정책 불확실성", "해킹", "위협", "취약점", "중단", "취소",
+    "감소", "침체", "악화", "경고", "문제", "비판", "벌금", "소송", "분쟁", "해고", "감원",
+    "축소", "퇴출", "손실", "손해", "파산", "부도", "불매", "보이콧", "사기", "횡령", "배임",
+    "부패", "비리", "조작", "위조", "사건", "사고"
+]
+
 
 def extract_keywords_from_idea(idea_text: str, keywords_obj: dict) -> List[str]:
     """아이디어 문장에서 핵심 키워드를 추출합니다."""
@@ -641,22 +649,56 @@ def load_events_csv(path: str) -> List[Dict[str,str]]:
 
 def calculate_feasibility(idea_item: Dict[str, Any]) -> float:
     """ 아이디어 내용 기반으로 실현가능성 점수를 동적으로 계산 """
-    base_score = 0.5  # 기본 점수
+    base_score = 0.5  # 기본값 낮춤으로 변별력 확보
+
     text = f"{idea_item.get('idea', '')} {idea_item.get('problem', '')} {' '.join(idea_item.get('solution', []))} {' '.join(idea_item.get('risks', []))}"
 
     # 긍정 키워드 (점수 상승)
-    positive_keywords = ['기존 기술', '파트너십', '검증된', '양산', '자동화', '효율 개선']
+    positive_keywords = [
+        '기존 기술', '파트너십', '검증된', '양산', '자동화', '효율 개선',
+        '표준화', '레퍼런스 디자인', '공급망 확보', '상용화', '적용 사례', '기술 확보'
+    ]
     for pk in positive_keywords:
         if pk in text:
             base_score += 0.05
 
     # 부정 키워드 (점수 하락)
-    negative_keywords = ['장기 연구', '높은 비용', '신소재', '불확실성', '규제', '개인정보']
+    negative_keywords = [
+        '장기 연구', '높은 비용', '신소재', '불확실성', '규제', '개인정보',
+        '복잡한 인증', '기술 미성숙', '법적 리스크', '보안 문제', '시장 불안정'
+    ]
     for nk in negative_keywords:
         if nk in text:
             base_score -= 0.05
 
-    return clamp01(base_score) # 0.0 ~ 1.0 사이로 점수 보정
+    return clamp01(base_score)
+
+
+def calculate_risk_score(idea_item: Dict[str, Any]) -> float:
+    """ 리스크 평가 시스템 (0.1 ~ 0.5 분포 목표로 페널티 미세 조정) """
+    score = 0.0
+    
+    # 1단계: 구조적 리스크 (LLM이 명시한 위험) - 페널티 하향
+    structural_risks = idea_item.get('risks', [])
+    score += len(structural_risks) * 0.05  # 항목당 0.10 -> 0.05
+
+    # 분석할 전체 텍스트
+    text_to_scan = f"{idea_item.get('idea', '')} {idea_item.get('problem', '')} {' '.join(idea_item.get('solution', []))} {' '.join(structural_risks)}"
+    for e in idea_item.get("evidence", []):
+        text_to_scan += " " + e.get("sentence", "")
+
+    # 2단계: 치명적 리스크 키워드 - 페널티 하향
+    high_risk_keywords = ["규제", "법적 리스크", "보안 문제", "해킹", "취약점", "소송"]
+    score += sum(0.06 for rk in high_risk_keywords if rk in text_to_scan) # 0.08 -> 0.06
+
+    # 3단계: 일반 리스크 키워드 - 페널티 하향
+    medium_risk_keywords = [
+        "개인정보", "불확실성", "기술 미성숙", "높은 비용", "복잡한 인증", 
+        "시장 불안정", "공급망 리스크", "위협"
+    ]
+    score += sum(0.02 for rk in medium_risk_keywords if rk in text_to_scan) # 0.03 -> 0.02
+
+    return clamp01(score) # 최종 점수는 0.0 ~ 1.0 사이로 보정
 
 def enrich_with_signals(ideas: List[Dict[str,Any]],
                         meta_items: List[Dict[str,Any]],
@@ -702,17 +744,15 @@ def enrich_with_signals(ideas: List[Dict[str,Any]],
 
         s_feas = calculate_feasibility(it)
         
-        it["evidence"] = pick_evidence(idea_keywords, meta_items, limit=3)
-        risk_score = sum(0.10 for e in it["evidence"] if any(nw in (e.get("sentence") or "") for nw in NEG_WORDS))
-        risk_score = clamp01(risk_score)
+        it["evidence"] = pick_evidence(idea_keywords, meta_items, limit=7)
+        risk_score = calculate_risk_score(it)
       
         base_score = (mkt_w * s_market + urg_w * s_urg + feas_w * s_feas)
         final_score_raw = base_score * (1 - (risk_p * risk_score))
         
-        # --- ✨✨✨ 바로 이 부분이 수정되었습니다 ✨✨✨ ---
-        # Raw Score(0~1)를 10점 만점의 절대 점수로 변환하고 소수점 첫째 자리에서 반올림
         it["score"] = round(final_score_raw * 10.0, 1)
 
+        # --- 'risk_level' 관련 코드가 모두 제거되었습니다 ---
         it["score_breakdown"] = {
             "market": round(s_market, 3), 
             "urgency": round(s_urg, 3), 
@@ -722,8 +762,6 @@ def enrich_with_signals(ideas: List[Dict[str,Any]],
         }
         enriched_ideas.append(it)
     
-    # --- 상대평가(Score Scaling) 로직을 완전히 삭제 ---
-
     return enriched_ideas
 
 # ========== Top5 보장 ==========

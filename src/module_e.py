@@ -658,7 +658,9 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
         )[:5]
 
         _do_trunc = os.getenv("TRUNCATE_OPP", "").lower() in ("1", "true", "yes", "y")
-        lines.append("| Idea | Target | Value Prop | Score |"); lines.append("|---|---|---|---:|")
+        lines.append("| Idea | Target | Value Prop | Score (Market / Urgency / Feasibility / Risk) |")
+        lines.append("|---|---|---|---|")
+
         for it in ideas_sorted:
             idea_raw = (it.get('idea', '') or it.get('title', '') or '')
             tgt_raw  = it.get('target_customer', '') or ''
@@ -673,21 +675,26 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
                 tgt  = tgt_raw.replace("|", r"\|")
                 vp   = vp_raw.replace("|", r"\|")
 
-            # Score 값 표시: score 있으면 표시, 없으면 빈칸
-            sc_raw = it.get('score', None)
-            if sc_raw is None or sc_raw == "":
-                sc = ""
-            else:
-                try:
-                    sc = _fmt_score(sc_raw, nd=2)
-                except Exception:
-                    sc = str(sc_raw)
+            # 점수 표시: score + breakdown
+            score_val = it.get("score", "")
+            bd = it.get("score_breakdown", {})
+            mkt = bd.get("market", "")
+            urg = bd.get("urgency", "")
+            feas = bd.get("feasibility", "")
+            risk = bd.get("risk", "")
+            score_str = f"{score_val} ({mkt} / {urg} / {feas} / {risk})" if score_val != "" else ""
 
-            lines.append(f"| {idea} | {tgt} | {vp} | {sc} |")
+            lines.append(f"| {idea} | {tgt} | {vp} | {score_str} |")
     else:
         lines.append("- (아이디어 없음)")
 
-        
+    chart_path = "outputs/fig/idea_score_distribution.png"
+    if os.path.exists(chart_path):
+        lines.append("\n### 📊 아이디어 점수 분포")
+        lines.append(f"![아이디어 점수 분포](fig/idea_score_distribution.png)\n")
+    else:
+        print(f"[WARN] Chart image not found at {chart_path}")
+
     lines.append("\n## Appendix\n")
     lines.append("- 데이터: keywords.json, topics.json, trend_timeseries.json, trend_insights.json, biz_opportunities.json")
     Path(out_md).parent.mkdir(parents=True, exist_ok=True)
