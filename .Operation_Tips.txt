@@ -4,6 +4,8 @@
 
 - 뉴스 수집 갯수 조정: "display" 조정, 현재 30개 (1회 최대 100개) 및 (네이버 기준) 최대 1천개
 
+- 로컬에서 실행: python main.py --only a
+
 - 로컬의 원격브랜치 목록과 깃 브랜치 목록을 동기화 하는 코드 : 1. 로컬에서 페치 실행, 2. 터미널에서 git remote prune origin 실행
 
 - ✅ 브랜치 연결 (로컬 ↔ 원격)
@@ -13,14 +15,47 @@
     2. 원격 브랜치와 연결하기
         터미널에서 아래 명령어를 사용하면 로컬 브랜치를 원격 브랜치와 연결할 수 있습니다:
 
-        bash
+        
         git branch --set-upstream-to=origin/브랜치이름
         예시:
 
-        bash
+        
         git branch --set-upstream-to=origin/Active_developing Active_developing
         git branch --set-upstream-to=origin/Base_0910-2_full-text-article Base_0910-2_full-text-article
         git branch --set-upstream-to=origin/Base_0912_Full_Version_1 Base_0912_Full_Version_1
         git branch --set-upstream-to=origin/main main
 
     이렇게 하면 각 로컬 브랜치가 대응되는 원격 브랜치와 연결되어 git pull, git push 명령이 자동으로 동작합니다
+
+- 로컬에서 깃허브로 스테이징/커밋/푸시 하는 방법
+
+  Git에서는 수정한 파일 중 원하는 것만 선택해서 스테이징 → 커밋 → 푸시할 수 있습니다. 아래에 단계별로 설명드릴게요:
+
+    ✅ 1. 수정된 파일 확인
+
+    git status
+    → 수정된 파일 목록이 나옵니다. 예:
+
+    코드
+    modified: fileA.txt  
+    modified: fileB.txt  
+    modified: fileC.txt
+    ✅ 2. 원하는 파일만 스테이징
+
+    git add fileA.txt fileC.txt
+    → fileB.txt는 스테이징하지 않으므로 커밋 대상에서 제외됩니다.
+
+    ✅ 3. 커밋
+
+    git commit -m "fileA와 fileC 수정사항 반영"
+    ✅ 4. 푸시
+
+    git push origin 브랜치이름
+    → 예: git push origin Active_developing
+
+    💡 추가 팁
+    부분 스테이징 (라인 단위) 파일 전체가 아니라 특정 라인만 선택하고 싶다면:
+
+
+    git add -p fileA.txt
+    → 변경된 부분을 하나씩 보여주며 y/n으로 선택 가능.
