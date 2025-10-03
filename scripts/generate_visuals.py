@@ -104,6 +104,50 @@ def plot_company_focus(df, top_n_orgs=3):
         print(f"[ERROR] Failed to generate bar charts: {e}")
 
 
+def plot_idea_score_distribution(ideas: list, output_path: str = 'outputs/fig/idea_score_distribution.png'):
+    """ 아이디어별 점수 분포 바 차트 생성 (Market, Urgency, Feasibility, Risk) """
+    import matplotlib.pyplot as plt
+    import os
+    import numpy as np
+
+    if not ideas:
+        print("[WARN] No ideas provided for score chart.")
+        return
+
+    # 아이디어 이름은 최대 15자까지만 표시
+    labels = [idea.get("idea", "")[:15] + "…" if len(idea.get("idea", "")) > 15 else idea.get("idea", "") for idea in ideas]
+    market = [idea["score_breakdown"]["market"] for idea in ideas]
+    urgency = [idea["score_breakdown"]["urgency"] for idea in ideas]
+    feasibility = [idea["score_breakdown"]["feasibility"] for idea in ideas]
+    risk = [idea["score_breakdown"]["risk"] for idea in ideas]
+
+    x = np.arange(len(ideas))
+    width = 0.2
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    bars1 = ax.bar(x - 1.5*width, market, width, label='Market')
+    bars2 = ax.bar(x - 0.5*width, urgency, width, label='Urgency')
+    bars3 = ax.bar(x + 0.5*width, feasibility, width, label='Feasibility')
+    bars4 = ax.bar(x + 1.5*width, risk, width, label='Risk')
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels, rotation=30, ha='right')
+    ax.set_ylabel("Score (0.0 ~ 1.0)")
+    ax.set_title("아이디어별 점수 분포", fontsize=16)
+    ax.legend()
+
+    # ✅ 막대 위에 값 표시
+    for bars in [bars1, bars2, bars3, bars4]:
+        ax.bar_label(bars, fmt="%.2f", padding=2, fontsize=9)
+
+    fig.tight_layout()
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    plt.savefig(output_path, dpi=150)
+    plt.close()
+    print(f"[INFO] Saved idea_score_distribution.png")
+
+
+
 def main():
     """ 메인 실행 함수 """
     # 폰트 설정
@@ -125,6 +169,17 @@ def main():
         topics_map = {}
         print("[WARN] topics.json not found or failed to parse. Topic IDs will be used as labels.")
 
+    #plot_idea_score_distribution
+    try:
+        with open('outputs/biz_opportunities.json', 'r', encoding='utf-8') as f:
+            ideas_data = json.load(f)
+        top_ideas = sorted(ideas_data["ideas"], key=lambda it: it.get("score", 0), reverse=True)[:5]
+        plot_idea_score_distribution(top_ideas)
+    except Exception as e:
+        import traceback
+        print(f"[ERROR] Failed to generate idea score chart: {e}")
+        traceback.print_exc()
+    
     # 시각화 함수 호출
     os.makedirs('outputs/fig', exist_ok=True)
     plot_heatmap(df, topics_map)
