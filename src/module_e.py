@@ -650,24 +650,43 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
     lines.append("## Opportunities (Top 5)\n")
     ideas_all = (opps.get("ideas", []) or [])
     if ideas_all:
-        ideas_sorted = sorted(ideas_all, key=lambda it: float(it.get("priority_score", it.get("score", 0)) or 0), reverse=True)[:5]
+        # 정렬 기준: score 우선, 없으면 priority_score 사용
+        ideas_sorted = sorted(
+            ideas_all,
+            key=lambda it: float(it.get("score", it.get("priority_score", 0)) or 0),
+            reverse=True
+        )[:5]
+
         _do_trunc = os.getenv("TRUNCATE_OPP", "").lower() in ("1", "true", "yes", "y")
         lines.append("| Idea | Target | Value Prop | Score |"); lines.append("|---|---|---|---:|")
         for it in ideas_sorted:
             idea_raw = (it.get('idea', '') or it.get('title', '') or '')
             tgt_raw  = it.get('target_customer', '') or ''
             vp_raw   = (it.get('value_prop', '') or '').replace("\n", " ")
+
             if _do_trunc:
                 idea = _truncate(idea_raw, 120).replace("|", r"\|")
                 tgt  = _truncate(tgt_raw, 80).replace("|", r"\|")
                 vp   = _truncate(vp_raw, 280).replace("|", r"\|")
             else:
-                idea = idea_raw.replace("|", r"\|"); tgt  = tgt_raw.replace("|", r"\|"); vp   = vp_raw.replace("|", r"\|")
-            sc_raw = it.get('priority_score', it.get('score', ''))
-            sc = _fmt_score(sc_raw, nd=2) if (isinstance(sc_raw, (int,float)) or (isinstance(sc_raw,str) and sc_raw.replace('.','',1).isdigit())) else str(sc_raw)
+                idea = idea_raw.replace("|", r"\|")
+                tgt  = tgt_raw.replace("|", r"\|")
+                vp   = vp_raw.replace("|", r"\|")
+
+            # Score 값 표시: score 있으면 표시, 없으면 빈칸
+            sc_raw = it.get('score', None)
+            if sc_raw is None or sc_raw == "":
+                sc = ""
+            else:
+                try:
+                    sc = _fmt_score(sc_raw, nd=2)
+                except Exception:
+                    sc = str(sc_raw)
+
             lines.append(f"| {idea} | {tgt} | {vp} | {sc} |")
     else:
         lines.append("- (아이디어 없음)")
+
         
     lines.append("\n## Appendix\n")
     lines.append("- 데이터: keywords.json, topics.json, trend_timeseries.json, trend_insights.json, biz_opportunities.json")
