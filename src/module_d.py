@@ -639,6 +639,25 @@ def load_events_csv(path: str) -> List[Dict[str,str]]:
         pass
     return rows
 
+def calculate_feasibility(idea_item: Dict[str, Any]) -> float:
+    """ 아이디어 내용 기반으로 실현가능성 점수를 동적으로 계산 """
+    base_score = 0.5  # 기본 점수
+    text = f"{idea_item.get('idea', '')} {idea_item.get('problem', '')} {' '.join(idea_item.get('solution', []))} {' '.join(idea_item.get('risks', []))}"
+
+    # 긍정 키워드 (점수 상승)
+    positive_keywords = ['기존 기술', '파트너십', '검증된', '양산', '자동화', '효율 개선']
+    for pk in positive_keywords:
+        if pk in text:
+            base_score += 0.05
+
+    # 부정 키워드 (점수 하락)
+    negative_keywords = ['장기 연구', '높은 비용', '신소재', '불확실성', '규제', '개인정보']
+    for nk in negative_keywords:
+        if nk in text:
+            base_score -= 0.05
+
+    return clamp01(base_score) # 0.0 ~ 1.0 사이로 점수 보정
+
 def enrich_with_signals(ideas: List[Dict[str,Any]],
                         meta_items: List[Dict[str,Any]],
                         trend_rows: List[Dict[str,Any]],
@@ -647,7 +666,6 @@ def enrich_with_signals(ideas: List[Dict[str,Any]],
                         keywords_obj: dict) -> List[Dict[str,Any]]:
     
     weights = cfg.get("score_weights", {})
-    prio_w = float(weights.get("priority_llm_weight", 0.25))
     mkt_w = float(weights.get("market_weight", 0.40))
     urg_w = float(weights.get("urgency_weight", 0.35))
     feas_w = float(weights.get("feasibility_weight", 0.25))
@@ -661,43 +679,52 @@ def enrich_with_signals(ideas: List[Dict[str,Any]],
             for etype in types_str.split(','):
                 event_hit[etype.strip()] += 1
 
-    out = []
+    enriched_ideas = []
     for it in ideas:
-        idea_text = (it.get("idea") or "").strip()
-        idea_keywords = extract_keywords_from_idea(idea_text, keywords_obj)
+        full_idea_text = f"{it.get('idea', '')} {it.get('problem', '')} {' '.join(it.get('solution', []))}"
+        idea_keywords = extract_keywords_from_idea(full_idea_text, keywords_obj)
         
-        cur, z = 0, 0.0
+        cur, z = 0.0, 0.0
         if idea_keywords:
-            related_trends = [trend_idx.get(kw, {}) for kw in idea_keywords]
+            related_trends = [trend_idx.get(kw) for kw in idea_keywords if trend_idx.get(kw)]
             if related_trends:
-                cur_list = [int(t.get("cur", 0)) for t in related_trends]
+                cur_list = [float(t.get("cur", 0)) for t in related_trends]
                 z_list = [float(t.get("z_like", 0.0)) for t in related_trends]
                 if cur_list: cur = max(cur_list)
                 if z_list: z = max(z_list)
 
-        s_market = ((1.0 - prio_w) * (cur / 10.0)) + (prio_w * normalize_score(it.get("priority_score", 0.0), 0.0, 5.0))
-        s_urg = z / 5.0 
-        evt_boost = sum(0.10 for etype in ["LAUNCH", "PARTNERSHIP"] if event_hit.get(etype, 0) > 0)
+        s_market = normalize_score(it.get("priority_score", 0.0), 0.0, 5.0) * 0.5 + normalize_score(cur, 0, 10) * 0.5
+        s_market = clamp01(s_market)
+
+        s_urg = normalize_score(z, 0, 3.0)
+        evt_boost = sum(0.15 for etype in ["LAUNCH", "PARTNERSHIP"] if event_hit.get(etype, 0) > 0)
         s_urg = clamp01(s_urg + evt_boost)
-        s_feas = 0.6
+
+        s_feas = calculate_feasibility(it)
         
         it["evidence"] = pick_evidence(idea_keywords, meta_items, limit=3)
-        risk = sum(0.10 for e in it["evidence"] if any(nw in (e.get("sentence") or "") for nw in NEG_WORDS))
-        risk = clamp01(risk)
+        risk_score = sum(0.10 for e in it["evidence"] if any(nw in (e.get("sentence") or "") for nw in NEG_WORDS))
+        risk_score = clamp01(risk_score)
+      
+        base_score = (mkt_w * s_market + urg_w * s_urg + feas_w * s_feas)
+        final_score_raw = base_score * (1 - (risk_p * risk_score))
         
-        score100 = 100.0 * (mkt_w * s_market + urg_w * s_urg + feas_w * s_feas) - (100.0 * risk_p * risk)
-        it["score"] = round(max(0.0, min(100.0, score100)), 2)
-        it["score_breakdown"] = {"market": round(s_market, 3), "urgency": round(s_urg, 3), "feasibility": round(s_feas, 3), "risk": round(risk, 3), "notes": {"cur": cur, "z_like": z}}
-        
-        it["title"] = it.get("title") or it.get("idea") or ""
-        it["problem"] = it.get("problem") or f"{idea_text} 관련 과제가 상존함."
-        it["target_customer"] = it.get("target_customer") or "기업(B2B)"
-        it["value_prop"] = it.get("value_prop") or f"{it['idea']} 도입 가치(비용/품질/경험 개선)."
-        it["solution"] = it.get("solution") or ["파일럿→제휴→인증 확보"]
-        it["risks"] = it.get("risks") or ["규제/표준 불확실성", "비용/ROI 불확실성"]
-        out.append(it)
-        
-    return out
+        # --- ✨✨✨ 바로 이 부분이 수정되었습니다 ✨✨✨ ---
+        # Raw Score(0~1)를 10점 만점의 절대 점수로 변환하고 소수점 첫째 자리에서 반올림
+        it["score"] = round(final_score_raw * 10.0, 1)
+
+        it["score_breakdown"] = {
+            "market": round(s_market, 3), 
+            "urgency": round(s_urg, 3), 
+            "feasibility": round(s_feas, 3), 
+            "risk": round(risk_score, 3), 
+            "notes": {"cur": cur, "z_like": z}
+        }
+        enriched_ideas.append(it)
+    
+    # --- 상대평가(Score Scaling) 로직을 완전히 삭제 ---
+
+    return enriched_ideas
 
 # ========== Top5 보장 ==========
 def fill_opportunities_to_five(ideas: list, keywords_obj: dict, want: int = 5) -> list:
