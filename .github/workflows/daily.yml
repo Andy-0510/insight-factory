@@ -159,20 +159,32 @@ jobs:
         run: |
           source .venv/bin/activate
           python -m scripts.signal_export
-          
-      - name: Module D - Biz Opportunities
+
+      - name: Module D - Analysis
+        shell: bash
+        run: |
+          source .venv/bin/activate
+          python -m src.module_d
+
+      - name: Check D - Validate Analysis
+        shell: bash
+        run: |
+          source .venv/bin/activate
+          python -m src.check_d
+
+      - name: Module E - Biz Opportunities
         shell: bash
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           source .venv/bin/activate
-          python -m src.module_d
+          python -m src.module_e
 
-      - name: Check D - Validate Biz Opportunities
+      - name: Check E - Validate Biz Opportunities
         shell: bash
         run: |
           source .venv/bin/activate
-          python -m src.check_d
+          python -m src.check_e
 
       - name: Generate Visuals for Report
         shell: bash
@@ -191,17 +203,17 @@ jobs:
           source .venv/bin/activate
           python -m scripts.preflight
           
-      - name: Module E - Build Report
+      - name: Module F - Build Report
         shell: bash
         run: |
           source .venv/bin/activate
-          python -m src.module_e
+          python -m src.module_f
           
-      - name: Check E - Validate Report
+      - name: Check F - Validate Report
         shell: bash
         run: |
           source .venv/bin/activate
-          python -m src.check_e
+          python -m src.check_f
       
       # Job Summary
       - name: Build Job Summary

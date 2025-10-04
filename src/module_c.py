@@ -466,75 +466,6 @@ def pro_build_topics_bertopic(docs, topn=10):
         print(f"[DEBUG][C] PRO 생성 완료(폴백) | topics={len(topics_obj.get('topics', []))}")
         return topics_obj
 
-# --- 기업-기업 네트워크 분석 도우미 ---
-def _load_companies(path="data/dictionaries/entities_org.txt") -> list[str]:
-    try:
-        with open(path, encoding="utf-8") as f:
-            return [ln.strip() for ln in f if ln.strip()]
-    except Exception:
-        return []
-
-def _latest_meta_path() -> str | None:
-    files = sorted(glob.glob("data/news_meta_*.json"))
-    return files[-1] if files else None
-
-def compute_company_network(max_files: int = 5,
-                            min_edge_weight: int = 5) -> dict:
-    """
-    최신 메타 파일들에서 기업 동시출현 네트워크 계산 → JSON 페이로드 반환.
-    - max_files: 최신 N개 메타 파일만 사용(안정성/성능)
-    - min_edge_weight: 최소 동시 출현 횟수(잡음 제거)
-    """
-    companies = _load_companies()
-    if not companies:
-        return {"edges": [], "top_pairs": [], "centrality": []}
-
-    meta_files = sorted(glob.glob("data/news_meta_*.json"))[-max_files:]
-    co = {}  # {(a,b): count}
-    for fp in meta_files:
-        try:
-            with open(fp, "r", encoding="utf-8") as f:
-                items = json.load(f) or []
-        except Exception:
-            continue
-        for it in items:
-            text = ((it.get("title") or it.get("title_og") or "") + " " +
-                    (it.get("body") or it.get("description") or it.get("description_og") or ""))
-            present = [c for c in companies if c and c in text]
-            present = sorted(set(present))
-            for i in range(len(present)):
-                for j in range(i + 1, len(present)):
-                    a, b = present[i], present[j]
-                    co[(a, b)] = co.get((a, b), 0) + 1
-
-    # 엣지 리스트 생성(임계치 필터)
-    edges = [{"source": a, "target": b, "weight": w}
-             for (a, b), w in co.items() if w >= min_edge_weight]
-
-    # Top 5 기업쌍
-    top_pairs = sorted(edges, key=lambda e: e["weight"], reverse=True)[:5]
-
-    # 네트워크X 중심성 계산
-    import networkx as nx
-    G = nx.Graph()
-    for e in edges:
-        G.add_edge(e["source"], e["target"], weight=e["weight"])
-
-    # 중심성 지표(노드가 없을 수도 있으니 방어)
-    centrality = []
-    if G.number_of_nodes() > 0:
-        deg = nx.degree_centrality(G)
-        btw = nx.betweenness_centrality(G, normalized=True, weight="weight")
-        # 상위 5개(정렬: degree → betweenness)
-        nodes_sorted = sorted(G.nodes(), key=lambda n: (deg.get(n, 0.0), btw.get(n, 0.0)), reverse=True)[:5]
-        for n in nodes_sorted:
-            centrality.append({
-                "org": n,
-                "degree_centrality": round(float(deg.get(n, 0.0)), 3),
-                "betweenness": round(float(btw.get(n, 0.0)), 3)
-            })
-
-    return {"edges": edges, "top_pairs": top_pairs, "centrality": centrality}
 
 # ================= 인사이트 요약 =================
 def gemini_insight(api_key: str, model: str, context: Dict[str, Any],
@@ -638,17 +569,6 @@ def main():
     insights_obj = {"summary": summary, "top_topics": top_topics, "evidence": {"timeseries": tail_14}}
     with open("outputs/trend_insights.json", "w", encoding="utf-8") as f:
         json.dump(insights_obj, f, ensure_ascii=False, indent=2)
-
-    # 6. 기업-기업 네트워크 분석(신규) → JSON 저장
-    try:
-        company_net = compute_company_network(max_files=5, min_edge_weight=5)
-        os.makedirs("outputs", exist_ok=True)
-        with open("outputs/company_network.json", "w", encoding="utf-8") as f:
-            json.dump(company_net, f, ensure_ascii=False, indent=2)
-        print(f"[INFO] company_network.json saved | edges={len(company_net.get('edges', []))} top_pairs={len(company_net.get('top_pairs', []))}")
-    except Exception as e:
-        print(f"[WARN] company network analysis failed: {repr(e)}")
-
 
 
     import datetime
