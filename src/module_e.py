@@ -648,8 +648,6 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
         lines.append(f"![기업 네트워크](fig/company_network.png)\n")
         lines.append("<sub>※ 빨간색 노드는 네트워크 중심 기업(허브)을 의미하며, 파란색은 일반 기업입니다. "
                     "선이 두꺼울수록 기사에서 함께 언급된 빈도가 높음을 뜻합니다.</sub>\n")
-
-
     else:
         print("[WARN] company_network.png not found")
 

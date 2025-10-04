@@ -5,6 +5,8 @@ import os
 import json
 import networkx as nx
 import itertools
+import numpy as np
+import matplotlib.font_manager as fm
 
 
 # --- Matplotlib 한글 폰트 설정 ---
@@ -158,12 +160,6 @@ def plot_company_network_from_json(json_path="outputs/company_network.json",
        - 상위 top_edges개의 관계만 표시
        - 중심성 상위 top_nodes 기업만 강조
     """
-    import json, os
-    import matplotlib.pyplot as plt
-    import networkx as nx
-    import numpy as np
-    import matplotlib.font_manager as fm
-
     if not os.path.exists(json_path):
         print("[WARN] company_network.json not found")
         return
