@@ -1,5 +1,5 @@
 {
-  "dry_run": true,
+  "dry_run": false,
   "use_pro": false,
   "queries": [
     "OLED 패널", "QD-OLED", "MicroLED", "폴더블",

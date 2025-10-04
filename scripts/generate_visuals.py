@@ -2,6 +2,10 @@ import pandas as pd
 import matplotlib.pyplot as plt
 import seaborn as sns
 import os
+import json
+import networkx as nx
+import itertools
+
 
 # --- Matplotlib 한글 폰트 설정 ---
 def ensure_fonts():
@@ -147,6 +151,85 @@ def plot_idea_score_distribution(ideas: list, output_path: str = 'outputs/fig/id
     print(f"[INFO] Saved idea_score_distribution.png")
 
 
+def plot_company_network_from_json(json_path="outputs/company_network.json",
+                                   output_path="outputs/fig/company_network.png",
+                                   top_edges=30, top_nodes=10):
+    """기업 네트워크를 단순화하여 시각화
+       - 상위 top_edges개의 관계만 표시
+       - 중심성 상위 top_nodes 기업만 강조
+    """
+    import json, os
+    import matplotlib.pyplot as plt
+    import networkx as nx
+    import numpy as np
+    import matplotlib.font_manager as fm
+
+    if not os.path.exists(json_path):
+        print("[WARN] company_network.json not found")
+        return
+
+    with open(json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    edges = data.get("edges", [])
+    if not edges:
+        print("[WARN] No edges in company_network.json")
+        return
+
+    # --- 1. 상위 top_edges 엣지만 선택 ---
+    edges_sorted = sorted(edges, key=lambda e: e["weight"], reverse=True)[:top_edges]
+
+    G = nx.Graph()
+    for e in edges_sorted:
+        a, b, w = e["source"], e["target"], float(e["weight"])
+        G.add_edge(a, b, weight=w)
+
+    if G.number_of_nodes() == 0:
+        print("[WARN] Graph empty")
+        return
+
+    # --- 2. 중심성 계산 후 상위 top_nodes만 강조 ---
+    deg = nx.degree_centrality(G)
+    top_nodes_sorted = sorted(deg.items(), key=lambda x: x[1], reverse=True)[:top_nodes]
+    top_nodes = {n for n, _ in top_nodes_sorted}
+
+    # --- 3. 폰트 지정 (NanumGothic) ---
+    font_path = "/usr/share/fonts/truetype/nanum/NanumGothic.ttf"
+    if os.path.exists(font_path):
+        font_prop = fm.FontProperties(fname=font_path)
+        font_name = font_prop.get_name()
+    else:
+        font_name = "sans-serif"
+
+    # --- 4. 레이아웃 & 시각화 ---
+    pos = nx.kamada_kawai_layout(G)  # 더 균형 잡힌 배치
+    weights = [G[u][v]["weight"] for u, v in G.edges()]
+    w_arr = np.array(weights, dtype=float)
+    q95 = np.quantile(w_arr, 0.95)
+    w_arr = np.minimum(w_arr, q95)
+    w_norm = (0.6 + 1.8 * (w_arr - w_arr.min()) / (w_arr.max() - w_arr.min() + 1e-6)).tolist()
+
+    plt.figure(figsize=(11, 8))
+    nx.draw_networkx_edges(G, pos, width=w_norm, edge_color="#7a7a7a", alpha=0.35)
+
+    # 중심 기업은 빨간색, 나머지는 파란색
+    node_colors = ["#e74c3c" if n in top_nodes else "#86b6f6" for n in G.nodes()]
+    node_sizes = [1200 if n in top_nodes else 600 for n in G.nodes()]
+
+    nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=node_colors,
+                           edgecolors="#333", linewidths=0.6, alpha=0.95)
+    nx.draw_networkx_labels(G, pos, font_size=9, font_color="#222", font_family=plt.rcParams['font.family'][0])
+
+    plt.title("기업 경쟁/협력 네트워크 (핵심 관계망)", fontsize=14, fontname=plt.rcParams['font.family'][0])
+    plt.axis("off")
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150)
+    plt.close()
+    print(f"[INFO] Saved simplified company_network.png with {len(G.nodes())} nodes and {len(G.edges())} edges")
+
+
+
 
 def main():
     """ 메인 실행 함수 """
@@ -180,6 +263,13 @@ def main():
         print(f"[ERROR] Failed to generate idea score chart: {e}")
         traceback.print_exc()
     
+    # 기업 네트워크 시각화(신규)
+    try:
+        plot_company_network_from_json("outputs/company_network.json", "outputs/fig/company_network.png")
+    except Exception as e:
+        print(f"[WARN] company network visualization failed: {repr(e)}")
+
+
     # 시각화 함수 호출
     os.makedirs('outputs/fig', exist_ok=True)
     plot_heatmap(df, topics_map)

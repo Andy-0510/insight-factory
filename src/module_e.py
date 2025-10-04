@@ -638,6 +638,47 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
     # --- ✨ 새로운 매트릭스 섹션 추가 ---
     lines.append(_generate_matrix_section(topics))
     lines.append(_generate_visual_analysis_section(fig_dir))
+
+    # --- 기업 경쟁/협력 네트워크(신규) ---
+    net_json = "outputs/company_network.json"
+    net_png = "outputs/fig/company_network.png"
+
+    if os.path.exists(net_png):
+        lines.append("\n### 기업 경쟁/협력 네트워크\n")
+        lines.append(f"![기업 네트워크](fig/company_network.png)\n")
+        lines.append("<sub>※ 빨간색 노드는 네트워크 중심 기업(허브)을 의미하며, 파란색은 일반 기업입니다. "
+                    "선이 두꺼울수록 기사에서 함께 언급된 빈도가 높음을 뜻합니다.</sub>\n")
+
+
+    else:
+        print("[WARN] company_network.png not found")
+
+    # JSON에서 Top 5 기업쌍 + 중심성 상위 기업 표 삽입
+    try:
+        if os.path.exists(net_json):
+            with open(net_json, "r", encoding="utf-8") as f:
+                net = json.load(f) or {}
+            top_pairs = net.get("top_pairs", [])
+            central = net.get("centrality", [])
+
+            if top_pairs:
+                lines.append("#### 함께 가장 많이 언급된 기업 쌍 (Top 5)\n")
+                lines.append("| Rank | Pair | Co-occurrence |\n|---:|---|---|---:|\n")
+                for i, e in enumerate(top_pairs, 1):
+                    pair = f"{e.get('source','')} – {e.get('target','')}"
+                    lines.append(f"| {i} | {pair} | {int(e.get('weight',0))} |\n")
+                lines.append("<sub>※ 두 기업이 같은 기사에서 자주 함께 언급될수록 경쟁·협력 관계가 밀접하다는 신호로 해석할 수 있습니다.</sub>\n")
+
+            if central:
+                lines.append("\n#### 산업 내 허브 기업 (중심성 기준 Top 5)\n")
+                lines.append("| Rank | Org | Degree | Betweenness |\n|---:|---|---:|---:|\n")
+                for i, c in enumerate(central, 1):
+                    lines.append(f"| {i} | {c.get('org','')} | {c.get('degree_centrality',0)} | {c.get('betweenness',0)} |\n")
+                lines.append("<sub>※ Degree는 연결된 기업 수, Betweenness는 네트워크 내 ‘중개자’ 역할 정도를 의미합니다. "
+                             "값이 높을수록 산업 내 영향력이 크다고 볼 수 있습니다.</sub>\n")
+    except Exception as e:
+        print(f"[WARN] company_network.json read failed: {repr(e)}")
+
     
     lines.append("\n## Trend\n")
     lines.append("- 최근 기사 수 추세와 7일 이동평균선을 제공합니다.")
