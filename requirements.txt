@@ -14,6 +14,8 @@ networkx>=3.2.1
 soynlp>=0.0.493
 krwordrank>=1.0.3
 tomotopy>=0.12.6
+spacy
+spacy download ko_core_news_sm
 
 # Splint-2 (의존성 많은 순서대로)
 umap-learn

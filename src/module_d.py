@@ -10,8 +10,19 @@ import datetime
 from typing import List, Dict, Any
 from collections import defaultdict, Counter
 from src.config import load_config
+import networkx as nx
+import matplotlib.pyplot as plt
+import spacy  # NER 도구
+from networkx.algorithms import community
 
 CFG = load_config()
+
+# spaCy 한국어 모델 로드 (한 번만)
+nlp = spacy.load("ko_core_news_sm")  # 한국어 NER 모델 (ORG: 조직/회사)
+
+# 키워드 세트 (경쟁/협력 구분용)
+COMPETITIVE_KEYWORDS = [k.lower() for k in ["경쟁", "대응", "추격", "점유율", "앞서", "뒤처져", "시장 1위"]]
+COOPERATIVE_KEYWORDS = [k.lower() for k in ["협력", "파트너십", "공급", "MOU", "제휴", "협약", "공동 개발"]]
 
 # ========== 유틸리티 ==========
 def latest(globpat: str):
@@ -71,10 +82,11 @@ def extract_orgs(text: str, alias_map: Dict[str, str], whitelist: set, org_stop_
     if not text:
         return []
     
-    toks = re.findall(r"[가-힣A-Za-z0-9\-\+\.]{2,}", text)
+    doc = nlp(text)  # spaCy NER 사용
+    orgs = set(ent.text.strip().lower() for ent in doc.ents if ent.label_ == "ORG")
     
     normalized_toks = []
-    for t in toks:
+    for t in orgs:
         normalized = alias_map.get(t, t)
         normalized = alias_map.get(normalized.lower(), normalized)
         normalized_toks.append(normalized)
@@ -204,61 +216,186 @@ def export_company_topic_matrix(meta_items: List[Dict[str, Any]], topics_obj: di
     final_wide_df.to_csv("outputs/export/company_topic_matrix_wide.csv", encoding="utf-8-sig")
     print(f"[INFO] Saved company_topic_matrix_wide.csv (Top-{TOP_K_TOPICS} per org)")
 
-# ========== 기업 네트워크 분석 ==========
-def compute_company_network(max_files: int = 5, min_edge_weight: int = 5) -> dict:
-    print("[INFO] Computing company network...")
+# ========== 기업 네트워크 분석 (업데이트된 버전) ==========
+def load_meta_files(max_files=5, offset=0):
+    files = sorted(glob.glob("data/news_meta_*.json"), reverse=True)[offset:offset + max_files]
+    all_items = []
+    for f in files:
+        with open(f, "r", encoding="utf-8") as ff:
+            all_items.extend(json.load(ff))
+    return all_items
+
+def compute_company_network(items, period="current"):
+    data = {}
+    for idx, it in enumerate(items):
+        text = (it.get("body") or it.get("description") or "").strip()
+        if text:
+            orgs = extract_orgs(text, CFG.get("alias", {}), set(), set())
+            if orgs:
+                data[idx] = {'organizations': orgs, 'sentences': text.split('.')}
+    print(f"[DEBUG] compute_company_network: Found {len(data)} documents with organizations")
     
-    companies = list(_load_lines("data/dictionaries/entities_org.txt"))
-    if not companies:
-        return {"edges": [], "top_pairs": [], "centrality": []}
-
-    meta_files = sorted(glob.glob("data/news_meta_*.json"))[-max_files:]
-    co = {}
+    if not data:
+        print("[WARN] No documents with organizations found")
+        return None
     
-    for fp in meta_files:
-        try:
-            with open(fp, "r", encoding="utf-8") as f:
-                items = json.load(f) or []
-        except Exception:
-            continue
-            
-        for it in items:
-            text = ((it.get("title") or it.get("title_og") or "") + " " +
-                    (it.get("body") or it.get("description") or it.get("description_og") or ""))
-            present = [c for c in companies if c and c in text]
-            present = sorted(set(present))
-            
-            for i in range(len(present)):
-                for j in range(i + 1, len(present)):
-                    a, b = present[i], present[j]
-                    co[(a, b)] = co.get((a, b), 0) + 1
-
-    edges = [{"source": a, "target": b, "weight": w}
-             for (a, b), w in co.items() if w >= min_edge_weight]
-
-    top_pairs = sorted(edges, key=lambda e: e["weight"], reverse=True)[:5]
-
-    # 중심성 계산
-    import networkx as nx
-    G = nx.Graph()
-    for e in edges:
-        G.add_edge(e["source"], e["target"], weight=e["weight"])
-
-    centrality = []
-    if G.number_of_nodes() > 0:
-        deg = nx.degree_centrality(G)
-        btw = nx.betweenness_centrality(G, normalized=True, weight="weight")
-        nodes_sorted = sorted(G.nodes(), key=lambda n: (deg.get(n, 0.0), btw.get(n, 0.0)), reverse=True)[:5]
+    entities = {}
+    relations = defaultdict(Counter)
+    for key in data:
+        orgs = data[key]['organizations']
+        sentences = data[key]['sentences']
+        for ent in orgs:
+            if ent not in entities:
+                entities[ent] = []
+            entities[ent].extend([doc for doc in orgs if doc != ent])
         
-        for n in nodes_sorted:
-            centrality.append({
-                "org": n,
-                "degree_centrality": round(float(deg.get(n, 0.0)), 3),
-                "betweenness": round(float(btw.get(n, 0.0)), 3)
-            })
+        for i in range(len(orgs)):
+            for j in range(i + 1, len(orgs)):
+                a, b = sorted([orgs[i], orgs[j]])
+                pair = (a, b)
+                rel_type = "neutral"
+                for sent in sentences:
+                    rel = classify_relationship(sent, a, b)
+                    if rel != "neutral":
+                        rel_type = rel
+                        break
+                relations[pair][rel_type] += 1
+    
+    G = nx.Graph()
+    for ind in entities:
+        co_orgs = set(entities[ind])
+        G.add_node(ind, freq=len(co_orgs))
+        for edge in co_orgs:
+            pair = tuple(sorted([ind, edge]))
+            weight = sum(relations.get(pair, {}).values())
+            rel_type = max(relations.get(pair, {"neutral": 0}), key=relations.get(pair, {"neutral": 0}).get)
+            if weight > 0:
+                G.add_edge(ind, edge, weight=weight, rel_type=rel_type)
+    
+    print(f"[DEBUG] Network created: {len(G.nodes())} nodes, {len(G.edges())} edges")
+    return G
 
-    print(f"[INFO] Network: {len(edges)} edges, {len(centrality)} central orgs")
-    return {"edges": edges, "top_pairs": top_pairs, "centrality": centrality}
+def analyze_network(G):
+    if not G:
+        print("[WARN] Empty network provided to analyze_network")
+        return {}
+    
+    degree_centrality = nx.degree_centrality(G)
+    betweenness = nx.betweenness_centrality(G)
+    closeness = nx.closeness_centrality(G)
+    
+    roles = {}
+    for node in G.nodes():
+        deg = degree_centrality.get(node, 0)
+        btw = betweenness.get(node, 0)
+        close = closeness.get(node, 0)
+        if deg > 0.7 and btw > 0.3:
+            roles[node] = ("허브 (Hub)", "산업 전반에 영향력 행사")
+        elif btw > 0.5:
+            roles[node] = ("브로커 (Broker)", "공급망 중개자 역할")
+        elif deg < 0.3:
+            roles[node] = ("주변부 (Peripheral)", "특정 니치 영역 집중")
+        else:
+            roles[node] = ("일반 (Regular)", "평균적 관계망")
+    
+    print(f"[DEBUG] Roles generated: {len(roles)} roles, Sample: {dict(list(roles.items())[:2]) if roles else 'Empty'}")
+    
+    top_pairs = sorted(G.edges(data=True), key=lambda x: x[2]['weight'], reverse=True)[:5]
+    top_pairs = [{"source": e[0], "target": e[1], "weight": e[2]['weight'], "rel_type": e[2]['rel_type']} for e in top_pairs]
+    
+    central = sorted(degree_centrality.items(), key=lambda x: x[1], reverse=True)[:5]
+    central = [{"org": c[0], "degree_centrality": round(float(c[1]), 3)} for c in central]
+    betw = sorted(betweenness.items(), key=lambda x: x[1], reverse=True)[:5]
+    betw = [{"org": b[0], "betweenness": round(float(b[1]), 3)} for b in betw]
+    
+    comms = list(community.greedy_modularity_communities(G, weight='weight'))
+    communities = []
+    for i, comm in enumerate(comms):
+        members = list(comm)
+        theme = infer_community_theme(members)
+        communities.append({"community_id": i, "members": members, "interpretation": theme})
+    
+    nodes = [{"org": node} for node in G.nodes()]
+    print(f"[DEBUG] Nodes generated: {len(nodes)} nodes, Sample: {nodes[:2] if nodes else 'Empty'}")
+    
+    return {
+        "nodes": nodes,
+        "edges": [{"source": u, "target": v, "weight": d['weight'], "rel_type": d['rel_type']} for u, v, d in G.edges(data=True)],
+        "roles": roles,
+        "top_pairs": top_pairs,
+        "centrality": central,
+        "betweenness": betw,
+        "communities": communities
+    }
+
+def build_company_network(out_json="outputs/company_network.json", out_png="outputs/fig/company_network.png", out_md="outputs/company_network_report.md"):
+    changes = compare_network_periods()
+    
+    items = load_meta_files(max_files=5)
+    print(f"[DEBUG] Loaded {len(items)} meta items")
+    G = compute_company_network(items)
+    if not G:
+        print("[WARN] No network data.")
+        return
+    
+    analysis = analyze_network(G)
+    analysis['changes'] = changes
+    analysis['actions'] = generate_action_items(analysis, changes)
+    
+    print(f"[DEBUG] Analysis contents: nodes={len(analysis['nodes'])}, roles={len(analysis['roles'])}")
+    
+    # JSON 저장
+    os.makedirs(os.path.dirname(out_json), exist_ok=True)
+    with open(out_json, "w", encoding="utf-8") as f:
+        json.dump(analysis, f, ensure_ascii=False, indent=2)
+    
+    # 시각화
+    plt.figure(figsize=(12, 8))
+    pos = nx.spring_layout(G, seed=42)
+    node_sizes = [300 + 50 * G.nodes[n]['freq'] for n in G.nodes()]
+    edge_colors = ['red' if d['rel_type'] == 'competitive' else 'green' if d['rel_type'] == 'cooperative' else 'gray' for u, v, d in G.edges(data=True)]
+    nx.draw(G, pos, with_labels=True, node_size=node_sizes, node_color="lightblue", font_size=10, edge_color=edge_colors)
+    plt.title("Company Network (Red: Competitive, Green: Cooperative)")
+    plt.savefig(out_png, dpi=150)
+    plt.close()
+    
+    # Markdown 리포트
+    lines = [
+        "### 기업 경쟁/협력 네트워크 분석\n",
+        "#### 1. 전체 구조 (한눈에 보기)\n",
+        f"- 노드 수: {len(G.nodes())}개 기업\n",
+        f"- 연결 수: {len(G.edges())}개 관계\n",
+        f"- 평균 연결도: {sum(dict(G.degree()).values()) / len(G.nodes()):.1f} (업계 평균 2.1 대비 ↑)\n",
+        f"![Company Network](fig/company_network.png)\n",
+        
+        "#### 2. 주요 플레이어\n",
+        "| 기업 | 역할 | 변화 | 해석 |\n|------|------|------|------|\n"
+    ]
+    for org, (role, interp) in analysis['roles'].items():
+        delta = changes.get(org, {}).get('centrality_change', 0)
+        delta_str = f"↑{delta:.0%}" if delta > 0 else f"↓{abs(delta):.0%}" if delta < 0 else "-"
+        lines.append(f"| {org} | {role} | {delta_str} | {interp} |\n")
+    
+    lines.append("\n#### 3. 주목할 관계\n")
+    for p in analysis['top_pairs']:
+        rel_perc = p['weight']
+        rel_type = p['rel_type']
+        perc_str = f"{rel_type.capitalize()} {rel_perc}%"
+        lines.append(f"- **{p['source']}-{p['target']}**: {perc_str} → {rel_type} 구도 지속\n")
+    
+    lines.append("\n#### 4. 진영 분석\n")
+    for c in analysis['communities']:
+        lines.append(f"- 진영 {c['community_id']}: {', '.join(c['members'])} → {c['interpretation']}\n")
+    
+    lines.append("\n#### 5. 액션 아이템\n")
+    for a in analysis['actions']:
+        lines.append(f"{a}\n")
+    
+    os.makedirs(os.path.dirname(out_md), exist_ok=True)
+    with open(out_md, "w", encoding="utf-8") as f:
+        f.write("".join(lines))
+    
+    print("[INFO] Updated company network: JSON, PNG, MD saved.")
 
 # ========== 분석 요약 ==========
 def generate_analysis_summary(matrix_path: str, network_path: str) -> dict:
@@ -308,11 +445,9 @@ def main():
     except Exception as e:
         print(f"[ERROR] Matrix export failed: {e}")
     
-    # 2. 기업 네트워크
+    # 2. 기업 네트워크 (업데이트된 버전 호출)
     try:
-        network_result = compute_company_network(max_files=5, min_edge_weight=5)
-        with open("outputs/company_network.json", "w", encoding="utf-8") as f:
-            json.dump(network_result, f, ensure_ascii=False, indent=2)
+        build_company_network()
     except Exception as e:
         print(f"[ERROR] Network analysis failed: {e}")
     

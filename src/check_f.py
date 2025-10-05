@@ -27,7 +27,7 @@ def main():
         if h not in txt:
             fail(f"report.md 섹션 누락: {h}")
 
-    print("[INFO] Check E OK | report.md 생성 확인")
+    print("[INFO] Check F OK | report.md 생성 확인")
 
 if __name__ == "__main__":
     main()

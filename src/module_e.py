@@ -651,7 +651,7 @@ def main():
     ideas_final = fill_opportunities_to_five(ideas_with_scores, keywords_obj, want=5)
 
     save_json("outputs/biz_opportunities.json", {"ideas": ideas_final})
-    print("[INFO] Module D done | ideas=%d" % len(ideas_final))
+    print("[INFO] Module E done | ideas=%d" % len(ideas_final))
 
 if __name__ == "__main__":
     main()
