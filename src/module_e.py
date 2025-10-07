@@ -105,28 +105,65 @@ def extract_keywords_from_idea(idea_text: str, keywords_obj: dict) -> List[str]:
     return found_keywords
 
 def pick_evidence(idea_keywords: List[str], items: List[Dict[str,Any]], limit=3) -> List[Dict[str,Any]]:
-    ev = []
+    """ 문장의 점수를 매겨 가장 설득력 있는 근거를 선택하는 함수 """
     if not idea_keywords:
-        return ev
+        return []
     
+    candidate_sentences = []
+    
+    # 사업의 필요성과 연관된 가중치 키워드
+    prob_keywords = ["문제", "어려움", "한계", "비용", "수율", "부족"]
+    opp_keywords = ["기회", "요구", "필요", "성장", "가능성", "기대"]
+
     for it in items:
         base = (it.get("raw_body") or it.get("body") or it.get("description") or "")
         if not base:
             continue
         
-        low = base.lower()
-        if any(kw.lower() in low for kw in idea_keywords):
-            sents = re.split(r"(?<=[\.!?다])\s+", base)
+        low_base = base.lower()
+        # 아이디어 키워드 중 하나라도 본문에 포함된 경우에만 문장 분석 시작
+        if any(kw.lower() in low_base for kw in idea_keywords):
+            sents = re.split(r"(?<=[.!?다])\s+", base)
             for s in sents:
-                if any(kw.lower() in (s or "").lower() for kw in idea_keywords):
-                    ev.append({
-                        "sentence": (s or "").strip()[:400],
-                        "url": it.get("url") or "",
-                        "date": to_kst_date_str(it.get("published_time") or it.get("pubDate_raw") or "")
-                    })
-                    if len(ev) >= limit:
-                        return ev
-    return ev
+                s_strip = s.strip()
+                if not s_strip:
+                    continue
+
+                # 문장 점수 계산
+                score = 0
+                # 1. 아이디어 핵심 키워드 포함 개수
+                matched_keywords = sum(1 for kw in idea_keywords if kw.lower() in s_strip.lower())
+                if matched_keywords == 0:
+                    continue
+                score += matched_keywords * 2
+
+                # 2. 문제점/기회 키워드 포함 시 보너스 점수
+                if any(pw in s_strip for pw in prob_keywords):
+                    score += 5
+                if any(ow in s_strip for ow in opp_keywords):
+                    score += 3
+                
+                candidate_sentences.append({
+                    "sentence": s_strip[:400],
+                    "url": it.get("url") or "",
+                    "date": to_kst_date_str(it.get("published_time") or it.get("pubDate_raw") or ""),
+                    "score": score
+                })
+
+    # 점수가 높은 순으로 정렬하여 상위 문장 선택
+    sorted_candidates = sorted(candidate_sentences, key=lambda x: x['score'], reverse=True)
+    
+    # 중복 제거 및 최종 결과 반환
+    final_evidence = []
+    seen_sentences = set()
+    for cand in sorted_candidates:
+        if len(final_evidence) >= limit:
+            break
+        if cand['sentence'] not in seen_sentences:
+            final_evidence.append(cand)
+            seen_sentences.add(cand['sentence'])
+            
+    return final_evidence
 
 # ========== LLM 프롬프트/파서/정규화 ==========
 def build_schema_hint() -> Dict[str, Any]:
@@ -142,17 +179,28 @@ def build_schema_hint() -> Dict[str, Any]:
 
 def build_prompt(context: Dict[str, Any], want: int = 5) -> str:
     schema = build_schema_hint()
+    
+    maturity_prompt_injection = ""
+    if context.get("tech_maturity"):
+        maturity_prompt_injection = (
+            f"  5) 아래 '기술 성숙도' 정보를 반드시 참고하여, 각 아이디어가 어떤 기술 단계(Emerging, Growth, Maturity)에 있는지 전략적 타이밍 관점에서 언급하세요.\n"
+            f"     (예: 이 아이디어는 아직 Emerging 단계인 OOO 기술에 선제적으로 진입하는 것입니다.)\n"
+        )
+
     return (
-        f"당신은 최상위 디스플레이 제조 기업의 '사업 전략 전문가'입니다. "
-        f"아래 컨텍스트(최신 기술 뉴스 키워드, 토픽, 트렌드)를 기반으로 우리 회사가 추진할 만한 구체적인 신사업 아이디어를 제안해 주세요.\n"
+        f"당신은 글로벌 1위 디스플레이 패널 제조 기업(B2B)의 '신사업 개발 총괄'입니다. "
+        f"아래 컨텍스트를 기반으로 구체적인 신사업 아이디어를 제안해 주세요.\n"
         f"- 아이디어 개수: 정확히 {want}개\n"
         f"- JSON 배열 형식만 출력하세요. 설명은 필요 없습니다.\n"
         f"- 각 아이템은 아래 스키마 키를 정확히 사용하세요: {json.dumps(schema, ensure_ascii=False)}\n"
         f"- 제약 조건:\n"
-        f"  1) 아이디어는 반드시 '차량용 디스플레이', 'AR/VR/XR용 마이크로디스플레이', 'IT용 차세대 패널(OLED, MicroLED)', '신소재/부품', '공정 자동화/수율 개선' 중 최소 3개 이상의 카테고리를 포함해야 합니다.\n"
+        # --- ✨✨✨ 바로 이 부분이 수정되었습니다 ✨✨✨ ---
+        f"  1) 아이디어는 **구체적인 '제품', '기술', '서비스', 또는 '공정 개선 방안'**의 형태여야 합니다. '플랫폼'이나 '솔루션' 같은 추상적인 개념 대신, **실체가 명확하고 현실적인 사업 아이템**을 제안해주세요. (예: '의료용 12K 고해상도 MicroLED 패널 개발', '롤러블 디스플레이 수율 20% 향상을 위한 AI 공정 모니터링 서비스')\n"
+        # --- ✨✨✨ 여기까지 ---
         f"  2) 각 아이디어의 'problem' 항목에는 반드시 최신 트렌드나 'Why now' 관점을 1문장 이상 포함하여 문제의 시의성을 강조하세요.\n"
         f"  3) 'target_customer'는 '글로벌 완성차 OEM', '북미 빅테크 기업'처럼 구체적으로 명시하세요.\n"
         f"  4) 'priority_score'는 시장 잠재력, 기술 실현 가능성, 경쟁 강도를 고려하여 객관적으로 평가해주세요.\n"
+        f"{maturity_prompt_injection}"
         f"컨텍스트:\n"
         f"{json.dumps(context, ensure_ascii=False)}"
     )
@@ -342,6 +390,7 @@ def load_context_for_prompt() -> Dict[str, Any]:
     insights = load_json("outputs/trend_insights.json", default={"summary": "", "top_topics": [], "evidence": {}}) or {"summary": "", "top_topics": [], "evidence": {}}
     trend_strength_path = "outputs/export/trend_strength.csv"
     events_path = "outputs/export/events.csv"
+    tech_maturity = load_json("outputs/tech_maturity.json", default={"results": []}) or {"results": []}
 
     summary = (insights.get("summary") or "").strip()
     if len(summary) > 1200:
@@ -381,7 +430,22 @@ def load_context_for_prompt() -> Dict[str, Any]:
         pass
     events_simple = dict(evt_summary)
 
-    return {"summary": summary, "keywords": kw_simple, "topics": tp_simple, "trends": trend_rows, "events": events_simple}
+    maturity_summary = []
+    for res in tech_maturity.get("results", []):
+        tech = res.get("technology")
+        stage = res.get("analysis", {}).get("stage")
+        if tech and stage and stage != "N/A":
+            maturity_summary.append(f"- {tech}: {stage} 단계")
+    maturity_context = "\n".join(maturity_summary)
+
+    return {
+        "summary": summary, 
+        "keywords": kw_simple, 
+        "topics": tp_simple, 
+        "trends": trend_rows, 
+        "events": events_simple,
+        "tech_maturity": maturity_context
+    }
 
 def call_gemini(prompt: str) -> str:
     import google.generativeai as genai

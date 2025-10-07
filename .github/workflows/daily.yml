@@ -160,6 +160,12 @@ jobs:
           source .venv/bin/activate
           python -m scripts.signal_export
 
+      - name: Generate Future Insights (Maturity & Weak Signals)
+        shell: bash
+        run: |
+          source .venv/bin/activate
+          python -m scripts.future_insights
+
       - name: Module D - Analysis
         shell: bash
         run: |

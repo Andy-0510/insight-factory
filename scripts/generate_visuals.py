@@ -7,6 +7,7 @@ import networkx as nx
 import itertools
 import numpy as np
 import matplotlib.font_manager as fm
+from adjustText import adjust_text
 
 
 # --- Matplotlib 한글 폰트 설정 ---
@@ -32,6 +33,12 @@ def ensure_fonts():
     plt.rcParams['axes.unicode_minus'] = False
     print(f"[INFO] Matplotlib font set to: {plt.rcParams['font.family']}")
 
+def load_json(path, default=None):
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            return json.load(f)
+    except FileNotFoundError:
+        return default if default is not None else {}
 
 def plot_heatmap(df, topics_map):
     """ 1. 기업x토픽 집중도 히트맵 생성 """
@@ -342,6 +349,164 @@ def plot_company_network_from_json(json_path="outputs/company_network.json",
     plt.close()
     print(f"[INFO] Saved simplified company_network.png with {len(G.nodes())} nodes and {len(G.edges())} edges")
 
+def plot_tech_maturity_map(maturity_data):
+    """ 4. 기술 성숙도 맵 버블 차트 생성 (범례를 차트 안에 표시) """
+    if not maturity_data.get("results"):
+        return
+
+    records = []
+    for item in maturity_data["results"]:
+        tech = item.get("technology")
+        metrics = item.get("metrics", {})
+        analysis = item.get("analysis", {})
+        records.append({
+            "technology": tech, "frequency": metrics.get("frequency", 0),
+            "sentiment": metrics.get("sentiment", 0.0), "events": sum(metrics.get("events", {}).values()),
+            "stage": analysis.get("stage", "N-A")
+        })
+    
+    df = pd.DataFrame(records)
+    if df.empty: return
+
+    plt.figure(figsize=(12, 8))
+    ax = plt.gca()
+    
+    sns.scatterplot(
+        data=df, x="frequency", y="sentiment", size="events",
+        hue="stage", sizes=(200, 2000), alpha=0.7, palette="viridis", ax=ax
+    )
+
+    texts = []
+    for i in range(df.shape[0]):
+        texts.append(ax.text(x=df.frequency[i], y=df.sentiment[i], s=df.technology[i], fontdict=dict(color='black', size=10)))
+    
+    adjust_text(texts, ax=ax, arrowprops=dict(arrowstyle='-', color='gray', lw=0.5))
+
+    plt.title('기술 성숙도 맵 (Technology Maturity Map)', fontsize=16)
+    plt.xlabel('시장 관심도 (뉴스 빈도)', fontsize=12)
+    plt.ylabel('시장 긍정성 (감성 점수)', fontsize=12)
+    
+    # --- ✨✨✨ 바로 이 부분이 수정되었습니다 ✨✨✨ ---
+    # 범례를 차트 안의 최적 위치('best')에 자동으로 배치하도록 변경합니다.
+    handles, labels = ax.get_legend_handles_labels()
+    
+    num_stages = df['stage'].nunique()
+    stage_handles = handles[1:num_stages+1]
+    stage_labels = labels[1:num_stages+1]
+
+    # bbox_to_anchor 옵션을 제거하고, loc='best'로 변경합니다.
+    legend = ax.legend(stage_handles, stage_labels, title='성숙도 단계', loc='best', frameon=True, framealpha=0.8)
+    
+    if legend:
+        legend.get_title().set_fontsize('14')
+        for text in legend.get_texts():
+            text.set_fontsize('12')
+    # --- ✨✨✨ 여기까지 ---
+    
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig('outputs/fig/tech_maturity_map.png', dpi=150, bbox_inches='tight')
+    plt.close()
+    print("[INFO] Saved tech_maturity_map.png")
+
+def plot_weak_signal_radar(weak_signals_df):
+    """ 5. 약한 신호 레이더 차트 생성 (라벨 수정 버전) """
+    if weak_signals_df.empty:
+        return
+
+    plt.figure(figsize=(12, 8))
+    ax = plt.gca() # 축 객체 가져오기
+    sns.scatterplot(
+        data=weak_signals_df, x="total", y="z_like", size="cur",
+        sizes=(100, 1000), alpha=0.7, color="red", ax=ax, legend=False
+    )
+
+    # --- ✨✨✨ 라벨 겹침 방지 로직으로 수정 ✨✨✨ ---
+    texts = []
+    for i in range(weak_signals_df.shape[0]):
+        texts.append(ax.text(x=weak_signals_df.total[i], y=weak_signals_df.z_like[i], s=weak_signals_df.term[i], fontdict=dict(color='red', size=12)))
+
+    adjust_text(texts, ax=ax, arrowprops=dict(arrowstyle='->', color='red', lw=0.5))
+    # --- ✨✨✨ 여기까지 ---
+
+    plt.title('약한 신호 레이더 (Weak Signal Radar)', fontsize=16)
+    plt.xlabel('익숙함 (총 누적 언급량)', fontsize=12)
+    plt.ylabel('임팩트 (통계적 급등 수준)', fontsize=12)
+
+    if not weak_signals_df.empty:
+        plt.axhline(0.8, color='gray', linestyle='--', linewidth=0.8)
+        plt.text(weak_signals_df['total'].max(), 0.8, '  주목 기준선', color='gray', va='bottom')
+
+    plt.grid(True)
+    plt.tight_layout()
+    plt.savefig('outputs/fig/weak_signal_radar.png', dpi=150, bbox_inches='tight')
+    plt.close()
+    print("[INFO] Saved weak_signal_radar.png")
+
+def plot_strong_signals(strong_signals_df):
+    """ 6. 강한 신호 임팩트 순위 바 차트 생성 (좌우 대칭 및 값 표시 버전) """
+    if strong_signals_df.empty:
+        return
+
+    rising = strong_signals_df[strong_signals_df['z_like'] > 0].head(5)
+    rising['trend'] = '상승(Rising)'
+
+    falling = strong_signals_df[strong_signals_df['z_like'] < 0].tail(5)
+    falling['trend'] = '하강(Falling)'
+
+    combined = pd.concat([rising, falling]).sort_values('z_like', ascending=False)
+    
+    if combined.empty:
+        print("[INFO] No significant rising or falling signals to plot.")
+        return
+
+    plt.figure(figsize=(12, 8))
+    ax = plt.gca()
+    
+    sns.barplot(
+        data=combined,
+        y="term",
+        x="z_like",
+        hue="trend",
+        palette={"상승(Rising)": "#3b82f6", "하강(Falling)": "#ef4444"},
+        dodge=False,
+        ax=ax
+    )
+
+    # --- ✨✨✨ 1. 좌우 대칭을 위한 X축 범위 설정 ✨✨✨ ---
+    # z_like 값의 절대값 중 가장 큰 값을 기준으로 좌우 대칭 설정
+    max_abs_z = combined['z_like'].abs().max()
+    limit = max_abs_z * 1.2  # 약간의 여백 추가
+    ax.set_xlim(-limit, limit)
+    # --- ✨✨✨ 여기까지 ---
+
+    # --- ✨✨✨ 2. 각 막대에 값(z_like 점수) 표시 ✨✨✨ ---
+    for p in ax.patches:
+        width = p.get_width()
+        # 값의 위치를 막대 끝에서 약간 떨어지게 설정
+        x_pos = width + (limit * 0.02) if width > 0 else width - (limit * 0.02)
+        
+        # 텍스트 정렬 설정
+        ha = 'left' if width > 0 else 'right'
+        
+        ax.text(x=x_pos, 
+                y=p.get_y() + p.get_height() / 2, 
+                s=f'{width:.2f}', # 소수점 둘째 자리까지 표시
+                va='center', 
+                ha=ha,
+                fontsize=10)
+    # --- ✨✨✨ 여기까지 ---
+
+    plt.title('주요 신호 시계열 변화 (상승/하강)', fontsize=16)
+    plt.xlabel('임팩트 (z_like)', fontsize=12)
+    plt.ylabel('키워드', fontsize=12)
+    ax.axvline(0, color='grey', linewidth=0.8)
+    plt.grid(axis='x', linestyle='--', alpha=0.6)
+    plt.tight_layout()
+    plt.savefig('outputs/fig/strong_signals_barchart.png', dpi=150, bbox_inches='tight')
+    plt.close()
+    print("[INFO] Saved strong_signals_barchart.png")
+
 
 
 def main():
@@ -376,11 +541,30 @@ def main():
         print(f"[ERROR] Failed to generate idea score chart: {e}")
         traceback.print_exc()
     
-    # 기업 네트워크 시각화(신규)
+    # 기업 네트워크 시각화
     try:
         plot_company_network_from_json("outputs/company_network.json", "outputs/fig/company_network.png")
     except Exception as e:
         print(f"[WARN] company network visualization failed: {repr(e)}")
+
+    # 기술 성숙도 레이더 시각화
+    try:
+        tech_maturity_data = load_json('outputs/tech_maturity.json')
+    except Exception:
+        tech_maturity_data = {"results": []}
+        print("[WARN] tech_maturity.json not found.")
+
+    try:
+        strong_signals_df = pd.read_csv('outputs/export/trend_strength.csv')
+    except FileNotFoundError:
+        strong_signals_df = pd.DataFrame()
+        print("[WARN] trend_strength.csv not found.")
+
+    try:
+        weak_signals_df = pd.read_csv('outputs/export/weak_signals.csv')
+    except FileNotFoundError:
+        weak_signals_df = pd.DataFrame()
+        print("[WARN] weak_signals.csv not found.")
 
 
     # 시각화 함수 호출
@@ -388,6 +572,9 @@ def main():
     plot_heatmap(df, topics_map)
     plot_topic_share(df, topics_map)
     plot_company_focus(df)
+    plot_tech_maturity_map(tech_maturity_data)
+    plot_weak_signal_radar(weak_signals_df)
+    plot_strong_signals(strong_signals_df)
     
     print("\n[SUCCESS] All visualizations have been generated in 'outputs/fig/'")
 

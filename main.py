@@ -108,6 +108,7 @@ def build_steps():
         ("c",        [PY, "-m", "src.module_c"]),
         ("check_c",  [PY, "-m", "src.check_c"]),
         ("export",   [PY, "-m", "scripts.signal_export"]),
+        ("future",   [PY, "-m", "scripts.future_insights"]),
         ("d",        [PY, "-m", "src.module_d"]),
         ("check_d",  [PY, "-m", "src.check_d"]),
         ("e",        [PY, "-m", "src.module_e"]),

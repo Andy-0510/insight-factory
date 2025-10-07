@@ -519,7 +519,53 @@ def _truncate(s, n=80):
 def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="outputs/report.md"):
     import pandas as pd
     import glob
-    import json
+
+    # --- ✨✨✨ 신규 헬퍼 함수 1: 기술 성숙도 섹션 생성 ✨✨✨ ---
+    def _generate_tech_maturity_section(fig_dir="fig"):
+        section_lines = ["\n## 기술 성숙도 분석 (Technology Maturity Analysis)\n"]
+        try:
+            maturity_data = load_json("outputs/tech_maturity.json", {"results": []})
+            if not maturity_data.get("results"):
+                section_lines.append("- (분석된 기술 성숙도 데이터가 없습니다.)\n")
+                return "\n".join(section_lines)
+
+            # --- ✨✨✨ 차트 이미지와 설명 추가 ✨✨✨ ---
+            section_lines.append(f"![Technology Maturity Map]({fig_dir}/tech_maturity_map.png)\n")
+            section_lines.append("> 각 기술의 시장 내 위치(X축: 관심도, Y축: 긍정성)와 사업 활발도(버블 크기)를 보여줍니다.\n")
+
+            section_lines.append("| 기술 (Technology) | 성숙도 단계 (Stage) | 판단 근거 (Rationale) |")
+            section_lines.append("|:---|:---|:---|")
+            for item in maturity_data["results"]:
+                tech = item.get("technology", "N/A")
+                analysis = item.get("analysis", {})
+                stage = analysis.get("stage", "N/A")
+                reason = analysis.get("reason", "-")
+                section_lines.append(f"| {tech} | **{stage}** | {reason} |")
+            section_lines.append("\n")
+        except Exception as e:
+            section_lines.append(f"- (기술 성숙도 데이터를 불러오는 중 오류 발생: {e})\n")
+        
+        return "\n".join(section_lines)
+
+    # --- ✨✨✨ 신규 헬퍼 함수 2: 약한 신호 섹션 생성 ✨✨✨ ---
+    def _generate_weak_signal_section():
+        section_lines = ["\n## 포착된 약한 신호 및 해석 (Emerging Signals & Interpretation)\n"]
+        try:
+            weak_signal_data = load_json("outputs/weak_signal_insights.json", {"results": []})
+            if not weak_signal_data.get("results"):
+                section_lines.append("- (포착된 약한 신호가 없습니다.)\n")
+                return "\n".join(section_lines)
+
+            for item in weak_signal_data["results"]:
+                signal = item.get("signal", "N/A")
+                interpretation = item.get("interpretation", "-")
+                section_lines.append(f"- **{signal}**")
+                section_lines.append(f"  - **해석:** {interpretation}")
+            section_lines.append("\n")
+        except Exception as e:
+            section_lines.append(f"- (약한 신호 데이터를 불러오는 중 오류 발생: {e})\n")
+
+        return "\n".join(section_lines)
 
     def _generate_matrix_section(topics_obj):
         try:
@@ -589,6 +635,68 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
         if not has_content:
             return ""
         return "\n".join(section_lines)
+    
+    def _generate_signals_section(fig_dir="fig"): # fig_dir 인자 추가
+        section_lines = ["\n## 주요 시그널 분석 (Key Signal Analysis)\n"]
+        has_content = False
+
+        # 1. 강한 신호 (Strong Signals) 테이블 및 차트 생성
+        try:
+            strong_df = pd.read_csv("outputs/export/trend_strength.csv")
+            if not strong_df.empty:
+                section_lines.append("### 강한 신호 (Strong Signals)\n")
+                section_lines.append("> 최근 뉴스에서 가장 주목받은 상위 키워드들입니다.\n")
+                
+                # --- ✨✨✨ 차트 이미지 삽입 ✨✨✨ ---
+                section_lines.append(f"![Strong Signals Chart]({fig_dir}/strong_signals_barchart.png)\n")
+                
+                report_df = strong_df.head(10)[['term', 'cur', 'z_like']].copy()
+                report_df.rename(columns={'term': '강한 신호 (Term)', 'cur': '최근 언급량 (cur)', 'z_like': '임팩트 (z_like)'}, inplace=True)
+                report_df.insert(0, '순위', range(1, 1 + len(report_df)))
+
+                section_lines.append(report_df.to_markdown(index=False))
+                section_lines.append("\n")
+                has_content = True
+        except FileNotFoundError:
+            pass
+        except Exception as e:
+            section_lines.append(f"- (강한 신호 데이터를 처리하는 중 오류 발생: {e})\n")
+
+        # 2. 약한 신호 (Weak Signals) 테이블 및 차트 생성
+        try:
+            weak_df = pd.read_csv("outputs/export/weak_signals.csv")
+            weak_insights = load_json("outputs/weak_signal_insights.json", {"results": []})
+            
+            if not weak_df.empty:
+                section_lines.append("### 약한 신호 (Weak Signals)\n")
+                section_lines.append("> 총 언급량은 적지만 최근 급부상하여 미래가 기대되는 '틈새 키워드'들입니다.\n")
+
+                # --- ✨✨✨ 차트 이미지 삽입 ✨✨✨ ---
+                section_lines.append(f"![Weak Signal Radar]({fig_dir}/weak_signal_radar.png)\n")
+
+                if weak_insights.get("results"):
+                    insights_map = {item['signal']: item['interpretation'] for item in weak_insights["results"]}
+                    report_rows = []
+                    for _, row in weak_df.iterrows():
+                        term = row['term']
+                        report_rows.append({
+                            "약한 신호 (Signal)": term,
+                            "지표 (cur / z_like)": f"{row['cur']} / {row['z_like']:.2f}",
+                            "LLM의 1줄 요약 (Interpretation)": insights_map.get(term, "-")
+                        })
+                    section_lines.append(pd.DataFrame(report_rows).to_markdown(index=False))
+                
+                section_lines.append("\n")
+                has_content = True
+        except FileNotFoundError:
+            pass
+        except Exception as e:
+            section_lines.append(f"- (약한 신호 데이터를 처리하는 중 오류 발생: {e})\n")
+
+        if not has_content:
+            return ""
+            
+        return "\n".join(section_lines)
 
     klist = keywords.get("keywords", [])[:15]
     tlist = topics.get("topics", [])
@@ -656,6 +764,12 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
         lines.append(summary + "\n")
     else:
         lines.append("- (요약 없음)\n")
+
+    lines.append(_generate_signals_section())
+
+    lines.append(_generate_tech_maturity_section())
+    lines.append(_generate_weak_signal_section())
+
     lines.append("## Opportunities (Top 5)\n")
     ideas_all = (opps.get("ideas", []) or [])
     if ideas_all:
