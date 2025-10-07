@@ -391,6 +391,105 @@ def export_csvs(ts_obj, keywords_obj, topics_obj, out_dir="outputs/export"):
     df_tw.to_csv(os.path.join(out_dir, "topics_top_words.csv"), index=False, encoding="utf-8")
     print("[INFO] export CSVs -> outputs/export/*.csv")
 
+# ===== [PATCH] 관계·경쟁 심화 분석 섹션 =====
+def _generate_relationship_competition_section(fig_dir="fig",
+                                               net_path="outputs/company_network.json",
+                                               summary_path="outputs/analysis_summary.json"):
+    import os, json
+    import pandas as pd
+    lines = []
+    lines.append("\n## 관계·경쟁 심화 분석\n")
+
+    # 네트워크 로드
+    net = {}
+    try:
+        with open(net_path, "r", encoding="utf-8") as f:
+            net = json.load(f) or {}
+    except Exception:
+        lines.append("- (네트워크 데이터가 없어 본 섹션을 생략합니다.)\n")
+        return "\n".join(lines)
+
+    edges = net.get("edges", [])
+    nodes = net.get("nodes", [])
+    top_pairs = net.get("top_pairs", [])
+    central = net.get("centrality", [])
+    betw = net.get("betweenness", [])
+    comms = net.get("communities", [])
+
+    # 핵심 요약
+    num_nodes = len(nodes)
+    num_edges = len(edges)
+    lines.append("**핵심 요약**\n")
+    lines.append(f"- **관계망 규모:** 노드 {num_nodes}개 / 엣지 {num_edges}개\n")
+    if top_pairs:
+        tp = top_pairs[0]
+        lines.append(f"- **가장 강한 관계:** {tp.get('source')} ↔ {tp.get('target')} (가중치 {tp.get('weight')}, 유형 {tp.get('rel_type')})\n")
+    if central:
+        lines.append(f"- **허브 후보:** {central[0].get('org')} (Degree {central[0].get('degree_centrality')})\n")
+    if betw:
+        lines.append(f"- **브로커 후보:** {betw[0].get('org')} (Betweenness {betw[0].get('betweenness')})\n")
+
+    # 상위 관계쌍
+    if top_pairs:
+        df_pairs = pd.DataFrame(top_pairs)[["source","target","weight","rel_type"]]
+        lines.append("\n### 상위 관계쌍(Edge)\n")
+        # 설명 인용 추가
+        lines.append("> 동일 문서/문장 내에서 함께 언급된 기업 쌍이며, 가중치는 동시출현 빈도입니다. 값이 높을수록 상호 관련성이 강하고, 유형은 키워드 규칙으로 경쟁/협력/중립을 추정합니다.\n")
+        lines.append(df_pairs.rename(columns={
+            "source": "Source", "target": "Target", "weight": "Weight", "rel_type": "Type"
+        }).to_markdown(index=False))
+        lines.append("\n")
+
+    # 중심성 상위
+    if central:
+        df_c = pd.DataFrame(central)[["org","degree_centrality"]]
+        lines.append("\n### 중심성 상위(연결 허브)\n")
+        # 설명 인용 추가
+        lines.append("> Degree 중심성은 한 노드가 연결된 상대 수의 비율로, 값이 높을수록 다수의 기업과 직접 연결된 허브 성격을 가집니다. 허브는 이슈 확산과 정보 접근성이 높습니다.\n")
+        lines.append(df_c.rename(columns={"org": "Org", "degree_centrality": "DegreeCentrality"}).to_markdown(index=False))
+        lines.append("\n")
+    if betw:
+        df_b = pd.DataFrame(betw)[["org","betweenness"]]
+        lines.append("\n### 매개 중심성 상위(정보 브로커)\n")
+        # 설명 인용 추가
+        lines.append("> Betweenness는 네트워크 경로의 ‘다리’ 역할 정도를 의미합니다. 값이 높을수록 서로 다른 집단을 연결하는 중개자(브로커)로 해석되며, 거래·협상력과 정보 흐름 장악력이 큽니다.\n")
+        lines.append(df_b.rename(columns={"org": "Org", "betweenness": "Betweenness"}).to_markdown(index=False))
+        lines.append("\n")
+
+    # 커뮤니티 미리보기
+    if comms:
+        lines.append("\n### 커뮤니티(관계 클러스터)\n")
+        # 설명 인용 추가
+        lines.append("> 모듈러리티 기반으로 자동 추출한 관계 집단입니다. 같은 집단 내 기업들은 유사 주제나 공급망 활동을 공유할 가능성이 높습니다.\n")
+        preview = []
+        for c in comms[:5]:
+            members = c.get("members", [])[:6]
+            theme = (c.get("interpretation", "") or "").strip()
+
+            # 해석이 비어 있으면 자동 생성: 대표 멤버 키워드 기반 요약
+            if not theme:
+                # 간단 규칙: 대표 멤버명을 나열해 요약(필요 시 도메인 키워드와 결합 가능)
+                if members:
+                    theme = f"{members[0]} 중심의 연관 클러스터"
+                else:
+                    theme = "주요 기업 연관 클러스터"
+
+            preview.append(f"- C{c.get('community_id')}: {', '.join(members)} | 해석: {theme}")
+        lines.extend(preview)
+        lines.append("\n")
+
+    # 이미지 첨부(이미 D/generate_visuals에서 생성했다고 가정)
+    img_rel = f"outputs/{fig_dir}/company_network.png"
+    if os.path.exists(img_rel):
+        lines.append("### 네트워크 시각화\n")
+        lines.append(f"![Company Network]({fig_dir}/company_network.png)\n")
+
+    # 종합 코멘트
+    lines.append("> 동시출현이 높은 쌍은 직접 경쟁 또는 공급망 핵심 협력 가능성을 시사하며, 허브/브로커는 시장 영향력 및 중개 포지션을 의미합니다. 커뮤니티는 전략·밸류체인 단위의 동조 클러스터일 수 있습니다.\n")
+
+    return "\n".join(lines)
+
+
 def build_docs_from_meta(meta_items):
     docs = []
     for it in meta_items:
@@ -546,104 +645,9 @@ def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="
     lines.append(f"\n![Topics]({fig_dir}/topics.png)\n")
     lines.append(_generate_matrix_section(topics))
     lines.append(_generate_visual_analysis_section(fig_dir))
-    net_json = "outputs/company_network.json"
-    net_png = "outputs/fig/company_network.png"
-    net_md = "outputs/company_network_report.md"
-    if os.path.exists(net_png):
-        lines.append("\n### 기업 경쟁/협력 네트워크\n")
-        lines.append(f"![기업 네트워크](fig/company_network.png)\n")
-        lines.append("<sub>※ 빨간색 선: 경쟁, 초록색 선: 협력, 회색 선: 중립. 선이 두꺼울수록 빈도 높음.</sub>\n")
-    else:
-        print("[WARN] company_network.png not found")
-    try:
-        if os.path.exists(net_json):
-            with open(net_json, "r", encoding="utf-8") as f:
-                net = json.load(f) or {}
-            # print(f"[DEBUG] company_network.json content: {json.dumps(net, ensure_ascii=False, indent=2)}")
-            nodes = net.get("nodes", [])
-            edges = net.get("edges", [])
-            top_pairs = net.get("top_pairs", [])
-            central = net.get("centrality", [])
-            communities = net.get("communities", [])
-            changes = net.get("changes", {})
-            roles = net.get("roles", {})
-            actions = net.get("actions", [])
-            # Derive nodes from centrality and top_pairs if nodes is empty
-            if not nodes:
-                org_set = set()
-                for c in central:
-                    if c.get("org"):
-                        org_set.add(c["org"])
-                for p in top_pairs + edges:
-                    if p.get("source"):
-                        org_set.add(p["source"])
-                    if p.get("target"):
-                        org_set.add(p["target"])
-                nodes = [{"org": org} for org in org_set]
-                print(f"[DEBUG] Reconstructed nodes from centrality and top_pairs: {len(nodes)} nodes")
-            # Derive roles from degree_centrality if roles is empty
-            if not roles and central:
-                roles = {}
-                for c in central:
-                    org = c.get("org", "")
-                    if not org:
-                        continue
-                    dc = c.get("degree_centrality", 0)
-                    if dc > 0.6:
-                        roles[org] = ["허브 (Hub)", "산업 전반에 영향력 행사"]
-                    elif dc > 0.4:
-                        roles[org] = ["일반 (Regular)", "평균적 관계망"]
-                    else:
-                        roles[org] = ["주변부 (Peripheral)", "특정 니치 영역 집중"]
-                print(f"[DEBUG] Generated roles from centrality: {len(roles)} roles")
-            print(f"[DEBUG] Nodes count: {len(nodes)}, Node sample: {nodes[:2] if nodes else 'Empty'}")
-            print(f"[DEBUG] Roles count: {len(roles)}, Role sample: {dict(list(roles.items())[:2]) if roles else 'Empty'}")
-            print(f"[DEBUG] Centrality count: {len(central)}, Centrality sample: {central[:2] if central else 'Empty'}")
-            lines.append("#### 전체 구조 요약\n")
-            lines.append(f"- 기업 수: {len(nodes)}\n")
-            lines.append(f"- 관계 수: {len(edges)}\n\n")
-            if central:
-                lines.append("#### 주요 플레이어 (역할/변화)\n")
-                lines.append("| 기업 | 역할 | 변화 | 해석 |\n|------|------|------|------|\n")
-                for c in central:
-                    org = c.get('org', '')
-                    if not org:
-                        continue
-                    role, interp = roles.get(org, ("Unknown", "No role assigned"))
-                    delta = changes.get(org, {}).get('centrality_change', 0)
-                    delta_str = f"↑{delta:.0%}" if delta > 0 else f"↓{abs(delta):.0%}" if delta < 0 else "-"
-                    lines.append(f"| {org} | {role} | {delta_str} | {interp} |\n")
-            else:
-                lines.append("#### 주요 플레이어 (역할/변화)\n")
-                lines.append("- (중앙성 데이터 없음)\n")
-            if top_pairs:
-                lines.append("\n#### 주목할 관계 (Top 5)\n")
-                lines.append("| 쌍 | 빈도 | 유형 |\n|---|---|---|\n")
-                for i, p in enumerate(top_pairs, 1):
-                    pair = f"{p.get('source', '')} – {p.get('target', '')}"
-                    lines.append(f"| {pair} | {p.get('weight', 0)} | {p.get('rel_type', 'neutral')} |\n")
-            if communities:
-                lines.append("\n#### 진영 분석\n")
-                for c in communities:
-                    lines.append(f"- 진영 {c['community_id']}: {', '.join(c['members'])} → {c['interpretation']}\n")
-            if actions:
-                lines.append("\n#### 액션 아이템\n")
-                for a in actions:
-                    lines.append(f"{a}\n")
-        else:
-            print("[WARN] company_network.json not found")
-            lines.append("#### 전체 구조 요약\n")
-            lines.append("- 기업 수: 0\n")
-            lines.append("- 관계 수: 0\n\n")
-            lines.append("#### 주요 플레이어 (역할/변화)\n")
-            lines.append("- (데이터 없음)\n")
-    except Exception as e:
-        print(f"[ERROR] company_network.json processing failed: {repr(e)}")
-        lines.append("#### 전체 구조 요약\n")
-        lines.append("- 기업 수: 0\n")
-        lines.append("- 관계 수: 0\n\n")
-        lines.append("#### 주요 플레이어 (역할/변화)\n")
-        lines.append(f"- (데이터 처리 오류: {e})\n")
+  
+    lines.append(_generate_relationship_competition_section(fig_dir))
+
     lines.append("\n## Trend\n")
     lines.append("- 최근 기사 수 추세와 7일 이동평균선을 제공합니다.")
     lines.append(f"\n![Timeseries]({fig_dir}/timeseries.png)\n")
@@ -807,4 +811,406 @@ def main():
     print("[INFO] Module F 완료 | report.md, report.html 생성(또는 폴백 생성)")
 
 if __name__ == "__main__":
+    main()
+
+
+
+
+
+[generative_visual.py]
+import pandas as pd
+import matplotlib.pyplot as plt
+import seaborn as sns
+import os
+import json
+import networkx as nx
+import itertools
+import numpy as np
+import matplotlib.font_manager as fm
+
+
+# --- Matplotlib 한글 폰트 설정 ---
+def ensure_fonts():
+    import matplotlib.font_manager as fm
+    
+    # 시스템에 설치된 Nanum 폰트 또는 Noto Sans CJK 폰트 경로 탐색
+    font_paths = fm.findSystemFonts(fontpaths=None, fontext='ttf')
+    nanum_gothic = next((path for path in font_paths if 'NanumGothic' in path), None)
+    noto_sans_cjk = next((path for path in font_paths if 'NotoSansKR' in path or 'NotoSansCJK' in path), None)
+
+    font_path = nanum_gothic or noto_sans_cjk
+    
+    if font_path:
+        fm.fontManager.addfont(font_path)
+        font_name = fm.FontProperties(fname=font_path).get_name()
+        plt.rcParams['font.family'] = font_name
+    else:
+        # 적절한 폰트가 없는 경우 기본 폰트로 설정 (경고 메시지 출력)
+        print("[WARN] NanumGothic or NotoSansKR font not found. Please install it for proper Korean display.")
+        plt.rcParams['font.family'] = 'sans-serif'
+        
+    plt.rcParams['axes.unicode_minus'] = False
+    print(f"[INFO] Matplotlib font set to: {plt.rcParams['font.family']}")
+
+
+def plot_heatmap(df, topics_map):
+    """ 1. 기업x토픽 집중도 히트맵 생성 """
+    try:
+        heatmap_data = df.pivot_table(index='org', columns='topic', values='hybrid_score', aggfunc='sum').fillna(0)
+        
+        # 데이터가 너무 많으면 상위 20개 기업만 선택
+        if len(heatmap_data) > 20:
+            top_orgs = heatmap_data.sum(axis=1).nlargest(20).index
+            heatmap_data = heatmap_data.loc[top_orgs]
+
+        if heatmap_data.empty: return
+
+        plt.figure(figsize=(16, 10))
+        sns.heatmap(heatmap_data, cmap="viridis", linewidths=.5)
+        
+        # 토픽 ID를 키워드로 변경
+        plt.xticks(ticks=range(len(heatmap_data.columns)), labels=[topics_map.get(f"topic_{col}", col) for col in heatmap_data.columns], rotation=45, ha='right')
+        plt.title('기업별 토픽 집중도 (Hybrid Score)', fontsize=16)
+        plt.xlabel('토픽', fontsize=12)
+        plt.ylabel('기업', fontsize=12)
+        plt.tight_layout()
+        plt.savefig('outputs/fig/matrix_heatmap.png', dpi=150)
+        plt.close()
+        print("[INFO] Saved matrix_heatmap.png")
+    except Exception as e:
+        print(f"[ERROR] Failed to generate heatmap: {e}")
+
+
+def plot_topic_share(df, topics_map, top_n_topics=3):
+    """ 2. 상위 토픽별 점유율 파이 차트 생성 """
+    try:
+        top_topics = df.groupby('topic')['hybrid_score'].sum().nlargest(top_n_topics).index
+        
+        for topic in top_topics:
+            topic_df = df[df['topic'] == topic].copy()
+            # 점유율이 낮은 기업은 'Others'로 묶기
+            top_orgs = topic_df.nlargest(5, 'topic_share')
+            if len(topic_df) > 5:
+                others_share = topic_df[~topic_df['org'].isin(top_orgs['org'])]['topic_share'].sum()
+                others_row = pd.DataFrame([{'org': 'Others', 'topic_share': others_share}])
+                top_orgs = pd.concat([top_orgs, others_row], ignore_index=True)
+
+            plt.figure(figsize=(10, 8))
+            plt.pie(top_orgs['topic_share'], labels=top_orgs['org'], autopct='%1.1f%%', startangle=140, pctdistance=0.85)
+            plt.title(f'토픽 점유율: {topics_map.get(f"topic_{topic}", topic)}', fontsize=16)
+            plt.axis('equal')
+            plt.tight_layout()
+            plt.savefig(f'outputs/fig/topic_share_{topic}.png', dpi=150)
+            plt.close()
+            print(f"[INFO] Saved topic_share_{topic}.png")
+    except Exception as e:
+        print(f"[ERROR] Failed to generate pie charts: {e}")
+
+
+def plot_company_focus(df, top_n_orgs=3):
+    """ 3. 상위 기업별 집중도 바 차트 생성 """
+    try:
+        top_orgs = df.groupby('org')['hybrid_score'].sum().nlargest(top_n_orgs).index
+
+        for org in top_orgs:
+            org_df = df[df['org'] == org].nlargest(8, 'company_focus')
+            if org_df.empty: continue
+
+            plt.figure(figsize=(12, 7))
+            sns.barplot(data=org_df, x='topic', y='company_focus', palette='coolwarm')
+            plt.title(f'\'{org}\'의 토픽별 집중도', fontsize=16)
+            plt.xlabel('토픽 ID', fontsize=12)
+            plt.ylabel('집중도 점수', fontsize=12)
+            plt.xticks(rotation=45, ha='right')
+            plt.tight_layout()
+            plt.savefig(f'outputs/fig/company_focus_{org}.png', dpi=150)
+            plt.close()
+            print(f"[INFO] Saved company_focus_{org}.png")
+    except Exception as e:
+        print(f"[ERROR] Failed to generate bar charts: {e}")
+
+
+def plot_idea_score_distribution(ideas: list, output_path: str = 'outputs/fig/idea_score_distribution.png'):
+    """ 아이디어별 점수 분포 바 차트 생성 (Market, Urgency, Feasibility, Risk) """
+    import matplotlib.pyplot as plt
+    import os
+    import numpy as np
+
+    if not ideas:
+        print("[WARN] No ideas provided for score chart.")
+        return
+
+    # 아이디어 이름은 최대 15자까지만 표시
+    labels = [idea.get("idea", "")[:15] + "…" if len(idea.get("idea", "")) > 15 else idea.get("idea", "") for idea in ideas]
+    market = [idea["score_breakdown"]["market"] for idea in ideas]
+    urgency = [idea["score_breakdown"]["urgency"] for idea in ideas]
+    feasibility = [idea["score_breakdown"]["feasibility"] for idea in ideas]
+    risk = [idea["score_breakdown"]["risk"] for idea in ideas]
+
+    x = np.arange(len(ideas))
+    width = 0.2
+
+    fig, ax = plt.subplots(figsize=(12, 6))
+    bars1 = ax.bar(x - 1.5*width, market, width, label='Market')
+    bars2 = ax.bar(x - 0.5*width, urgency, width, label='Urgency')
+    bars3 = ax.bar(x + 0.5*width, feasibility, width, label='Feasibility')
+    bars4 = ax.bar(x + 1.5*width, risk, width, label='Risk')
+
+    ax.set_xticks(x)
+    ax.set_xticklabels(labels, rotation=30, ha='right')
+    ax.set_ylabel("Score (0.0 ~ 1.0)")
+    ax.set_title("아이디어별 점수 분포", fontsize=16)
+    ax.legend()
+
+    # ✅ 막대 위에 값 표시
+    for bars in [bars1, bars2, bars3, bars4]:
+        ax.bar_label(bars, fmt="%.2f", padding=2, fontsize=9)
+
+    fig.tight_layout()
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    plt.savefig(output_path, dpi=150)
+    plt.close()
+    print(f"[INFO] Saved idea_score_distribution.png")
+
+
+def plot_keyword_network(keywords, docs, out_path="outputs/fig/keyword_network.png", topn=50, min_cooccur=2, max_edges=100, label_top=25):
+    import matplotlib.pyplot as plt
+    import networkx as nx
+    import os
+    ensure_fonts()
+    apply_plot_style()
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    freq = {}
+    for it in (keywords.get("keywords", [])[:topn] or []):
+        w = (it.get("keyword") or "").strip()
+        s = float(it.get("score", 0) or 0)
+        if w:
+            freq[w] = max(s, 0.0)
+    if not freq or not docs:
+        plt.figure(figsize=(8, 5))
+        plt.text(0.5, 0.5, "네트워크 데이터 없음", ha="center", va="center")
+        plt.axis("off")
+        plt.savefig(out_path, dpi=150, bbox_inches="tight")
+        plt.close()
+        return {"nodes": 0, "edges": 0}
+    G = nx.Graph()
+    for w in freq:
+        G.add_node(w, weight=freq[w])
+    cooccur = {}
+    for doc in docs:
+        words = set(simple_tokenize_ko(doc)).intersection(set(freq.keys()))
+        words = sorted(words)
+        for i in range(len(words)):
+            for j in range(i + 1, len(words)):
+                pair = (words[i], words[j])
+                cooccur[pair] = cooccur.get(pair, 0) + 1
+    for (u, v), w in cooccur.items():
+        if w >= min_cooccur:
+            G.add_edge(u, v, weight=w)
+    edges = sorted(G.edges(data=True), key=lambda e: e[2]["weight"], reverse=True)[:max_edges]
+    G = nx.Graph()
+    for w in freq:
+        G.add_node(w, weight=freq[w])
+    G.add_edges_from((u, v, d) for u, v, d in edges)
+    if not G.number_of_nodes():
+        plt.figure(figsize=(8, 5))
+        plt.text(0.5, 0.5, "네트워크 데이터 없음", ha="center", va="center")
+        plt.axis("off")
+        plt.savefig(out_path, dpi=150, bbox_inches="tight")
+        plt.close()
+        return {"nodes": 0, "edges": 0}
+    pos = nx.spring_layout(G, k=0.5, iterations=50, seed=42)
+    fig, ax = plt.subplots(figsize=(10, 7))
+    node_sizes = [max(100, 1000 * G.nodes[n]["weight"]) for n in G.nodes()]
+    node_colors = ["#3b82f6" if G.degree(n) > sum(G.degree(n) for n in G.nodes()) / G.number_of_nodes() else "#93c5fd" for n in G.nodes()]
+    edge_weights = [G[u][v]["weight"] for u, v in G.edges()]
+    w_max = max(edge_weights, default=1)
+    w_min = min(edge_weights, default=1)
+    w_norm = [0.5 + 2.5 * (w - w_min) / (w_max - w_min + 1e-9) for w in edge_weights]
+    font_name = ensure_fonts()
+    nx.draw_networkx_edges(G, pos, ax=ax, width=w_norm, edge_color="#666", alpha=0.25)
+    nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=node_colors, alpha=0.9, linewidths=0.5, edgecolors="#333")
+    if label_top is None:
+        label_nodes = list(G.nodes())
+    else:
+        label_nodes = [w for w, _ in sorted(freq.items(), key=lambda x: x[1], reverse=True)[:label_top]]
+        label_nodes = [n for n in label_nodes if n in G.nodes()]
+    for n in label_nodes:
+        txt = (n or "").strip()
+        if not txt:
+            continue
+        x, y = pos[n]
+        ax.text(
+            x, y, txt,
+            ha="center", va="center",
+            fontsize=8, color="#111111",
+            zorder=5, clip_on=False,
+            fontname=font_name,
+            bbox=dict(boxstyle="round,pad=0.20", fc="white", ec="none", alpha=0.80)
+        )
+    xs = [p[0] for p in pos.values()]
+    ys = [p[1] for p in pos.values()]
+    if xs and ys:
+        pad_x = (max(xs) - min(xs)) * 0.08 + 0.05
+        pad_y = (max(ys) - min(ys)) * 0.08 + 0.05
+        ax.set_xlim(min(xs) - pad_x, max(xs) + pad_x)
+        ax.set_ylim(min(ys) - pad_y, max(ys) + pad_y)
+    plt.title("Keyword Co-occurrence Network")
+    plt.tight_layout()
+    plt.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.close()
+    return {"nodes": G.number_of_nodes(), "edges": G.number_of_edges()}
+
+def plot_company_network_from_json(json_path="outputs/company_network.json",
+                                   output_path="outputs/fig/company_network.png",
+                                   top_edges=30, top_nodes=10):
+
+    if not os.path.exists(json_path):
+        print("[WARN] company_network.json not found")
+        return
+
+    with open(json_path, "r", encoding="utf-8") as f:
+        data = json.load(f)
+
+    edges_all = data.get("edges", [])
+    central = data.get("centrality", []) or []
+    if not edges_all:
+        print("[WARN] No edges in company_network.json")
+        return
+
+    # 1) 상위 엣지 선별
+    edges_sorted = sorted(edges_all, key=lambda e: e.get("weight", 0), reverse=True)[:top_edges]
+
+    # 2) 그래프 구성 (rel_type 유지)
+    G = nx.Graph()
+    for e in edges_sorted:
+        u, v = e.get("source"), e.get("target")
+        w = float(e.get("weight", 1.0))
+        r = e.get("rel_type", "neutral")
+        if not u or not v:
+            continue
+        G.add_edge(u, v, weight=w, rel_type=r)
+
+    if G.number_of_nodes() == 0:
+        print("[WARN] Graph empty")
+        return
+
+    # 3) 강조 노드 기준: JSON 중심성 상위 우선, 없으면 현재 그래프 기준
+    if central:
+        top_nodes = {c.get("org") for c in central[:top_nodes] if c.get("org")}
+    else:
+        deg = nx.degree_centrality(G)
+        top_nodes = {n for n, _ in sorted(deg.items(), key=lambda x: x[1], reverse=True)[:top_nodes]}
+
+    # 4) 폰트 안전 설정
+    try:
+        # 프로젝트 공통 한글 폰트 설정을 재사용
+        font_name = plt.rcParams['font.family'][0]
+    except Exception:
+        font_name = "sans-serif"
+
+    # 5) 레이아웃: 가중치 반영(Spring)
+    pos = nx.spring_layout(G, weight="weight", seed=42)
+
+    # 6) 엣지 스타일: rel_type별 색상
+    edge_colors = []
+    weights = []
+    for u, v, d in G.edges(data=True):
+        weights.append(float(d.get("weight", 1.0)))
+        rt = d.get("rel_type", "neutral")
+        if rt == "rivalry":
+            edge_colors.append("#e74c3c")   # red
+        elif rt == "partnership":
+            edge_colors.append("#27ae60")   # green
+        else:
+            edge_colors.append("#7a7a7a")   # gray
+
+    w_arr = np.array(weights, dtype=float)
+    if w_arr.size == 0:
+        print("[WARN] No edge weights")
+        return
+    q95 = np.quantile(w_arr, 0.95)
+    w_arr = np.minimum(w_arr, q95)
+    w_norm = (0.6 + 1.8 * (w_arr - w_arr.min()) / (w_arr.max() - w_arr.min() + 1e-6)).tolist()
+
+    plt.figure(figsize=(11, 8))
+    nx.draw_networkx_edges(G, pos, width=w_norm, edge_color=edge_colors, alpha=0.35)
+
+    # 7) 노드 스타일
+    node_colors = ["#e74c3c" if n in top_nodes else "#86b6f6" for n in G.nodes()]
+    node_sizes = [1200 if n in top_nodes else 600 for n in G.nodes()]
+    nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=node_colors,
+                           edgecolors="#333", linewidths=0.6, alpha=0.95)
+    nx.draw_networkx_labels(G, pos, font_size=9, font_color="#222", font_family=font_name)
+
+    # 8) 범례(간단 표기)
+    from matplotlib.lines import Line2D
+    legend_elements = [
+        Line2D([0], [0], color="#e74c3c", lw=2, label="경쟁"),
+        Line2D([0], [0], color="#27ae60", lw=2, label="협력"),
+        Line2D([0], [0], color="#7a7a7a", lw=2, label="중립"),
+        Line2D([0], [0], marker='o', color='w', label='허브(강조)',
+               markerfacecolor="#e74c3c", markeredgecolor="#333", markersize=10)
+    ]
+    plt.legend(handles=legend_elements, loc="lower left", frameon=False)
+
+    plt.title("기업 경쟁/협력 네트워크 (핵심 관계망)", fontsize=14, fontname=font_name)
+    plt.axis("off")
+    os.makedirs(os.path.dirname(output_path), exist_ok=True)
+    plt.tight_layout()
+    plt.savefig(output_path, dpi=150)
+    plt.close()
+    print(f"[INFO] Saved simplified company_network.png with {len(G.nodes())} nodes and {len(G.edges())} edges")
+
+
+
+def main():
+    """ 메인 실행 함수 """
+    # 폰트 설정
+    ensure_fonts()
+    
+    # 데이터 로드
+    try:
+        df = pd.read_csv('outputs/export/company_topic_matrix_long.csv')
+    except FileNotFoundError:
+        print("[ERROR] company_topic_matrix_long.csv not found. Please run module_d.py first.")
+        return
+
+    # 토픽 키워드 맵 로드
+    try:
+        with open('outputs/topics.json', 'r', encoding='utf-8') as f:
+            topics_data = json.load(f)
+        topics_map = {f"topic_{t['topic_id']}": ", ".join(w['word'] for w in t['top_words'][:2]) for t in topics_data['topics']}
+    except Exception:
+        topics_map = {}
+        print("[WARN] topics.json not found or failed to parse. Topic IDs will be used as labels.")
+
+    #plot_idea_score_distribution
+    try:
+        with open('outputs/biz_opportunities.json', 'r', encoding='utf-8') as f:
+            ideas_data = json.load(f)
+        top_ideas = sorted(ideas_data["ideas"], key=lambda it: it.get("score", 0), reverse=True)[:5]
+        plot_idea_score_distribution(top_ideas)
+    except Exception as e:
+        import traceback
+        print(f"[ERROR] Failed to generate idea score chart: {e}")
+        traceback.print_exc()
+    
+    # 기업 네트워크 시각화(신규)
+    try:
+        plot_company_network_from_json("outputs/company_network.json", "outputs/fig/company_network.png")
+    except Exception as e:
+        print(f"[WARN] company network visualization failed: {repr(e)}")
+
+
+    # 시각화 함수 호출
+    os.makedirs('outputs/fig', exist_ok=True)
+    plot_heatmap(df, topics_map)
+    plot_topic_share(df, topics_map)
+    plot_company_focus(df)
+    
+    print("\n[SUCCESS] All visualizations have been generated in 'outputs/fig/'")
+
+if __name__ == '__main__':
+    import json
     main()
