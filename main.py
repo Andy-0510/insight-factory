@@ -97,7 +97,7 @@ def do_archive_daily(out_base="outputs"):
     log(f"[아카이브 완료] {outdir}")
 
 def build_steps():
-    PY = sys.executable  # 현재 .venv 파이썬을 강제 사용
+    PY = sys.executable
     return [
         ("a",        [PY, "-m", "src.module_a"]),
         ("check_a",  [PY, "-m", "src.check_a"]),
@@ -108,12 +108,15 @@ def build_steps():
         ("c",        [PY, "-m", "src.module_c"]),
         ("check_c",  [PY, "-m", "src.check_c"]),
         ("export",   [PY, "-m", "scripts.signal_export"]),
+        ("future",   [PY, "-m", "scripts.future_insights"]),
         ("d",        [PY, "-m", "src.module_d"]),
         ("check_d",  [PY, "-m", "src.check_d"]),
-        ("gen_visual",[PY, "-m", "scripts.generate_visuals"]),
-        ("preflight",[PY, "-m", "scripts.preflight"]),
         ("e",        [PY, "-m", "src.module_e"]),
         ("check_e",  [PY, "-m", "src.check_e"]),
+        ("gen_visual",[PY, "-m", "scripts.generate_visuals"]),
+        ("preflight",[PY, "-m", "scripts.preflight"]),
+        ("f",        [PY, "-m", "src.module_f"]),
+        ("check_f",  [PY, "-m", "src.check_f"]),
     ]
 
 def main():
@@ -121,7 +124,7 @@ def main():
     parser.add_argument("--dry-run", choices=["true", "false"], help="드라이런 실행 여부")
     parser.add_argument("--pro-mode", choices=["true", "false"], help="Pro 모드")
     parser.add_argument("--body-min-len", type=int, default=None, help="본문 최소 길이")
-    parser.add_argument("--only", nargs="*", help="선택 실행 단계: a check_a wh body b check_b c check_c export d check_d preflight e check_e")
+    parser.add_argument("--only", nargs="*", help="선택 실행 단계: a check_a wh body b check_b c check_c export d check_d e check_e gen_visual preflight f check_f")
     parser.add_argument("--archive-daily", action="store_true", help="outputs를 날짜/시간 폴더로 아카이브")
     args = parser.parse_args()
 
@@ -145,7 +148,7 @@ def main():
             raise SystemExit("[중단] --only에 해당하는 단계가 없습니다.")
 
     will_run = {name for name, _ in steps}
-    if "c" in will_run or "d" in will_run:
+    if "c" in will_run or "d" in will_run or "e" in will_run:
         require_key(env, "GEMINI_API_KEY")
 
     last_ok = None

@@ -43,9 +43,26 @@
   ],
 
   "domain_hints": [
-    "디스플레이 제조","공정 자동화","AR/VR","OLED","MicroLED","MiniLED","LTPO","LTPS","QD","수율",
-    "폴더블","롤러블","스트레처블","자동차용 디스플레이","게이밍","비전프로","FMM","WOLED","QD-OLED",
-    "TFE","MLA","유리기판","패널","ITO","TADF","PHOLED","TFT","IGZO","Oxide"
+    "oled", "올레드", "microled", "마이크로엘이디", "ltpo", "LTPO", "tft", "TFT", "igzo", "IGZO", "qd-oled", "QD-올레드", "w-oled", "W-올레드",
+    "inkjet", "잉크젯", "evaporation", "증착", "tfe", "박막봉지", "foldable", "폴더블", "polarizer", "편광판", "ito", "ITO",
+    "automotive display", "자동차 디스플레이", "vr", "가상현실", "ar", "증강현실", "metaverse", "메타버스", "glass substrate", "유리 기판",
+    "samsung", "삼성", "lg", "엘지", "apple", "애플", "meta", "메타", "google", "구글", "microsoft", "마이크로소프트",
+    "samsung electronics", "삼성전자", "lg electronics", "엘지전자",
+    "samsung display", "삼성디스플레이", "lg display", "엘지디스플레이",
+    "tft lcd", "TFT LCD", "am oled", "능동형 OLED", "pm oled", "수동형 OLED", "flexible oled", "플렉서블 OLED", "rigid oled", "리지드 OLED",
+    "transparent oled", "투명 OLED", "quantum dot", "퀀텀닷", "quantum dot oled", "퀀텀닷 OLED", "qd oled", "QD OLED",
+    "mini led", "미니 LED", "mini-led", "미니-LED", "miniled", "미니엘이디", "micro led", "마이크로 LED", "micro-led", "마이크로-LED",
+    "ltps", "LTPS", "low temperature polysilicon", "저온 다결정 실리콘", "oxide tft", "산화물 TFT", "oxide", "산화물",
+    "high resolution", "고해상도", "high brightness", "고휘도", "high speed", "고속", "high efficiency", "고효율",
+    "low power", "저전력", "low cost", "저비용", "high performance", "고성능",
+    "supply chain", "공급망", "supply chains", "공급망들", "supply-demand", "수요-공급", "supply demand", "수요 공급",
+    "production capacity", "생산 능력", "production line", "생산 라인", "manufacturing process", "제조 공정", "manufacturing technology", "제조 기술",
+    "yield rate", "수율", "defect rate", "불량률", "failure rate", "고장률", "mass production", "양산", "pilot production", "시험 생산",
+    "next generation", "차세대", "next-gen", "넥스트젠", "cutting-edge", "최첨단", "state-of-the-art", "최신식",
+    "디스플레이 제조", "디스플레이 제조", "공정 자동화", "공정 자동화", "AR/VR", "AR/VR",
+    "롤러블", "롤러블", "스트레처블", "스트레처블", "자동차용 디스플레이", "자동차용 디스플레이",
+    "게이밍", "게이밍", "비전프로", "비전프로", "FMM", "파인 메탈 마스크", "WOLED", "화이트 OLED",
+    "MLA", "마이크로 렌즈 어레이", "패널", "패널", "TADF", "삼중항 유도 발광", "PHOLED", "인광 OLED"
   ],
 
   "alias": {
@@ -155,6 +172,36 @@
     "urgency_weight": 0.35,
     "feasibility_weight": 0.25,
     "risk_penalty": 1.0
+  },
+
+  
+  "network": {
+    "whitelist_only": true,
+    "use_regex_fallback": true,
+    "edge_min_weight": 2,
+    "cooccur_level": "document",
+    "domain_hints": [
+      "oled", "올레드", "microled", "마이크로엘이디", "ltpo", "LTPO", "tft", "TFT", "igzo", "IGZO", "qd-oled", "QD-올레드", "w-oled", "W-올레드",
+      "inkjet", "잉크젯", "evaporation", "증착", "tfe", "박막봉지", "foldable", "폴더블", "polarizer", "편광판", "ito", "ITO",
+      "automotive display", "자동차 디스플레이", "vr", "가상현실", "ar", "증강현실", "metaverse", "메타버스", "glass substrate", "유리 기판",
+      "samsung", "삼성", "lg", "엘지", "apple", "애플", "meta", "메타", "google", "구글", "microsoft", "마이크로소프트",
+      "samsung electronics", "삼성전자", "lg electronics", "엘지전자",
+      "samsung display", "삼성디스플레이", "lg display", "엘지디스플레이",
+      "tft lcd", "TFT LCD", "am oled", "능동형 OLED", "pm oled", "수동형 OLED", "flexible oled", "플렉서블 OLED", "rigid oled", "리지드 OLED",
+      "transparent oled", "투명 OLED", "quantum dot", "퀀텀닷", "quantum dot oled", "퀀텀닷 OLED", "qd oled", "QD OLED",
+      "mini led", "미니 LED", "mini-led", "미니-LED", "miniled", "미니엘이디", "micro led", "마이크로 LED", "micro-led", "마이크로-LED",
+      "ltps", "LTPS", "low temperature polysilicon", "저온 다결정 실리콘", "oxide tft", "산화물 TFT", "oxide", "산화물",
+      "high resolution", "고해상도", "high brightness", "고휘도", "high speed", "고속", "high efficiency", "고효율",
+      "low power", "저전력", "low cost", "저비용", "high performance", "고성능",
+      "supply chain", "공급망", "supply chains", "공급망들", "supply-demand", "수요-공급", "supply demand", "수요 공급",
+      "production capacity", "생산 능력", "production line", "생산 라인", "manufacturing process", "제조 공정", "manufacturing technology", "제조 기술",
+      "yield rate", "수율", "defect rate", "불량률", "failure rate", "고장률", "mass production", "양산", "pilot production", "시험 생산",
+      "next generation", "차세대", "next-gen", "넥스트젠", "cutting-edge", "최첨단", "state-of-the-art", "최신식",
+      "디스플레이 제조", "디스플레이 제조", "공정 자동화", "공정 자동화", "AR/VR", "AR/VR",
+      "롤러블", "롤러블", "스트레처블", "스트레처블", "자동차용 디스플레이", "자동차용 디스플레이",
+      "게이밍", "게이밍", "비전프로", "비전프로", "FMM", "파인 메탈 마스크", "WOLED", "화이트 OLED",
+      "MLA", "마이크로 렌즈 어레이", "패널", "패널", "TADF", "삼중항 유도 발광", "PHOLED", "인광 OLED"
+    ]
   },
 
 

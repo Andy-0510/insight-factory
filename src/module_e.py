@@ -1,862 +1,721 @@
+# -*- coding: utf-8 -*-
 import os
-import json
-import glob
 import re
+import json
+import csv
+import glob
+import unicodedata
 import datetime
-from pathlib import Path
-from scripts.plot_font import set_kr_font, get_kr_font_path
-from wordcloud import WordCloud
-from matplotlib import pyplot as plt
+import time
+import pandas as pd
+import numpy as np
+from typing import List, Dict, Any, Tuple, Optional
+from collections import defaultdict, Counter
+from src.config import load_config, llm_config
 
+# ========== 공통 로드/유틸 ==========
+def latest(globpat: str):
+    files = sorted(glob.glob(globpat))
+    return files[-1] if files else None
 
-# 1) 일반 그래프 폰트 설정(다른 플롯도 한글 OK)
-_ = set_kr_font()
-
-# 2) 워드클라우드 전용 폰트 경로
-font_path = get_kr_font_path()
-print(f"[INFO] wordcloud font_path: {font_path}")
-
-
-def load_json(path, default=None):
+def load_json(path: str, default=None):
     if default is None:
-        default ={}
+        default = None
     try:
         with open(path, "r", encoding="utf-8") as f:
             return json.load(f)
     except Exception:
         return default
 
-def latest(globpat: str):
-    files = sorted(glob.glob(globpat))
-    return files[-1] if files else None
+def save_json(path: str, obj: Any):
+    os.makedirs(os.path.dirname(path), exist_ok=True)
+    with open(path, "w", encoding="utf-8") as f:
+        json.dump(obj, f, ensure_ascii=False, indent=2)
 
-def load_data():
-    keywords = load_json("outputs/keywords.json", {"keywords": [], "stats":{}})
-    topics   = load_json("outputs/topics.json", {"topics":[]})
-    ts       = load_json("outputs/trend_timeseries.json", {"daily":[]})
-    insights = load_json("outputs/trend_insights.json", {"summary": "", "top_topics": [], "evidence":{}})
-    opps     = load_json("outputs/biz_opportunities.json", {"ideas":[]})
-    meta_path = latest("data/news_meta_*.json")
-    meta_items = load_json(meta_path, []) if meta_path else[]
-    return keywords, topics, ts, insights, opps, meta_items
-
-# ---------- 간단 토크나이저 ----------
-def simple_tokenize_ko(text: str):
-    toks = re.findall(r"[가-힣A-Za-z0-9]+", text or "")
-    toks = [t.lower() for t in toks if len(t) >= 2]
-    return toks
-
-
-def ensure_fonts():
-    import os
-    import matplotlib
-    from matplotlib import font_manager
-    candidates = [
-        "/usr/share/fonts/truetype/nanum/NanumGothic.ttf",
-        "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
-        "/usr/share/fonts/opentype/noto/NotoSansCJK-Regular.ttc",
-        "/usr/share/fonts/truetype/noto/NotoSansCJK-Regular.ttc",
-    ]
-    font_path = next((p for p in candidates if os.path.exists(p)), None)
-    if font_path:
-        font_manager.fontManager.addfont(font_path)
-        font_name = font_manager.FontProperties(fname=font_path).get_name()
-    else:
-        font_name = "NanumGothic"
-    matplotlib.rcParams["font.family"] = font_name
-    matplotlib.rcParams["font.sans-serif"] = [font_name, "NanumGothic", "Noto Sans CJK KR", "Malgun Gothic", "AppleGothic", "DejaVu Sans"]
-    matplotlib.rcParams["axes.unicode_minus"] = False
+def _load_lines(p: str) -> set:
     try:
-        from matplotlib import font_manager as fm
-        fm._rebuild()
+        with open(p, "r", encoding="utf-8") as f:
+            return {x.strip() for x in f if x.strip()}
     except Exception:
-        pass
-    return font_name
+        return set()
 
-def apply_plot_style():
-    import matplotlib.pyplot as plt
-    plt.rcParams.update({
-        "figure.dpi": 150,
-        "savefig.dpi": 150,
-        "axes.titlesize": 12,
-        "axes.labelsize": 11,
-        "xtick.labelsize": 9,
-        "ytick.labelsize": 9,
-        "legend.fontsize": 9,
-        "axes.grid": True,
-        "grid.alpha": 0.25,
-        "grid.linestyle": "--",
-        "grid.linewidth": 0.6,
-        "axes.edgecolor": "#999",
-        "axes.linewidth": 0.8,
-    })
+def clean_text(t: str) -> str:
+    if not t:
+        return ""
+    t = re.sub(r"<.+?>", " ", t)
+    t = unicodedata.normalize("NFKC", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
 
-def plot_wordcloud_from_keywords(keywords_obj, out_path="outputs/fig/wordcloud.png"):
-    from wordcloud import WordCloud
-    import matplotlib.pyplot as plt
-    import os
-
-    # 네 스타일/폰트 초기화 로직은 그대로 유지
-    ensure_fonts()
-    apply_plot_style()
-
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
-
-    items = (keywords_obj or {}).get("keywords") or []
-    if not items:
-        plt.figure(figsize=(8, 5))
-        plt.text(0.5, 0.5, "워드클라우드 데이터 없음", ha="center", va="center")
-        plt.axis("off")
-        plt.savefig(out_path, dpi=150, bbox_inches="tight")
-        plt.close()
-        return
-
-    # 상위 N개만 사용(기존 로직 유지)
-    freqs = {}
-    for it in items[:200]:
-        w = (it.get("keyword") or "").strip()
-        s = float(it.get("score", 0) or 0)
-        if w:
-            freqs[w] = freqs.get(w, 0.0) + max(s, 0.0)
-
-    # 핵심: 워드클라우드용 폰트 파일 경로 확보 (번들/시스템 자동 탐색)
-    font_path = get_kr_font_path()
-    if not font_path:
-        # 최후의 보루(환경 따라 다를 수 있어서 경고만)
-        print("[WARN] font_path를 찾지 못했어요. assets/fonts에 TTF/OTF 넣거나 scripts/plot_font.py 확인 플리즈.")
-
-    wc = WordCloud(
-        width=1200,
-        height=600,
-        background_color="white",
-        font_path=font_path,           # 여기만 추가되면 한글 안 깨짐!
-        colormap="tab20",
-        prefer_horizontal=0.9,
-        min_font_size=10,
-        max_words=200,
-        relative_scaling=0.5,
-        normalize_plurals=False
-    ).generate_from_frequencies(freqs)
-
-    wc.to_file(out_path)
-
-def plot_top_keywords(keywords, out_path="outputs/fig/top_keywords.png", topn=15):
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-    ensure_fonts(); apply_plot_style()
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    data = keywords.get("keywords", [])[:topn]
-    if not data:
-        plt.figure(figsize=(8,5)); plt.text(0.5,0.5,"키워드 데이터 없음", ha="center")
-        plt.axis("off"); plt.savefig(out_path, dpi=150, bbox_inches="tight"); plt.close(); return
-    labels = [d["keyword"] for d in data][::-1]
-    scores = [d["score"] for d in data][::-1]
-    plt.figure(figsize=(10,6)); sns.barplot(x=scores, y=labels, color="#3b82f6")
-    plt.title("Top Keywords"); plt.xlabel("Score"); plt.ylabel("")
-    plt.tight_layout(); plt.savefig(out_path, dpi=150); plt.close()
-
-def plot_topics(topics, out_path="outputs/fig/topics.png", topn_words=6):
-    import os, math
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-    ensure_fonts(); apply_plot_style()
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
-
-    tps = topics.get("topics", [])
-    if not tps:
-        plt.figure(figsize=(8,5)); plt.text(0.5,0.5,"토픽 데이터 없음", ha="center")
-        plt.axis("off"); plt.savefig(out_path, dpi=150, bbox_inches="tight"); plt.close(); return
-
-    k = len(tps); cols = 2; rows = math.ceil(k / cols)
-    fig, axes = plt.subplots(rows, cols, figsize=(12, 4 * rows))
-    axes = axes.flatten() if k > 1 else [axes]
-
-    for i, t in enumerate(tps):
-        ax = axes[i]
-        words = (t.get("top_words") or [])[:topn_words]
-        labels = [str((w.get("word") or "")) for w in words][::-1]
-        probs = []
-        for w in words[::-1]:
-            pw = w.get("prob", 1.0)
-            try:
-                p = float(pw)
-                if p <= 0:
-                    p = 1.0
-            except Exception:
-                p = 1.0
-            probs.append(p)
-        # 보기용 스케일(원하면 주석 해제)
-        # probs = [p*100.0 for p in probs]
-        sns.barplot(x=probs, y=labels, ax=ax, color="#10b981")
-        ax.set_title(f"Topic #{t.get('topic_id')}")
-        ax.set_xlabel("Weight"); ax.set_ylabel("")
-    for j in range(i + 1, len(axes)):
-        axes[j].axis("off")
-    plt.tight_layout(); plt.savefig(out_path, dpi=150); plt.close()
-    
-
-def plot_timeseries(ts, out_path="outputs/fig/timeseries.png"):
-    import matplotlib.pyplot as plt
-    import pandas as pd
-    import matplotlib.dates as mdates
-    from datetime import datetime, timedelta
-    ensure_fonts(); apply_plot_style()
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    daily = ts.get("daily", [])
-    if not daily:
-        plt.figure(figsize=(10, 5)); plt.title("Articles per Day (no data)")
-        plt.xlabel("Date"); plt.ylabel("Count")
-        plt.tight_layout(); plt.savefig(out_path, dpi=150, bbox_inches="tight"); plt.close(); return
-    df = pd.DataFrame(daily).copy()
-    df["date"] = pd.to_datetime(df["date"], errors="coerce", infer_datetime_format=True, utc=False)
-    df["count"] = pd.to_numeric(df.get("count", 0), errors="coerce").fillna(0).astype(int)
-    df = df.dropna(subset=["date"]).sort_values("date")
-    now_year = datetime.now().year; y_min, y_max = now_year - 3, now_year + 1
-    df = df[(df["date"].dt.year >= y_min) & (df["date"].dt.year <= y_max)]
-    if df.empty:
-        plt.figure(figsize=(10, 5)); plt.title("Articles per Day (empty after filtering)")
-        plt.xlabel("Date"); plt.ylabel("Count")
-        plt.tight_layout(); plt.savefig(out_path, dpi=150, bbox_inches="tight"); plt.close(); return
-    df = df.set_index("date")
-    full_idx = pd.date_range(df.index.min().normalize(), df.index.max().normalize(), freq="D")
-    df = df.reindex(full_idx).fillna(0); df.index.name = "date"; df["count"] = df["count"].astype(int)
-    if len(df) == 1:
-        d0 = df.index[0]; y = float(df["count"].iloc[0])
-        plt.figure(figsize=(12, 4.5))
-        plt.xlim(d0 - timedelta(days=1), d0 + timedelta(days=1))
-        ypad = max(1, y * 0.15); plt.ylim(0, y + ypad)
-        ax = plt.gca(); ax.xaxis.set_major_locator(mdates.DayLocator(interval=1))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-        plt.plot([d0], [y], marker="o", color="#6366f1", label="Daily")
-        plt.annotate(f"{int(y)}", (d0, y), textcoords="offset points", xytext=(0, -14), ha="center",
-                     fontsize=9, bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="none", alpha=0.7))
-        plt.title(f"Articles per Day ({d0.strftime('%Y-%m-%d')})")
-        plt.xlabel("Date"); plt.ylabel("Count"); plt.legend(loc="upper right")
-        plt.grid(alpha=0.25, linestyle="--", linewidth=0.6)
-        plt.tight_layout(); plt.savefig(out_path, dpi=150, bbox_inches="tight"); plt.close()
+def to_kst_date_str(s: str) -> str:
+    from email.utils import parsedate_to_datetime
+    try:
+        if not s:
+            raise ValueError
+        s2 = s.replace("Z", "+00:00")
+        dt = datetime.datetime.fromisoformat(s2)
+        d = dt.date()
+    except Exception:
         try:
-            os.makedirs("outputs/debug", exist_ok=True)
-            df.reset_index().rename(columns={"index": "date"}).to_csv("outputs/debug/timeseries_preview.csv", index=False, encoding="utf-8")
+            dt = parsedate_to_datetime(s)
+            d = dt.date()
+        except Exception:
+            m = re.search(r"(\d{4}).*?(\d{1,2}).*?(\d{1,2})", s or "")
+            if m:
+                y, mm, dd = int(m.group(1)), int(m.group(2)), int(m.group(3))
+                d = datetime.date(y, mm, dd)
+            else:
+                d = datetime.date.today()
+    today = datetime.date.today()
+    if d > today:
+        d = today
+    return d.strftime("%Y-%m-%d")
+
+
+# ========== 스코어링/증거 ==========
+def clamp01(x): 
+    return max(0.0, min(1.0, float(x)))
+
+def normalize_score(x, lo, hi):
+    if hi <= lo:
+        return 0.0
+    return clamp01((x - lo) / (hi - lo))
+
+NEG_WORDS = [
+    "논란", "우려", "리스크", "규제", "지연", "지적", "하락", "부진", "적자", "연기",
+    "보안", "개인정보", "불확실성", "기술 미성숙", "높은 비용", "복잡한 인증", "법적 리스크",
+    "시장 불안정", "공급망 리스크", "정책 불확실성", "해킹", "위협", "취약점", "중단", "취소",
+    "감소", "침체", "악화", "경고", "문제", "비판", "벌금", "소송", "분쟁", "해고", "감원",
+    "축소", "퇴출", "손실", "손해", "파산", "부도", "불매", "보이콧", "사기", "횡령", "배임",
+    "부패", "비리", "조작", "위조", "사건", "사고"
+]
+
+
+def extract_keywords_from_idea(idea_text: str, keywords_obj: dict) -> List[str]:
+    """아이디어 문장에서 핵심 키워드를 추출합니다."""
+    top_keywords = {k.get("keyword", "") for k in keywords_obj.get("keywords", [])}
+    found_keywords = []
+    for kw in top_keywords:
+        if kw and kw.lower() in idea_text.lower():
+            found_keywords.append(kw)
+    
+    nouns = re.findall(r"[가-힣A-Za-z]{2,}", idea_text)
+    if not found_keywords and nouns:
+        return nouns[:3]
+    return found_keywords
+
+def pick_evidence(idea_keywords: List[str], items: List[Dict[str,Any]], limit=3) -> List[Dict[str,Any]]:
+    """ 문장의 점수를 매겨 가장 설득력 있는 근거를 선택하는 함수 """
+    if not idea_keywords:
+        return []
+    
+    candidate_sentences = []
+    
+    # 사업의 필요성과 연관된 가중치 키워드
+    prob_keywords = ["문제", "어려움", "한계", "비용", "수율", "부족"]
+    opp_keywords = ["기회", "요구", "필요", "성장", "가능성", "기대"]
+
+    for it in items:
+        base = (it.get("raw_body") or it.get("body") or it.get("description") or "")
+        if not base:
+            continue
+        
+        low_base = base.lower()
+        # 아이디어 키워드 중 하나라도 본문에 포함된 경우에만 문장 분석 시작
+        if any(kw.lower() in low_base for kw in idea_keywords):
+            sents = re.split(r"(?<=[.!?다])\s+", base)
+            for s in sents:
+                s_strip = s.strip()
+                if not s_strip:
+                    continue
+
+                # 문장 점수 계산
+                score = 0
+                # 1. 아이디어 핵심 키워드 포함 개수
+                matched_keywords = sum(1 for kw in idea_keywords if kw.lower() in s_strip.lower())
+                if matched_keywords == 0:
+                    continue
+                score += matched_keywords * 2
+
+                # 2. 문제점/기회 키워드 포함 시 보너스 점수
+                if any(pw in s_strip for pw in prob_keywords):
+                    score += 5
+                if any(ow in s_strip for ow in opp_keywords):
+                    score += 3
+                
+                candidate_sentences.append({
+                    "sentence": s_strip[:400],
+                    "url": it.get("url") or "",
+                    "date": to_kst_date_str(it.get("published_time") or it.get("pubDate_raw") or ""),
+                    "score": score
+                })
+
+    # 점수가 높은 순으로 정렬하여 상위 문장 선택
+    sorted_candidates = sorted(candidate_sentences, key=lambda x: x['score'], reverse=True)
+    
+    # 중복 제거 및 최종 결과 반환
+    final_evidence = []
+    seen_sentences = set()
+    for cand in sorted_candidates:
+        if len(final_evidence) >= limit:
+            break
+        if cand['sentence'] not in seen_sentences:
+            final_evidence.append(cand)
+            seen_sentences.add(cand['sentence'])
+            
+    return final_evidence
+
+# ========== LLM 프롬프트/파서/정규화 ==========
+def build_schema_hint() -> Dict[str, Any]:
+    return {
+        "idea": "아이디어 한 줄 제목",
+        "problem": "해결하려는 문제(2-3문장, 220자 이내)",
+        "target_customer": "핵심 타깃(산업/직군/조직 규모 명확히)",
+        "value_prop": "핵심 가치제안(차별점, 180자 이내)",
+        "solution": ["핵심 기능 bullet 최대 4개"],
+        "risks": ["리스크/규제 bullet 3개 내"],
+        "priority_score": "우선순위 점수(0.0~5.0, 숫자)"
+    }
+
+def build_prompt(context: Dict[str, Any], want: int = 5) -> str:
+    schema = build_schema_hint()
+    
+    maturity_prompt_injection = ""
+    if context.get("tech_maturity"):
+        maturity_prompt_injection = (
+            f"  5) 아래 '기술 성숙도' 정보를 반드시 참고하여, 각 아이디어가 어떤 기술 단계(Emerging, Growth, Maturity)에 있는지 전략적 타이밍 관점에서 언급하세요.\n"
+            f"     (예: 이 아이디어는 아직 Emerging 단계인 OOO 기술에 선제적으로 진입하는 것입니다.)\n"
+        )
+
+    return (
+        f"당신은 글로벌 1위 디스플레이 패널 제조 기업(B2B)의 '신사업 개발 총괄'입니다. "
+        f"아래 컨텍스트를 기반으로 구체적인 신사업 아이디어를 제안해 주세요.\n"
+        f"- 아이디어 개수: 정확히 {want}개\n"
+        f"- JSON 배열 형식만 출력하세요. 설명은 필요 없습니다.\n"
+        f"- 각 아이템은 아래 스키마 키를 정확히 사용하세요: {json.dumps(schema, ensure_ascii=False)}\n"
+        f"- 제약 조건:\n"
+        # --- ✨✨✨ 바로 이 부분이 수정되었습니다 ✨✨✨ ---
+        f"  1) 아이디어는 **구체적인 '제품', '기술', '서비스', 또는 '공정 개선 방안'**의 형태여야 합니다. '플랫폼'이나 '솔루션' 같은 추상적인 개념 대신, **실체가 명확하고 현실적인 사업 아이템**을 제안해주세요. (예: '의료용 12K 고해상도 MicroLED 패널 개발', '롤러블 디스플레이 수율 20% 향상을 위한 AI 공정 모니터링 서비스')\n"
+        # --- ✨✨✨ 여기까지 ---
+        f"  2) 각 아이디어의 'problem' 항목에는 반드시 최신 트렌드나 'Why now' 관점을 1문장 이상 포함하여 문제의 시의성을 강조하세요.\n"
+        f"  3) 'target_customer'는 '글로벌 완성차 OEM', '북미 빅테크 기업'처럼 구체적으로 명시하세요.\n"
+        f"  4) 'priority_score'는 시장 잠재력, 기술 실현 가능성, 경쟁 강도를 고려하여 객관적으로 평가해주세요.\n"
+        f"{maturity_prompt_injection}"
+        f"컨텍스트:\n"
+        f"{json.dumps(context, ensure_ascii=False)}"
+    )
+
+def strip_code_fence(text: str) -> str:
+    t = (text or "").strip()
+    t = re.sub(r"^```[\t ]*\w*[\t ]*\n", "", t, flags=re.M)
+    t = re.sub(r"\n```[\t ]*$", "", t, flags=re.M)
+    return t.strip()
+
+def clean_json_text2(t: str) -> str:
+    t = strip_code_fence(t or "")
+    t = t.replace("“", '"').replace("”", '"').replace("’", "'").replace("‘", "'")
+    t = re.sub(r"[\u0000-\u0008\u000B\u000C\u000E-\u001F\u2028\u2029]", "", t)
+    t = re.sub(r",\s*(\}|\])", r"\1", t)
+    t = t.lstrip("\ufeff")
+    return t.strip()
+
+def parse_json_array_or_object(t: str):
+    s = clean_json_text2(t)
+    try:
+        obj = json.loads(s)
+        if isinstance(obj, list):
+            return obj
+        if isinstance(obj, dict) and isinstance(obj.get("ideas"), list):
+            return obj["ideas"]
+    except Exception:
+        return None
+    return None
+
+def extract_balanced_array(t: str):
+    s = clean_json_text2(t)
+    start = s.find("[")
+    if start == -1:
+        return None
+    depth, end = 0, -1
+    for i, ch in enumerate(s[start:], start):
+        if ch == "[":
+            depth += 1
+        elif ch == "]":
+            depth -= 1
+            if depth == 0:
+                end = i
+                break
+    if end == -1:
+        return None
+    payload = s[start:end+1]
+    try:
+        arr = json.loads(payload)
+        return arr if isinstance(arr, list) else None
+    except Exception:
+        return None
+
+def extract_objects_sequence(t: str, max_items=10):
+    s = clean_json_text2(t)
+    out, i, n = [], 0, len(s)
+    while i < n and len(out) < max_items:
+        start = s.find("{", i)
+        if start == -1:
+            break
+        depth, end = 0, -1
+        j = start
+        while j < n:
+            ch = s[j]
+            if ch == "{":
+                depth += 1
+            elif ch == "}":
+                depth -= 1
+                if depth == 0:
+                    end = j
+                    break
+            j += 1
+        if end == -1:
+            break
+        chunk = s[start:end+1]
+        try:
+            obj = json.loads(clean_json_text2(chunk))
+            if isinstance(obj, dict):
+                out.append(obj)
         except Exception:
             pass
-        return
-    df["ma7"] = df["count"].rolling(window=7, min_periods=1).mean()
-    focus_days = 120
-    if len(df) > focus_days:
-        df = df.iloc[-focus_days:]
-    plt.figure(figsize=(12, 4.5))
-    plt.plot(df.index, df["count"], label="Daily", color="#6366f1", linewidth=1.6)
-    plt.plot(df.index, df["ma7"], label="7d MA", color="#f59e0b", linewidth=1.6)
-    ax = plt.gca(); locator = mdates.AutoDateLocator(minticks=5, maxticks=10)
-    formatter = mdates.ConciseDateFormatter(locator); ax.xaxis.set_major_locator(locator); ax.xaxis.set_major_formatter(formatter)
-    dmin = df.index.min().strftime("%Y-%m-%d"); dmax = df.index.max().strftime("%Y-%m-%d")
-    plt.title(f"Articles per Day ({dmin} ~ {dmax})")
-    plt.xlabel("Date"); plt.ylabel("Count"); plt.legend(loc="upper right")
-    plt.grid(alpha=0.25, linestyle="--", linewidth=0.6)
-    plt.tight_layout(); plt.savefig(out_path, dpi=150, bbox_inches="tight"); plt.close()
+        i = end + 1
+    return out
 
+def extract_ndjson_lines(t: str, max_items=10):
+    ideas = []
+    for line in (t or "").splitlines():
+        if len(ideas) >= max_items:
+            break
+        line = line.strip()
+        if not line:
+            continue
+        line = re.sub(r"^[\-\*\d\.\)\s]+", "", line)
+        try:
+            obj = json.loads(clean_json_text2(line))
+            if isinstance(obj, dict):
+                ideas.append(obj)
+                continue
+        except Exception:
+            objs = extract_objects_sequence(line, max_items=2)
+            for o in objs:
+                if isinstance(o, dict):
+                    ideas.append(o)
+                    if len(ideas) >= max_items:
+                        break
+    return ideas
 
-def plot_keyword_network(keywords, docs, out_path="outputs/fig/keyword_network.png",
-                         topn=50, min_cooccur=2, max_edges=200, label_top=None):
-    import os, math, re
-    import matplotlib.pyplot as plt
-    import seaborn as sns
-    import networkx as nx
-    import numpy as np
+def extract_ideas_any(text: str, want=5):
+    arr = parse_json_array_or_object(text)
+    if isinstance(arr, list) and arr:
+        return arr
+    arr2 = extract_balanced_array(text)
+    if isinstance(arr2, list) and arr2:
+        return arr2
+    objs = extract_objects_sequence(text, max_items=want)
+    if objs:
+        return objs
+    nd = extract_ndjson_lines(text, max_items=want)
+    if nd:
+        return nd
+    return None
 
-    font_name = ensure_fonts()
+def as_list(x, max_len=4) -> List[str]:
+    if isinstance(x, list):
+        out = []
+        for v in x[:max_len]:
+            if v is None:
+                continue
+            s = str(v).strip()
+            if s:
+                out.append(s)
+        return out
+    if x is None:
+        return []
+    s = str(x).strip()
+    return [s] if s else []
+
+def clip_text(s: Optional[str], max_chars: int) -> str:
+    s = (s or "").strip()
+    if len(s) <= max_chars:
+        return s
+    return s[:max_chars].rstrip() + "…"
+
+def to_float(x, default=0.0) -> float:
     try:
-        apply_plot_style()
+        return float(x)
+    except Exception:
+        return float(default)
+
+def normalize_item(it: Dict[str, Any]) -> Dict[str, Any]:
+    idea = it.get("idea") or it.get("title") or it.get("name") or ""
+    problem = it.get("problem") or it.get("pain") or ""
+    target = it.get("target_customer") or it.get("target") or it.get("audience") or ""
+    value = it.get("value_prop") or it.get("value") or it.get("description") or ""
+    solution = it.get("solution") or it.get("solutions") or []
+    risks = it.get("risks") or it.get("risk") or []
+    score = it.get("priority_score", it.get("score", 0))
+    score = max(0.0, min(5.0, to_float(score, 0.0)))
+
+    idea = clip_text(idea, 100)
+    problem = clip_text(problem, 300)
+    target = clip_text(target, 120)
+    value = clip_text(value, 220)
+    solution = as_list(solution, max_len=4)
+    risks = as_list(risks, max_len=3)
+
+    out = {
+        "idea": idea,
+        "problem": problem,
+        "target_customer": target,
+        "value_prop": value,
+        "solution": solution,
+        "risks": risks,
+        "priority_score": round(score, 1),
+        "title": idea,
+        "score": round(score, 1)
+    }
+    return out
+
+# ========== LLM 호출 ==========
+CFG = load_config()
+LLM = llm_config(CFG)
+
+def load_context_for_prompt() -> Dict[str, Any]:
+    keywords = load_json("outputs/keywords.json", default={"keywords": []}) or {"keywords": []}
+    topics = load_json("outputs/topics.json", default={"topics": []}) or {"topics": []}
+    insights = load_json("outputs/trend_insights.json", default={"summary": "", "top_topics": [], "evidence": {}}) or {"summary": "", "top_topics": [], "evidence": {}}
+    trend_strength_path = "outputs/export/trend_strength.csv"
+    events_path = "outputs/export/events.csv"
+    tech_maturity = load_json("outputs/tech_maturity.json", default={"results": []}) or {"results": []}
+
+    summary = (insights.get("summary") or "").strip()
+    if len(summary) > 1200:
+        summary = summary[:1200] + "…"
+
+    kw_simple = [{"keyword": k.get("keyword",""), "score": k.get("score",0)} for k in (keywords.get("keywords") or [])[:20]]
+    max_topics = int(CFG.get("llm_context_max_topics", 12))
+    tp_simple = []
+    for t in (topics.get("topics") or [])[:max_topics]:
+        words = [w.get("word","") for w in (t.get("top_words") or [])][:6]
+        tp_simple.append({"topic_id": t.get("topic_id"), "words": words})
+
+    trend_rows = []
+    try:
+        with open(trend_strength_path, "r", encoding="utf-8") as f:
+            rdr = csv.DictReader(f)
+            for r in rdr:
+                try:
+                    trend_rows.append({"term": r["term"], "cur": int(r.get("cur",0) or 0), "z_like": float(r.get("z_like",0.0) or 0.0)})
+                except Exception:
+                    continue
+        trend_rows = sorted(trend_rows, key=lambda x: (x["z_like"], x["cur"]), reverse=True)[:30]
+    except Exception:
+        trend_rows = []
+
+    evt_summary = Counter()
+    try:
+        with open(events_path, "r", encoding="utf-8") as f:
+            rdr = csv.DictReader(f)
+            for r in rdr:
+                # 'types'와 'type'을 모두 안전하게 처리
+                types_str = r.get("types") or r.get("type") or ""
+                if types_str:
+                    for etype in types_str.split(','):
+                        evt_summary[etype.strip()] += 1
     except Exception:
         pass
+    events_simple = dict(evt_summary)
 
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    maturity_summary = []
+    for res in tech_maturity.get("results", []):
+        tech = res.get("technology")
+        stage = res.get("analysis", {}).get("stage")
+        if tech and stage and stage != "N/A":
+            maturity_summary.append(f"- {tech}: {stage} 단계")
+    maturity_context = "\n".join(maturity_summary)
 
-    # 키워드 정규화(빈 문자열/1글자 제거)
-    def norm_kw(w: str) -> str:
-        w = (w or "").strip().lower()
-        w = re.sub(r"\s+", " ", w)
-        return w
+    return {
+        "summary": summary, 
+        "keywords": kw_simple, 
+        "topics": tp_simple, 
+        "trends": trend_rows, 
+        "events": events_simple,
+        "tech_maturity": maturity_context
+    }
 
-    raw_kw = [norm_kw(k.get("keyword")) for k in (keywords.get("keywords", [])[:topn])]
-    kw = [w for w in raw_kw if w and len(w) >= 2]
-    vocab = set(kw)
-
-    # 데이터 부족 처리
-    if not docs or not vocab:
-        import matplotlib.pyplot as plt
-        plt.figure(figsize=(8, 5))
-        plt.text(0.5, 0.5, "키워드 네트워크 생성 불가(데이터 부족)", ha="center", va="center")
-        plt.axis("off")
-        plt.savefig(out_path, dpi=150, bbox_inches="tight")
-        plt.close()
-        return {"nodes": 0, "edges": 0}
-
-    # 문서 토큰화(문서 내 중복 토큰 제거) + 정규화
-    def _tok(x: str):
-        return re.findall(r"[가-힣A-Za-z0-9]+", x or "")
-
-    token_docs = []
-    for d in docs:
-        toks = set(norm_kw(t) for t in _tok(d))
-        toks = [t for t in toks if t and len(t) >= 2]
-        token_docs.append(toks)
-
-    # 동시출현/빈도 계산
-    from collections import Counter
-    co = Counter()
-    freq = Counter()
-    for toks in token_docs:
-        toks_in = [t for t in toks if t in vocab]
-        for w in toks_in:
-            freq[w] += 1
-        for i in range(len(toks_in)):
-            for j in range(i + 1, len(toks_in)):
-                a, b = sorted((toks_in[i], toks_in[j]))
-                co[(a, b)] += 1
-
-    edges = [(a, b, c) for (a, b), c in co.items() if c >= min_cooccur]
-    edges = sorted(edges, key=lambda x: x[2], reverse=True)[:max_edges]
-
-    # 그래프 구성
-    G = nx.Graph()
-    for w, f in freq.items():
-        if f > 0 and (w in vocab) and (w and len(w) >= 2):
-            G.add_node(w, freq=f)
-    for a, b, c in edges:
-        if a in G.nodes and b in G.nodes:
-            G.add_edge(a, b, weight=c)
-
-    if G.number_of_nodes() == 0 or G.number_of_edges() == 0:
-        plt.figure(figsize=(8, 5))
-        plt.text(0.5, 0.5, "키워드 네트워크 생성 불가(엣지 없음)", ha="center", va="center")
-        plt.axis("off")
-        plt.savefig(out_path, dpi=150, bbox_inches="tight")
-        plt.close()
-        return {"nodes": 0, "edges": 0}
-
-    # 커뮤니티 색상
-    try:
-        comms = list(nx.algorithms.community.greedy_modularity_communities(G))
-        comm_map = {}
-        for ci, com in enumerate(comms):
-            for n in com:
-                comm_map[n] = ci
-        num_comm = max(comm_map.values()) + 1 if comm_map else 1
-    except Exception:
-        comm_map = {n: 0 for n in G.nodes()}
-        num_comm = 1
-
-    # 레이아웃
-    pos = nx.spring_layout(G, seed=42, k=0.9)
-
-    # 스타일(노드)
-    palette = sns.color_palette("tab10", n_colors=max(10, num_comm))
-    node_sizes = [300 + 50 * math.sqrt(G.nodes[n].get("freq", 1)) for n in G.nodes()]
-    node_colors = [palette[comm_map.get(n, 0)] for n in G.nodes()]
-
-    # 전역 정규화: 엣지 두께 고정 범위로 매핑(리포트 간 비교 용이)
-    edges_all = list(G.edges(data=True))
-    w_raw = np.array([float(d.get("weight", 1.0) or 1.0) for _, _, d in edges_all], dtype=float)
-    # 이상치 완화(선택)
-    if len(w_raw) > 5:
-        q95 = np.quantile(w_raw, 0.95)
-        w_raw = np.minimum(w_raw, q95)
-    W_MIN, W_MAX = 0.8, 2.2
-    den = (w_raw.max() - w_raw.min()) or 1.0
-    w_norm = (W_MIN + (W_MAX - W_MIN) * (w_raw - w_raw.min()) / den).tolist()
-
-    # 그리기: 엣지 → 노드 → 라벨
-    plt.figure(figsize=(10, 7))
-    ax = plt.gca()
-    ax.set_axis_off()
-
-    nx.draw_networkx_edges(
-        G, pos,
-        edgelist=[(u, v) for u, v, _ in edges_all],
-        width=w_norm,
-        edge_color="#666", alpha=0.25
+def call_gemini(prompt: str) -> str:
+    import google.generativeai as genai
+    api_key = os.getenv("GEMINI_API_KEY", "")
+    if not api_key:
+        raise RuntimeError("GEMINI_API_KEY 환경 변수가 없습니다.")
+    genai.configure(api_key=api_key)
+    model_name = str(LLM.get("model", "gemini-2.0-flash-001"))
+    max_tokens = int(LLM.get("max_output_tokens", 2048))
+    temperature = float(LLM.get("temperature", 0.3))
+    model = genai.GenerativeModel(model_name)
+    resp = model.generate_content(
+        prompt,
+        generation_config={"max_output_tokens": max_tokens, "temperature": temperature, "top_p": 0.9}
     )
-    nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=node_colors,
-                           alpha=0.9, linewidths=0.5, edgecolors="#333")
+    text = (getattr(resp, "text", None) or "").strip()
+    return text
 
-    # 라벨 대상
-    if label_top is None:
-        label_nodes = list(G.nodes())
-    else:
-        label_nodes = [w for w, _ in sorted(freq.items(), key=lambda x: x[1], reverse=True)[:label_top]]
-        label_nodes = [n for n in label_nodes if n in G.nodes()]
-
-    # 라벨 수동 텍스트(겹침 방지 박스)
-    for n in label_nodes:
-        txt = (n or "").strip()
-        if not txt:
+def make_opportunities_llm(meta_items: List[Dict[str,Any]]) -> List[Dict[str,Any]]:
+    want = 5
+    context = load_context_for_prompt()
+    prompt = build_prompt(context, want=want)
+    try:
+        raw_text = call_gemini(prompt)
+    except Exception as e:
+        print(f"[ERROR] Gemini 호출 실패: {e}")
+        return []
+    ideas_raw = extract_ideas_any(raw_text, want=want) or []
+    items = []
+    for it in ideas_raw:
+        try:
+            norm = normalize_item(it)
+            if norm["idea"] and norm["value_prop"]:
+                items.append(norm)
+        except Exception:
             continue
-        x, y = pos[n]
-        ax.text(
-            x, y, txt,
-            ha="center", va="center",
-            fontsize=8, color="#111111",
-            zorder=5, clip_on=False,
-            fontname=font_name,
-            bbox=dict(boxstyle="round,pad=0.20", fc="white", ec="none", alpha=0.80)
-        )
+    items.sort(key=lambda x: x.get("priority_score", 0.0), reverse=True)
+    return items[:want]
 
-    # 라벨 잘림 방지 패딩
-    xs = [p[0] for p in pos.values()]
-    ys = [p[1] for p in pos.values()]
-    if xs and ys:
-        pad_x = (max(xs) - min(xs)) * 0.08 + 0.05
-        pad_y = (max(ys) - min(ys)) * 0.08 + 0.05
-        ax.set_xlim(min(xs) - pad_x, max(xs) + pad_x)
-        ax.set_ylim(min(ys) - pad_y, max(ys) + pad_y)
-
-    plt.title("Keyword Co-occurrence Network")
-    plt.tight_layout()
-    plt.savefig(out_path, dpi=150, bbox_inches="tight")
-    plt.close()
-
-    return {"nodes": G.number_of_nodes(), "edges": G.number_of_edges()}
-
-
-def export_csvs(ts_obj, keywords_obj, topics_obj, out_dir="outputs/export"):
-    import pandas as pd, os
-    os.makedirs(out_dir, exist_ok=True)
-    daily = (ts_obj or {}).get("daily", [])
-    df_ts = pd.DataFrame(daily) if daily else pd.DataFrame(columns=["date","count"])
-    df_ts.to_csv(os.path.join(out_dir, "timeseries_daily.csv"), index=False, encoding="utf-8")
-
-    kws = (keywords_obj or {}).get("keywords", [])[:20]
-    df_kw = pd.DataFrame(kws) if kws else pd.DataFrame(columns=["keyword","score"])
-    df_kw.to_csv(os.path.join(out_dir, "keywords_top20.csv"), index=False, encoding="utf-8")
-
-    topics = (topics_obj or {}).get("topics", [])
+# ========== 신호 보강 ==========
+def load_trend_strength_csv(path: str) -> List[Dict[str,Any]]:
     rows = []
-    for t in topics:
-        tid = t.get("topic_id")
-        for w in (t.get("top_words") or [])[:10]:
-            pw = w.get("prob", None)
-            try:
-                p = float(pw)
-                if p == 0.0:
-                    p = 1e-6
-            except Exception:
-                p = 1e-6
-            rows.append({"topic_id": tid, "word": w.get("word", ""), "prob": p})
-    import pandas as pd
-    df_tw = pd.DataFrame(rows) if rows else pd.DataFrame(columns=["topic_id","word","prob"])
-    df_tw.to_csv(os.path.join(out_dir, "topics_top_words.csv"), index=False, encoding="utf-8")
-    print("[INFO] export CSVs -> outputs/export/*.csv")
-
-def build_docs_from_meta(meta_items):
-    docs =[]
-    for it in meta_items:
-        title = (it.get("title") or it.get("title_og") or "").strip()
-        desc  = (it.get("description") or it.get("description_og") or "").strip()
-        doc = (title + " " + desc).strip()
-        if doc: docs.append(doc)
-    return docs
-
-def _fmt_int(x):
     try:
-        return f"{int(x):,}"
+        with open(path, "r", encoding="utf-8") as f:
+            rdr = csv.DictReader(f)
+            for r in rdr:
+                try:
+                    r["cur"] = int(r.get("cur", 0) or 0)
+                    r["prev"] = int(r.get("prev", 0) or 0)
+                    r["diff"] = int(r.get("diff", 0) or 0)
+                    r["total"] = int(r.get("total", 0) or 0)
+                    r["ma7"] = float(r.get("ma7", 0.0) or 0.0)
+                    r["z_like"] = float(r.get("z_like", 0.0) or 0.0)
+                    rows.append(r)
+                except (ValueError, TypeError):
+                    continue
     except Exception:
-        return str(x)
+        pass
+    return rows
 
-def _fmt_score(x, nd=3):
+def load_events_csv(path: str) -> List[Dict[str,str]]:
+    rows = []
     try:
-        return f"{float(x):.{nd}f}"
+        with open(path, "r", encoding="utf-8") as f:
+            rdr = csv.DictReader(f)
+            for r in rdr:
+                rows.append(r)
     except Exception:
-        return str(x)
+        pass
+    return rows
 
-def _truncate(s, n=80):
-    s = (s or "").strip().replace("\n", " ")
-    return s if len(s) <= n else s[:n-1] + "…"
+def calculate_feasibility(idea_item: Dict[str, Any]) -> float:
+    """ 아이디어 내용 기반으로 실현가능성 점수를 동적으로 계산 """
+    base_score = 0.5  # 기본값 낮춤으로 변별력 확보
 
+    text = f"{idea_item.get('idea', '')} {idea_item.get('problem', '')} {' '.join(idea_item.get('solution', []))} {' '.join(idea_item.get('risks', []))}"
 
-def build_markdown(keywords, topics, ts, insights, opps, fig_dir="fig", out_md="outputs/report.md"):
-    import pandas as pd
-    import glob
+    # 긍정 키워드 (점수 상승)
+    positive_keywords = [
+        '기존 기술', '파트너십', '검증된', '양산', '자동화', '효율 개선',
+        '표준화', '레퍼런스 디자인', '공급망 확보', '상용화', '적용 사례', '기술 확보'
+    ]
+    for pk in positive_keywords:
+        if pk in text:
+            base_score += 0.05
 
-    # --- 새로운 매트릭스 섹션을 생성하는 내부 함수 (인코딩 문제 해결 버전) ---
-    def _generate_matrix_section(topics_obj):
-        try:
-            csv_path = "outputs/export/company_topic_matrix_wide.csv"
-            if not os.path.exists(csv_path):
-                return ""
+    # 부정 키워드 (점수 하락)
+    negative_keywords = [
+        '장기 연구', '높은 비용', '신소재', '불확실성', '규제', '개인정보',
+        '복잡한 인증', '기술 미성숙', '법적 리스크', '보안 문제', '시장 불안정'
+    ]
+    for nk in negative_keywords:
+        if nk in text:
+            base_score -= 0.05
 
-            # --- ▼▼▼ 바로 이 부분에 encoding='utf-8-sig' 옵션을 추가했습니다 ▼▼▼ ---
-            df = pd.read_csv(csv_path, encoding='utf-8-sig')
-            
-            # --- 안전장치 1: 데이터프레임이 비었거나, 토픽 컬럼이 없는 경우 즉시 종료 ---
-            topic_cols = [col for col in df.columns if col.startswith('topic_')]
-            if df.empty or not topic_cols:
-                return "\n## 기업×토픽 집중도 매트릭스 (주간)\n\n- (분석할 유효 데이터가 없습니다.)\n"
-
-            # --- 키 하이라이트 자동 생성 ---
-            df_numeric = df.copy()
-            for col in topic_cols:
-                # fillna('')를 추가하여 빈 값(NaN)으로 인한 오류 방지
-                df_numeric[col] = df[col].fillna('').astype(str).str.split(' ').str[0].replace('', '0').astype(float)
-
-            # --- 안전장치 2: 각 분석 단계별 데이터 유효성 검사 추가 ---
-            
-            # 1. 가장 경쟁이 치열한 토픽 찾기
-            competitive_scores = df_numeric[topic_cols].gt(0).sum()
-            top_competitive_topic_id = competitive_scores.idxmax() if not competitive_scores.empty and competitive_scores.max() > 0 else "N/A"
-
-            # 2. 가장 집중도가 높은 기업 찾기
-            df_numeric['total_score'] = df_numeric[topic_cols].sum(axis=1)
-            top_focused_org = df_numeric.loc[df_numeric['total_score'].idxmax()]['org'] if not df_numeric['total_score'].empty and df_numeric['total_score'].max() > 0 else "N/A"
-
-            # 3. 가장 높은 단일 점수를 기록한 토픽-기업 조합 찾기
-            max_score = 0
-            rising_star_info = "N/A"
-            if df_numeric[topic_cols].max().max() > 0:
-                for col in topic_cols:
-                    if df_numeric[col].max() > max_score:
-                        max_score = df_numeric[col].max()
-                        org_name = df_numeric.loc[df_numeric[col].idxmax()]['org']
-                        rising_star_info = f"{org_name} @ {col}"
-
-            topic_map = {f"topic_{t.get('topic_id')}": ", ".join([w.get('word', '') for w in t.get('top_words', [])[:2]]) for t in topics_obj.get('topics', [])}
-
-            # --- 마크다운 텍스트 생성 ---
-            section_lines = ["\n## 기업×토픽 집중도 매트릭스 (주간)\n"]
-            section_lines.append("**핵심 요약:**\n")
-            section_lines.append(f"- **가장 경쟁이 치열한 토픽:** **{topic_map.get(top_competitive_topic_id, top_competitive_topic_id)}** (가장 많은 기업들이 주목)\n")
-            section_lines.append(f"- **가장 집중도가 높은 기업:** **{top_focused_org}** (다양한 토픽에 걸쳐 높은 관련성)\n")
-            section_lines.append(f"- **주목할 만한 조합:** **{rising_star_info}** (가장 높은 단일 연관 점수 기록)\n")
-            
-            section_lines.append("각 기업별 상위 8개 토픽의 연관 점수와 해당 토픽 내에서의 점유율(%)을 나타냅니다.\n")
-            section_lines.append(df.to_markdown(index=False))
-            section_lines.append("\n**코멘트 및 액션 힌트:**\n")
-            section_lines.append(f"> 특정 토픽에서 높은 점유율을 보이는 기업은 해당 분야의 '주도자(Leader)'일 가능성이 높습니다. 반면, 특정 기업이 소수의 토픽에 높은 점수를 집중하고 있다면, 이는 해당 기업의 '핵심 전략 분야'를 시사합니다. 경쟁사 및 파트너사의 집중 분야를 파악하여 우리의 전략을 점검해볼 수 있습니다.\n")
-
-            return "\n".join(section_lines)
-
-        except Exception as e:
-            return f"\n## 기업×토픽 집중도 매트릭스 (주간)\n\n- (데이터 처리 중 예외 오류가 발생했습니다: {e})\n"
+    return clamp01(base_score)
 
 
-    # --- ✨✨ 새로운 시각화 섹션 생성 함수 (신규 추가) ✨✨ ---
-    def _generate_visual_analysis_section(fig_dir="fig"):
-        section_lines = ["\n## 기업×토픽 시각적 분석\n"]
-        has_content = False
+def calculate_risk_score(idea_item: Dict[str, Any]) -> float:
+    """ 리스크 평가 시스템 (0.1 ~ 0.5 분포 목표로 페널티 미세 조정) """
+    score = 0.0
+    
+    # 1단계: 구조적 리스크 (LLM이 명시한 위험) - 페널티 하향
+    structural_risks = idea_item.get('risks', [])
+    score += len(structural_risks) * 0.05  # 항목당 0.10 -> 0.05
 
-        # 1. 히트맵 이미지 추가
-        heatmap_path = f"outputs/{fig_dir}/matrix_heatmap.png"
-        if os.path.exists(heatmap_path):
-            section_lines.append("### 전체 시장 구도 (Heatmap)\n")
-            section_lines.append(f"![Heatmap]({fig_dir}/matrix_heatmap.png)\n")
-            section_lines.append("> 전체 기업과 토픽 간의 관계를 한눈에 보여줍니다. 색이 진할수록 연관성이 높습니다.\n")
-            has_content = True
+    # 분석할 전체 텍스트
+    text_to_scan = f"{idea_item.get('idea', '')} {idea_item.get('problem', '')} {' '.join(idea_item.get('solution', []))} {' '.join(structural_risks)}"
+    for e in idea_item.get("evidence", []):
+        text_to_scan += " " + e.get("sentence", "")
 
-        # 2. 토픽 점유율 파이차트 추가
-        share_images = sorted(glob.glob(f"outputs/{fig_dir}/topic_share_*.png"))
-        if share_images:
-            section_lines.append("### 주요 토픽별 경쟁 구도 (Pie Charts)\n")
-            section_lines.append("> 가장 뜨거운 주제를 두고 어떤 기업들이 경쟁하는지 점유율을 보여줍니다.\n")
-            for img_path in share_images:
-                img_name = os.path.basename(img_path)
-                section_lines.append(f"![Topic Share]({fig_dir}/{img_name})")
-            section_lines.append("\n")
-            has_content = True
+    # 2단계: 치명적 리스크 키워드 - 페널티 하향
+    high_risk_keywords = ["규제", "법적 리스크", "보안 문제", "해킹", "취약점", "소송"]
+    score += sum(0.06 for rk in high_risk_keywords if rk in text_to_scan) # 0.08 -> 0.06
 
-        # 3. 기업 집중도 바차트 추가
-        focus_images = sorted(glob.glob(f"outputs/{fig_dir}/company_focus_*.png"))
-        if focus_images:
-            section_lines.append("### 주요 기업별 전략 분석 (Bar Charts)\n")
-            section_lines.append("> 시장을 주도하는 주요 기업들이 어떤 토픽에 집중하고 있는지 보여줍니다.\n")
-            for img_path in focus_images:
-                img_name = os.path.basename(img_path)
-                section_lines.append(f"![Company Focus]({fig_dir}/{img_name})")
-            section_lines.append("\n")
-            has_content = True
+    # 3단계: 일반 리스크 키워드 - 페널티 하향
+    medium_risk_keywords = [
+        "개인정보", "불확실성", "기술 미성숙", "높은 비용", "복잡한 인증", 
+        "시장 불안정", "공급망 리스크", "위협"
+    ]
+    score += sum(0.02 for rk in medium_risk_keywords if rk in text_to_scan) # 0.03 -> 0.02
 
-        if not has_content:
-            return "" # 생성된 이미지가 없으면 섹션 자체를 추가하지 않음
+    return clamp01(score) # 최종 점수는 0.0 ~ 1.0 사이로 보정
+
+def enrich_with_signals(ideas: List[Dict[str,Any]],
+                        meta_items: List[Dict[str,Any]],
+                        trend_rows: List[Dict[str,Any]],
+                        events_rows: List[Dict[str,str]],
+                        cfg: Dict[str, Any],
+                        keywords_obj: dict) -> List[Dict[str,Any]]:
+    
+    weights = cfg.get("score_weights", {})
+    mkt_w = float(weights.get("market_weight", 0.40))
+    urg_w = float(weights.get("urgency_weight", 0.35))
+    feas_w = float(weights.get("feasibility_weight", 0.25))
+    risk_p = float(weights.get("risk_penalty", 1.0))
+    
+    trend_idx = {r.get("term",""): r for r in trend_rows}
+    event_hit = defaultdict(int)
+    for r in events_rows:
+        types_str = r.get("types", "")
+        if types_str:
+            for etype in types_str.split(','):
+                event_hit[etype.strip()] += 1
+
+    enriched_ideas = []
+    for it in ideas:
+        full_idea_text = f"{it.get('idea', '')} {it.get('problem', '')} {' '.join(it.get('solution', []))}"
+        idea_keywords = extract_keywords_from_idea(full_idea_text, keywords_obj)
         
-        return "\n".join(section_lines)
+        cur, z = 0.0, 0.0
+        if idea_keywords:
+            related_trends = [trend_idx.get(kw) for kw in idea_keywords if trend_idx.get(kw)]
+            if related_trends:
+                cur_list = [float(t.get("cur", 0)) for t in related_trends]
+                z_list = [float(t.get("z_like", 0.0)) for t in related_trends]
+                if cur_list: cur = max(cur_list)
+                if z_list: z = max(z_list)
 
-    klist = keywords.get("keywords", [])[:15]
-    tlist = topics.get("topics", [])
-    daily = ts.get("daily", [])
-    summary = (insights.get("summary", "") or "").strip()
-    n_days = len(daily)
-    total_cnt = sum(int(x.get("count", 0)) for x in daily)
-    date_range = f"{daily[0].get('date','?')} ~ {daily[-1].get('date','?')}" if n_days > 0 else "-"
-    today = datetime.datetime.utcnow().strftime("%Y-%m-%d")
+        s_market = normalize_score(it.get("priority_score", 0.0), 0.0, 5.0) * 0.5 + normalize_score(cur, 0, 10) * 0.5
+        s_market = clamp01(s_market)
+
+        s_urg = normalize_score(z, 0, 3.0)
+        evt_boost = sum(0.15 for etype in ["LAUNCH", "PARTNERSHIP"] if event_hit.get(etype, 0) > 0)
+        s_urg = clamp01(s_urg + evt_boost)
+
+        s_feas = calculate_feasibility(it)
+        
+        it["evidence"] = pick_evidence(idea_keywords, meta_items, limit=7)
+        risk_score = calculate_risk_score(it)
+      
+        base_score = (mkt_w * s_market + urg_w * s_urg + feas_w * s_feas)
+        final_score_raw = base_score * (1 - (risk_p * risk_score))
+        
+        it["score"] = round(final_score_raw * 10.0, 1)
+
+        # --- 'risk_level' 관련 코드가 모두 제거되었습니다 ---
+        it["score_breakdown"] = {
+            "market": round(s_market, 3), 
+            "urgency": round(s_urg, 3), 
+            "feasibility": round(s_feas, 3), 
+            "risk": round(risk_score, 3), 
+            "notes": {"cur": cur, "z_like": z}
+        }
+        enriched_ideas.append(it)
     
-    lines = []
-    lines.append(f"# Weekly/New Biz Report ({today})\n")
-    lines.append("## Executive Summary\n")
-    lines.append("- 이번 기간 핵심 토픽과 키워드, 주요 시사점을 요약합니다.\n")
-    if summary: lines.append(summary + "\n")
-    
-    lines.append("## Key Metrics\n")
-    num_docs = keywords.get("stats", {}).get("num_docs", "N/A")
-    num_docs_disp = _fmt_int(num_docs) if isinstance(num_docs, (int, float)) or str(num_docs).isdigit() else str(num_docs)
-    lines.append(f"- 기간: {date_range}")
-    lines.append(f"- 총 기사 수: {_fmt_int(total_cnt)}")
-    lines.append(f"- 문서 수: {num_docs_disp}")
-    lines.append(f"- 키워드 수(상위): {len(klist)}")
-    lines.append(f"- 토픽 수: {len(tlist)}")
-    lines.append(f"- 시계열 데이터 일자 수: {n_days}\n")
-    
-    lines.append("## Top Keywords\n")
-    lines.append(f"![Word Cloud]({fig_dir}/wordcloud.png)\n")
-    if klist:
-        kw_all = sorted((keywords.get("keywords") or []), key=lambda x: x.get("score", 0), reverse=True)
-        lines.append("| Rank | Keyword | Score |"); lines.append("|---:|---|---:|")
-        for i, k in enumerate(kw_all[:15], 1):
-            kw = (k.get("keyword", "") or "").replace("|", r"\|")
-            sc = _fmt_score(k.get("score", 0), nd=3)
-            lines.append(f"| {i} | {kw} | {sc} |")
+    return enriched_ideas
+
+# ========== Top5 보장 ==========
+def fill_opportunities_to_five(ideas: list, keywords_obj: dict, want: int = 5) -> list:
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
+
+    existing = ideas[:]
+    if len(existing) >= want:
+        return existing[:want]
+
+    cands = [(k.get("keyword",""), float(k.get("score", 0))) for k in (keywords_obj.get("keywords") or [])[:50]]
+    cands = [c for c in cands if c[0] and len(c[0]) >= 2]
+
+    titles = [it.get("idea") or it.get("title") or "" for it in existing if (it.get("idea") or it.get("title"))]
+    vec = TfidfVectorizer(analyzer="char", ngram_range=(3,5))
+    if titles:
+        M = vec.fit_transform(titles + [c[0] for c in cands])
+        base = M[:len(titles)]
+        pool = M[len(titles):]
     else:
-        lines.append("- (데이터 없음)")
-    lines.append(f"\n![Top Keywords]({fig_dir}/top_keywords.png)\n")
-    lines.append(f"![Keyword Network]({fig_dir}/keyword_network.png)\n")
-    
-    lines.append("## Topics\n")
-    if tlist:
-        for t in tlist:
-            tid = t.get("topic_id")
-            top_words = [w.get("word", "") for w in t.get("top_words", []) if w.get("word")]
-            head = (t.get("topic_name") or ", ".join(top_words[:3]) or f"Topic #{tid}")
-            words_preview = ", ".join(top_words[:6])
-            lines.append(f"- {head} (#{tid})")
-            if words_preview:
-                lines.append(f"  - 대표 단어: {words_preview}")
-            if t.get("insight"):
-                one_liner = (t.get("insight") or "").replace("\n", " ").strip()
-                lines.append(f"  - 요약: {one_liner}")
-    else:
-        lines.append("- (데이터 없음)")
-    lines.append(f"\n![Topics]({fig_dir}/topics.png)\n")
+        M = vec.fit_transform([c[0] for c in cands])
+        base = None
+        pool = M
 
-    # --- ✨ 새로운 매트릭스 섹션 추가 ---
-    lines.append(_generate_matrix_section(topics))
-    lines.append(_generate_visual_analysis_section(fig_dir))
-    
-    lines.append("\n## Trend\n")
-    lines.append("- 최근 기사 수 추세와 7일 이동평균선을 제공합니다.")
-    lines.append(f"\n![Timeseries]({fig_dir}/timeseries.png)\n")
-    
-    lines.append("## Insights\n")
-    if summary: lines.append(summary + "\n")
-    else: lines.append("- (요약 없음)\n")
-    
-    lines.append("## Opportunities (Top 5)\n")
-    ideas_all = (opps.get("ideas", []) or [])
-    if ideas_all:
-        # 정렬 기준: score 우선, 없으면 priority_score 사용
-        ideas_sorted = sorted(
-            ideas_all,
-            key=lambda it: float(it.get("score", it.get("priority_score", 0)) or 0),
-            reverse=True
-        )[:5]
+    used = set(titles)
+    for i, (term, _) in enumerate(cands):
+        if len(existing) >= want:
+            break
+        if term in used:
+            continue
+        if base is not None:
+            sim = cosine_similarity(pool[i:i+1], base).max() if base.shape[0] > 0 else 0.0
+            if sim >= 0.6:
+                continue
+        sk = {
+            "idea": term, "title": term,
+            "problem": f"{term} 관련 시장/도입/규격 이슈를 해결할 기회.",
+            "target_customer": "기업(B2B)",
+            "value_prop": f"{term} 도입으로 비용/품질/경험을 개선.",
+            "solution": ["파일럿", "파트너십", "인증/규격 검토", "조달/유통 테스트"],
+            "risks": ["규제/표준 불확실성", "ROI 불확실성"],
+            "priority_score": 3.0,
+            "score": 60.0,
+            "score_breakdown": {"market":0.5,"urgency":0.5,"feasibility":0.6,"risk":0.0,"notes":{}},
+            "evidence": []
+        }
+        existing.append(sk)
+        used.add(term)
+    return existing[:want]
 
-        _do_trunc = os.getenv("TRUNCATE_OPP", "").lower() in ("1", "true", "yes", "y")
-        lines.append("| Idea | Target | Value Prop | Score (Market / Urgency / Feasibility / Risk) |")
-        lines.append("|---|---|---|---|")
-
-        for it in ideas_sorted:
-            idea_raw = (it.get('idea', '') or it.get('title', '') or '')
-            tgt_raw  = it.get('target_customer', '') or ''
-            vp_raw   = (it.get('value_prop', '') or '').replace("\n", " ")
-
-            if _do_trunc:
-                idea = _truncate(idea_raw, 120).replace("|", r"\|")
-                tgt  = _truncate(tgt_raw, 80).replace("|", r"\|")
-                vp   = _truncate(vp_raw, 280).replace("|", r"\|")
-            else:
-                idea = idea_raw.replace("|", r"\|")
-                tgt  = tgt_raw.replace("|", r"\|")
-                vp   = vp_raw.replace("|", r"\|")
-
-            # 점수 표시: score + breakdown
-            score_val = it.get("score", "")
-            bd = it.get("score_breakdown", {})
-            mkt = bd.get("market", "")
-            urg = bd.get("urgency", "")
-            feas = bd.get("feasibility", "")
-            risk = bd.get("risk", "")
-            score_str = f"{score_val} ({mkt} / {urg} / {feas} / {risk})" if score_val != "" else ""
-
-            lines.append(f"| {idea} | {tgt} | {vp} | {score_str} |")
-    else:
-        lines.append("- (아이디어 없음)")
-
-    chart_path = "outputs/fig/idea_score_distribution.png"
-    if os.path.exists(chart_path):
-        lines.append("\n### 📊 아이디어 점수 분포")
-        lines.append(f"![아이디어 점수 분포](fig/idea_score_distribution.png)\n")
-    else:
-        print(f"[WARN] Chart image not found at {chart_path}")
-
-    lines.append("\n## Appendix\n")
-    lines.append("- 데이터: keywords.json, topics.json, trend_timeseries.json, trend_insights.json, biz_opportunities.json")
-    Path(out_md).parent.mkdir(parents=True, exist_ok=True)
-    with open(out_md, "w", encoding="utf-8") as f:
-        f.write("\n".join(lines))
-
-def build_html_from_md(md_path="outputs/report.md", out_html="outputs/report.html"):
-    try:
-        import markdown
-        with open(md_path, "r", encoding="utf-8") as f:
-            md = f.read()
-        html = markdown.markdown(md, extensions=["extra", "tables", "toc"])
-        html_tpl = f"""<!doctype html>
-<html lang="ko">
-<head>
-<meta charset="utf-8">
-<meta name="viewport" content="width=device-width, initial-scale=1">
-<title>Auto Report</title>
-<link rel="preconnect" href="https://fonts.gstatic.com">
-<style>
-  body {{ font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif; line-height: 1.6; padding: 24px; color: #222; }}
-  img {{ max-width: 100%; height: auto; }}
-  table {{ border-collapse: collapse; width: 100%; }}
-  th, td {{ border: 1px solid #ddd; padding: 8px; vertical-align: top; }}
-  th {{ background: #f7f7f7; }}
-  code {{ background: #f1f5f9; padding: 2px 4px; border-radius: 4px; }}
-  td, th {{ overflow-wrap: anywhere; word-break: break-word; white-space: normal; }}
-</style>
-</head>
-<body>
-{html}
-</body>
-</html>"""
-        with open(out_html, "w", encoding="utf-8") as f:
-            f.write(html_tpl)
-    except Exception as e:
-        print("[WARN] HTML 변환 실패:", e)
-
-def export_csvs(ts_obj, keywords_obj, topics_obj, out_dir="outputs/export"):
-    import pandas as pd, os
-    os.makedirs(out_dir, exist_ok=True)
-    daily = (ts_obj or {}).get("daily", [])
-    df_ts = pd.DataFrame(daily) if daily else pd.DataFrame(columns=["date","count"])
-    df_ts.to_csv(os.path.join(out_dir, "timeseries_daily.csv"), index=False, encoding="utf-8")
-    kws = (keywords_obj or {}).get("keywords", [])[:20]
-    df_kw = pd.DataFrame(kws) if kws else pd.DataFrame(columns=["keyword","score"])
-    df_kw.to_csv(os.path.join(out_dir, "keywords_top20.csv"), index=False, encoding="utf-8")
-    topics = (topics_obj or {}).get("topics", [])
-    rows = []
-    for t in topics:
-        tid = t.get("topic_id")
-        for w in (t.get("top_words") or [])[:10]:
-            pw = w.get("prob", None)
-            try:
-                p = float(pw)
-                if p == 0.0:
-                    p = 1e-6
-            except Exception:
-                p = 1e-6
-            rows.append({"topic_id": tid, "word": w.get("word", ""), "prob": p})
-    df_tw = pd.DataFrame(rows) if rows else pd.DataFrame(columns=["topic_id","word","prob"])
-    df_tw.to_csv(os.path.join(out_dir, "topics_top_words.csv"), index=False, encoding="utf-8")
-    print("[INFO] export CSVs -> outputs/export/*.csv")
-
-
+# ========== 메인 ==========
 def main():
-    keywords, topics, ts, insights, opps, meta_items = load_data()
-    os.makedirs("outputs/fig", exist_ok=True)
+    os.makedirs("outputs", exist_ok=True)
+    os.makedirs("outputs/export", exist_ok=True)
 
-    # 그림들
-    try:
-        plot_top_keywords(keywords)
-    except Exception as e:
-        print("[WARN] top_keywords 그림 실패:", e)
-    try:
-        plot_topics(topics)
-    except Exception as e:
-        print("[WARN] topics 그림 실패:", e)
-    try:
-        plot_wordcloud_from_keywords(keywords)
-    except Exception as e:
-        print("[WARN] wordcloud 생성 실패:", e)
-    try:
-        plot_timeseries(ts)
-    except Exception as e:
-        print("[WARN] timeseries 그림 실패:", e)
-
-    # 네트워크 생성 (module_e.py main 내부)
-    try:
-        docs = build_docs_from_meta(meta_items)
-        kw_list = keywords.get("keywords", [])
-        n_kw = len(kw_list)
-        label_cap = 25  # 노드 수가 적으면 전부, 많으면 최대 25개 라벨
-        plot_keyword_network(
-            keywords, docs,
-            out_path="outputs/fig/keyword_network.png",
-            topn=n_kw,                 # 상위 키워드 수만큼 노드
-            min_cooccur=1,             # 데이터 적은 날 안정성↑
-            max_edges=200,
-            label_top=(None if n_kw <= label_cap else label_cap)
-        )
-    except Exception as e:
-        print("[WARN] 키워드 네트워크 실패:", e)
-        
-
-    # CSV 내보내기
-    try:
-        export_csvs(ts, keywords, topics)
-    except Exception as e:
-        print("[WARN] CSV 내보내기 실패:", e)
-
-    # 리포트 생성(반드시 파일을 남기는 보수적 로직)
-    try:
-        build_markdown(keywords, topics, ts, insights, opps)
-        build_html_from_md()
-    except Exception as e:
-        print("[WARN] 리포트 생성 실패(폴백 생성으로 대체):", e)
-        try:
-            # 최소 보고서(체크 스크립트가 찾는 섹션 헤더 포함)
-            skeleton = """# Weekly/New Biz Report (fallback)
-
-## Executive Summary
-- (생성 실패 폴백) 요약 데이터를 불러오지 못했습니다.
-
-## Key Metrics
-- 기간: -
-- 총 기사 수: 0
-- 문서 수: 0
-- 키워드 수(상위): 0
-- 토픽 수: 0
-- 시계열 데이터 일자 수: 0
-
-## Top Keywords
-- (데이터 없음)
-
-## Topics
-- (데이터 없음)
-
-## Trend
-- (데이터 없음)
-
-## Insights
-- (데이터 없음)
-
-## Opportunities (Top 5)
-- (데이터 없음)
-
-## Appendix
-- 데이터: keywords.json, topics.json, trend_timeseries.json, trend_insights.json, biz_opportunities.json
-"""
-            with open("outputs/report.md", "w", encoding="utf-8") as f:
-                f.write(skeleton)
-            # 간단 HTML 변환
-            try:
-                build_html_from_md()
-            except Exception as e2:
-                print("[WARN] HTML 폴백 변환 실패:", e2)
-        except Exception as e3:
-            print("[ERROR] 폴백 리포트 생성도 실패:", e3)
-
-    print("[INFO] Module E 완료 | report.md, report.html 생성(또는 폴백 생성)")
+    meta_items = load_json(latest("data/news_meta_*.json"), [])
+    keywords_obj = load_json("outputs/keywords.json", {"keywords":[]})
+    topics_obj   = load_json("outputs/topics.json", {"topics":[]})
     
+    # 새로 추가: 분석 결과 로드
+    analysis_summary = load_json("outputs/analysis_summary.json", {})
     
+    trend_rows = load_trend_strength_csv("outputs/export/trend_strength.csv")
+    events_rows = load_events_csv("outputs/export/events.csv")
+
+    # 로그 보강
+    print(f"[INFO] Loaded context data | trend_rows={len(trend_rows)}, events_rows={len(events_rows)}")
+    print(f"[INFO] Analysis summary loaded | matrix_orgs={analysis_summary.get('matrix_stats', {}).get('num_orgs', 0)}")
+    
+    try:
+        ideas_llm = make_opportunities_llm(meta_items)
+    except Exception as e:
+        print("[ERROR] LLM stage failed:", repr(e))
+        ideas_llm = []
+
+    # enrich_with_signals 호출 시 keywords_obj를 추가로 전달합니다.
+    ideas_with_scores = enrich_with_signals(ideas_llm, meta_items, trend_rows, events_rows, CFG, keywords_obj)
+    ideas_with_scores.sort(key=lambda x: x.get("score", 0.0), reverse=True)
+    
+    ideas_final = fill_opportunities_to_five(ideas_with_scores, keywords_obj, want=5)
+
+    save_json("outputs/biz_opportunities.json", {"ideas": ideas_final})
+    print("[INFO] Module E done | ideas=%d" % len(ideas_final))
+
 if __name__ == "__main__":
     main()

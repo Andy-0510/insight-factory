@@ -1,33 +1,49 @@
-import os
+import json
 import sys
+
+def warn(msg):
+    print(f"[WARN] {msg}")
 
 def fail(msg):
     print(f"[ERROR] {msg}")
     sys.exit(1)
 
 def main():
-    if not os.path.exists("outputs/report.md"):
-        fail("outputs/report.md 없음")
+    path = "outputs/biz_opportunities.json"
+    try:
+        with open(path, "r", encoding="utf-8") as f:
+            data = json.load(f)
+    except Exception:
+        fail("biz_opportunities.json 로드 실패")
 
-    with open("outputs/report.md", "r", encoding="utf-8") as f:
-        txt = f.read()
+    ideas = data.get("ideas")
+    if ideas is None or not isinstance(ideas, list):
+        fail("ideas 필드가 누락되었거나 형식이 잘못됨")
+
+    n = len(ideas)
+    if n == 0:
+        warn("아이디어가 0개입니다.")
+    elif n < 3:
+        warn(f"아이디어가 적습니다({n}개).")
 
     required = [
-        "Executive Summary",
-        "Key Metrics",
-        "Top Keywords",
-        "Topics",
-        "Trend",
-        "Insights",
-        "Opportunities",
-        "Appendix"
+        "idea",
+        "problem",
+        "target_customer",
+        "value_prop",
+        "solution",
+        "risks",
+        "priority_score",
     ]
 
-    for h in required:
-        if h not in txt:
-            fail(f"report.md 섹션 누락: {h}")
+    for idx, it in enumerate(ideas[:5], 1):
+        if not isinstance(it, dict):
+            fail(f"아이디어 형식 오류(index={idx})")
+        for k in required:
+            if k not in it:
+                fail(f"필드 누락: {k} (index={idx})")
 
-    print("[INFO] Check E OK | report.md 생성 확인")
+    print(f"[INFO] Check E OK | ideas={n}")
 
 if __name__ == "__main__":
     main()

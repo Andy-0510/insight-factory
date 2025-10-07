@@ -73,8 +73,6 @@ def to_date(s: str) -> str:
     if d > today: d = today
     return d.strftime("%Y-%m-%d")
 
-# ================= 데이터 로더 =================
-# src/module_c.py
 
 # ================= 데이터 로더 =================
 def select_latest_files_per_day(glob_pattern: str, days: int) -> List[str]:
@@ -468,6 +466,7 @@ def pro_build_topics_bertopic(docs, topn=10):
         print(f"[DEBUG][C] PRO 생성 완료(폴백) | topics={len(topics_obj.get('topics', []))}")
         return topics_obj
 
+
 # ================= 인사이트 요약 =================
 def gemini_insight(api_key: str, model: str, context: Dict[str, Any],
                    max_tokens: int = 2048, temperature: float = 0.3) -> str:
@@ -515,98 +514,6 @@ def gemini_insight(api_key: str, model: str, context: Dict[str, Any],
     except Exception as e:
         return f"(요약 생성 실패: {e}) 최근 흐름과 상위 토픽 기준으로 우선 과제를 정리하세요."
 
-# ================= 강/약 신호(기울기 반영) =================
-def _term_counts_in_docs(docs: list, terms: list) -> dict:
-    res = {}
-    for t in terms:
-        tl = (t or "").lower()
-        if not tl: continue
-        c = 0
-        for d in docs:
-            if tl in (d or "").lower():
-                c += 1
-        res[t] = c
-    return res
-
-def _z_like(cur: float, mean: float, sd: float) -> float:
-    if sd <= 0: return 0.0
-    return (cur - mean) / sd
-
-def export_trend_and_weak_signals(docs: list, dates: list, keywords_obj: dict):
-    import csv
-    os.makedirs("outputs/export", exist_ok=True)
-    terms = [k.get("keyword","") for k in (keywords_obj.get("keywords") or [])[:80]]
-    terms = [t for t in terms if t and len(t) >= 2]
-
-    days = sorted(set(dates or []))[-28:]
-    day_docs = {d: [] for d in days}
-    for d, doc in zip(dates, docs):
-        if d in day_docs:
-            day_docs[d].append(doc)
-
-    def count_on_day(term, day):
-        tl = term.lower()
-        return sum(1 for doc in day_docs.get(day, []) if tl in (doc or "").lower())
-
-    def series_for_term(term):
-        return [count_on_day(term, d) for d in days]
-
-    def rolling_avg(arr, k):
-        if len(arr) < k: return 0.0
-        return sum(arr[-k:]) / float(k)
-
-    totals_all = _term_counts_in_docs(docs, terms)
-    vals = list(totals_all.values()) or [0]
-    mean_all = sum(vals)/max(1,len(vals))
-    sd_all = (sum((x-mean_all)**2 for x in vals)/max(1,len(vals)))**0.5
-
-    rows = []
-    for t in terms:
-        s = series_for_term(t)
-        cur = s[-1] if s else 0
-        prev = s[-2] if len(s) >= 2 else 0
-        diff = cur - prev
-        ma7 = rolling_avg(s, 7)
-        total = sum(s)
-        z = _z_like(cur, mean_all, sd_all) if sd_all > 0 else 0.0
-        if len(s) >= 14:
-            front7 = sum(s[-14:-7]) / 7.0
-            back7  = sum(s[-7:]) / 7.0
-        else:
-            half = max(1, len(s)//2)
-            front7 = sum(s[:half]) / float(half)
-            back7  = sum(s[half:]) / float(max(1,len(s)-half))
-        slope = back7 - front7
-        rows.append({"term": t, "cur": cur, "prev": prev, "diff": diff, "ma7": round(ma7,3),
-                     "z_like": round(z,3), "total": total, "slope": round(slope,3)})
-
-    cur_sorted = sorted([r["cur"] for r in rows], reverse=True)
-    z_sorted = sorted([r["z_like"] for r in rows], reverse=True)
-    total_sorted = sorted([r["total"] for r in rows])
-
-    def quantile(vs, p):
-        if not vs: return 0
-        i = max(0, min(len(vs)-1, int(len(vs)*p)))
-        return vs[i]
-
-    cur_q90   = quantile(cur_sorted, 0.1)
-    z_q80     = quantile(z_sorted, 0.2)
-    total_q70 = quantile(total_sorted, 0.3)
-    total_q50 = quantile(total_sorted, 0.5)
-    z_q60     = quantile(z_sorted, 0.4)
-
-    trend = [r for r in rows if r["cur"] >= cur_q90 and r["z_like"] >= z_q80 and r["total"] >= total_q70]
-    weak  = [r for r in rows if r["total"] <= total_q50 and r["z_like"] >= z_q60 and r["cur"] < cur_q90 and r["slope"] > 0]
-
-    trend_terms = {r["term"] for r in trend}
-    weak = [r for r in weak if r["term"] not in trend_terms]
-
-    with open("outputs/export/trend_strength.csv","w",encoding="utf-8",newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["term","cur","prev","diff","ma7","z_like","total","slope"])
-        w.writeheader(); [w.writerow(r) for r in trend]
-    with open("outputs/export/weak_signals.csv","w",encoding="utf-8",newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["term","cur","prev","diff","ma7","z_like","total","slope"])
-        w.writeheader(); [w.writerow(r) for r in weak]
 
 # ================= 메인 =================
 def main():
@@ -662,8 +569,7 @@ def main():
     insights_obj = {"summary": summary, "top_topics": top_topics, "evidence": {"timeseries": tail_14}}
     with open("outputs/trend_insights.json", "w", encoding="utf-8") as f:
         json.dump(insights_obj, f, ensure_ascii=False, indent=2)
-    
-    # 5. 강/약 신호 분석은 이제 signal_export.py에서 독립적으로 수행되므로 여기서 호출하지 않습니다.
+
 
     import datetime
     meta = {"module": "C", "mode": "PRO" if use_pro_mode() else "LITE", "time_utc": datetime.datetime.utcnow().isoformat() + "Z"}
