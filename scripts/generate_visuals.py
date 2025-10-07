@@ -160,94 +160,6 @@ def plot_idea_score_distribution(ideas: list, output_path: str = 'outputs/fig/id
     print(f"[INFO] Saved idea_score_distribution.png")
 
 
-def plot_keyword_network(keywords, docs, out_path="outputs/fig/keyword_network.png", topn=50, min_cooccur=2, max_edges=100, label_top=25):
-    import matplotlib.pyplot as plt
-    import networkx as nx
-    import os
-    ensure_fonts()
-    apply_plot_style()
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    freq = {}
-    for it in (keywords.get("keywords", [])[:topn] or []):
-        w = (it.get("keyword") or "").strip()
-        s = float(it.get("score", 0) or 0)
-        if w:
-            freq[w] = max(s, 0.0)
-    if not freq or not docs:
-        plt.figure(figsize=(8, 5))
-        plt.text(0.5, 0.5, "네트워크 데이터 없음", ha="center", va="center")
-        plt.axis("off")
-        plt.savefig(out_path, dpi=150, bbox_inches="tight")
-        plt.close()
-        return {"nodes": 0, "edges": 0}
-    G = nx.Graph()
-    for w in freq:
-        G.add_node(w, weight=freq[w])
-    cooccur = {}
-    for doc in docs:
-        words = set(simple_tokenize_ko(doc)).intersection(set(freq.keys()))
-        words = sorted(words)
-        for i in range(len(words)):
-            for j in range(i + 1, len(words)):
-                pair = (words[i], words[j])
-                cooccur[pair] = cooccur.get(pair, 0) + 1
-    for (u, v), w in cooccur.items():
-        if w >= min_cooccur:
-            G.add_edge(u, v, weight=w)
-    edges = sorted(G.edges(data=True), key=lambda e: e[2]["weight"], reverse=True)[:max_edges]
-    G = nx.Graph()
-    for w in freq:
-        G.add_node(w, weight=freq[w])
-    G.add_edges_from((u, v, d) for u, v, d in edges)
-    if not G.number_of_nodes():
-        plt.figure(figsize=(8, 5))
-        plt.text(0.5, 0.5, "네트워크 데이터 없음", ha="center", va="center")
-        plt.axis("off")
-        plt.savefig(out_path, dpi=150, bbox_inches="tight")
-        plt.close()
-        return {"nodes": 0, "edges": 0}
-    pos = nx.spring_layout(G, k=0.5, iterations=50, seed=42)
-    fig, ax = plt.subplots(figsize=(10, 7))
-    node_sizes = [max(100, 1000 * G.nodes[n]["weight"]) for n in G.nodes()]
-    node_colors = ["#3b82f6" if G.degree(n) > sum(G.degree(n) for n in G.nodes()) / G.number_of_nodes() else "#93c5fd" for n in G.nodes()]
-    edge_weights = [G[u][v]["weight"] for u, v in G.edges()]
-    w_max = max(edge_weights, default=1)
-    w_min = min(edge_weights, default=1)
-    w_norm = [0.5 + 2.5 * (w - w_min) / (w_max - w_min + 1e-9) for w in edge_weights]
-    font_name = ensure_fonts()
-    nx.draw_networkx_edges(G, pos, ax=ax, width=w_norm, edge_color="#666", alpha=0.25)
-    nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=node_colors, alpha=0.9, linewidths=0.5, edgecolors="#333")
-    if label_top is None:
-        label_nodes = list(G.nodes())
-    else:
-        label_nodes = [w for w, _ in sorted(freq.items(), key=lambda x: x[1], reverse=True)[:label_top]]
-        label_nodes = [n for n in label_nodes if n in G.nodes()]
-    for n in label_nodes:
-        txt = (n or "").strip()
-        if not txt:
-            continue
-        x, y = pos[n]
-        ax.text(
-            x, y, txt,
-            ha="center", va="center",
-            fontsize=8, color="#111111",
-            zorder=5, clip_on=False,
-            fontname=font_name,
-            bbox=dict(boxstyle="round,pad=0.20", fc="white", ec="none", alpha=0.80)
-        )
-    xs = [p[0] for p in pos.values()]
-    ys = [p[1] for p in pos.values()]
-    if xs and ys:
-        pad_x = (max(xs) - min(xs)) * 0.08 + 0.05
-        pad_y = (max(ys) - min(ys)) * 0.08 + 0.05
-        ax.set_xlim(min(xs) - pad_x, max(xs) + pad_x)
-        ax.set_ylim(min(ys) - pad_y, max(ys) + pad_y)
-    plt.title("Keyword Co-occurrence Network")
-    plt.tight_layout()
-    plt.savefig(out_path, dpi=150, bbox_inches="tight")
-    plt.close()
-    return {"nodes": G.number_of_nodes(), "edges": G.number_of_edges()}
-
 def plot_company_network_from_json(json_path="outputs/company_network.json",
                                    output_path="outputs/fig/company_network.png",
                                    top_edges=30, top_nodes=10):
@@ -339,7 +251,35 @@ def plot_company_network_from_json(json_path="outputs/company_network.json",
         Line2D([0], [0], marker='o', color='w', label='허브(강조)',
                markerfacecolor="#e74c3c", markeredgecolor="#333", markersize=10)
     ]
-    plt.legend(handles=legend_elements, loc="lower left", frameon=False)
+
+    # 범례 추가 (그래프 내부 빈 공간에 위치, 테두리 포함)
+    from matplotlib.lines import Line2D
+    legend_elements = [
+        Line2D([0], [0], color="#e74c3c", lw=2, label="경쟁"),       # 빨간 선
+        Line2D([0], [0], color="#27ae60", lw=2, label="협력"),       # 초록 선
+        Line2D([0], [0], color="#7a7a7a", lw=2, label="중립"),       # 회색 선
+        Line2D([0], [0], marker='o', color='w', label='허브 기업',   # 빨간 노드
+               markerfacecolor="#e74c3c", markeredgecolor="#333", markersize=10),
+        Line2D([0], [0], marker='o', color='w', label='일반 기업',    # 파란 노드
+               markerfacecolor="#86b6f6", markeredgecolor="#333", markersize=8)
+    ]
+
+    # 범례 추가 (그래프 안쪽 좌하단 + 테두리 추가)
+    legend = plt.legend(handles=legend_elements,
+                        loc="lower left",
+                        frameon=True,
+                        framealpha=1,
+                        edgecolor="#333",
+                        fontsize=9)
+    legend.get_frame().set_linewidth(0.8)
+
+    # 그래프 전체 테두리 추가
+    ax = plt.gca()
+    ax.add_patch(plt.Rectangle(
+        (0, 0), 1, 1, transform=ax.transAxes,
+        fill=False, edgecolor="#555", linewidth=1.2
+    ))
+
 
     plt.title("기업 경쟁/협력 네트워크 (핵심 관계망)", fontsize=14, fontname=font_name)
     plt.axis("off")
@@ -421,13 +361,24 @@ def plot_weak_signal_radar(weak_signals_df):
         sizes=(100, 1000), alpha=0.7, color="red", ax=ax, legend=False
     )
 
-    # --- ✨✨✨ 라벨 겹침 방지 로직으로 수정 ✨✨✨ ---
+    # --- ✨ 시인성 향상된 라벨 추가 ✨ ---
     texts = []
     for i in range(weak_signals_df.shape[0]):
-        texts.append(ax.text(x=weak_signals_df.total[i], y=weak_signals_df.z_like[i], s=weak_signals_df.term[i], fontdict=dict(color='red', size=12)))
+        label = weak_signals_df.term[i]
+        x = weak_signals_df.total[i]
+        y = weak_signals_df.z_like[i]
+        texts.append(ax.text(
+            x, y, label,
+            fontsize=11,
+            color='black',  # 라벨 색: 대비를 위해 검정
+            bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="gray", lw=0.5, alpha=0.8)  # 흰 배경 박스
+        ))
 
-    adjust_text(texts, ax=ax, arrowprops=dict(arrowstyle='->', color='red', lw=0.5))
-    # --- ✨✨✨ 여기까지 ---
+    adjust_text(
+        texts, ax=ax,
+        arrowprops=dict(arrowstyle='->', color='gray', lw=0.5)  # 화살표는 흐린 회색
+    )
+
 
     plt.title('약한 신호 레이더 (Weak Signal Radar)', fontsize=16)
     plt.xlabel('익숙함 (총 누적 언급량)', fontsize=12)
