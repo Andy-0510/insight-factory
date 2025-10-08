@@ -116,11 +116,11 @@ def main():
     display = int(CFG.get("per_query_display", 10))
     display = max(1, min(display, 100))
     
-    # pages: 최소 1, dry_run=False일 경우 최소 2
+    # pages: 최소 1, dry_run=False일 경우 최소 1
     pages = int(CFG.get("pages", 1))
     pages = max(1, pages)
     if not dry_run:
-        pages = max(2, pages)
+        pages = max(1, pages)
     
     print(f"[INFO] queries={queries} dry_run={dry_run} display={display} pages={pages}")
     
