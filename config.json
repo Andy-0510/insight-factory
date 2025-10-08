@@ -1,14 +1,14 @@
 {
-  "dry_run": true,
-  "use_pro": false,
+  "dry_run": false,
+  "use_pro": true,
   "queries": [
     "OLED 패널", "QD-OLED", "MicroLED", "폴더블",
     "차량용 디스플레이", "AR", "LTPO",
     "삼성디스플레이", "LG디스플레이", "애플", "삼성", "LG",
     "OLED", "LCD"
   ],
-  "per_query_display": 10,
-  "pages": 1,
+  "per_query_display": 100,
+  "pages": 2,
   "top_n_keywords": 20,
 
   "min_docfreq": 3,
