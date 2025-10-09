@@ -8,6 +8,9 @@ import datetime
 from typing import List, Dict, Any, Tuple, Optional
 from email.utils import parsedate_to_datetime
 from collections import Counter, defaultdict
+from src.config import load_config, llm_config
+from src.timeutil import to_date, kst_date_str, kst_run_suffix
+from src.utils import load_json, save_json, latest
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
@@ -35,44 +38,16 @@ def _log_mode(prefix="Module C"):
     print(f"[INFO] USE_PRO={str(is_pro).lower()} → {prefix} ({mode}) 시작")
 
 # ================= 설정 로드 =================
-from src.config import load_config, llm_config
 CFG = load_config()
 LLM = llm_config(CFG)
 
 # ================= 공용 유틸 =================
-def latest(globpat: str) -> Optional[str]:
-    files = sorted(glob.glob(globpat))
-    return files[-1] if files else None
-
 def clean_text(t: str) -> str:
     if not t: return ""
     t = re.sub(r"<.+?>", " ", t)
     t = unicodedata.normalize("NFKC", t)
     t = re.sub(r"\s+", " ", t).strip()
     return t
-
-def to_date(s: str) -> str:
-    today = datetime.date.today()
-    if not s or not isinstance(s, str): return today.strftime("%Y-%m-%d")
-    s = s.strip()
-    try:
-        iso = s.replace("Z", "+00:00")
-        dt = datetime.datetime.fromisoformat(iso)
-        d = dt.date()
-    except Exception:
-        try:
-            dt = parsedate_to_datetime(s); d = dt.date()
-        except Exception:
-            m = re.search(r"(\d{4}).*?(\d{1,2}).*?(\d{1,2})", s)
-            if m:
-                y, mm, dd = int(m.group(1)), int(m.group(2)), int(m.group(3))
-                try: d = datetime.date(y, mm, dd)
-                except Exception: d = today
-            else:
-                d = today
-    if d > today: d = today
-    return d.strftime("%Y-%m-%d")
-
 
 # ================= 데이터 로더 =================
 def select_latest_files_per_day(glob_pattern: str, days: int) -> List[str]:
@@ -106,7 +81,6 @@ def load_today_meta() -> Tuple[List[str], List[str]]:
         dates.append(to_date(d_raw))
     return docs, dates
 
-# load_warehouse 함수는 이제 파일 경로 목록만 반환하도록 단순화합니다.
 def load_warehouse_paths(days: int = 30) -> List[str]:
     # 하루치 여유분을 포함하여 D+1일자 파일을 가져올 수 있도록 합니다.
     return select_latest_files_per_day("data/warehouse/*.jsonl", days=(days + 1))
