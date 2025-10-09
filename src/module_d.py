@@ -17,7 +17,7 @@ from collections import defaultdict, Counter
 import pandas as pd
 import numpy as np
 
-from src.config import load_config
+from src.config import load_config, llm_config
 import networkx as nx
 from networkx.algorithms import community
 from src.utils import load_json, save_json, latest

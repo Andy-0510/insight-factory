@@ -4,10 +4,7 @@ import pandas as pd
 import glob
 import re
 from collections import defaultdict
-from dotenv import load_dotenv
 from src.utils import load_json, save_json, latest
-
-load_dotenv() # .env 파일에서 환경 변수를 로드합니다.
 
 
 # --- 설정 및 헬퍼 함수 ---
