@@ -7,10 +7,11 @@ import html
 import requests
 from bs4 import BeautifulSoup
 from src.config import load_config
+from src.timeutil import kst_date_str, kst_run_suffix
+
+
 CFG = load_config()
-
 NAVER_API = "https://openapi.naver.com/v1/search/news.json"
-
 
 def naver_headers():
     return {
@@ -143,15 +144,17 @@ def main():
         time.sleep(0.15)
 
     os.makedirs("data", exist_ok=True)
-    ts = int(time.time())
-    raw_path = f"data/news_clean_{ts}.json"
-    meta_path = f"data/news_meta_{ts}.json"
+    ts_str = f"{kst_date_str()}-{kst_run_suffix()}"
+    raw_path = f"data/news_clean_{ts_str}.json"
+    meta_path = f"data/news_meta_{ts_str}.json"
+
     with open(raw_path, "w", encoding="utf-8") as f:
         json.dump(clean_items, f, ensure_ascii=False, indent=2)
     with open(meta_path, "w", encoding="utf-8") as f:
         json.dump(meta_list, f, ensure_ascii=False, indent=2)
 
     print(f"[INFO] 저장 완료: {raw_path}, {meta_path} | 총 수집(중복 제거 후): {len(clean_items)} | 경과(초): {round(time.time()-t0,2)}")
+
     
 if __name__ == "__main__":
     main()

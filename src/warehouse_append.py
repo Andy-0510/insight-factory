@@ -6,10 +6,8 @@ import sys
 import datetime
 from email.utils import parsedate_to_datetime
 from src.timeutil import now_kst, kst_date_str, kst_run_suffix
+from src.utils import load_json, save_json, latest
 
-def latest(globpat):
-    files = sorted(glob.glob(globpat))
-    return files[-1] if files else None
 
 def to_date(s: str) -> str:
     today = datetime.date.today()

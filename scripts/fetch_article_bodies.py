@@ -8,14 +8,11 @@ import unicodedata
 from typing import List, Dict, Any, Tuple
 import trafilatura
 from trafilatura.settings import use_config
+from src.utils import load_json, save_json, latest
+
 
 # 본문 최소 길이(환경변수로 조절). 기본 120자
 MIN_LEN = int(os.environ.get("BODY_MIN_LEN", "120"))
-
-
-def latest(globpat: str) -> str:
-    files = sorted(glob.glob(globpat))
-    return files[-1] if files else None
 
 
 def clean_text(t: str) -> str:

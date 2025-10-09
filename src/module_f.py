@@ -12,6 +12,8 @@ import matplotlib.dates as mdates
 from datetime import datetime, timedelta
 import seaborn as sns
 import networkx as nx
+from src.utils import load_json, save_json, latest
+
 
 # 1) 일반 그래프 폰트 설정(다른 플롯도 한글 OK)
 _ = set_kr_font()
@@ -20,18 +22,6 @@ _ = set_kr_font()
 font_path = get_kr_font_path()
 print(f"[INFO] wordcloud font_path: {font_path}")
 
-def load_json(path, default=None):
-    if default is None:
-        default = {}
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            return json.load(f)
-    except Exception:
-        return default
-
-def latest(globpat: str):
-    files = sorted(glob.glob(globpat))
-    return files[-1] if files else None
 
 def load_data():
     keywords = load_json("outputs/keywords.json", {"keywords": [], "stats": {}})

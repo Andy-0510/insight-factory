@@ -17,7 +17,6 @@ def _load_lines(p):
     except Exception:
         return []
 
-# 확장 스톱워드(있으면 적용)
 STOP_EXT = set(_load_lines(os.path.join(DICT_DIR, "stopwords_ext.txt")))
 
 # =================== 정규화/토큰화 ===================
