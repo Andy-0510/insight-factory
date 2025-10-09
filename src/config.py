@@ -39,16 +39,3 @@ def llm_config(cfg: dict) -> dict:
 # 하위 호환(기존 코드가 loadconfig/llmconfig를 호출해도 동작)
 loadconfig = load_config
 llmconfig = llm_config
-
-"""
-def load_config(path: str = "config.json") -> dict:
-    try:
-        with open(path, "r", encoding="utf-8") as f:
-            cfg = json.load(f) or {}
-            return merge_dict(__DEFAULT, cfg)
-    except Exception:
-        return __DEFAULT
-
-def llm_config(cfg: dict) -> dict:
-    return cfg.get("llm", __DEFAULT["llm"])
-"""
