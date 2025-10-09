@@ -18,14 +18,6 @@ from src.timeutil import to_date, kst_date_str, kst_run_suffix
 
 
 # ========== 공통 로드/유틸 ==========
-def clean_text(t: str) -> str:
-    if not t:
-        return ""
-    t = re.sub(r"<.+?>", " ", t)
-    t = unicodedata.normalize("NFKC", t)
-    t = re.sub(r"\s+", " ", t).strip()
-    return t
-
 def to_date(s: str) -> str:
     from email.utils import parsedate_to_datetime
     try:

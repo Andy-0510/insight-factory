@@ -8,20 +8,11 @@ import unicodedata
 from typing import List, Dict, Any, Tuple
 import trafilatura
 from trafilatura.settings import use_config
-from src.utils import load_json, save_json, latest
+from src.utils import load_json, save_json, latest, clean_text
 
 
 # 본문 최소 길이(환경변수로 조절). 기본 120자
 MIN_LEN = int(os.environ.get("BODY_MIN_LEN", "120"))
-
-
-def clean_text(t: str) -> str:
-    if not t:
-        return ""
-    t = unicodedata.normalize("NFKC", t)
-    t = re.sub(r"<.+?>", " ", t)
-    t = re.sub(r"\s+", " ", t).strip()
-    return t
 
 
 def sha1(s: str) -> str:

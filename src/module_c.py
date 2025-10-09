@@ -1,16 +1,14 @@
-# -*- coding: utf-8 -*-
 import os
 import json
 import re
 import glob
-import unicodedata
 import datetime
 from typing import List, Dict, Any, Tuple, Optional
 from email.utils import parsedate_to_datetime
 from collections import Counter, defaultdict
 from src.config import load_config, llm_config
 from src.timeutil import to_date, kst_date_str, kst_run_suffix
-from src.utils import load_json, save_json, latest
+from src.utils import load_json, save_json, latest, clean_text
 
 from sklearn.feature_extraction.text import CountVectorizer
 from sklearn.decomposition import LatentDirichletAllocation
@@ -40,14 +38,6 @@ def _log_mode(prefix="Module C"):
 # ================= 설정 로드 =================
 CFG = load_config()
 LLM = llm_config(CFG)
-
-# ================= 공용 유틸 =================
-def clean_text(t: str) -> str:
-    if not t: return ""
-    t = re.sub(r"<.+?>", " ", t)
-    t = unicodedata.normalize("NFKC", t)
-    t = re.sub(r"\s+", " ", t).strip()
-    return t
 
 # ================= 데이터 로더 =================
 def select_latest_files_per_day(glob_pattern: str, days: int) -> List[str]:

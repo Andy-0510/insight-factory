@@ -1,8 +1,11 @@
 import time
 import functools
+import re
+import unicodedata
 import requests
 import os, json, glob
 from typing import Any, Optional
+
 
 
 ### 재시도 관련 함수
@@ -71,3 +74,13 @@ def save_json(path: str, obj: Any) -> None:
 def latest(path_glob: str) -> Optional[str]:
     files = sorted(glob.glob(path_glob))
     return files[-1] if files else None
+
+
+### 텍스트 정제 함수 통합
+def clean_text(t: str) -> str:
+    if not t:
+        return ""
+    t = re.sub(r"<.+?>", " ", t)
+    t = unicodedata.normalize("NFKC", t)
+    t = re.sub(r"\s+", " ", t).strip()
+    return t
