@@ -132,14 +132,15 @@ def _insert_images(image_paths, captions=None):
     for i, p in enumerate(image_paths):
         rel = p
         if _exists(p):
-            # 경로를 outputs/fig 하위 기준으로 표시
+            # outputs/ 접두 제거
             if p.startswith("outputs/"):
                 rel = p.replace("outputs/", "")
-            cap = captions[i] if i < len(captions) else ""
-            if cap:
-                lines.append(f"![{cap}]({rel})")
             else:
-                lines.append(f"![Figure]({rel})")
+                rel = p
+            # 윈도우 역슬래시 → 슬래시 정규화
+            rel = rel.replace("\\", "/")
+            cap = captions[i] if i < len(captions) else ""
+            lines.append(f"![{cap or 'Figure'}]({rel})")
     return ("\n".join(lines) + "\n") if lines else ""
 
 def _guide_block(tips=None, so_what=None, next_step=None):
@@ -306,7 +307,11 @@ def _section_keywords_intel(data):
 
     # 이미지: 워드클라우드, 키워드 네트워크
     imgs = [f"{FIG_DIR}/wordcloud.png", f"{FIG_DIR}/keyword_network.png"]
-    lines.append(_insert_images(imgs, captions=["워드클라우드", "키워드 네트워크"]))
+    # top_keywords 막대차트
+    top_kw_bar = os.path.join(FIG_DIR, "top_keywords.png")
+    if _exists(top_kw_bar):
+        imgs.append(top_kw_bar)
+    lines.append(_insert_images(imgs, captions=["워드클라우드", "키워드 네트워크", "상위 키워드 바차트"]))
 
     # 표: 상위 20 키워드
     lines.append("### 상위 키워드 Top 20")
@@ -594,53 +599,78 @@ def _section_time_series(data):
 # -----------------------------
 def _section_signals_board(data):
     lines = []
-    lines.append(_section_header("시그널 보드(강한/약한 신호)"))
+    try:
+        lines.append(_section_header("시그널 보드(강한/약한 신호)"))
 
-    # 강한 신호
-    strong_csv = os.path.join(EXPORT_DIR, "trend_strength.csv")
-    df_strong = _safe_read_csv(strong_csv)
-    if not df_strong.empty:
-        lines.append("### 강한 신호(Strong Signals)")
-        lines.append(_insert_images(os.path.join(FIG_DIR, "strong_signals_topbar.png"), captions=["강한 신호 상위 바"]))
-        # 표: term, cur, WoW, sentiment, comment(있다면)
-        cols = [c for c in ["term", "cur", "wow", "sentiment", "comment"] if c in df_strong.columns]
-        if cols:
-            lines.append(_to_markdown_table(df_strong[cols], max_rows=20))
-        lines.append("> 해석: 최근 뉴스에서 가장 주목받은 키워드들입니다. 값이 높을수록 강력한 주목 신호입니다.\n")
+        # -----------------------------
+        # 강한 신호
+        # -----------------------------
+        strong_csv = os.path.join(EXPORT_DIR, "trend_strength.csv")
+        df_strong = _safe_read_csv(strong_csv)
 
-    # 약한 신호
-    weak_csv = os.path.join(EXPORT_DIR, "weak_signal.csv")
-    df_weak = _safe_read_csv(weak_csv)
-    weak_insights = data.get("weak_insights", {"results": []}) or {"results": []}
-    insights_map = {it.get("signal"): it.get("interpretation") for it in (weak_insights.get("results") or [])}
+        if not df_strong.empty:
+            lines.append("### 강한 신호(Strong Signals)")
 
-    if not df_weak.empty:
-        lines.append("### 약한 신호(Weak/Emerging Signals)")
-        # 레이더/버블 이미지
-        lines.append(_insert_images(os.path.join(FIG_DIR, "weak_signal_radar.png"), captions=["약한 신호 레이더"]))
-        # 표 구성
-        rep_rows = []
-        for _, row in df_weak.head(30).iterrows():
-            term = row.get("term") or row.get("signal") or ""
-            cur = row.get("cur", "")
-            z_like = row.get("z_like", "")
-            rep_rows.append({
-                "약한 신호": term,
-                "지표(cur / z_like)": f"{cur} / {z_like}",
-                "해석(1줄)": insights_map.get(term, "-")
-            })
-        lines.append(_to_markdown_table(pd.DataFrame(rep_rows), max_rows=30))
-        lines.append("> 해석: 관측량은 작지만 비정상적 증가(z_like↑)가 포착된 신호입니다. 초기 탐색 큐로 활용하세요.\n")
+            # 1) 기본 상위 바 차트(있으면)
+            img_topbar = os.path.join(FIG_DIR, "strong_signals_topbar.png")
+            if _exists(img_topbar):
+                lines.append(_insert_images(img_topbar, captions=["강한 신호 상위 바"]))
 
-    if df_strong.empty and df_weak.empty:
-        lines.append("- (강/약한 신호 데이터 없음)\n")
+            # 2) strong_signals_barchart.png (시계열/임팩트 뷰)
+            img_barchart = os.path.join(FIG_DIR, "strong_signals_barchart.png")
+            if _exists(img_barchart):
+                lines.append(_insert_images(img_barchart, captions=["강한 신호 시계열/임팩트 뷰"]))
 
-    lines.append(_guide_block(
-        tips="약한 신호는 가속도와 이례성이 핵심입니다. 강한 신호는 현재의 주목도 그 자체입니다.",
-        so_what="약한→강한 신호 전환 구간이 기회의 창이 될 수 있습니다.",
-        next_step="약한 신호 상위 5개를 2주간 추적하고, 전환 시 기회 섹션으로 연결하세요."
-    ))
-    return "\n".join(lines)
+            # 표: 주요 컬럼만 안전 선택
+            strong_cols_pref = ["term", "cur", "wow", "z_like", "sentiment", "comment", "prev", "diff", "ma7", "total"]
+            cols = [c for c in strong_cols_pref if c in df_strong.columns]
+            if cols:
+                lines.append(_to_markdown_table(df_strong[cols], max_rows=20))
+            lines.append("")
+
+        # -----------------------------
+        # 약한 신호
+        # -----------------------------
+        weak_csv = os.path.join(EXPORT_DIR, "weak_signals.csv")
+        df_weak = _safe_read_csv(weak_csv)
+        weak_insights = data.get("weak_insights", {"results": []}) or {"results": []}
+        insights_map = {it.get("signal"): it.get("interpretation") for it in (weak_insights.get("results") or [])}
+
+        if not df_weak.empty:
+            lines.append("### 약한 신호(Weak/Emerging Signals)")
+
+            # 레이더 차트(파일 존재 시 삽입)
+            img_radar = os.path.join(FIG_DIR, "weak_signal_radar.png")
+            if _exists(img_radar):
+                lines.append(_insert_images(img_radar, captions=["약한 신호 레이더(누적 언급량 vs 급등도)"]))
+
+            # 표 요약(핵심 칼럼만)
+            rep_rows = []
+            for _, row in df_weak.head(30).iterrows():
+                term = row.get("term") or row.get("signal") or ""
+                cur = row.get("cur", "")
+                z_like = row.get("z_like", "")
+                rep_rows.append({
+                    "약한 신호": term,
+                    "지표(cur / z_like)": f"{cur} / {z_like}",
+                    "해석(1줄)": insights_map.get(term, "-")
+                })
+            lines.append(_to_markdown_table(pd.DataFrame(rep_rows), max_rows=30))
+            lines.append("")
+
+        if (df_strong.empty if isinstance(df_strong, pd.DataFrame) else True) and \
+           (df_weak.empty if isinstance(df_weak, pd.DataFrame) else True):
+            lines.append("- (강/약한 신호 데이터 없음)\n")
+
+        lines.append(_guide_block(
+            tips="약한 신호는 가속도·이례성이 핵심이고, 강한 신호는 현재 주목도의 절대값입니다.",
+            so_what="약한→강한 신호로 전환하는 구간이 가장 좋은 기회가 됩니다.",
+            next_step="상위 신호 5개를 2주간 추적하고, 토픽/기업 매트릭스와 교차 검증하세요."
+        ))
+        return "\n".join(lines)
+
+    except Exception as e:
+        return f"\n## 시그널 보드(강한/약한 신호)\n- (섹션 생성 중 오류: {e})\n"
 
 
 # -----------------------------
