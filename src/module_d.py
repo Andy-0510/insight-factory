@@ -282,7 +282,7 @@ def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[st
     use_regex_fallback = bool(net_cfg.get("use_regex_fallback", False))
     edge_min_weight = int(net_cfg.get("edge_min_weight", 3))
     cooccur_level = str(net_cfg.get("cooccur_level", "sentence")).lower()
-    domain_hints = [s.lower() for s in net_cfg.get("domain_hints", [])]
+    domain_hints = [s.lower() for s in CFG.get("domain_hints", [])]
 
     alias_map = CFG.get("alias", {})
     brand_to_company = load_json("data/dictionaries/brand_to_company.json", {})
