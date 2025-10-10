@@ -339,18 +339,19 @@ def _section_topics_radar(data):
     topics = data.get("topics", {})
     tlist = (topics.get("topics") or [])
 
-    # 토픽 표
+    # 토픽 표: topic_id + topic_summary만 남기기
     rows = []
     for t in tlist:
         tid = t.get("topic_id")
-        name = t.get("topic_name") or ""
-        words = ", ".join([w.get("word", "") for w in (t.get("top_words") or [])][:6])
-        insight = (t.get("insight") or "").replace("\n", " ").strip()
+        # topic_summary가 없을 때 insight/summary를 백업으로 사용
+        summ = (t.get("topic_summary")
+                or t.get("summary")
+                or t.get("insight")
+                or "")
+        summ = (summ or "").replace("\n", " ").strip()
         rows.append({
-            "토픽ID": tid,
-            "토픽명/대표단어": name or words,
-            "대표단어(프리뷰)": words,
-            "요약": _truncate(insight, 120)
+            "topic_id": tid,
+            "topic_summary": _truncate(summ, 120)
         })
     df_topics = pd.DataFrame(rows)
 
@@ -365,9 +366,14 @@ def _section_topics_radar(data):
     imgs = [f"{FIG_DIR}/topics_bubble.png", f"{FIG_DIR}/topics_mini_trends.png", f"{FIG_DIR}/topics.png"]
     lines.append(_insert_images(imgs, captions=["토픽 버블 지도", "상위 토픽 미니 트렌드", "토픽 요약"]))
 
-    # 표: 토픽 개요
+    # 표: 토픽 개요(두 컬럼만)
     lines.append("### 토픽 개요")
-    lines.append(_to_markdown_table(df_topics, max_rows=20))
+    if not df_topics.empty:
+        # 혹시 컬럼 누락 대비
+        cols = [c for c in ["topic_id", "topic_summary"] if c in df_topics.columns]
+        lines.append(_to_markdown_table(df_topics[cols], max_rows=50))
+    else:
+        lines.append("- (토픽 데이터 없음)")
 
     # 토픽 상승/하락 표(있다면)
     growth_csv = os.path.join(EXPORT_DIR, "topic_growth.csv")

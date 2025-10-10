@@ -430,6 +430,42 @@ def pro_build_topics_bertopic(docs, topn=10):
         print(f"[DEBUG][C] PRO 생성 완료(폴백) | topics={len(topics_obj.get('topics', []))}")
         return topics_obj
 
+# ================= LLM 활용 토픽 보강 =================
+def enrich_topics_with_llm(topics_obj: dict, api_key: str, model: str) -> dict:
+    import google.generativeai as genai
+    import re
+
+    genai.configure(api_key=api_key)
+    gmodel = genai.GenerativeModel(model)
+
+    enriched = []
+    for t in topics_obj.get("topics", []):
+        words = [w["word"] for w in t.get("top_words", [])]
+        prompt = (
+            f"다음은 뉴스에서 추출된 키워드입니다: {', '.join(words)}\n"
+            "이 키워드들을 기반으로 이 토픽의 이름과 간단한 해석을 작성해주세요.\n"
+            "조건:\n"
+            "- topic_name은 핵심만 담아 10글자 이내로 생성하세요 (자르지 말고 처음부터 짧게)\n"
+            "- topic_summary는 이 토픽이 다루는 내용을 간결하게 설명하세요\n"
+            "형식:\n"
+            "topic_name: <이름>\n"
+            "topic_summary: <해석>"
+        )
+        try:
+            resp = gmodel.generate_content(prompt)
+            text = resp.text.strip()
+            name_match = re.search(r"topic_name:\s*(.+)", text)
+            summary_match = re.search(r"topic_summary:\s*(.+)", text)
+
+            t["topic_name"] = name_match.group(1).strip() if name_match else f"Topic #{t['topic_id']}"
+            t["topic_summary"] = summary_match.group(1).strip() if summary_match else ""
+        except Exception as e:
+            t["topic_name"] = f"Topic #{t['topic_id']}"
+            t["topic_summary"] = "(LLM 해석 실패)"
+        enriched.append(t)
+
+    return {"topics": enriched}
+
 
 # ================= 인사이트 요약 =================
 def gemini_insight(api_key: str, model: str, context: Dict[str, Any],
@@ -484,6 +520,9 @@ def main():
     _log_mode("Module C")
     os.makedirs("outputs", exist_ok=True)
 
+    api_key = os.getenv("GEMINI_API_KEY", "")
+    model_name = str(LLM.get("model", "gemini-2.0-flash"))
+
     # 1. 데이터 로드 (변경된 함수 이름으로 호출)
     docs_today, _ = load_today_meta()
     warehouse_paths = load_warehouse_paths(days=30) 
@@ -503,7 +542,11 @@ def main():
         print(f"[WARN] Pro 토픽 실패, Lite로 폴백: {e}")
         topics_obj = build_topics_lite(docs_today or [], max_features=8000, topn=10)
     
+    # 기존 토픽 생성 후
     topics_obj = _ensure_prob_payload(topics_obj, topn=10, decay=0.95, floor=0.2)
+    # LLM 기반 토픽 해석 추가
+    topics_obj = enrich_topics_with_llm(topics_obj, api_key=api_key, model=model_name)
+    # 저장
     with open("outputs/topics.json", "w", encoding="utf-8") as f:
         json.dump(topics_obj, f, ensure_ascii=False, indent=2)
 
@@ -515,25 +558,33 @@ def main():
         keywords_obj = {"keywords": []}
     top_keywords = [k.get("keyword") for k in keywords_obj.get("keywords", [])[:10]]
 
-    api_key = os.getenv("GEMINI_API_KEY", "")
-    model_name = str(LLM.get("model", "gemini-2.0-flash"))
-    summary = gemini_insight(
-        api_key=api_key,
-        model=model_name,
-        context={"topics": topics_obj.get("topics", []), "timeseries": ts_obj.get("daily", []), "keywords": top_keywords},
-        max_tokens=int(LLM.get("max_output_tokens", 2048)),
-        temperature=float(LLM.get("temperature", 0.3)),
-    )
 
     top_topics = []
     for t in topics_obj.get("topics", []):
         words = [w.get("word", "") for w in (t.get("top_words") or [])][:5]
-        top_topics.append({"topic_id": t.get("topic_id"), "words": words})
+        top_topics.append({
+            "topic_id": t.get("topic_id"),
+            "topic_name": t.get("topic_name", f"Topic #{t.get('topic_id')}"),
+            "summary": t.get("topic_summary", ""),
+            "words": words
+        })
+
+    summary = gemini_insight(
+        api_key=api_key,
+        model=model_name,
+        context={"topics": top_topics, "timeseries": ts_obj.get("daily", []), "keywords": top_keywords},
+        max_tokens=int(LLM.get("max_output_tokens", 2048)),
+        temperature=float(LLM.get("temperature", 0.3)),
+    )
+
     tail_14 = ts_obj.get("daily", [])[-14:] if isinstance(ts_obj.get("daily", []), list) else []
-    insights_obj = {"summary": summary, "top_topics": top_topics, "evidence": {"timeseries": tail_14}}
+    insights_obj = {
+        "summary": summary,
+        "top_topics": top_topics,
+        "evidence": {"timeseries": tail_14}
+    }
     with open("outputs/trend_insights.json", "w", encoding="utf-8") as f:
         json.dump(insights_obj, f, ensure_ascii=False, indent=2)
-
 
     import datetime
     meta = {"module": "C", "mode": "PRO" if use_pro_mode() else "LITE", "time_utc": datetime.datetime.utcnow().isoformat() + "Z"}

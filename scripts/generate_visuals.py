@@ -337,11 +337,13 @@ def plot_topics(topics, out_path="outputs/fig/topics.png", topn_words=6):
         plt.savefig(out_path, dpi=150, bbox_inches="tight")
         plt.close()
         return
+
     k = len(tps)
     cols = 2
     rows = math.ceil(k / cols)
     fig, axes = plt.subplots(rows, cols, figsize=(12, 4 * rows))
     axes = axes.flatten() if k > 1 else [axes]
+
     for i, t in enumerate(tps):
         ax = axes[i]
         words = (t.get("top_words") or [])[:topn_words]
@@ -356,15 +358,24 @@ def plot_topics(topics, out_path="outputs/fig/topics.png", topn_words=6):
             except Exception:
                 p = 1.0
             probs.append(p)
+
         sns.barplot(x=probs, y=labels, ax=ax, color="#10b981")
-        ax.set_title(f"Topic #{t.get('topic_id')}")
+
+        # ✅ 제목 업데이트
+        topic_id = t.get("topic_id")
+        topic_name = t.get("topic_name", f"topic_{topic_id}")
+        ax.set_title(f"Topic #{topic_id} ({topic_name})")
+
         ax.set_xlabel("Weight")
         ax.set_ylabel("")
+
     for j in range(i + 1, len(axes)):
         axes[j].axis("off")
+
     plt.tight_layout()
     plt.savefig(out_path, dpi=150)
     plt.close()
+
 
 def plot_timeseries(ts, out_path="outputs/fig/timeseries.png"):
     import matplotlib.dates as mdates
@@ -443,7 +454,7 @@ def plot_timeseries(ts, out_path="outputs/fig/timeseries.png"):
     plt.close()
 
 def plot_keyword_network(keywords, docs, out_path="outputs/fig/keyword_network.png",
-                         topn=50, min_cooccur=2, max_edges=100, label_top=25):
+                         topn=50, min_cooccur=4, max_edges=40, label_top=25):
     """ 키워드 네트워크 생성 (PageRank 기반 라벨링 + 커뮤니티 탐지 시각화 버전) """
     from networkx.algorithms import community
     from matplotlib.patches import Patch
@@ -507,7 +518,7 @@ def plot_keyword_network(keywords, docs, out_path="outputs/fig/keyword_network.p
 
     # 8. 시각화
     fig, ax = plt.subplots(figsize=(14, 10))
-    pos = nx.spring_layout(G, k=5.0, iterations=50, seed=42)
+    pos = nx.spring_layout(G, k=2.0, iterations=50, seed=42)
 
     node_sizes = [100 + 2500 * G.nodes[n]['score'] for n in G.nodes()]
     community_ids = [G.nodes[n]['community'] for n in G.nodes()]
@@ -527,15 +538,14 @@ def plot_keyword_network(keywords, docs, out_path="outputs/fig/keyword_network.p
     edge_weights = [d['weight'] for _, _, d in G.edges(data=True)]
     w_max = max(edge_weights, default=1)
     edge_widths = [0.3 + 2.0 * (w / w_max) for w in edge_weights]
-    nx.draw_networkx_edges(G, pos, width=edge_widths, edge_color='grey', alpha=0.5, ax=ax)
+    nx.draw_networkx_edges(G, pos, width=edge_widths, edge_color='gray', alpha=0.5, ax=ax)
 
     # 9. 상위 PageRank 노드 라벨링
     top_nodes = sorted(pagerank, key=pagerank.get, reverse=True)[:label_top]
     texts = [
         ax.text(pos[n][0], pos[n][1], n,
-                fontsize=9, ha='center', va='center',
-                fontweight='bold', color="#111111",  # 진한 글씨
-                bbox=dict(boxstyle='round,pad=0.2', fc='white', ec='gray', alpha=0.8))
+                fontsize=11, ha='center', va='center',
+                fontweight='bold', color="#222222")
         for n in top_nodes if n in pos
     ]
 
@@ -583,12 +593,12 @@ def plot_heatmap(df, topics_map):
         sns.heatmap(heatmap_data, cmap="viridis", linewidths=.5)
         
         # 토픽 ID를 키워드로 변경
-        plt.xticks(ticks=range(len(heatmap_data.columns)), labels=[topics_map.get(f"topic_{col}", col) for col in heatmap_data.columns], rotation=45, ha='right')
+        plt.xticks(ticks=range(len(heatmap_data.columns)), labels=[topics_map.get(f"topic_{col}", col) for col in heatmap_data.columns], rotation=0, ha='left', fontsize=10, fontweight='bold')
         plt.title('기업별 토픽 집중도 (Hybrid Score)', fontsize=16)
         plt.xlabel('토픽', fontsize=12)
         plt.ylabel('기업', fontsize=12)
         plt.tight_layout()
-        plt.savefig('outputs/fig/matrix_heatmap.png', dpi=150)
+        plt.savefig('outputs/fig/matrix_heatmap.png', dpi=200)
         plt.close()
         print("[INFO] Saved matrix_heatmap.png")
     except Exception as e:
@@ -596,52 +606,98 @@ def plot_heatmap(df, topics_map):
 
 
 def plot_topic_share(df, topics_map, top_n_topics=3):
-    """ 2. 상위 토픽별 점유율 파이 차트 생성 """
+    """ 2. 상위 토픽별 점유율 파이 차트 생성 + 키워드 박스 표시 (우측 상단) """
     try:
+        # 🔹 토픽 정보 로드
+        with open("outputs/topics.json", "r", encoding="utf-8") as f:
+            topics_data = json.load(f)
+
         top_topics = df.groupby('topic')['hybrid_score'].sum().nlargest(top_n_topics).index
-        
+
         for topic in top_topics:
             topic_df = df[df['topic'] == topic].copy()
-            # 점유율이 낮은 기업은 'Others'로 묶기
+
+            # 🔹 점유율이 낮은 기업은 'Others'로 묶기
             top_orgs = topic_df.nlargest(5, 'topic_share')
             if len(topic_df) > 5:
                 others_share = topic_df[~topic_df['org'].isin(top_orgs['org'])]['topic_share'].sum()
                 others_row = pd.DataFrame([{'org': 'Others', 'topic_share': others_share}])
                 top_orgs = pd.concat([top_orgs, others_row], ignore_index=True)
 
+            # 🔹 토픽 이름 및 키워드 추출
+            topic_obj = next((t for t in topics_data.get("topics", []) if t.get("topic_id") == topic), {})
+            topic_name = topic_obj.get("topic_name", topics_map.get(f"topic_{topic}", f"Topic {topic}"))
+            top_words = topic_obj.get("top_words", [])[:5]
+            word_texts = [f"{w['word']} ({w['prob']:.2f})" for w in top_words if "word" in w and "prob" in w]
+            box_text = "topic_word (prob)\n" + "\n".join(word_texts)  # ✅ 박스 상단 라벨 추가
+
+            # 🔹 시각화
             plt.figure(figsize=(10, 8))
-            plt.pie(top_orgs['topic_share'], labels=top_orgs['org'], autopct='%1.1f%%', startangle=140, pctdistance=0.85)
-            plt.title(f'토픽 점유율: {topics_map.get(f"topic_{topic}", topic)}', fontsize=16)
+            plt.pie(
+                top_orgs['topic_share'],
+                labels=top_orgs['org'],
+                autopct='%1.1f%%',
+                startangle=140,
+                pctdistance=0.85
+            )
+
+            # 🔹 제목 변경
+            plt.title(f"[Topic id #{topic}, {topic_name}]", fontsize=16)
+
+            # 🔹 키워드 박스 표시
+            plt.gcf().text(
+                0.85, 0.15, box_text,
+                fontsize=10, fontweight='bold',
+                bbox=dict(boxstyle="round,pad=0.4", fc="white", ec="gray", lw=0.8, alpha=0.9)
+            )
+
             plt.axis('equal')
             plt.tight_layout()
             plt.savefig(f'outputs/fig/topic_share_{topic}.png', dpi=150)
             plt.close()
             print(f"[INFO] Saved topic_share_{topic}.png")
+
     except Exception as e:
         print(f"[ERROR] Failed to generate pie charts: {e}")
 
 
+
+
+
 def plot_company_focus(df, top_n_orgs=3):
-    """ 3. 상위 기업별 집중도 바 차트 생성 """
+    """ 3. 상위 기업별 집중도 바 차트 생성 (x축에 topic_id + topic_name 표시) """
     try:
+        # topic_id → topic_name 매핑
+        with open("outputs/topics.json", "r", encoding="utf-8") as f:
+            topics_data = json.load(f)
+        topic_label_map = {
+            t["topic_id"]: f"Topic #{t['topic_id']}\n{t.get('topic_name', '')}"
+            for t in topics_data.get("topics", [])
+        }
+
         top_orgs = df.groupby('org')['hybrid_score'].sum().nlargest(top_n_orgs).index
 
         for org in top_orgs:
             org_df = df[df['org'] == org].nlargest(8, 'company_focus')
             if org_df.empty: continue
 
-            plt.figure(figsize=(12, 7))
-            sns.barplot(data=org_df, x='topic', y='company_focus', palette='coolwarm')
+            # topic 라벨 치환
+            org_df["topic_label"] = org_df["topic"].map(topic_label_map).fillna(org_df["topic"].astype(str))
+            
+            # 시각화
+            plt.figure(figsize=(14, 8))
+            sns.barplot(data=org_df, x='topic_label', y='company_focus', palette='coolwarm')
             plt.title(f'\'{org}\'의 토픽별 집중도', fontsize=16)
-            plt.xlabel('토픽 ID', fontsize=12)
+            plt.xlabel('토픽', fontsize=12)
             plt.ylabel('집중도 점수', fontsize=12)
-            plt.xticks(rotation=45, ha='right')
+            plt.xticks(rotation=45, ha='center')  # 🔹 줄바꿈 + 가운데 정렬
             plt.tight_layout()
             plt.savefig(f'outputs/fig/company_focus_{org}.png', dpi=150)
             plt.close()
             print(f"[INFO] Saved company_focus_{org}.png")
     except Exception as e:
         print(f"[ERROR] Failed to generate bar charts: {e}")
+
 
 
 def plot_idea_score_distribution(ideas: list, output_path: str = 'outputs/fig/idea_score_distribution.png'):
@@ -816,6 +872,7 @@ def plot_company_network_from_json(json_path="outputs/company_network.json",
     plt.close()
     print(f"[INFO] Saved simplified company_network.png with {len(G.nodes())} nodes and {len(G.edges())} edges")
 
+
 def plot_tech_maturity_map(maturity_data):
     """ 4. 기술 성숙도 맵 버블 차트 생성 (범례를 차트 안에 표시) """
     if not maturity_data.get("results"):
@@ -827,54 +884,66 @@ def plot_tech_maturity_map(maturity_data):
         metrics = item.get("metrics", {})
         analysis = item.get("analysis", {})
         records.append({
-            "technology": tech, "frequency": metrics.get("frequency", 0),
-            "sentiment": metrics.get("sentiment", 0.0), "events": sum(metrics.get("events", {}).values()),
+            "technology": tech,
+            "frequency": metrics.get("frequency", 0),
+            "sentiment": metrics.get("sentiment", 0.0),
+            "events": sum(metrics.get("events", {}).values()),
             "stage": analysis.get("stage", "N-A")
         })
-    
+
     df = pd.DataFrame(records)
-    if df.empty: return
+    if df.empty:
+        return
+
+    # ✅ 성숙도 단계별 색상 지정
+    stage_palette = {
+        "Emerging": "#9CA3AF",   # 회색
+        "Growth": "#10B981",     # 녹색
+        "Maturity": "#3B82F6",   # 파란색
+        "N-A": "#D1D5DB"         # 데이터 없음 → 연회색
+    }
 
     plt.figure(figsize=(12, 8))
     ax = plt.gca()
-    
+
     sns.scatterplot(
         data=df, x="frequency", y="sentiment", size="events",
-        hue="stage", sizes=(200, 2000), alpha=0.7, palette="viridis", ax=ax
+        hue="stage", sizes=(200, 2000), alpha=0.7,
+        palette=stage_palette, ax=ax  # ✅ 고정된 색상 사용
     )
 
+    # 기술 라벨 표시
     texts = []
     for i in range(df.shape[0]):
-        texts.append(ax.text(x=df.frequency[i], y=df.sentiment[i], s=df.technology[i], fontdict=dict(color='black', size=10)))
-    
+        texts.append(ax.text(
+            x=df.frequency[i], y=df.sentiment[i], s=df.technology[i],
+            fontdict=dict(color='black', size=11, weight='bold')  # ✅ 글자 진하게
+        ))
+
     adjust_text(texts, ax=ax, arrowprops=dict(arrowstyle='-', color='gray', lw=0.5))
 
     plt.title('기술 성숙도 맵 (Technology Maturity Map)', fontsize=16)
     plt.xlabel('시장 관심도 (뉴스 빈도)', fontsize=12)
     plt.ylabel('시장 긍정성 (감성 점수)', fontsize=12)
-    
-    # --- ✨✨✨ 바로 이 부분이 수정되었습니다 ✨✨✨ ---
-    # 범례를 차트 안의 최적 위치('best')에 자동으로 배치하도록 변경합니다.
+
+    # 범례 설정
     handles, labels = ax.get_legend_handles_labels()
-    
     num_stages = df['stage'].nunique()
     stage_handles = handles[1:num_stages+1]
     stage_labels = labels[1:num_stages+1]
 
-    # bbox_to_anchor 옵션을 제거하고, loc='best'로 변경합니다.
     legend = ax.legend(stage_handles, stage_labels, title='성숙도 단계', loc='best', frameon=True, framealpha=0.8)
-    
     if legend:
         legend.get_title().set_fontsize('14')
         for text in legend.get_texts():
             text.set_fontsize('12')
-    # --- ✨✨✨ 여기까지 ---
-    
+
     plt.grid(True)
     plt.tight_layout()
     plt.savefig('outputs/fig/tech_maturity_map.png', dpi=150, bbox_inches='tight')
     plt.close()
     print("[INFO] Saved tech_maturity_map.png")
+
 
 def plot_weak_signal_radar(weak_signals_df):
     """ 5. 약한 신호 레이더 차트 생성 (라벨 수정 버전) """
