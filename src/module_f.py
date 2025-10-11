@@ -183,11 +183,10 @@ def _section_dashboard(data):
 
     # 미니 차트/요약 이미지 삽입 (있을 경우)
     imgs = [
-        f"{FIG_DIR}/kpi_sparkline.png",
         f"{FIG_DIR}/topic_share_mini.png",
         f"{FIG_DIR}/strong_signals_topbar.png",
     ]
-    lines.append(_insert_images(imgs, captions=["KPI 추세", "상위 토픽 점유율", "강한 신호 상위"]))
+    lines.append(_insert_images(imgs, captions=["상위 토픽 점유율", "강한 신호 상위"]))
 
     # 한 줄 요약 3개
     summary = (insights.get("summary") or "").strip()
