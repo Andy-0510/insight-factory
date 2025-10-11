@@ -199,11 +199,6 @@ def _section_dashboard(data):
     else:
         lines.append("- (요약 없음)\n")
 
-    lines.append(_guide_block(
-        tips="대시보드 수치는 전주 대비 변화를 반영할 수 있습니다. 각 카드/차트는 상세 섹션으로 이동하는 네비 역할입니다.",
-        so_what="첫 화면에서 ‘증가/감소’ 방향성만 빠르게 확인하고 상세 원인을 섹션별로 추적하세요.",
-        next_step="상승 토픽과 강한 신호 상위 항목을 먼저 확인하고, 관련 기회 섹션으로 이동해 액션을 확정하세요."
-    ))
     return "\n".join(lines)
 
 
@@ -219,7 +214,7 @@ def _section_monitoring_snapshot(data):
     card_img = f"{FIG_DIR}/weekly_highlights_cards.png"
     lines.append(_insert_images(card_img, captions=["이번 주 하이라이트"]))
 
-    # 근거 기사 상위 5개 (있다면)
+    # 근거 기사 상위 5개 (있다면) -> latest news_meta_*.json에서 상위 5개 기사 로드
     rows = []
     for it in meta_items[:5]:
         rows.append({
@@ -228,15 +223,10 @@ def _section_monitoring_snapshot(data):
         })
     df_news = pd.DataFrame(rows)
     if not df_news.empty:
-        lines.append("### 근거 기사 하이라이트(상위 5)")
+        lines.append("### 기사 하이라이트(상위 5)")
         lines.append(_to_markdown_table(df_news, max_rows=5))
         lines.append("")
 
-    lines.append(_guide_block(
-        tips="급등 이슈/신규 진입 기업/경보성 리스크를 카드로 요약합니다.",
-        so_what="눈에 띄는 변화를 보이는 카드 항목은 상세 섹션에서 근거와 수치를 반드시 확인하세요.",
-        next_step="하이라이트에 언급된 토픽/기업을 매트릭스와 네트워크 섹션에서 교차 검증하세요."
-    ))
     return "\n".join(lines)
 
 
