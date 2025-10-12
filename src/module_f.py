@@ -178,7 +178,7 @@ def _section_dashboard(data):
     ]
 
     lines = []
-    lines.append(_section_header(f"Weekly/New Biz Dashboard ({today})"))
+    lines.append(_section_header(f"Intellegence Report ({today})"))
     lines.append(_section_summary(bullets))
 
     # 미니 차트/요약 이미지 삽입 (있을 경우)

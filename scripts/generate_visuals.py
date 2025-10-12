@@ -13,7 +13,7 @@ from wordcloud import WordCloud
 import numpy as np
 from adjustText import adjust_text
 from src.utils import load_json, save_json, latest
-from datetime import datetime
+from datetime import datetime, timedelta
 from pathlib import Path
 
 ### 추가 이미지 (timeseries_spikes.png, strong_signals_topbar.png, topics_bubble.png)
@@ -215,7 +215,6 @@ def build_docs_from_meta(meta_items):
 
 # --- Matplotlib 한글 폰트 설정 ---
 def ensure_fonts():
-    import matplotlib.font_manager as fm
     
     # 시스템에 설치된 Nanum 폰트 또는 Noto Sans CJK 폰트 경로 탐색
     font_paths = fm.findSystemFonts(fontpaths=None, fontext='ttf')
@@ -313,8 +312,8 @@ def plot_top_keywords(keywords, out_path="outputs/fig/top_keywords.png", topn=15
         plt.savefig(out_path, dpi=150, bbox_inches="tight")
         plt.close()
         return
-    labels = [d["keyword"] for d in data][::-1]
-    scores = [d["score"] for d in data][::-1]
+    labels = [d["keyword"] for d in data]
+    scores = [d["score"] for d in data] 
     plt.figure(figsize=(10, 6))
     sns.barplot(x=scores, y=labels, color="#3b82f6")
     plt.title("Top Keywords")
@@ -325,7 +324,6 @@ def plot_top_keywords(keywords, out_path="outputs/fig/top_keywords.png", topn=15
     plt.close()
 
 def plot_topics(topics, out_path="outputs/fig/topics.png", topn_words=6):
-    import math
     ensure_fonts()
     apply_plot_style()
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
@@ -378,8 +376,7 @@ def plot_topics(topics, out_path="outputs/fig/topics.png", topn_words=6):
 
 
 def plot_timeseries(ts, out_path="outputs/fig/timeseries.png"):
-    import matplotlib.dates as mdates
-    from datetime import datetime, timedelta
+    
     ensure_fonts()
     apply_plot_style()
     os.makedirs(os.path.dirname(out_path), exist_ok=True)
@@ -450,11 +447,11 @@ def plot_timeseries(ts, out_path="outputs/fig/timeseries.png"):
     plt.legend(loc="upper right")
     plt.grid(alpha=0.25, linestyle="--")
     plt.tight_layout()
-    plt.savefig(out_path, dpi=150, bbox_inches="tight")
+    plt.savefig(out_path, dpi=200, bbox_inches="tight")
     plt.close()
 
 def plot_keyword_network(keywords, docs, out_path="outputs/fig/keyword_network.png",
-                         topn=50, min_cooccur=4, max_edges=40, label_top=25):
+                         topn=20, min_cooccur=2, max_edges=50, label_top=20):
     """ 키워드 네트워크 생성 (PageRank 기반 라벨링 + 커뮤니티 탐지 시각화 버전) """
     from networkx.algorithms import community
     from matplotlib.patches import Patch
@@ -518,7 +515,7 @@ def plot_keyword_network(keywords, docs, out_path="outputs/fig/keyword_network.p
 
     # 8. 시각화
     fig, ax = plt.subplots(figsize=(14, 10))
-    pos = nx.spring_layout(G, k=2.0, iterations=50, seed=42)
+    pos = nx.spring_layout(G, k=3.0, iterations=50, seed=42)
 
     node_sizes = [100 + 2500 * G.nodes[n]['score'] for n in G.nodes()]
     community_ids = [G.nodes[n]['community'] for n in G.nodes()]
@@ -544,7 +541,7 @@ def plot_keyword_network(keywords, docs, out_path="outputs/fig/keyword_network.p
     top_nodes = sorted(pagerank, key=pagerank.get, reverse=True)[:label_top]
     texts = [
         ax.text(pos[n][0], pos[n][1], n,
-                fontsize=11, ha='center', va='center',
+                fontsize=12, ha='center', va='center',
                 fontweight='bold', color="#222222")
         for n in top_nodes if n in pos
     ]
@@ -559,14 +556,14 @@ def plot_keyword_network(keywords, docs, out_path="outputs/fig/keyword_network.p
     ]
     ax.legend(
         handles=legend_elements,
-        title="주제 그룹 (Topic Groups)",
+        title="Groups",
         loc='lower left',           # ← 내부로 이동
         bbox_to_anchor=(0.01, 0.01),  # ← 좌측 하단 살짝 안쪽
         frameon=True,
         framealpha=0.9,
         edgecolor='gray',
-        fontsize=9,
-        title_fontsize=10
+        fontsize=10,
+        title_fontsize=12
     )
 
     ax.set_title("키워드 네트워크 및 주제 그룹 분석", fontsize=16)
@@ -577,134 +574,400 @@ def plot_keyword_network(keywords, docs, out_path="outputs/fig/keyword_network.p
     print("[INFO] Saved keyword_network.png")
     return {"nodes": G.number_of_nodes(), "edges": G.number_of_edges()}
 
-def plot_heatmap(df, topics_map):
-    """ 1. 기업x토픽 집중도 히트맵 생성 """
+def plot_heatmap(df, topics_map, out_path='outputs/fig/matrix_heatmap.png',
+                 top_org_k=10, drop_all_zero_cols=True):
+    """
+    - x축: topics_map에 존재하는 topic_id만 표시 (개수 가변)
+    - y축: 기업이 많으면 합계 기준 상위 top_org_k만 표시(기본 10)
+    - 옵션: 전부 0인 토픽 열 제거
+    """
     try:
-        heatmap_data = df.pivot_table(index='org', columns='topic', values='hybrid_score', aggfunc='sum').fillna(0)
-        
-        # 데이터가 너무 많으면 상위 20개 기업만 선택
-        if len(heatmap_data) > 20:
-            top_orgs = heatmap_data.sum(axis=1).nlargest(20).index
+        if df is None or df.empty:
+            print("[INFO] 입력 데이터 없음. 히트맵 스킵")
+            return
+
+        # 헬퍼: topic 값을 정수 topic_id로 정규화
+        def _normalize_topic_to_int(s):
+            s = str(s).strip()
+            s = re.sub(r"^topic_\s*", "", s)
+            s = re.sub(r"\.0$", "", s)
+            v = pd.to_numeric(s, errors="coerce")
+            return None if pd.isna(v) else int(v)
+
+        # topics_map -> 동적 화이트리스트/라벨 맵
+        # topics_map 예: {"topic_0": "AI 로봇 기술 사업", "topic_1": "삼성 vs 애플, 배터리 & 게이밍 시장"}
+        keep_topics = []
+        topic_name_map = {}
+        for k, name in (topics_map or {}).items():
+            if isinstance(k, str) and k.startswith("topic_"):
+                try:
+                    tid = int(k.split("_", 1)[1])
+                    keep_topics.append(tid)
+                    topic_name_map[tid] = name
+                except Exception:
+                    continue
+
+        if not keep_topics:
+            print("[INFO] 토픽 목록이 비어 있음. 히트맵 스킵")
+            return
+
+        # topic 정규화
+        df = df.copy()
+        df["topic"] = df["topic"].apply(_normalize_topic_to_int)
+
+        # 피벗
+        heatmap_data = (
+            df.pivot_table(index="org", columns="topic", values="hybrid_score", aggfunc="sum")
+              .fillna(0)
+        )
+        if heatmap_data.empty:
+            print("[INFO] 피벗 결과 비어 있음")
+            return
+
+        # x축: 지정된 topic_id만 남기고 없던 것도 0으로 채워 정렬 유지
+        heatmap_data = heatmap_data.reindex(columns=sorted(keep_topics), fill_value=0)
+
+        # 전부 0인 열 제거(옵션)
+        if drop_all_zero_cols:
+            non_zero_mask = (heatmap_data != 0).any(axis=0)
+            heatmap_data = heatmap_data.loc[:, non_zero_mask]
+            if heatmap_data.shape[1] == 0:
+                print("[INFO] 모든 토픽 열이 0이라 그릴 게 없음")
+                return
+
+        # y축: 기업 상위 top_org_k만 남기기(합계 기준)
+        if heatmap_data.shape[0] > top_org_k:
+            top_orgs = heatmap_data.sum(axis=1).nlargest(top_org_k).index
             heatmap_data = heatmap_data.loc[top_orgs]
 
-        if heatmap_data.empty: return
+        if heatmap_data.empty:
+            print("[INFO] 필터링 후 데이터 없음")
+            return
 
+        # x축 라벨
+        cols = list(heatmap_data.columns)
+        xlabels = [topic_name_map.get(int(c), f"topic_{int(c)}") for c in cols]
+
+        # 시각화
+        os.makedirs(os.path.dirname(out_path), exist_ok=True)
         plt.figure(figsize=(16, 10))
         sns.heatmap(heatmap_data, cmap="viridis", linewidths=.5)
-        
-        # 토픽 ID를 키워드로 변경
-        plt.xticks(ticks=range(len(heatmap_data.columns)), labels=[topics_map.get(f"topic_{col}", col) for col in heatmap_data.columns], rotation=0, ha='left', fontsize=10, fontweight='bold')
+
+        plt.xticks(
+            ticks=range(len(cols)),
+            labels=xlabels,
+            rotation=0, ha='left',
+            fontsize=10, fontweight='bold'
+        )
         plt.title('기업별 토픽 집중도 (Hybrid Score)', fontsize=16)
         plt.xlabel('토픽', fontsize=12)
         plt.ylabel('기업', fontsize=12)
         plt.tight_layout()
-        plt.savefig('outputs/fig/matrix_heatmap.png', dpi=200)
+        plt.savefig(out_path, dpi=200)
         plt.close()
         print("[INFO] Saved matrix_heatmap.png")
     except Exception as e:
         print(f"[ERROR] Failed to generate heatmap: {e}")
 
-
-def plot_topic_share(df, topics_map, top_n_topics=3):
-    """ 2. 상위 토픽별 점유율 파이 차트 생성 + 키워드 박스 표시 (우측 상단) """
+def plot_topic_share(df, topics_map, top_n_topics=None, out_dir="outputs/fig", debug=False):
+    """
+    - 호출: plot_topic_share(df, topics_map)
+    - 제목 포맷: "topic_id #<id>, <topic_name>"
+    - topic_name은 outputs/topics.json에서 우선 읽고, 없으면 topics_map으로 보완
+    - topic_id 화이트리스트: topics_map의 키("topic_0" 형태)에서 추출
+    - top_n_topics: None이면 topic_id 개수(len(keep_topics))로 자동
+    - topic_share 없으면 hybrid_score 비율로 자동 계산
+    - 각 토픽별 상위 5개 기업 + Others 파이 차트 저장
+    """
     try:
-        # 🔹 토픽 정보 로드
-        with open("outputs/topics.json", "r", encoding="utf-8") as f:
-            topics_data = json.load(f)
+        os.makedirs(out_dir, exist_ok=True)
 
-        top_topics = df.groupby('topic')['hybrid_score'].sum().nlargest(top_n_topics).index
+        if df is None or df.empty:
+            print("[INFO] 입력 df 비어 있음. 스킵")
+            return
+        if not isinstance(topics_map, dict) or len(topics_map) == 0:
+            print("[INFO] topics_map 비어 있음. 스킵")
+            return
 
-        for topic in top_topics:
-            topic_df = df[df['topic'] == topic].copy()
+        # 1) topic 정규화
+        def _normalize_topic_to_int(val):
+            s = str(val).strip()
+            s = re.sub(r"^topic_\\s*", "", s)
+            s = re.sub(r"\\.0$", "", s)
+            v = pd.to_numeric(s, errors="coerce")
+            return np.nan if pd.isna(v) else int(v)
 
-            # 🔹 점유율이 낮은 기업은 'Others'로 묶기
-            top_orgs = topic_df.nlargest(5, 'topic_share')
-            if len(topic_df) > 5:
-                others_share = topic_df[~topic_df['org'].isin(top_orgs['org'])]['topic_share'].sum()
-                others_row = pd.DataFrame([{'org': 'Others', 'topic_share': others_share}])
-                top_orgs = pd.concat([top_orgs, others_row], ignore_index=True)
+        # 2) topics.json에서 topic_name 우선 로딩
+        topic_name_from_file = {}
+        topics_path = os.path.join("outputs", "topics.json")
+        topics_list = []
+        if os.path.exists(topics_path):
+            try:
+                with open(topics_path, "r", encoding="utf-8") as f:
+                    topics_data = json.load(f)
+                topics_list = topics_data.get("topics", []) if isinstance(topics_data, dict) else []
+                for t in topics_list:
+                    tid = t.get("topic_id")
+                    if tid is not None:
+                        topic_name_from_file[int(tid)] = t.get("topic_name", None)
+            except Exception:
+                pass
 
-            # 🔹 토픽 이름 및 키워드 추출
-            topic_obj = next((t for t in topics_data.get("topics", []) if t.get("topic_id") == topic), {})
-            topic_name = topic_obj.get("topic_name", topics_map.get(f"topic_{topic}", f"Topic {topic}"))
-            top_words = topic_obj.get("top_words", [])[:5]
-            word_texts = [f"{w['word']} ({w['prob']:.2f})" for w in top_words if "word" in w and "prob" in w]
-            box_text = "topic_word (prob)\n" + "\n".join(word_texts)  # ✅ 박스 상단 라벨 추가
+        # 3) topics_map → keep_topics, topic_name_map(파일 우선)
+        keep_topics = []
+        topic_name_map = {}
+        for k, name in topics_map.items():
+            if isinstance(k, str) and k.startswith("topic_"):
+                try:
+                    tid = int(k.split("_", 1)[1])
+                    keep_topics.append(tid)
+                    # 파일 이름이 있으면 우선, 없으면 topics_map 사용
+                    topic_name_map[tid] = topic_name_from_file.get(tid, name)
+                except Exception:
+                    continue
+        # 파일에만 있는 토픽이 있을 수도 있으니 보완
+        for tid, nm in topic_name_from_file.items():
+            if tid not in topic_name_map:
+                topic_name_map[tid] = nm if nm else f"Topic {tid}"
 
-            # 🔹 시각화
-            plt.figure(figsize=(10, 8))
-            plt.pie(
-                top_orgs['topic_share'],
-                labels=top_orgs['org'],
-                autopct='%1.1f%%',
-                startangle=140,
-                pctdistance=0.85
+        keep_topics = sorted(set(keep_topics))
+        if debug:
+            print("[DEBUG] keep_topics:", keep_topics)
+        if not keep_topics:
+            print("[INFO] 추출된 topic_id 없음. 스킵")
+            return
+
+        # 4) top_n_topics 자동(토픽 수 = len(keep_topics))
+        if top_n_topics is None:
+            top_n_topics = len(keep_topics)
+        else:
+            top_n_topics = min(top_n_topics, len(keep_topics))
+        if debug:
+            print("[DEBUG] effective top_n_topics:", top_n_topics)
+
+        # 5) df 정리
+        work = df.copy()
+        for col in ["topic", "org", "hybrid_score"]:
+            if col not in work.columns:
+                print(f"[WARN] 필요한 컬럼 누락: {col}. 스킵")
+                return
+        work["topic"] = work["topic"].apply(_normalize_topic_to_int)
+        work["org"] = work["org"].astype(str).str.strip()
+
+        # 6) topic_share 없으면 계산
+        if "topic_share" not in work.columns:
+            grp = work.groupby(["topic", "org"], as_index=False)["hybrid_score"].sum()
+            tot = grp.groupby("topic", as_index=False)["hybrid_score"].sum().rename(columns={"hybrid_score": "topic_total"})
+            merged = grp.merge(tot, on="topic", how="left")
+            merged["topic_share"] = np.where(
+                merged["topic_total"] > 0,
+                merged["hybrid_score"] / merged["topic_total"],
+                0.0
             )
+        else:
+            merged = work.groupby(["topic", "org"], as_index=False)[["hybrid_score", "topic_share"]].sum()
 
-            # 🔹 제목 변경
-            plt.title(f"[Topic id #{topic}, {topic_name}]", fontsize=16)
+        # 7) topic_id 화이트리스트 적용
+        merged = merged[merged["topic"].isin(keep_topics)].copy()
+        if merged.empty:
+            print("[INFO] 화이트리스트 적용 후 데이터 없음. 스킵")
+            return
 
-            # 🔹 키워드 박스 표시
+        # 8) 상위 토픽 선정(합계 기준) → 개수는 top_n_topics로
+        topic_order = (merged.groupby("topic")["hybrid_score"].sum()
+                              .sort_values(ascending=False).index.tolist())
+        topic_order = topic_order[:top_n_topics]
+
+        # 9) 색상
+        base_colors = plt.get_cmap("tab10").colors
+        others_color = (0.6, 0.6, 0.6)
+
+        # 10) 토픽별 파이 차트 + 제목 포맷 적용
+        for topic in topic_order:
+            topic_df = merged[merged["topic"] == topic].copy()
+            if topic_df.empty:
+                continue
+
+            # 상위 5 + Others
+            top_orgs = topic_df.sort_values("topic_share", ascending=False).head(5).reset_index(drop=True)
+            if len(topic_df) > 5:
+                others_share = topic_df[~topic_df["org"].isin(top_orgs["org"])]["topic_share"].sum()
+                if others_share > 0:
+                    top_orgs = pd.concat(
+                        [top_orgs, pd.DataFrame([{"org": "Others", "topic_share": others_share}])],
+                        ignore_index=True
+                    )
+
+            # 제목: "topic_id #<id>, <topic_name>"
+            topic_id_int = int(topic)
+            topic_name = topic_name_map.get(topic_id_int, f"Topic {topic_id_int}")
+            title_text = f"[topic_id #{topic_id_int} : {topic_name}]"
+
+            # 키워드 박스(선택)
+            box_text = "topic_word (prob)\nN/A"
+            if topics_list:
+                tw = []
+                for t in topics_list:
+                    if t.get("topic_id") == topic_id_int:
+                        tw = t.get("top_words", [])[:5]
+                        break
+                if tw:
+                    lines = [f"{w.get('word')} ({w.get('prob', 0):.2f})" for w in tw if w.get("word") is not None]
+                    box_text = "topic_word (prob)\n" + ("\n".join(lines))
+
+            # 색상
+            colors = list(base_colors[:max(0, len(top_orgs) - 1)])
+            if len(top_orgs) - 1 > len(colors):
+                extra = plt.get_cmap("tab20").colors
+                need = (len(top_orgs) - 1) - len(colors)
+                colors += list(extra[:need])
+            if (top_orgs["org"] == "Others").any():
+                colors.append(others_color)
+
+            # 플롯(파이차트)
+            plt.figure(figsize=(10, 8))
+            wedges, texts, autotexts = plt.pie(
+                top_orgs["topic_share"],
+                labels=top_orgs["org"],
+                autopct=lambda p: f"{p:.1f}%" if p >= 1 else "",
+                startangle=140,
+                pctdistance=0.8,
+                colors=colors
+            )
+            for txt in texts:
+                txt.set_fontsize(11)
+            for at in autotexts:
+                at.set_fontsize(10)
+            # 제목 적용
+            plt.title(title_text, fontsize=16)
+
+            # 키워드 박스(우측 하단)
             plt.gcf().text(
                 0.85, 0.15, box_text,
                 fontsize=10, fontweight='bold',
+                va="bottom", ha="left",
                 bbox=dict(boxstyle="round,pad=0.4", fc="white", ec="gray", lw=0.8, alpha=0.9)
             )
 
             plt.axis('equal')
             plt.tight_layout()
-            plt.savefig(f'outputs/fig/topic_share_{topic}.png', dpi=150)
+            out_path = os.path.join(out_dir, f"topic_share_{topic_id_int}.png")
+            plt.savefig(out_path, dpi=150, bbox_inches="tight")
             plt.close()
-            print(f"[INFO] Saved topic_share_{topic}.png")
+            print(f"[INFO] Saved {os.path.basename(out_path)}")
 
     except Exception as e:
         print(f"[ERROR] Failed to generate pie charts: {e}")
 
+def plot_company_focus(df, top_n_orgs=3, out_dir="outputs/fig", debug=False):
+    """
+    상위 기업별 집중도 바 차트
+    - x축: topics.json에 존재하는 topic_id 전부를 항상 표시
+    - 기업별 company_focus가 없는 토픽은 0으로 채워서 막대 0 높이로 표시
+    - x축 라벨: "Topic #id\nname" 형식
+    """
 
-
-
-
-def plot_company_focus(df, top_n_orgs=3):
-    """ 3. 상위 기업별 집중도 바 차트 생성 (x축에 topic_id + topic_name 표시) """
     try:
-        # topic_id → topic_name 매핑
-        with open("outputs/topics.json", "r", encoding="utf-8") as f:
+        # 방어
+        if df is None or df.empty:
+            print("[INFO] 입력 df 비어 있음. 스킵")
+            return
+        need_cols = {"org", "topic", "company_focus", "hybrid_score"}
+        missing = need_cols - set(df.columns)
+        if missing:
+            print(f"[WARN] 필요한 컬럼 누락: {missing}. 스킵")
+            return
+
+        os.makedirs(out_dir, exist_ok=True)
+
+        # 1) topics.json 로드 및 라벨/화이트리스트 생성
+        topics_json_path = os.path.join("outputs", "topics.json")
+        with open(topics_json_path, "r", encoding="utf-8") as f:
             topics_data = json.load(f)
+
+        topics_list = topics_data.get("topics", []) if isinstance(topics_data, dict) else []
+        keep_topics = [int(t["topic_id"]) for t in topics_list if "topic_id" in t]
+        keep_topics = sorted(set(keep_topics))
+
+        # 라벨 맵: id -> "Topic #id\nname"
         topic_label_map = {
-            t["topic_id"]: f"Topic #{t['topic_id']}\n{t.get('topic_name', '')}"
-            for t in topics_data.get("topics", [])
+            int(t["topic_id"]): f"Topic #{int(t['topic_id'])}\n{t.get('topic_name', '')}"
+            for t in topics_list if "topic_id" in t
         }
 
-        top_orgs = df.groupby('org')['hybrid_score'].sum().nlargest(top_n_orgs).index
+        if debug:
+            print("[DEBUG] keep_topics:", keep_topics)
 
+        if not keep_topics:
+            print("[INFO] 토픽 id가 없음. 스킵")
+            return
+
+        # 2) topic 정규화: "topic_3", " 3", "3.0", 3 → 3
+        def _normalize_topic_to_int(val):
+            s = str(val).strip()
+            s = re.sub(r"^topic_\\s*", "", s)
+            s = re.sub(r"\\.0$", "", s)
+            v = pd.to_numeric(s, errors="coerce")
+            return np.nan if pd.isna(v) else int(v)
+
+        work = df.copy()
+        work["topic"] = work["topic"].apply(_normalize_topic_to_int)
+        work["org"] = work["org"].astype(str).str.strip()
+
+        # 3) 상위 기업 선정(하이브리드 합 기준)
+        top_orgs = (work.groupby("org")["hybrid_score"]
+                         .sum().nlargest(top_n_orgs).index.tolist())
+        if debug:
+            print("[DEBUG] top_orgs:", top_orgs)
+
+        # 4) 각 기업별로 x축을 topic_id 전부로 고정
         for org in top_orgs:
-            org_df = df[df['org'] == org].nlargest(8, 'company_focus')
-            if org_df.empty: continue
+            org_df_raw = work[work["org"] == org].copy()
+            if org_df_raw.empty:
+                continue
 
-            # topic 라벨 치환
-            org_df["topic_label"] = org_df["topic"].map(topic_label_map).fillna(org_df["topic"].astype(str))
-            
-            # 시각화
+            # 기업-토픽별 company_focus 집계(혹시 중복 행이 있을 경우 합산)
+            org_agg = (org_df_raw.groupby("topic", as_index=False)["company_focus"].sum())
+
+            # x축을 keep_topics로 강제(reindex), 없는 토픽은 0으로 채움
+            org_agg = org_agg.set_index("topic").reindex(keep_topics, fill_value=0).reset_index()
+            org_agg.rename(columns={"index": "topic"}, inplace=True)
+
+            # x축 라벨 치환
+            org_agg["topic_label"] = org_agg["topic"].map(topic_label_map)
+            # 라벨이 없을 경우 대비
+            org_agg["topic_label"] = org_agg["topic_label"].fillna(
+                org_agg["topic"].apply(lambda x: f"Topic #{int(x)}")
+            )
+
+            # 5) 시각화: x축은 topic_id 순서 유지
             plt.figure(figsize=(14, 8))
-            sns.barplot(data=org_df, x='topic_label', y='company_focus', palette='coolwarm')
-            plt.title(f'\'{org}\'의 토픽별 집중도', fontsize=16)
-            plt.xlabel('토픽', fontsize=12)
-            plt.ylabel('집중도 점수', fontsize=12)
-            plt.xticks(rotation=45, ha='center')  # 🔹 줄바꿈 + 가운데 정렬
+            sns.barplot(
+                data=org_agg,
+                x="topic_label",
+                y="company_focus",
+                palette="coolwarm",
+                order=org_agg["topic_label"]  # 지정 순서 유지
+            )
+            plt.title(f"'{org}'의 토픽별 집중도", fontsize=16)
+            plt.xlabel("토픽", fontsize=12)
+            plt.ylabel("집중도 점수", fontsize=12)
+
+            # xtick 라벨 스타일: 줄바꿈 고려
+            plt.xticks(rotation=45, ha="center")
+
             plt.tight_layout()
-            plt.savefig(f'outputs/fig/company_focus_{org}.png', dpi=150)
+            out_path = os.path.join(out_dir, f"company_focus_{org}.png")
+            plt.savefig(out_path, dpi=150, bbox_inches="tight")
             plt.close()
-            print(f"[INFO] Saved company_focus_{org}.png")
+            print(f"[INFO] Saved {os.path.basename(out_path)}")
+
     except Exception as e:
         print(f"[ERROR] Failed to generate bar charts: {e}")
 
 
-
 def plot_idea_score_distribution(ideas: list, output_path: str = 'outputs/fig/idea_score_distribution.png'):
     """ 아이디어별 점수 분포 바 차트 생성 (Market, Urgency, Feasibility, Risk) """
-    import matplotlib.pyplot as plt
-    import os
-    import numpy as np
 
     if not ideas:
         print("[WARN] No ideas provided for score chart.")
@@ -1088,8 +1351,8 @@ def main():
             keywords, docs,
             out_path="outputs/fig/keyword_network.png",
             topn=n_kw,
-            min_cooccur=1,
-            max_edges=200,
+            # min_cooccur=1,
+            # max_edges=200,
             label_top=(None if n_kw <= label_cap else label_cap)
         )
     except Exception as e:
