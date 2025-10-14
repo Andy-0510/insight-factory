@@ -17,6 +17,7 @@ tomotopy>=0.12.6
 spacy
 transformers
 torch
+tqdm
 
 # Splint-2 (의존성 많은 순서대로)
 umap-learn
