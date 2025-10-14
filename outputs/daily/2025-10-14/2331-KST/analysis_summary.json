@@ -1,0 +1,45 @@
+{
+  "timestamp": "2025-10-14T14:31:05Z",
+  "matrix_stats": {
+    "num_orgs": 68,
+    "num_topics": 12,
+    "top_org": "AMD"
+  },
+  "network_stats": {
+    "num_nodes": 38,
+    "num_edges": 81,
+    "top_pairs": [
+      {
+        "source": "삼성전자",
+        "target": "애플",
+        "weight": 30,
+        "rel_type": "neutral"
+      },
+      {
+        "source": "삼성디스플레이",
+        "target": "삼성전자",
+        "weight": 25,
+        "rel_type": "rivalry"
+      },
+      {
+        "source": "삼성디스플레이",
+        "target": "애플",
+        "weight": 20,
+        "rel_type": "rivalry"
+      },
+      {
+        "source": "샤오미",
+        "target": "애플",
+        "weight": 12,
+        "rel_type": "partnership"
+      },
+      {
+        "source": "삼성전자",
+        "target": "샤오미",
+        "weight": 12,
+        "rel_type": "rivalry"
+      }
+    ],
+    "top_hub": "삼성전자"
+  }
+}

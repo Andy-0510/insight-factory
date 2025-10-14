@@ -30,12 +30,14 @@ jobs:
       HF_HOME: ~/.cache/huggingface
 
     steps:
+      # 1️⃣ Checkout (LFS 제거)
       - name: Checkout
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-          lfs: true
+          lfs: false   # 🔹 LFS 완전 비활성화
 
+      # 2️⃣ Python 환경 세팅
       - name: Set up Python 3.11
         uses: actions/setup-python@v5
         with:
@@ -43,6 +45,16 @@ jobs:
           cache: "pip"
           cache-dependency-path: "requirements.txt"
 
+      # 3️⃣ Hugging Face 모델 캐시 추가
+      - name: Cache HuggingFace models
+        uses: actions/cache@v4
+        with:
+          path: ~/.cache/huggingface
+          key: ${{ runner.os }}-hfmodels
+          restore-keys: |
+            ${{ runner.os }}-hfmodels
+
+      # 4️⃣ 의존성 설치
       - name: Install dependencies
         shell: bash
         run: |
@@ -51,13 +63,7 @@ jobs:
           python -m pip install --upgrade pip
           python -m pip install -r requirements.txt
 
-      - name: Prepare HuggingFace cache (optional)
-        if: env.USE_PRO == 'true'
-        shell: bash
-        run: |
-          mkdir -p "${HF_HOME}"
-          echo "HF_HOME=${HF_HOME}"
-      
+      # 5️⃣ 시각화 폰트 설치
       - name: Install viz deps
         shell: bash
         run: |
@@ -66,6 +72,7 @@ jobs:
           sudo apt-get install -y fonts-nanum fonts-noto-cjk
           fc-cache -f -v
 
+      # 6️⃣ 프리플라이트: 환경 변수 확인
       - name: Preflight | Check secrets
         shell: bash
         run: |
@@ -74,6 +81,7 @@ jobs:
             echo "[WARN] NAVER API 키가 없습니다(옵션?)."
           fi
 
+      # --- 이하 모듈 실행 부분은 동일 ---
       - name: Module A - Fetch & Preprocess
         shell: bash
         env:
@@ -105,7 +113,7 @@ jobs:
           git commit -m "chore: warehouse append $(date -u +'%Y-%m-%dT%H:%M:%SZ')" || echo "no changes"
           git pull --rebase --autostash origin ${{ github.ref_name }} || true
           git push origin HEAD:${{ github.ref_name }} || true
-      
+
       - name: Enrich meta with article bodies
         shell: bash
         env:
@@ -113,7 +121,7 @@ jobs:
         run: |
           source .venv/bin/activate
           python -m scripts.fetch_article_bodies
-          
+
       - name: Copy latest meta file for debugging
         shell: bash
         run: |
@@ -163,12 +171,16 @@ jobs:
 
       - name: Generate Future Insights (Maturity & Weak Signals)
         shell: bash
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           source .venv/bin/activate
           python -m scripts.future_insights
 
       - name: Module D - Analysis
         shell: bash
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
         run: |
           source .venv/bin/activate
           python -m src.module_d
@@ -209,63 +221,18 @@ jobs:
           set -e
           source .venv/bin/activate
           python -m scripts.preflight
-          
+
       - name: Module F - Build Report
         shell: bash
         run: |
           source .venv/bin/activate
           python -m src.module_f
-          
+
       - name: Check F - Validate Report
         shell: bash
         run: |
           source .venv/bin/activate
           python -m src.check_f
-      
-      # Job Summary
-      - name: Build Job Summary
-        shell: bash
-        run: |
-          source .venv/bin/activate
-          python - <<'PY'
-          import json, os
-          def load(p, default):
-              try:
-                  with open(p, encoding="utf-8") as f:
-                      return json.load(f)
-              except Exception:
-                  return default
-          ts = load("outputs/trend_timeseries.json", {"daily":[]})
-          daily = ts.get("daily", [])
-          total = sum(int(x.get("count",0)) for x in daily)
-          dr = f"{daily[0]['date']} ~ {daily[-1]['date']}" if daily else "-"
-          kw = load("outputs/keywords.json", {"keywords":[]}).get("keywords", [])
-          kw = sorted(kw, key=lambda x: x.get("score",0), reverse=True)[:10]
-          opp = load("outputs/biz_opportunities.json", {"ideas":[]}).get("ideas", [])[:5]
-          lines = []
-          lines.append("# Daily Pipeline Summary\n")
-          lines.append(f"- 기간: {dr}")
-          lines.append(f"- 총 기사 수: {total}\n")
-          lines.append("## Top 10 Keywords")
-          lines.append("| Rank | Keyword | Score |")
-          lines.append("|---:|---|---:|")
-          for i, k in enumerate(kw, 1):
-              lines.append(f"| {i} | {k.get('keyword','')} | {round(float(k.get('score',0)),3)} |")
-          lines.append("")
-          lines.append("## Opportunities (Top 5)")
-          if opp:
-              for i, it in enumerate(opp, 1):
-                  title = it.get('title') or it.get('idea') or '(no title)'
-                  lines.append(f"- {i}. {title}")
-          else:
-              lines.append("- (데이터 없음)")
-          txt = "\n".join(lines) + "\n"
-          print(txt)
-          summ = os.environ.get("GITHUB_STEP_SUMMARY")
-          if summ:
-              with open(summ, "a", encoding="utf-8") as f:
-                  f.write(txt)
-          PY
 
       # 일자별 아카이브(KST)
       - name: Prepare outputs daily folder (KST)
@@ -315,7 +282,7 @@ jobs:
           git pull --rebase --autostash origin ${{ github.ref_name }} || true
           git push origin HEAD:${{ github.ref_name }} || true
 
-      # 오래된 warehouse 정리
+      # 오래된 outputs/warehouse 정리 (유지)
       - name: Cleanup old warehouse (main only, keep 90 days)
         if: github.ref_name == 'main'
         shell: bash
@@ -329,8 +296,7 @@ jobs:
           git commit -m "chore: cleanup old warehouse (>90d)" || echo "no changes"
           git pull --rebase --autostash origin ${{ github.ref_name }} || true
           git push origin HEAD:${{ github.ref_name }} || true
-          
-      # 오래된 outputs 정리
+
       - name: Cleanup old outputs (main only, keep 90 days)
         if: github.ref_name == 'main'
         shell: bash
@@ -344,29 +310,3 @@ jobs:
           git commit -m "chore: cleanup old outputs (>90d)" || echo "no changes"
           git pull --rebase --autostash origin ${{ github.ref_name }} || true
           git push origin HEAD:${{ github.ref_name }} || true
-
-      # 아티팩트 이름 안전화
-      - name: Sanitize artifact name
-        shell: bash
-        run: |
-          CLEAN=$(echo '${{ github.ref_name }}' | tr '/:*?"<>|\\ ' '-')
-          echo "ARTIFACT_NAME=report-${CLEAN}" >> $GITHUB_ENV
-
-      # 결과 아티팩트 업로드(메타/클린/디버그 포함)
-#      - name: Upload report artifacts
-#        if: success()
-#        uses: actions/upload-artifact@v4
-#        with:
-#          name: ${{ env.ARTIFACT_NAME }}
-#          retention-days: 14
-#          path: |
-#            outputs/report.html
-#            outputs/report.md
-#            outputs/fig/*.png
-#            outputs/export/*.csv
-#            outputs/debug/*.json
-#            outputs/debug/run_meta_b.json
-#            outputs/debug/run_meta_c.json
-#            data/news_meta_*.json
-#            data/news_clean_*.json
-#          if-no-files-found: warn
