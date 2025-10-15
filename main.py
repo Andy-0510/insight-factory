@@ -111,7 +111,7 @@ def build_steps():
         ("check_b",  [PY, "-m", "src.check_b"]),
         ("c",        [PY, "-m", "src.module_c"]),
         ("check_c",  [PY, "-m", "src.check_c"]),
-        ("sentiment",  [PY, "-m", "scripts.calculate_daily_sentiment"]),
+        ("sentiment",[PY, "-m", "scripts.calculate_daily_sentiment"]),
         ("export",   [PY, "-m", "scripts.signal_export"]),
         ("future",   [PY, "-m", "scripts.future_insights"]),
         ("d",        [PY, "-m", "src.module_d"]),
@@ -122,7 +122,8 @@ def build_steps():
         ("preflight",[PY, "-m", "scripts.preflight"]),
         ("f_daily",  [PY, "-m", "src.module_f.daily_report"]),
         ("check_f",  [PY, "-m", "src.check_f"]),
-        ("g",        [PY, "-m", "src.module_g_risk"]),
+        ("g_risk",   [PY, "-m", "src.module_g_risk"]),
+        ("h_planning",[PY, "-m", "src.module_h_planning"]),
     ]
 
 def main():

@@ -4,6 +4,8 @@ from src.utils import load_json, latest
 import os
 import json
 import re
+from src.config import load_config
+
 
 # --- 설정 ---
 SENTIMENT_CSV_PATH = "outputs/export/daily_topic_sentiment.csv"
@@ -38,8 +40,16 @@ def call_gemini_for_risk_analysis(topic_name, sentiment_drop, evidence):
             raise RuntimeError("GEMINI_API_KEY가 설정되지 않았습니다.")
         
         genai.configure(api_key=api_key)
-        model = genai.GenerativeModel('gemini-1.5-flash-latest')
-        
+
+        # config.json에서 모델명을 동적으로 불러옵니다.
+        cfg = load_config()
+        model_name = cfg.get("llm", {}).get("model", "gemini-1.5-flash-001")
+
+        print(f"[INFO] Using Gemini model for risk analysis: {model_name}")
+
+        model = genai.GenerativeModel(model_name)
+
+        # f-string 밖에서 evidence 문자열을 미리 생성합니다.
         if evidence:
             evidence_str = "- " + "\n- ".join(evidence)
         else:

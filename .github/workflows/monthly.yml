@@ -11,5 +11,15 @@
         run: |
           source .venv/bin/activate
           python -m src.module_g_risk
-          
+
+      # ... (기타 분석 모듈 호출) ...
+
+      - name: Generate Action Plan for Monthly Report
+        shell: bash
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          source .venv/bin/activate
+          python -m src.module_h_planning
+
       # ... (월간 리포트 생성 등) ...
