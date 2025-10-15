@@ -90,6 +90,10 @@ def calculate_sentiments():
     df_final['date'] = df_final['date'].dt.strftime('%Y-%m-%d')
     
     df_final.sort_values(by=["date", "topic_id"], inplace=True)
+
+    # CSV 저장 전 폴더가 존재하는지 확인하고 없으면 생성
+    os.makedirs(os.path.dirname(OUTPUT_CSV), exist_ok=True)
+
     df_final.to_csv(OUTPUT_CSV, index=False, encoding="utf-8-sig")
     print(f"[INFO] Daily topic sentiments calculated and saved to {OUTPUT_CSV}. ({len(df_new)} topics processed)")
 
