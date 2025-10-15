@@ -1,4 +1,3 @@
-# -*- coding: utf-8 -*-
 import os
 import re
 import glob
@@ -12,7 +11,7 @@ import pandas as pd
 from src.utils import load_json, save_json, latest
 
 # -----------------------------
-# 상수/경로 (기존과 동일)
+# 상수/경로
 # -----------------------------
 FIG_DIR = "outputs/fig"
 EXPORT_DIR = "outputs/export"
@@ -20,7 +19,7 @@ OUT_MD = "outputs/report.md"
 OUT_HTML = "outputs/report.html"
 
 # -----------------------------
-# 헬퍼 함수들 (기존 코드 전체를 그대로 복사)
+# 헬퍼 함수들
 # -----------------------------
 def _fmt_int(x):
     try:
@@ -77,9 +76,7 @@ def _load_data():
 def _section_header(title):
     return f"\n## {title}\n"
 
-# ▼▼▼▼▼▼ 일간 리포트에 필요한 섹션 함수들만 남겨두거나 그대로 둡니다 ▼▼▼▼▼▼
-# 이 함수들은 주간/월간 리포트에서도 재사용될 수 있으므로 삭제하지 않아도 됩니다.
-
+# ▼▼▼▼▼▼ 일간 리포트에 필요한 섹션 함수들 ▼▼▼▼▼▼
 def _section_time_series(data):
     ts = data.get("ts", {})
     daily = ts.get("daily", [])
@@ -185,11 +182,20 @@ def build_html_from_md_new(md_path=OUT_MD, out_html=OUT_HTML):
     except Exception as e:
         print(f"[WARN] HTML 변환 실패: {e}")
 
-# ▲▲▲▲▲▲ 헬퍼 함수들은 그대로 유지 ▲▲▲▲▲▲
-
+def _section_top_articles(data):
+    """오늘의 주요 기사 섹션을 생성합니다."""
+    articles_csv = os.path.join(EXPORT_DIR, "today_article_list.csv")
+    df_articles = _safe_read_csv(articles_csv)
+    
+    if not df_articles.empty:
+        # 마크다운 링크 형식으로 변환
+        df_articles['제목'] = df_articles.apply(lambda row: f"[{_truncate(row['title'], 100)}]({row['url']})", axis=1)
+        return _to_markdown_table(df_articles[['제목']])
+        
+    return "- (선정된 주요 기사 없음)\n"
 
 # -----------------------------
-# ▼▼▼▼▼▼ main 함수 로직 수정 ▼▼▼▼▼▼
+# ▼▼▼▼▼▼ main 함수 로직 ▼▼▼▼▼▼
 # -----------------------------
 
 def build_daily_markdown():
@@ -211,9 +217,9 @@ def build_daily_markdown():
     lines.append(_section_header("3. 경쟁사 주요 활동"))
     lines.append(_section_competitor_events(data))
 
-    # 섹션 4: 주요 기사 (다음 단계에서 구현)
+    # 섹션 4: 주요 기사
     lines.append(_section_header("4. 주요 기사"))
-    lines.append("- (구현 예정)\n")
+    lines.append(_section_top_articles(data))
 
     # 마크다운 파일 저장
     Path(OUT_MD).parent.mkdir(parents=True, exist_ok=True)
