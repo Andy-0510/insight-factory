@@ -163,6 +163,12 @@ jobs:
           source .venv/bin/activate
           python -m src.check_c
 
+      - name: Calculate Daily Topic Sentiments
+        shell: bash
+        run: |
+          source .venv/bin/activate
+          python -m scripts.calculate_daily_sentiment
+
       - name: Export signals (trend strength & weak signals)
         shell: bash
         run: |
