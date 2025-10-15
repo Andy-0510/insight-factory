@@ -177,13 +177,11 @@ jobs:
           source .venv/bin/activate
           python -m scripts.future_insights
 
-      # ▼▼▼▼▼▼▼▼▼▼▼▼ 이 부분을 추가합니다 ▼▼▼▼▼▼▼▼▼▼▼▼
       - name: Select Top 3 Articles
         shell: bash
         run: |
           source .venv/bin/activate
           python -m scripts.select_top_articles
-      # ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
 
       - name: Module D - Analysis
         shell: bash
@@ -290,7 +288,7 @@ jobs:
           git pull --rebase --autostash origin ${{ github.ref_name }} || true
           git push origin HEAD:${{ github.ref_name }} || true
 
-      # 오래된 outputs/warehouse 정리 (유지)
+      # 오래된 (>90d) warehouse/outputs 정리
       - name: Cleanup old warehouse (main only, keep 90 days)
         if: github.ref_name == 'main'
         shell: bash
