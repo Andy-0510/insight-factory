@@ -222,11 +222,11 @@ jobs:
           source .venv/bin/activate
           python -m scripts.preflight
 
-      - name: Module F - Build Report
+      - name: Module F - Build Daily Report
         shell: bash
         run: |
           source .venv/bin/activate
-          python -m src.module_f
+          python -m src.module_f.daily_report
 
       - name: Check F - Validate Report
         shell: bash
