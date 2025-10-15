@@ -1,9 +1,11 @@
-name: Monthly Report Pipeline
+name: Weekly Report Pipeline
+
+permissions:
+  contents: write
 
 on:
   schedule:
-    # 매월 25-31일 중 금요일에만 실행 (마지막 주 금요일에 해당)
-    - cron: "0 23 25-31 * 5" # 23:00 UTC = 다음날 08:00 KST
+    - cron: "0 22 * * 4" # 매주 목요일 22:00 UTC = 금요일 07:00 KST
   workflow_dispatch:
 
 jobs:
@@ -44,33 +46,31 @@ jobs:
           if [ -z "${{ secrets.NAVER_CLIENT_ID }}" ] || [ -z "${{ secrets.NAVER_CLIENT_SECRET }}" ]; then
             echo "[WARN] NAVER API 키가 없습니다(옵션?)."
           fi
-
-      # --- 월간 리포트에 필요한 모든 모듈 실행 ---
-      - name: Run Monthly Analysis Modules
-        env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+      
+      # --- 주간 리포트에 필요한 LLM 분석 및 리포트 생성 ---
+      - name: Run Weekly Analysis & Reporting
         run: |
-          source .venv/bin/activate
-          python -m src.module_d
-          python -m src.module_e
-          python -m src.module_g_risk
-          python -m src.module_h_planning
-          python -m src.module_f.monthly_report
+          # 주간 LLM 분석 실행 (약한 신호, 토픽 요약 등)
+          python -m scripts.future_insights 
+          python -m src.module_c 
+          # 주간 리포트 생성 (내부적으로 주간용 시각화도 함께 생성)
+          python -m src.module_f.weekly_report
       
       # --- 결과물 아카이빙 및 커밋 ---
-      - name: Archive and Commit Monthly Report
+      - name: Archive and Commit Weekly Report
         run: |
           set -e
-          DATE_KST=$(TZ=Asia/Seoul date +'%Y-%m')
-          OUTDIR="outputs/monthly/${DATE_KST}"
+          DATE_KST=$(TZ=Asia/Seoul date +'%Y-%m-%d')
+          OUTDIR="outputs/weekly/${DATE_KST}"
           mkdir -p "${OUTDIR}"
-          cp outputs/monthly_report.md "${OUTDIR}/"
-          cp outputs/monthly_report.html "${OUTDIR}/"
-          cp outputs/fig/*.png "${OUTDIR}/" || true # 월간 리포트는 모든 이미지를 포함
           
+          cp outputs/weekly_report.md "${OUTDIR}/"
+          cp outputs/weekly_report.html "${OUTDIR}/"
+          cp outputs/fig/weekly_*.png "${OUTDIR}/" || true
+
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
           git add "${OUTDIR}"
-          git commit -m "docs: monthly report for ${DATE_KST}" || echo "No changes to commit"
+          git commit -m "docs(weekly): report for ${DATE_KST}" || echo "No changes to commit"
           git pull --rebase
           git push

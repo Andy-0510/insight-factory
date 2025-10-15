@@ -125,6 +125,7 @@ def build_steps():
         ("g_risk",   [PY, "-m", "src.module_g_risk"]),
         ("h_planning",[PY, "-m", "src.module_h_planning"]),
         ("f_weekly",  [PY, "-m", "src.module_f.weekly_report"]),
+        ("f_monthly",  [PY, "-m", "src.module_f.monthly_report"]),
     ]
 
 def main():
