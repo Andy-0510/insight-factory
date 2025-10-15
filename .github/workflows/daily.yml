@@ -177,6 +177,14 @@ jobs:
           source .venv/bin/activate
           python -m scripts.future_insights
 
+      # ▼▼▼▼▼▼▼▼▼▼▼▼ 이 부분을 추가합니다 ▼▼▼▼▼▼▼▼▼▼▼▼
+      - name: Select Top 3 Articles
+        shell: bash
+        run: |
+          source .venv/bin/activate
+          python -m scripts.select_top_articles
+      # ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
       - name: Module D - Analysis
         shell: bash
         env:
