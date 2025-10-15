@@ -1,0 +1,15 @@
+# 파일 경로: .github/workflows/monthly.yml (나중에 생성할 파일)
+
+# ... (워크플로우 설정) ...
+    steps:
+      # ... (체크아웃, 캐시 복원, 의존성 설치 등) ...
+
+      - name: Analyze Risks for Monthly Report
+        shell: bash
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+        run: |
+          source .venv/bin/activate
+          python -m src.module_g_risk
+          
+      # ... (월간 리포트 생성 등) ...
