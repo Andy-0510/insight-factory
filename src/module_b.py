@@ -342,8 +342,11 @@ def extract_krwordrank(docs: List[str], beta: float=0.85, max_iter: int=20, min_
     return dict(sorted_items[: max(1, int(topk or 1))])
 
 def tfidf_weights(docs: List[str], vocab: List[str]) -> Dict[str, float]:
-    if TfidfVectorizer is None or not docs:
+    # --- ▼▼▼▼▼ [수정] 문서 개수 확인 로직 추가 ▼▼▼▼▼ ---
+    if TfidfVectorizer is None or not docs or len(docs) < 3:
+        # 문서 수가 3개 미만이면 TF-IDF 계산을 건너뛰고 기본 가중치 반환
         return {v: 1.0 for v in vocab}
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
     vec = TfidfVectorizer(ngram_range=(1,3), min_df=3, max_df=0.9)
     X = vec.fit_transform(docs)
     idf = dict(zip(vec.get_feature_names_out(), vec.idf_))
@@ -369,8 +372,11 @@ def hybrid_rank(docs: List[str], beta: float=0.85, max_iter: int=20, topk: int=2
     return dict(sorted_items[: max(1, int(topk or 1))])
 
 def tfidf_only(docs: List[str], topk: int=200) -> Dict[str, float]:
-    if TfidfVectorizer is None or not docs:
+    # --- ▼▼▼▼▼ [수정] 문서 개수 확인 로직 추가 ▼▼▼▼▼ ---
+    if TfidfVectorizer is None or not docs or len(docs) < 3:
+        # 문서 수가 3개 미만이면 빈 딕셔너리 반환
         return {}
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
     vec = TfidfVectorizer(ngram_range=(1,3), min_df=3, max_df=0.9)
     X = vec.fit_transform(docs)
     terms = vec.get_feature_names_out()
