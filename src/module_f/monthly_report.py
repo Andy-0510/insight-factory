@@ -149,9 +149,15 @@ def _section_monthly_conclusion(data):
 
 def build_monthly_markdown():
     monthly_data = load_monthly_data()
-    today_str = datetime.now().strftime("%Y-%m-%d")
-    lines = [f"# Monthly Strategic Review ({today_str})"]
-
+    
+    # 분석 기간 계산
+    days_to_analyze = 30
+    end_date = datetime.now()
+    start_date = end_date - timedelta(days=days_to_analyze - 1)
+    date_range_str = f"({start_date.strftime('%Y-%m-%d')} ~ {end_date.strftime('%Y-%m-%d')})"
+    
+    lines = [f"# Monthly Strategic Review {date_range_str}"]
+    
     lines.append(_section_header("1. 전략적 시장 포지셔닝 맵")); lines.append(_section_monthly_positioning_map(monthly_data))
     lines.append(_section_header("2. 기술 수명 주기 및 R&D 투자 타이밍 분석")); lines.append(_section_monthly_tech_lifecycle(monthly_data))
     lines.append(_section_header("3. 경쟁사 전략적 의도 및 파트너 관계망 분석")); lines.append(_section_monthly_competitor_strategy(monthly_data))
