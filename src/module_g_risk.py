@@ -94,9 +94,8 @@ def call_gemini_for_risk_analysis(topic_name, sentiment_drop, evidence):
             "mitigation": "API 키 및 네트워크 상태를 확인하세요."
         }
 
-
-
-def analyze_risks():
+# --- ▼▼▼▼▼ [수정] analyze_risks 함수가 articles를 인자로 받도록 변경 ▼▼▼▼▼ ---
+def analyze_risks(articles):
     """토픽별 감성 점수 시계열을 분석하여 리스크를 탐지합니다."""
     if not os.path.exists(SENTIMENT_CSV_PATH):
         print(f"[WARN] {SENTIMENT_CSV_PATH} 파일이 없어 리스크 분석을 건너뜁니다.")
@@ -104,7 +103,7 @@ def analyze_risks():
 
     df = pd.read_csv(SENTIMENT_CSV_PATH)
     topics_data = load_json("outputs/topics.json", {"topics": []})
-    articles = load_json(latest("data/news_meta_*.json"), [])
+    # articles = load_json(latest("data/news_meta_*.json"), []) # <--- 이 라인 삭제
     
     topic_map = {t["topic_id"]: {
         "name": t.get("topic_name", f"Topic {t['topic_id']}"),
@@ -123,7 +122,6 @@ def analyze_risks():
         
         today_data = group.iloc[-1]
         
-        # 리스크 조건: 오늘 점수가 (이동평균 - 임계치 * 표준편차) 보다 낮은 경우
         threshold_value = today_data['ma'] - (STD_DEV_THRESHOLD * today_data['std'])
         if pd.notna(threshold_value) and today_data['avg_sentiment'] < threshold_value:
             sentiment_drop = today_data['ma'] - today_data['avg_sentiment']
@@ -133,7 +131,6 @@ def analyze_risks():
 
             print(f"[INFO] 리스크 탐지: Topic {topic_id} ({topic_info['name']}), 감성 점수 하락폭: {sentiment_drop:.2f}")
             
-            # LLM 분석을 위한 컨텍스트 수집 및 호출
             evidence = get_negative_sentences(topic_info['keywords'], articles)
             llm_analysis = call_gemini_for_risk_analysis(topic_info['name'], sentiment_drop, evidence)
 
@@ -144,15 +141,36 @@ def analyze_risks():
                 **llm_analysis
             })
 
-    # 결과 저장
     if risk_issues:
         df_risks = pd.DataFrame(risk_issues)
         df_risks.to_csv(OUTPUT_CSV_PATH, index=False, encoding="utf-8-sig")
         print(f"[SUCCESS] {len(risk_issues)}개의 리스크를 탐지하여 {OUTPUT_CSV_PATH}에 저장했습니다.")
     else:
         print("[INFO] 금일 탐지된 신규 리스크가 없습니다.")
-        # 파일이 없으면 빈 파일 생성
-        pd.DataFrame(columns=["Date", "Topic", "sentiment_drop", "impact_range", "summary", "mitigation"]).to_csv(OUTPUT_CSV_PATH, index=False, encoding="utf-8-sig")
+        if not os.path.exists(OUTPUT_CSV_PATH):
+            pd.DataFrame(columns=["Date", "Topic", "sentiment_drop", "impact_range", "summary", "mitigation"]).to_csv(OUTPUT_CSV_PATH, index=False, encoding="utf-8-sig")
 
+# --- ▼▼▼▼▼ [수정] main 함수가 analyze_risks를 호출하도록 변경 ▼▼▼▼▼ ---
+def main():
+    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
+    
+    if is_monthly_run:
+        meta_path = "outputs/debug/monthly_meta_agg.json"
+        print(f"[INFO] Monthly Run: Using aggregated meta file for {__name__}.")
+    else:
+        meta_path = "outputs/debug/news_meta_latest.json"
+        if not os.path.exists(meta_path):
+            meta_path = latest("data/news_meta_*.json")
+
+    if not meta_path or not os.path.exists(meta_path):
+        raise SystemExit("Input meta file not found.")
+        
+    print(f"[INFO] Loading meta data from: {meta_path}")
+    meta_items = load_json(meta_path, [])
+
+    # 로드한 데이터를 analyze_risks 함수에 전달하여 실행
+    analyze_risks(articles=meta_items)
+
+# --- ▼▼▼▼▼ [수정] main 함수를 호출하도록 변경 ▼▼▼▼▼ ---
 if __name__ == "__main__":
-    analyze_risks()
+    main()

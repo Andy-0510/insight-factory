@@ -11,14 +11,17 @@ SCORE_THRESHOLD = 0.0 # 점수가 0.0 이상인 기사를 '관심 기사'로 간
 
 def select_articles():
     """
-    그날의 핵심 토픽 및 이벤트와 가장 관련성 높은 기사 TOP 3를 선정합니다.
+    그날의 핵심 토픽 및 이벤트와 가장 관련성 높은 기사를 선정합니다.
+    월간 실행 시에는 이 작업을 건너뜁니다.
     """
-    # 1. 분석에 필요한 데이터 로드
-    meta_path = latest("data/news_meta_*.json")
-    if not meta_path:
-        print("[WARN] No news_meta file found. Skipping article selection.")
+    # --- ▼▼▼▼▼ [추가] 월간 실행 시 함수를 즉시 종료 ▼▼▼▼▼ ---
+    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
+    if is_monthly_run:
+        print("[INFO] Monthly Run: Skipping daily top article selection.")
         return
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
+    meta_path = latest("data/news_meta_*.json")
     meta_items = load_json(meta_path, [])
     
     try:

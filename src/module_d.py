@@ -495,6 +495,23 @@ def build_company_network(out_json="outputs/company_network.json"):
     print(f"[INFO] Saved {out_json} (nodes={len(analysis.get('nodes', []))}, edges={len(analysis.get('edges', []))})")
 
 def main():
+    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
+    
+    if is_monthly_run:
+        meta_path = "outputs/debug/monthly_meta_agg.json"
+        print(f"[INFO] Monthly Run: Using aggregated meta file for {__name__}.")
+    else:
+        # 일간 실행 시에는 디버깅용 최신 복사본을 우선 사용
+        meta_path = "outputs/debug/news_meta_latest.json"
+        if not os.path.exists(meta_path):
+            meta_path = latest("data/news_meta_*.json")
+
+    if not meta_path or not os.path.exists(meta_path):
+        raise SystemExit("Input meta file not found.")
+        
+    print(f"[INFO] Loading meta data from: {meta_path}")
+    meta_items = load_json(meta_path, [])
+    
     print("[INFO] Module D - Analysis 시작")
     os.makedirs("outputs", exist_ok=True)
     os.makedirs("outputs/export", exist_ok=True)

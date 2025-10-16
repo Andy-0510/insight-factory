@@ -26,7 +26,15 @@ def get_sentiment_analyzer():
 def calculate_sentiments():
     """
     최신 기사 데이터와 토픽 데이터를 기반으로 토픽별 일일 감성 점수를 계산하고 누적 저장합니다.
+    월간 실행 시에는 이 작업을 건너뜁니다.
     """
+    # --- ▼▼▼▼▼ [추가] 월간 실행 시 함수를 즉시 종료 ▼▼▼▼▼ ---
+    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
+    if is_monthly_run:
+        print("[INFO] Monthly Run: Skipping daily sentiment calculation.")
+        return
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
     analyzer = get_sentiment_analyzer()
     if not analyzer:
         return
