@@ -64,8 +64,8 @@ jobs:
       
       # --- 결과물 아카이빙 및 커밋 ---
       - name: Archive and Commit Weekly Report
-        run: |
         shell: bash
+        run: |
           set -e
           DATE_KST=$(TZ=Asia/Seoul date +'%Y-%m-%d')
           OUTDIR="outputs/weekly/${DATE_KST}"
