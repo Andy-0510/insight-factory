@@ -157,7 +157,7 @@ def build_monthly_markdown():
     lines.append(_section_header("3. 경쟁사 전략적 의도 및 파트너 관계망 분석")); lines.append(_section_monthly_competitor_strategy(monthly_data))
     lines.append(_section_header("4. 전략적 리스크 관리 및 완화 액션 제안")); lines.append(_section_monthly_risk_management(monthly_data))
     lines.append(_section_header("5. 데이터 기반 신사업 아이디어 및 초기 검증")); lines.append(_section_monthly_new_biz_ideas(monthly_data))
-    lines.append(_section_header("6. 종합 전략 방향 및 자원 배분 계획")); lines.append(_section_monthly_conclusion(monthly_data))
+    lines.append(_section_header("6. 향후 2주 실행 계획 (Action Plan)")); lines.append(_section_monthly_conclusion(monthly_data))
 
     with open(OUT_MD, "w", encoding="utf-8") as f: f.write("\n".join(lines))
     return OUT_MD
