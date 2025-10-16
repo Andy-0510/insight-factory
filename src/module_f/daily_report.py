@@ -80,7 +80,7 @@ def _section_time_series(data):
     date_range = f"{daily[0].get('date', '?')} ~ {daily[-1].get('date', '?')}" if daily else "-"
     lines = [f"- **기간:** {date_range}", f"- **총 기사 수:** {_fmt_int(total_cnt)}"]
     lines.append(_insert_images(os.path.join(FIG_DIR, "timeseries.png"), OUT_MD, captions=["일별 기사 수 추이"]))
-    lines.append(_insert_images(os.path.join(FIG_DIR, "timeseries_spikes.png"), OUT_MD, captions=["이상치/스파이크 마커"]))
+    # lines.append(_insert_images(os.path.join(FIG_DIR, "timeseries_spikes.png"), OUT_MD, captions=["이상치/스파이크 마커"]))
     df_spikes = _safe_read_csv(os.path.join(EXPORT_DIR, "timeseries_spikes.csv"))
     if not df_spikes.empty:
         lines.append("### 스파이크 상세"); lines.append(_to_markdown_table(df_spikes, max_rows=10))
