@@ -3,10 +3,6 @@
   "use_pro": false,
   
   "queries": [
-  "OLED 패널", "QD-OLED", "폴더블", "마이크로LED", "미니LED", "QLED", "QNED", "OLEDoS", "LEDos", "OLED"
-  ],
-  
-  "queries_for_test": [
   "OLED 패널", "QD-OLED", "폴더블", "마이크로LED", "미니LED", "QLED", "QNED", "OLEDoS", "LEDos",
   "플렉서블 디스플레이", "투명 디스플레이", "AI 디스플레이", "롤러블 디스플레이", "스트레처블 디스플레이",
   "차량용 디스플레이", "전장", "AR", "LTPO", "디스플레이 시장",
