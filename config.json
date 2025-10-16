@@ -3,7 +3,7 @@
   "use_pro": false,
   
   "queries": [
-  "OLED 패널", "QD-OLED", "폴더블"
+  "OLED 패널", "QD-OLED", "폴더블", "마이크로LED", "미니LED", "QLED", "QNED", "OLEDoS", "LEDos", "OLED"
   ],
   
   "queries_for_test": [
