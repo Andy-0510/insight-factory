@@ -1,8 +1,13 @@
 import pandas as pd
 from src.utils import load_json, latest
 import os
+from datetime import datetime
 
 TOP_N = 3 # 최종 선정할 기사 수
+OUTPUT_CSV = "outputs/export/today_article_list.csv"
+CUMULATIVE_OUTPUT_CSV = "outputs/export/daily_signal_counts.csv"
+SCORE_THRESHOLD = 0.0 # 점수가 0.0 이상인 기사를 '관심 기사'로 간주하고 저장 (토픽 ∩ Event)
+
 
 def select_articles():
     """
@@ -44,29 +49,44 @@ def select_articles():
         # 점수 로직: 주요 이벤트 기사면 +3점
         if title in event_titles:
             score += 3
-            
-        if score > 0:
+        
+        # --- ▼▼▼ 점수가 임계값을 넘는 모든 기사를 리스트에 추가 ▼▼▼ ---
+        if score >= SCORE_THRESHOLD:
             scored_articles.append({
                 "title": title,
                 "url": item.get("url"),
                 "score": score
             })
+        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---    
 
-    # 3. 점수가 높은 순으로 정렬하여 상위 N개 선택 및 저장
     if not scored_articles:
-        print("[INFO] No relevant articles to select.")
-        # 빈 파일이라도 생성하여 워크플로우 에러 방지
         df_top_articles = pd.DataFrame(columns=["title", "url"])
     else:
-        df_top_articles = pd.DataFrame(scored_articles)
-        df_top_articles = df_top_articles.sort_values(by="score", ascending=False).head(TOP_N)
-        df_top_articles = df_top_articles.drop_duplicates(subset=['title'])
+        # 점수 높은 순으로 정렬하여 리포트에는 TOP_N 개까지만 표시
+        df_top_articles = pd.DataFrame(scored_articles).sort_values(by="score", ascending=False).drop_duplicates(subset=['title']).head(TOP_N)
         df_top_articles = df_top_articles[['title', 'url']]
+    
+    os.makedirs(os.path.dirname(OUTPUT_CSV), exist_ok=True)
+    df_top_articles.to_csv(OUTPUT_CSV, index=False, encoding="utf-8-sig")
+    print(f"[INFO] Top articles for report (max 5) saved to {OUTPUT_CSV}")
 
-    output_path = "outputs/export/today_article_list.csv"
-    os.makedirs(os.path.dirname(output_path), exist_ok=True)
-    df_top_articles.to_csv(output_path, index=False, encoding="utf-8-sig")
-    print(f"[INFO] Top {len(df_top_articles)} articles saved to {output_path}")
+    # --- ▼▼▼ '관심 기사 수'를 scored_articles의 전체 개수로 변경 ▼▼▼ ---
+    today_date = datetime.now().strftime("%Y-%m-%d")
+    signal_count = len(scored_articles) # TOP_N이 아닌, 점수를 넘긴 모든 기사의 수
+    
+    new_data = {"date": today_date, "signal_article_count": signal_count}
+    
+    if os.path.exists(CUMULATIVE_OUTPUT_CSV):
+        df_existing = pd.read_csv(CUMULATIVE_OUTPUT_CSV)
+        df_existing = df_existing[df_existing["date"] != today_date]
+        df_final = pd.concat([df_existing, pd.DataFrame([new_data])], ignore_index=True)
+    else:
+        df_final = pd.DataFrame([new_data])
+        
+    df_final.sort_values(by="date", inplace=True)
+    df_final.to_csv(CUMULATIVE_OUTPUT_CSV, index=False, encoding="utf-8-sig")
+    print(f"[INFO] Daily signal count ({signal_count}) saved to {CUMULATIVE_OUTPUT_CSV}")
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 if __name__ == "__main__":
     select_articles()
