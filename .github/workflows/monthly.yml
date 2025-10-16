@@ -1,18 +1,21 @@
 name: Monthly Report Pipeline
 
+permissions:
+  contents: write
+
 on:
   schedule:
-    # 매월 25-31일 중 금요일에만 실행 (마지막 주 금요일에 해당)
-    - cron: "0 23 25-31 * 5" # 23:00 UTC = 다음날 08:00 KST
+    - cron: "0 21 21-30 * 3" # 매월 21~30일 사이의 21:00 UTC = 다음날 06:00 KST (월말에 실행)
   workflow_dispatch:
 
 jobs:
-  pipeline:
+  build_monthly_report:
     runs-on: ubuntu-latest
     env:
-      USE_PRO: 'false' # 일간 작업은 PRO 모드 비활성화 권장
+      USE_PRO: 'true'
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       HF_HOME: ~/.cache/huggingface
+      MONTHLY_RUN: "true" # 👈 월간 실행 모드 활성화
 
     steps:
       # --- 체크아웃, 캐시, 의존성 설치 ---
@@ -46,19 +49,29 @@ jobs:
           fi
 
       # --- 월간 리포트에 필요한 모든 모듈 실행 ---
-      - name: Run Monthly Analysis Modules
+      - name: Run Monthly Analysis & Reporting
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MONTHLY_RUN: "true" # 👈 이미 설정되어 있음
         run: |
-          source .venv/bin/activate
+          # 1. 월간 데이터 집계
+          python -m scripts.aggregate_monthly_data
+          # 2. 집계된 데이터로 모든 분석 모듈 재실행
+          python -m src.module_b
+          python -m src.module_c
           python -m src.module_d
           python -m src.module_e
+          python -m scripts.future_insights
           python -m src.module_g_risk
           python -m src.module_h_planning
+          # 3. 월간 시각화 및 리포트 생성
+          python -m scripts.generate_visuals --report-type monthly
           python -m src.module_f.monthly_report
+          
       
       # --- 결과물 아카이빙 및 커밋 ---
       - name: Archive and Commit Monthly Report
+        shell: bash
         run: |
           set -e
           DATE_KST=$(TZ=Asia/Seoul date +'%Y-%m')
