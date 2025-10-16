@@ -16,6 +16,7 @@ from src.utils import load_json, save_json, latest
 from datetime import datetime, timedelta
 from pathlib import Path
 
+
 ### 추가 이미지 (timeseries_spikes.png, strong_signals_topbar.png, topics_bubble.png)
 FIG_DIR = "outputs/fig"
 EXPORT_DIR = "outputs/export"
@@ -48,71 +49,6 @@ def _savefig(path, tight=True, dpi=160, facecolor="white"):
     plt.savefig(path, dpi=dpi, facecolor=facecolor)
     plt.close()
 
-# 1) timeseries_spikes.png 생성
-def gen_timeseries_spikes(
-    daily_json_path="outputs/trend_timeseries.json",
-    out_timeseries=f"{FIG_DIR}/timeseries.png",
-    out_spikes=f"{FIG_DIR}/timeseries_spikes.png",
-    out_spike_csv=f"{EXPORT_DIR}/timeseries_spikes.csv",
-    ma_window=7, z_thresh=2.5
-):
-    _ensure_dirs()
-    data = {}
-    try:
-        with open(daily_json_path, "r", encoding="utf-8") as f:
-            data = json.load(f) or {}
-    except Exception:
-        data = {}
-
-    daily = data.get("daily", [])
-    if not daily:
-        return
-
-    df = pd.DataFrame(daily)
-    if "date" not in df.columns or "count" not in df.columns:
-        return
-    df["date"] = df["date"].apply(_parse_date)
-    df = df.dropna(subset=["date"]).sort_values("date")
-    df["count"] = pd.to_numeric(df["count"], errors="coerce").fillna(0)
-
-    # 기본 시계열
-    plt.figure(figsize=(10, 4))
-    plt.plot(df["date"], df["count"], label="Daily", color="#2c7be5", alpha=0.85)
-    if len(df) >= ma_window:
-        df["ma"] = df["count"].rolling(ma_window).mean()
-        plt.plot(df["date"], df["ma"], label=f"{ma_window}-day MA", color="#495057")
-    plt.title("Daily Articles")
-    plt.xlabel("Date"); plt.ylabel("Count")
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%m-%d"))
-    plt.legend(loc="upper left")
-    _savefig(out_timeseries)
-
-    # 스파이크 탐지
-    if df["count"].std() > 0:
-        z = (df["count"] - df["count"].mean()) / df["count"].std()
-        df["z"] = z
-        spikes = df.loc[df["z"] >= z_thresh].copy()
-    else:
-        spikes = pd.DataFrame()
-
-    # 스파이크 플롯
-    plt.figure(figsize=(10, 4))
-    plt.plot(df["date"], df["count"], color="#2c7be5", alpha=0.6)
-    if not spikes.empty:
-        plt.scatter(spikes["date"], spikes["count"], color="#d92550", s=40, label=f"Spikes (z>={z_thresh:.1f})")
-        for _, r in spikes.iterrows():
-            plt.annotate(r["date"].strftime("%m-%d"), (r["date"], r["count"]), textcoords="offset points", xytext=(0,8), ha="center", fontsize=8)
-        plt.legend()
-    plt.title("Spikes")
-    plt.xlabel("Date"); plt.ylabel("Count")
-    plt.gca().xaxis.set_major_formatter(mdates.DateFormatter("%m-%d"))
-    _savefig(out_spikes)
-
-    # CSV 저장
-    if not spikes.empty:
-        out = spikes[["date","count","z"]].copy()
-        out["date"] = out["date"].dt.strftime("%Y-%m-%d")
-        out.to_csv(out_spike_csv, index=False, encoding="utf-8")
 
 # 2) strong_signals_topbar.png 생성
 def gen_strong_signals_bar(
@@ -372,82 +308,6 @@ def plot_topics(topics, out_path="outputs/fig/topics.png", topn_words=6):
 
     plt.tight_layout()
     plt.savefig(out_path, dpi=150)
-    plt.close()
-
-
-def plot_timeseries(ts, out_path="outputs/fig/timeseries.png"):
-    
-    ensure_fonts()
-    apply_plot_style()
-    os.makedirs(os.path.dirname(out_path), exist_ok=True)
-    daily = ts.get("daily", [])
-    if not daily:
-        plt.figure(figsize=(10, 5))
-        plt.title("Articles per Day (no data)")
-        plt.xlabel("Date")
-        plt.ylabel("Count")
-        plt.tight_layout()
-        plt.savefig(out_path, dpi=150, bbox_inches="tight")
-        plt.close()
-        return
-    df = pd.DataFrame(daily).copy()
-    df["date"] = pd.to_datetime(df["date"], errors="coerce", utc=False)
-    df["count"] = pd.to_numeric(df.get("count", 0), errors="coerce").fillna(0).astype(int)
-    df = df.dropna(subset=["date"]).sort_values("date")
-    now_year = datetime.now().year
-    y_min, y_max = now_year - 3, now_year + 1
-    df = df[(df["date"].dt.year >= y_min) & (df["date"].dt.year <= y_max)]
-    if df.empty:
-        plt.figure(figsize=(10, 5))
-        plt.title("Articles per Day (empty after filtering)")
-        plt.xlabel("Date")
-        plt.ylabel("Count")
-        plt.tight_layout()
-        plt.savefig(out_path, dpi=150, bbox_inches="tight")
-        plt.close()
-        return
-    df = df.set_index("date")
-    full_idx = pd.date_range(df.index.min().normalize(), df.index.max().normalize(), freq="D")
-    df = df.reindex(full_idx).fillna(0)
-    df.index.name = "date"
-    df["count"] = df["count"].astype(int)
-    if len(df) == 1:
-        d0 = df.index[0]
-        y = float(df["count"].iloc[0])
-        plt.figure(figsize=(12, 4.5))
-        plt.xlim(d0 - timedelta(days=1), d0 + timedelta(days=1))
-        ypad = max(1, y * 0.15)
-        plt.ylim(0, y + ypad)
-        ax = plt.gca()
-        ax.xaxis.set_major_locator(mdates.DayLocator(interval=1))
-        ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-        plt.plot([d0], [y], marker="o", color="#6366f1", label="Daily")
-        plt.annotate(f"{int(y)}", (d0, y), textcoords="offset points", xytext=(0, -14), ha="center",
-                     fontsize=9, bbox=dict(boxstyle="round,pad=0.2", fc="white", ec="none", alpha=0.7))
-        plt.title(f"Articles per Day ({d0.strftime('%Y-%m-%d')})")
-        plt.xlabel("Date")
-        plt.ylabel("Count")
-        plt.legend(loc="upper right")
-        plt.grid(alpha=0.25, linestyle="--")
-        plt.tight_layout()
-        plt.savefig(out_path, dpi=150, bbox_inches="tight")
-        plt.close()
-        return
-    plt.figure(figsize=(12, 4.5))
-    ax = plt.gca()
-    ax.xaxis.set_major_locator(mdates.AutoDateLocator())
-    ax.xaxis.set_major_formatter(mdates.DateFormatter("%Y-%m-%d"))
-    plt.plot(df.index, df["count"], marker="o", markersize=3, linewidth=1, color="#6366f1", label="Daily")
-    if len(df) >= 7:
-        df["ma7"] = df["count"].rolling(window=7, min_periods=1).mean()
-        plt.plot(df.index, df["ma7"], linestyle="--", linewidth=2, color="#f43f5e", label="7-day MA")
-    plt.title("Articles per Day")
-    plt.xlabel("Date")
-    plt.ylabel("Count")
-    plt.legend(loc="upper right")
-    plt.grid(alpha=0.25, linestyle="--")
-    plt.tight_layout()
-    plt.savefig(out_path, dpi=200, bbox_inches="tight")
     plt.close()
 
 def plot_keyword_network(keywords, docs, out_path="outputs/fig/keyword_network.png",
@@ -1138,6 +998,7 @@ def plot_company_network_from_json(json_path="outputs/company_network.json",
 
 def plot_tech_maturity_map(maturity_data):
     """ 4. 기술 성숙도 맵 버블 차트 생성 (범례를 차트 안에 표시) """
+    tech_maturity_data = tech_maturity_data[tech_maturity_data['hue_column'] != 'Error']
     if not maturity_data.get("results"):
         return
 
@@ -1317,7 +1178,102 @@ def plot_strong_signals(strong_signals_df):
     plt.close()
     print("[INFO] Saved strong_signals_barchart.png")
 
+def gen_enhanced_timeseries(
+    daily_json_path="outputs/trend_timeseries.json",
+    signal_csv_path="outputs/export/daily_signal_counts.csv",
+    out_path=f"{FIG_DIR}/timeseries.png",
+    out_spike_csv=f"{EXPORT_DIR}/timeseries_spikes_enhanced.csv",
+    days_to_show=30,
+    spike_threshold=2.0
+):
+    """'전체 기사량'과 '신호 기사 비율'을 심미적으로 개선하여 시각화합니다."""
+    
+    ts_data = load_json(daily_json_path, {"daily": []})
+    df_total = pd.DataFrame(ts_data.get("daily", []))
+    df_signal = _safe_read_csv(signal_csv_path)
+    
+    if df_total.empty:
+        print("[WARN] Timeseries data is empty. Skipping enhanced chart generation.")
+        return
+        
+    df_merged = pd.merge(df_total, df_signal, on="date", how="left").fillna(0)
+    
+    df = df_merged.tail(days_to_show).copy()
+    df['date'] = pd.to_datetime(df['date'])
+    df['signal_ratio'] = (df['signal_article_count'] / df['count']).where(df['count'] > 0, 0)
+    
+    all_spikes = []
+    for metric, name in [('count', '전체 기사량'), ('signal_ratio', '신호 기사 비율')]:
+        rolling = df[metric].rolling(window=7, min_periods=7)
+        df[f'{metric}_ma'] = rolling.mean()
+        df[f'{metric}_std'] = rolling.std()
+        df[f'{metric}_z'] = (df[metric] - df[f'{metric}_ma']) / df[f'{metric}_std']
+        
+        spikes = df[df[f'{metric}_z'] >= spike_threshold].copy()
+        if not spikes.empty:
+            spikes['metric'] = name
+            spikes['value'] = spikes[metric]
+            spikes['z_score'] = spikes[f'{metric}_z']
+            all_spikes.append(spikes[['date', 'metric', 'value', 'z_score']])
 
+    if all_spikes:
+        df_all_spikes = pd.concat(all_spikes).sort_values('date')
+        df_all_spikes['date'] = df_all_spikes['date'].dt.strftime('%Y-%m-%d')
+        df_all_spikes['value'] = df_all_spikes.apply(
+            lambda row: f"{row['value']:.2%}" if '비율' in row['metric'] else f"{int(row['value'])}건", axis=1
+        )
+        df_all_spikes.to_csv(out_spike_csv, index=False, encoding="utf-8-sig", float_format='%.2f')
+        print(f"[INFO] Detected {len(df_all_spikes)} spikes. Saved to {out_spike_csv}")
+    
+    # --- ▼▼▼▼▼ [수정] 차트 시각화 로직 전체 변경 ▼▼▼▼▼ ---
+    fig, ax1 = plt.subplots(figsize=(12, 6))
+
+    # 축 1: 전체 기사량 (선 그래프) + 7일 이동평균
+    ax1.plot(df['date'], df['count'], color='#3b82f6', linestyle='-', linewidth=2, label='전체 기사량')
+    ax1.plot(df['date'], df['count_ma'], color='#343a40', linestyle=':', linewidth=1, label='기사량 7일 이동평균')
+    ax1.set_ylabel('전체 기사량 (건)', color='#343a40')
+    ax1.tick_params(axis='y', labelcolor='#343a40')
+    ax1.set_ylim(0, max(df['count'].max() * 1.2, df['count_ma'].max() * 1.2))  # Y축 범위 설정
+        
+    # 축 2: 신호 기사 비율 (막대 그래프)
+    ax2 = ax1.twinx()
+    ax2.bar(df['date'], df['signal_ratio'], 
+            color='#e9ecef', 
+            label='신호 기사 비율',
+            zorder=1)  # 막대그래프를 가장 아래로 배치
+    ax2.set_ylabel('신호 기사 비율 (%)', color='#6c757d')
+    ax2.tick_params(axis='y', labelcolor='#6c757d')
+    ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{y:.0%}'))
+    ax2.set_ylim(0, max(0.5, df['signal_ratio'].max() * 1.2))  # Y축 최대값 조정
+
+    # 그래프에 스파이크 표시 (색상 변경)
+    if all_spikes:
+        spikes_count = df[df['count_z'] >= spike_threshold]
+        spikes_ratio = df[df['signal_ratio_z'] >= spike_threshold]
+        # 전체 기사량 스파이크 (진한 파랑)
+        ax1.scatter(spikes_count['date'], spikes_count['count'], 
+                    color='#0b5ed7', s=100, zorder=6, label='기사량 스파이크')
+        # 신호 기사 비율 스파이크 (진한 빨강)
+        ax2.scatter(spikes_ratio['date'], spikes_ratio['signal_ratio'], 
+                    color='#dc3545', s=100, zorder=6, label='비율 스파이크')
+
+    # 선 그래프들을 막대 위에 표시하기 위해 zorder 조정
+    ax1.set_zorder(2)  # 선 그래프가 막대 위에 오도록
+    ax1.patch.set_visible(False)  # ax1의 축 경계가 보이지 않도록
+
+    # 차트 설정
+    plt.title('일일 기사량 및 신호 기사 비율 추이 (스파이크 탐지)', fontsize=16)
+    ax1.set_xlabel('날짜')
+    ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+    
+    # 범례를 그래프 좌측 상단 안쪽에 배치
+    handles1, labels1 = ax1.get_legend_handles_labels()
+    handles2, labels2 = ax2.get_legend_handles_labels()
+    fig.legend(handles1 + handles2, labels1 + labels2, loc="upper left", bbox_to_anchor=(0.1, 0.9))
+    
+    fig.tight_layout()
+    _savefig(out_path)
+    print(f"[INFO] Enhanced timeseries chart with new styles saved to {out_path}")
 
 def main():
     """ 메인 실행 함수 """
@@ -1338,10 +1294,6 @@ def main():
         plot_wordcloud_from_keywords(keywords)
     except Exception as e:
         print("[WARN] wordcloud 생성 실패:", e)
-    try:
-        plot_timeseries(ts)
-    except Exception as e:
-        print("[WARN] timeseries 그림 실패:", e)
     try:
         docs = build_docs_from_meta(meta_items)
         kw_list = keywords.get("keywords", [])
@@ -1413,6 +1365,10 @@ def main():
 
     # 시각화 함수 호출
     os.makedirs('outputs/fig', exist_ok=True)
+    gen_enhanced_timeseries()
+    gen_strong_signals_bar()
+    gen_topics_bubble()
+
     plot_heatmap(df, topics_map)
     plot_topic_share(df, topics_map)
     plot_company_focus(df)
@@ -1420,10 +1376,7 @@ def main():
     plot_weak_signal_radar(weak_signals_df)
     plot_strong_signals(strong_signals_df)
 
-    # 추가 이미지
-    gen_timeseries_spikes()
-    gen_strong_signals_bar()
-    gen_topics_bubble()
+
     
     print("\n[SUCCESS] All visualizations have been generated in 'outputs/fig/'")
 

@@ -656,6 +656,23 @@ def fill_opportunities_to_five(ideas: list, keywords_obj: dict, want: int = 5) -
 
 # ========== 메인 ==========
 def main():
+    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
+    
+    if is_monthly_run:
+        meta_path = "outputs/debug/monthly_meta_agg.json"
+        print(f"[INFO] Monthly Run: Using aggregated meta file for {__name__}.")
+    else:
+        # 일간 실행 시에는 디버깅용 최신 복사본을 우선 사용
+        meta_path = "outputs/debug/news_meta_latest.json"
+        if not os.path.exists(meta_path):
+            meta_path = latest("data/news_meta_*.json")
+
+    if not meta_path or not os.path.exists(meta_path):
+        raise SystemExit("Input meta file not found.")
+        
+    print(f"[INFO] Loading meta data from: {meta_path}")
+    meta_items = load_json(meta_path, [])
+    
     os.makedirs("outputs", exist_ok=True)
     os.makedirs("outputs/export", exist_ok=True)
 

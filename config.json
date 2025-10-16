@@ -11,7 +11,7 @@
   "OLED", "LCD"
   ],
 
-  "per_query_display": 10,
+  "per_query_display": 1,
   "pages": 1,
   "top_n_keywords": 20,
 

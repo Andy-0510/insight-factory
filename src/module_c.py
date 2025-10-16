@@ -477,7 +477,6 @@ def gemini_insight(api_key: str, model: str, context: Dict[str, Any],
     "요청:\n"
     "1. 핵심맥락: 토픽과 키워드를 연결하여, 시장의 가장 중요한 흐름 2~3가지의 배경을 논리적으로 설명하세요.\n"
     "2. 인사이트: 현재 산업의 전략적 시사점(기회, 위험, 경쟁 구도 등)을 도출하세요.\n"
-    "3. Action Items: 전략, 사업 개발 및 기술 기획 부서가 실행할 수 있는 구체적인 액션 아이템 3가지를 제안하세요.\n\n"
     "주의:\n"
     "- 각 항목은 명확한 제목과 함께 구분하여 작성하세요.\n"
     "- 문장은 간결하고 완결성 있게 작성하세요.\n\n"
@@ -523,6 +522,7 @@ def gemini_insight(api_key: str, model: str, context: Dict[str, Any],
 
 
 # ================= 메인 =================
+
 def main():
     _log_mode("Module C")
     os.makedirs("outputs", exist_ok=True)
@@ -530,16 +530,20 @@ def main():
     api_key = os.getenv("GEMINI_API_KEY", "")
     model_name = str(LLM.get("model", "gemini-2.0-flash"))
 
+    # --- ▼▼▼▼▼ [수정] 실행 주기 확인 로직 추가 ▼▼▼▼▼ ---
+    is_weekly_run = os.getenv("WEEKLY_RUN", "false").lower() == "true"
+    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
     # 1. 데이터 로드
     docs_today, _ = load_today_meta()
     warehouse_paths = load_warehouse_paths(days=30) 
 
-    # 2. 시계열 계산 및 저장 (인사이트에는 사용하지 않음)
+    # 2. 시계열 계산 및 저장 (주기와 상관없이 매일 실행)
     ts_obj = calculate_stable_timeseries(warehouse_paths)
-    with open("outputs/trend_timeseries.json", "w", encoding="utf-8") as f:
-        json.dump(ts_obj, f, ensure_ascii=False, indent=2)
+    save_json("outputs/trend_timeseries.json", ts_obj)
 
-    # 3. 토픽 분석
+    # 3. 토픽 분석 (주기와 상관없이 매일 실행)
     try:
         if use_pro_mode():
             topics_obj = pro_build_topics_bertopic(docs_today or [], topn=10)
@@ -549,59 +553,60 @@ def main():
         print(f"[WARN] Pro 토픽 실패, Lite로 폴백: {e}")
         topics_obj = build_topics_lite(docs_today or [], max_features=8000, topn=10)
 
-    topics_obj = _ensure_prob_payload(topics_obj, topn=10, decay=0.95, floor=0.2)
-    topics_obj = enrich_topics_with_llm(topics_obj, api_key=api_key, model=model_name)
-
-    with open("outputs/topics.json", "w", encoding="utf-8") as f:
-        json.dump(topics_obj, f, ensure_ascii=False, indent=2)
-
-    # 4. 키워드 로드
-    try:
-        with open("outputs/keywords.json", "r", encoding="utf-8") as f:
-            keywords_obj = json.load(f)
-    except Exception:
-        keywords_obj = {"keywords": []}
+    # 4. 키워드 로드 (주기와 상관없이 매일 실행)
+    keywords_obj = load_json("outputs/keywords.json", {"keywords": []})
     top_keywords = [k.get("keyword") for k in keywords_obj.get("keywords", [])[:10]]
 
-    # 5. 토픽 요약 구성
-    top_topics = []
-    for t in topics_obj.get("topics", []):
-        words = [w.get("word", "") for w in (t.get("top_words") or [])][:5]
-        top_topics.append({
-            "topic_id": t.get("topic_id"),
-            "topic_name": t.get("topic_name", f"Topic #{t.get('topic_id')}"),
-            "summary": t.get("topic_summary", ""),
-            "words": words
-        })
+    # --- ▼▼▼▼▼ [수정] 주간/월간 실행 시에만 LLM 분석 수행 ▼▼▼▼▼ ---
+    if is_weekly_run or is_monthly_run:
+        print(f"[INFO] Weekly/Monthly Run: Enriching topics and generating insights with LLM.")
+        # 4-1. LLM으로 토픽 이름/요약 생성
+        topics_obj = _ensure_prob_payload(topics_obj, topn=10)
+        topics_obj = enrich_topics_with_llm(topics_obj, api_key=api_key, model=model_name)
 
-    # 6. 인사이트 생성 (timeseries 제외)
-    summary = gemini_insight(
-        api_key=api_key,
-        model=model_name,
-        context={"topics": top_topics, "keywords": top_keywords},
-        max_tokens=int(LLM.get("max_output_tokens", 2048)),
-        temperature=float(LLM.get("temperature", 0.3)),
-    )
+        # 4-2. 토픽 요약 정보 구성
+        top_topics = []
+        for t in topics_obj.get("topics", []):
+            top_topics.append({
+                "topic_id": t.get("topic_id"), "topic_name": t.get("topic_name"),
+                "summary": t.get("topic_summary", ""), "words": [w.get("word", "") for w in (t.get("top_words") or [])[:5]]
+            })
+        
+        # 4-3. LLM으로 종합 인사이트 생성
+        summary = gemini_insight(
+            api_key=api_key, model=model_name,
+            context={"topics": top_topics, "keywords": top_keywords},
+            max_tokens=int(LLM.get("max_output_tokens", 2048)),
+            temperature=float(LLM.get("temperature", 0.3)),
+        )
+        insights_obj = {"summary": summary, "top_topics": top_topics, "evidence": {}}
 
-    insights_obj = {
-        "summary": summary,
-        "top_topics": top_topics,
-        "evidence": {}  # timeseries 제거됨
-    }
-    with open("outputs/trend_insights.json", "w", encoding="utf-8") as f:
-        json.dump(insights_obj, f, ensure_ascii=False, indent=2)
+    else: # 일간 실행일 경우
+        print("[INFO] Daily Run: Skipping LLM enrichment and insights.")
+        topics_obj = _ensure_prob_payload(topics_obj, topn=10) # LLM 없이 prob만 보장
+        top_topics = []
+        for t in topics_obj.get("topics", []): # 이름 없는 토픽 정보 구성
+            top_topics.append({
+                "topic_id": t.get("topic_id"), "topic_name": f"Topic #{t.get('topic_id')}",
+                "summary": "", "words": [w.get("word", "") for w in (t.get("top_words") or [])[:5]]
+            })
+        # LLM 요약 대신 플레이스홀더 메시지 저장
+        insights_obj = {
+            "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+            "top_topics": top_topics, "evidence": {}
+        }
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
-    import datetime
-    meta = {
-        "module": "C",
-        "mode": "PRO" if use_pro_mode() else "LITE",
-        "time_utc": datetime.datetime.utcnow().isoformat() + "Z"
-    }
-    with open("outputs/run_meta_c.json", "w", encoding="utf-8") as f:
-        json.dump(meta, f, ensure_ascii=False, indent=2)
+    # 5. 결과물 저장
+    save_json("outputs/topics.json", topics_obj)
+    save_json("outputs/trend_insights.json", insights_obj)
 
-    print("[INFO] Module C done | topics=%d | model=%s" % (
-        len(topics_obj.get("topics", [])), model_name))    
+    meta = {"module": "C", "mode": "PRO" if use_pro_mode() else "LITE", "time_utc": datetime.datetime.utcnow().isoformat() + "Z"}
+    save_json("outputs/debug/run_meta_c.json", meta)
+
+    print("[INFO] Module C done | topics=%d | LLM Called: %s" % (
+        len(topics_obj.get("topics", [])), str(is_weekly_run or is_monthly_run)))
+        
 
 if __name__ == "__main__":
     main()
