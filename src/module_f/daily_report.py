@@ -74,16 +74,61 @@ def _insert_images(image_paths, md_out_path, captions=None):
 # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 def _section_time_series(data):
-    # ... (기존과 동일, 단 _insert_images 호출 방식 변경)
-    ts = data.get("ts", {}); daily = ts.get("daily", [])
-    total_cnt = sum(int(x.get("count", 0)) for x in daily)
-    date_range = f"{daily[0].get('date', '?')} ~ {daily[-1].get('date', '?')}" if daily else "-"
-    lines = [f"- **기간:** {date_range}", f"- **총 기사 수:** {_fmt_int(total_cnt)}"]
-    lines.append(_insert_images(os.path.join(FIG_DIR, "timeseries.png"), OUT_MD, captions=["일별 기사 수 추이"]))
-    # lines.append(_insert_images(os.path.join(FIG_DIR, "timeseries_spikes.png"), OUT_MD, captions=["이상치/스파이크 마커"]))
-    df_spikes = _safe_read_csv(os.path.join(EXPORT_DIR, "timeseries_spikes.csv"))
+    """일일 시장 활동량 및 이상 징후 (최근 30일 기준)"""
+    ts = data.get("ts", {})
+    daily = ts.get("daily", [])
+    df_ts_full = pd.DataFrame(daily)
+    
+    # --- ▼▼▼ [추가] 신호 기사 비율 계산 ▼▼▼ ---
+    df_signal = _safe_read_csv(os.path.join(EXPORT_DIR, "daily_signal_counts.csv"))
+    if not df_ts_full.empty and not df_signal.empty:
+        df_merged = pd.merge(df_ts_full, df_signal, on="date", how="left").fillna(0)
+        df_merged['signal_ratio'] = (df_merged['signal_article_count'] / df_merged['count']).where(df_merged['count'] > 0, 0)
+        avg_ratio_30days = df_merged.tail(30)['signal_ratio'].mean()
+    else:
+        avg_ratio_30days = 0
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    df_ts_30days = df_ts_full.tail(30)
+    if df_ts_30days.empty: return "- (시계열 데이터 부족)\n"
+    
+    date_range = f"{df_ts_30days.iloc[0]['date']} ~ {df_ts_30days.iloc[-1]['date']}"
+    
+    lines = [
+        f"- **분석 기간:** {date_range} (최근 30일)",
+        f"- **최근 30일 평균 신호 기사 비율:** {avg_ratio_30days:.2%}" # <-- 비율 텍스트 추가
+    ]
+    
+    # 이미지는 이제 강화된 버전으로 자동 교체됨
+    lines.append(_insert_images(os.path.join(FIG_DIR, "timeseries.png"), OUT_MD, captions=["일일 기사량, 신호 기사 비율 및 스파이크 추이"]))
+    
+    # --- ▼▼▼▼▼ [수정] 스파이크 테이블을 두 개로 분리하여 표시 ▼▼▼▼▼ ---
+    df_spikes = _safe_read_csv(os.path.join(EXPORT_DIR, "timeseries_spikes_enhanced.csv"))
     if not df_spikes.empty:
-        lines.append("### 스파이크 상세"); lines.append(_to_markdown_table(df_spikes, max_rows=10))
+        start_date_30days = pd.to_datetime(df_ts_30days.iloc[0]['date'])
+        df_spikes['date'] = pd.to_datetime(df_spikes['date'])
+        df_spikes_recent = df_spikes[df_spikes['date'] >= start_date_30days].copy()
+        
+        if not df_spikes_recent.empty:
+            df_spikes_recent['date'] = df_spikes_recent['date'].dt.strftime('%Y-%m-%d')
+            
+            # 1. 전체 기사량 스파이크 테이블
+            df_count_spikes = df_spikes_recent[df_spikes_recent['metric'] == '전체 기사량'].copy()
+            if not df_count_spikes.empty:
+                lines.append("### 📈 전체 기사량 스파이크")
+                lines.append(_to_markdown_table(df_count_spikes[['date', 'value', 'z_score']].rename(columns={
+                    'date': '날짜', 'value': '기사량', 'z_score': 'Z-Score'
+                })))
+
+            # 2. 신호 기사 비율 스파이크 테이블
+            df_ratio_spikes = df_spikes_recent[df_spikes_recent['metric'] == '신호 기사 비율'].copy()
+            if not df_ratio_spikes.empty:
+                lines.append("### 신호 기사 비율 스파이크")
+                lines.append(_to_markdown_table(df_ratio_spikes[['date', 'value', 'z_score']].rename(columns={
+                    'date': '날짜', 'value': '비율', 'z_score': 'Z-Score'
+                })))
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+        
     return "\n".join(lines)
 
 def _section_signals_board(data):
