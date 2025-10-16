@@ -118,6 +118,7 @@ def build_steps():
         ("check_d",  [PY, "-m", "src.check_d"]),
         ("e",        [PY, "-m", "src.module_e"]),
         ("check_e",  [PY, "-m", "src.check_e"]),
+        ("select_articles",  [PY, "-m", "scripts.select_top_articles"]),
         ("gen_visual",[PY, "-m", "scripts.generate_visuals"]),
         ("preflight",[PY, "-m", "scripts.preflight"]),
         ("f_daily",  [PY, "-m", "src.module_f.daily_report"]),
@@ -126,6 +127,7 @@ def build_steps():
         ("h_planning",[PY, "-m", "src.module_h_planning"]),
         ("f_weekly",  [PY, "-m", "src.module_f.weekly_report"]),
         ("f_monthly",  [PY, "-m", "src.module_f.monthly_report"]),
+        ("aggregate_monthly",[PY, "-m", "scripts.aggregate_monthly_data"]),
     ]
 
 def main():
