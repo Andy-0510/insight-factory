@@ -522,7 +522,6 @@ def gemini_insight(api_key: str, model: str, context: Dict[str, Any],
 
 
 # ================= 메인 =================
-
 def main():
     _log_mode("Module C")
     os.makedirs("outputs", exist_ok=True)
@@ -530,20 +529,38 @@ def main():
     api_key = os.getenv("GEMINI_API_KEY", "")
     model_name = str(LLM.get("model", "gemini-2.0-flash"))
 
-    # --- ▼▼▼▼▼ [수정] 실행 주기 확인 로직 추가 ▼▼▼▼▼ ---
     is_weekly_run = os.getenv("WEEKLY_RUN", "false").lower() == "true"
     is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
-    # 1. 데이터 로드
-    docs_today, _ = load_today_meta()
-    warehouse_paths = load_warehouse_paths(days=30) 
+    # --- ▼▼▼▼▼ [수정] 월간/일간에 따라 데이터 로드 경로 변경 ▼▼▼▼▼ ---
+    if is_monthly_run:
+        meta_path = "outputs/debug/monthly_meta_agg.json"
+        print(f"[INFO] Monthly Run: Using aggregated meta file for {__name__}.")
+    else:
+        meta_path = "outputs/debug/news_meta_latest.json"
+        if not os.path.exists(meta_path):
+            meta_path = latest("data/news_meta_*.json")
 
-    # 2. 시계열 계산 및 저장 (주기와 상관없이 매일 실행)
+    if not meta_path or not os.path.exists(meta_path):
+        raise SystemExit(f"Input meta file not found for Module C.")
+    
+    print(f"[INFO] Module C loading meta data from: {meta_path}")
+    items = load_json(meta_path, [])
+    
+    # load_today_meta() 함수 대신 main 함수에서 직접 docs 생성
+    docs_today = []
+    for it in items:
+        title = clean_text((it.get("title") or it.get("title_og") or "").strip())
+        desc  = clean_text((it.get("body") or it.get("description") or it.get("description_og") or "").strip())
+        doc = (title + " " + desc).strip()
+        if doc:
+            docs_today.append(doc)
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    warehouse_paths = load_warehouse_paths(days=30)
     ts_obj = calculate_stable_timeseries(warehouse_paths)
     save_json("outputs/trend_timeseries.json", ts_obj)
 
-    # 3. 토픽 분석 (주기와 상관없이 매일 실행)
     try:
         if use_pro_mode():
             topics_obj = pro_build_topics_bertopic(docs_today or [], topn=10)
@@ -553,7 +570,6 @@ def main():
         print(f"[WARN] Pro 토픽 실패, Lite로 폴백: {e}")
         topics_obj = build_topics_lite(docs_today or [], max_features=8000, topn=10)
 
-    # 4. 키워드 로드 (주기와 상관없이 매일 실행)
     keywords_obj = load_json("outputs/keywords.json", {"keywords": []})
     top_keywords = [k.get("keyword") for k in keywords_obj.get("keywords", [])[:10]]
 
