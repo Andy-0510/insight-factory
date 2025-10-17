@@ -6,10 +6,30 @@ import re
 from collections import defaultdict
 from src.utils import load_json, save_json, latest
 
+# --- ▼▼▼▼▼ [수정] 데이터 로드 로직을 함수 밖으로 빼고 공통으로 사용 ▼▼▼▼▼ ---
+def get_meta_items():
+    """실행 주기(일간/주간/월간)에 맞는 메타 데이터 파일을 로드합니다."""
+    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
+    is_weekly_run = os.getenv("WEEKLY_RUN", "false").lower() == "true"
 
-def latest(pattern):
-    files = glob.glob(pattern)
-    return max(files, key=os.path.getctime) if files else None
+    if is_monthly_run:
+        meta_path = "outputs/debug/monthly_meta_agg.json"
+        print(f"[INFO] Monthly Run: Using aggregated meta file for future_insights.")
+    elif is_weekly_run:
+        meta_path = "outputs/debug/weekly_meta_agg.json"
+        print(f"[INFO] Weekly Run: Using aggregated meta file for future_insights.")
+    else: # 일간 실행
+        meta_path = "outputs/debug/news_meta_latest.json"
+        if not os.path.exists(meta_path):
+            meta_path = latest("data/news_meta_*.json")
+
+    if not meta_path or not os.path.exists(meta_path):
+        print("[WARN] Input meta file not found for future_insights.")
+        return []
+        
+    print(f"[INFO] future_insights loading meta data from: {meta_path}")
+    return load_json(meta_path, [])
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 
 def call_gemini_for_maturity(tech_name, data):
@@ -94,16 +114,16 @@ def call_gemini_for_weak_signal(signal, context_sentences):
 
 # --- 1. 기술 성숙도 분석 ---
 def analyze_tech_maturity():
-    """ 기술 성숙도 분석 (Hugging Face Hub 모델 사용 버전) """
+    """ 기술 성숙도 분석 """
     print("\n--- 1. 기술 성숙도 분석 시작 ---")
 
     config = load_json("config.json")
-    keywords_data = load_json("outputs/keywords.json")
-
+    keywords_data = load_json("outputs/keywords.json", default={})
     top_keywords = {item['keyword'] for item in keywords_data.get('keywords', [])[:20]}
+    
     tech_filter = set(config.get('domain_hints', []))
     target_techs = list(top_keywords.intersection(tech_filter))
-
+    
     print(f"[INFO] 분석 대상 기술 ({len(target_techs)}개): {target_techs}")
     if not target_techs:
         save_json('outputs/tech_maturity.json', {"results": []})
@@ -115,8 +135,11 @@ def analyze_tech_maturity():
     except FileNotFoundError as e:
         print(f"[ERROR] 분석에 필요한 CSV 파일 없음: {e}")
         return
-
-    meta_data = load_json(latest("data/news_meta_*.json"), [])
+        
+    # --- ▼▼▼▼▼ [수정] 공통 함수를 통해 메타 데이터 로드 ▼▼▼▼▼ ---
+    meta_data = get_meta_items()
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+  
 
     # ✅ Hugging Face Hub에서 바로 모델 로드 (로컬/깃액션 동일)
     from transformers import pipeline
@@ -163,6 +186,7 @@ def analyze_tech_maturity():
 
 # --- 2. 약한 신호 심층 분석 (기존 유지) ---
 def analyze_weak_signals():
+    """ 약한 신호 심층 분석 """
     print("\n--- 2. 약한 신호 심층 분석 시작 ---")
     weak_signal_insights = []
 
@@ -175,12 +199,13 @@ def analyze_weak_signals():
             save_json('outputs/weak_signal_insights.json', {"results": []})
             return
 
-        meta_file = latest("data/news_meta_*.json")
-        if not meta_file:
+        # --- ▼▼▼▼▼ [수정] 공통 함수를 통해 메타 데이터 로드 ▼▼▼▼▼ ---
+        meta_data = get_meta_items()
+        if not meta_data:
+            print("[WARN] 참고할 뉴스 메타 파일이 없습니다.")
             save_json('outputs/weak_signal_insights.json', {"results": []})
             return
-
-        meta_data = load_json(meta_file, [])
+        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
         for signal in top_weak_signals:
             context_sentences = []
@@ -197,6 +222,7 @@ def analyze_weak_signals():
             print(f"\n[분석 중] 약한 신호: {signal} (참고 문장 {len(context_sentences)}개)")
             llm_result = call_gemini_for_weak_signal(signal, context_sentences)
             weak_signal_insights.append(llm_result)
+            pass
 
     except FileNotFoundError:
         print("[WARN] weak_signals.csv 파일을 찾을 수 없습니다.")
