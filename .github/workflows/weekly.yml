@@ -50,7 +50,20 @@ jobs:
           if [ -z "${{ secrets.NAVER_CLIENT_ID }}" ] || [ -z "${{ secrets.NAVER_CLIENT_SECRET }}" ]; then
             echo "[WARN] NAVER API 키가 없습니다(옵션?)."
           fi
+
+      # --- ▼▼▼▼▼ [추가] 주간 데이터 집계 단계 ▼▼▼▼▼ ---
+      - name: Aggregate Weekly Data
+        run: python -m scripts.aggregate_weekly_data
       
+      - name: Run Weekly Analysis & Reporting
+        env:
+          WEEKLY_RUN: "true"
+        run: |
+          # 이제 future_insights는 집계된 keywords.json을 사용할 수 있음
+          python -m scripts.future_insights 
+          python -m src.module_c 
+          python -m src.module_f.weekly_report
+
       # --- 주간 리포트에 필요한 LLM 분석 및 리포트 생성 ---
       - name: Run Weekly Analysis & Reporting
         # ▼▼▼ [추가] WEEKLY_RUN 환경 변수 설정 ▼▼▼
