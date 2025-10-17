@@ -70,25 +70,27 @@ jobs:
           echo -e "\n--- STEP 2: 핵심 데이터 재분석 ---"
           echo -e "\n--- STEP 2-1_module_B ---"
           python -m src.module_b
-          echo -e "\n--- STEP 2-1_module_C ---"
+          echo -e "\n--- STEP 2-2_module_C ---"
           python -m src.module_c
 
           echo -e "\n--- STEP 3: 기업/경쟁 및 미래 신호 분석 ---"
-          echo -e "\n--- STEP 2-1_module_D ---"
+          echo -e "\n--- STEP 3-1_module_D ---"
           python -m src.module_d
-          echo -e "\n--- STEP 2-1_module_E ---"
+          echo -e "\n--- STEP 3-2_module_E ---"
           python -m src.module_e
-          echo -e "\n--- STEP 2-1_future_insights ---"
+          echo -e "\n--- STEP 3-3_future_insights ---"
           python -m scripts.future_insights
 
           echo -e "\n--- STEP 4: 리스크 및 실행 계획 분석 ---"
-          echo -e "\n--- STEP 2-1_module_g_risk ---"
+          echo -e "\n--- STEP 4-1_module_g_risk ---"
           python -m src.module_g_risk
-          echo -e "\n--- STEP 2-module_h_planning ---"
+          echo -e "\n--- STEP 4-2_module_h_planning ---"
           python -m src.module_h_planning
 
           echo -e "\n--- STEP 5: 최종 리포트 생성 ---"
+          echo -e "\n--- STEP 5-1_generate_visuals ---"
           python -m scripts.generate_visuals --report-type monthly
+          echo -e "\n--- STEP 5-2_module_f ---"
           python -m src.module_f.monthly_report
           
           echo "✅ 모든 월간 분석 및 리포트 생성 완료"

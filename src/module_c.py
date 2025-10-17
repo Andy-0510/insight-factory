@@ -2,6 +2,7 @@ import os
 import json
 import re
 import glob
+import time
 import datetime
 from typing import List, Dict, Any, Tuple, Optional
 from email.utils import parsedate_to_datetime
@@ -523,6 +524,9 @@ def gemini_insight(api_key: str, model: str, context: Dict[str, Any],
 
 # ================= 메인 =================
 def main():
+    t0 = time.time() # 시간 측정 시작
+    print("[INFO] [module_c] KICK-OFF: 토픽 분석 및 트렌드 인사이트 생성을 시작합니다.") # 시작 로그
+    
     _log_mode("Module C")
     os.makedirs("outputs", exist_ok=True)
 
@@ -562,8 +566,11 @@ def main():
 
     warehouse_paths = load_warehouse_paths(days=30)
     ts_obj = calculate_stable_timeseries(warehouse_paths)
-    save_json("outputs/trend_timeseries.json", ts_obj)
+    print(f"[INFO] [module_c] 금일 분석 대상 문서 {len(docs_today)}개, 웨어하우스 파일 {len(warehouse_paths)}개 로드 완료.")
 
+    save_json("outputs/trend_timeseries.json", ts_obj)
+    
+    
     try:
         if use_pro_mode():
             topics_obj = pro_build_topics_bertopic(docs_today or [], topn=10)
