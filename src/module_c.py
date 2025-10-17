@@ -532,11 +532,14 @@ def main():
     is_weekly_run = os.getenv("WEEKLY_RUN", "false").lower() == "true"
     is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
 
-    # --- ▼▼▼▼▼ [수정] 월간/일간에 따라 데이터 로드 경로 변경 ▼▼▼▼▼ ---
+    # --- ▼▼▼▼▼ [수정] 주간/월간/일간에 따라 데이터 로드 경로 변경 ▼▼▼▼▼ ---
     if is_monthly_run:
         meta_path = "outputs/debug/monthly_meta_agg.json"
         print(f"[INFO] Monthly Run: Using aggregated meta file for {__name__}.")
-    else:
+    elif is_weekly_run: # 👈 주간 실행 로직 추가
+        meta_path = "outputs/debug/weekly_meta_agg.json"
+        print(f"[INFO] Weekly Run: Using aggregated meta file for {__name__}.")
+    else: # 일간 실행
         meta_path = "outputs/debug/news_meta_latest.json"
         if not os.path.exists(meta_path):
             meta_path = latest("data/news_meta_*.json")
