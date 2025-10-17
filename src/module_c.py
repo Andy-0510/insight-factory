@@ -532,11 +532,11 @@ def main():
     is_weekly_run = os.getenv("WEEKLY_RUN", "false").lower() == "true"
     is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
 
-    # --- ▼▼▼▼▼ [수정] 주간/월간/일간에 따라 데이터 로드 경로 변경 ▼▼▼▼▼ ---
+    # --- ▼▼▼▼▼ [수정] 월간/주간/일간에 따라 데이터 로드 경로 변경 ▼▼▼▼▼ ---
     if is_monthly_run:
         meta_path = "outputs/debug/monthly_meta_agg.json"
         print(f"[INFO] Monthly Run: Using aggregated meta file for {__name__}.")
-    elif is_weekly_run: # 👈 주간 실행 로직 추가
+    elif is_weekly_run:
         meta_path = "outputs/debug/weekly_meta_agg.json"
         print(f"[INFO] Weekly Run: Using aggregated meta file for {__name__}.")
     else: # 일간 실행
@@ -550,7 +550,7 @@ def main():
     print(f"[INFO] Module C loading meta data from: {meta_path}")
     items = load_json(meta_path, [])
     
-    # load_today_meta() 함수 대신 main 함수에서 직접 docs 생성
+    # main 함수에서 직접 docs 생성
     docs_today = []
     for it in items:
         title = clean_text((it.get("title") or it.get("title_og") or "").strip())
