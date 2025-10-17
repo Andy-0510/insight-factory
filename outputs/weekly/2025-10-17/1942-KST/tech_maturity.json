@@ -1,0 +1,91 @@
+{
+  "results": [
+    {
+      "technology": "패널",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.53528391122818,
+        "events": {
+          "LAUNCH": 14,
+          "INVEST": 4,
+          "ORDER": 2,
+          "CERT": 2,
+          "PARTNERSHIP": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "뉴스 언급은 적지만, 출시 건수가 많고 투자가 꾸준히 발생하며 시장 감성이 중립적인 수준인 것으로 보아 성장기에 진입한 기술로 판단됩니다."
+      }
+    },
+    {
+      "technology": "폴더블",
+      "metrics": {
+        "frequency": 49,
+        "sentiment": 0.5334144294261932,
+        "events": {
+          "LAUNCH": 8,
+          "ORDER": 4,
+          "INVEST": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "폴더블 기술은 뉴스 언급 빈도와 출시 이벤트가 비교적 높고 투자 및 수주 활동도 활발하여 성장기에 있다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "구글",
+      "metrics": {
+        "frequency": 32,
+        "sentiment": 0.5279354274272918,
+        "events": {
+          "LAUNCH": 6,
+          "REGUL": 1
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "꾸준한 출시 이벤트와 중간 수준의 시장 감성 점수를 고려할 때, 구글 기술은 성장 단계에 있다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "삼성",
+      "metrics": {
+        "frequency": 1046,
+        "sentiment": 0.5298093795776367,
+        "events": {
+          "LAUNCH": 83,
+          "INVEST": 48,
+          "ORDER": 18,
+          "PARTNERSHIP": 11,
+          "REGUL": 9,
+          "CERT": 6
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "높은 뉴스 언급 빈도, 긍정적인 시장 감성, 그리고 활발한 출시 및 투자 활동은 삼성 기술이 성장 단계에 있음을 시사합니다."
+      }
+    },
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 227,
+        "sentiment": 0.525916600227356,
+        "events": {
+          "LAUNCH": 19,
+          "INVEST": 6,
+          "ORDER": 4,
+          "CERT": 3,
+          "REGUL": 3,
+          "PARTNERSHIP": 2
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "높은 뉴스 언급 빈도와 안정적인 시장 감성 점수, 그리고 꾸준한 출시 이벤트는 애플 기술이 성숙기에 진입했음을 나타낸다."
+      }
+    }
+  ]
+}
