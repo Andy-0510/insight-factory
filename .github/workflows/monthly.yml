@@ -41,6 +41,16 @@ jobs:
         run: |
           pip install -r requirements.txt
           sudo apt-get update && sudo apt-get install -y fonts-nanum
+
+      - name: 🚀 Start Monthly Pipeline
+        run: |
+          echo "=================================================="
+          echo "✅ 월간 파이프라인을 시작합니다."
+          echo "실행 시간 (KST): $(TZ=Asia/Seoul date)"
+          echo "PRO 모드 활성화: ${{ env.USE_PRO }}"
+          echo "MONTHLY_RUN: true"
+          echo "=================================================="
+          
       - name: Preflight | Check secrets
         run: |
           test -n "${{ secrets.GEMINI_API_KEY }}" || (echo "GEMINI_API_KEY 없음"; exit 1)
@@ -49,33 +59,63 @@ jobs:
           fi
 
       # --- 월간 리포트에 필요한 모든 모듈 실행 ---
-      - name: Run Monthly Analysis & Reporting
+      - name: 📊 Run Monthly Analysis & Reporting
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           MONTHLY_RUN: "true" # 👈 이미 설정되어 있음
         run: |
-          # 1. 월간 데이터 집계
+          echo -e "\n--- STEP 1: 월간 데이터 집계 ---"
           python -m scripts.aggregate_monthly_data
-          # 2. 집계된 데이터로 모든 분석 모듈 재실행
+
+          echo -e "\n--- STEP 2: 핵심 데이터 재분석 ---"
+          echo -e "\n--- STEP 2-1_module_B ---"
           python -m src.module_b
+          echo -e "\n--- STEP 2-2_module_C ---"
           python -m src.module_c
+
+          echo -e "\n--- STEP 3: 기업/경쟁 및 미래 신호 분석 ---"
+          echo -e "\n--- STEP 3-1_module_D ---"
           python -m src.module_d
+          echo -e "\n--- STEP 3-2_module_E ---"
           python -m src.module_e
+          echo -e "\n--- STEP 3-3_future_insights ---"
           python -m scripts.future_insights
+
+          echo -e "\n--- STEP 4: 리스크 및 실행 계획 분석 ---"
+          echo -e "\n--- STEP 4-1_module_g_risk ---"
           python -m src.module_g_risk
+          echo -e "\n--- STEP 4-2_module_h_planning ---"
           python -m src.module_h_planning
-          # 3. 월간 시각화 및 리포트 생성
+
+          echo -e "\n--- STEP 5: 최종 리포트 생성 ---"
+          echo -e "\n--- STEP 5-1_generate_visuals ---"
           python -m scripts.generate_visuals --report-type monthly
+          echo -e "\n--- STEP 5-2_module_f ---"
           python -m src.module_f.monthly_report
           
-      # 일자별 아카이브(KST)
-      - name: Prepare outputs daily folder (KST)
+          echo "✅ 모든 월간 분석 및 리포트 생성 완료"
+          
+      - name: 📝 Log Monthly Results
+        if: always()
+        run: |
+          echo "=================================================="
+          echo "🏁 월간 파이프라인 실행 결과 요약"
+          echo "=================================================="
+          echo "- 집계된 기사 수: $(jq 'length' outputs/debug/monthly_meta_agg.json || echo 'N/A')"
+          echo "- 신사업 아이디어 수: $(jq '.ideas | length' outputs/biz_opportunities.json || echo 'N/A')"
+          echo "- 탐지된 리스크 수: $( (wc -l < outputs/export/risk_issues.csv 2>/dev/null || echo 1) | xargs -I {} expr {} - 1 )"
+          echo "- 제안된 실행 계획 수: $( (wc -l < outputs/export/two_week_plan.csv 2>/dev/null || echo 1) | xargs -I {} expr {} - 1 )"
+          echo "- 생성된 리포트: $(ls -1 outputs/monthly_report.md || echo '생성 실패')"
+          echo "=================================================="
+      
+       # 일자별 아카이브(KST)
+      - name: Prepare outputs monthly folder (KST)
         shell: bash
         run: |
           set -e
           DATE_KST=$(TZ=Asia/Seoul date +'%Y-%m-%d')
           TIME_KST=$(TZ=Asia/Seoul date +'%H%M-KST')
-          OUTDIR="outputs/daily/${DATE_KST}/${TIME_KST}"
+          OUTDIR="outputs/monthly/${DATE_KST}/${TIME_KST}"
           mkdir -p "${OUTDIR}/fig" "${OUTDIR}/debug" "${OUTDIR}/export"
 
           # 기본 결과 파일 복사 (json, html, md)
@@ -111,7 +151,7 @@ jobs:
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add outputs/daily
+          git add outputs/monthly
           git commit -m "chore: outputs (KST rotation)" || echo "no changes"
           git pull --rebase --autostash origin ${{ github.ref_name }} || true
           git push origin HEAD:${{ github.ref_name }} || true

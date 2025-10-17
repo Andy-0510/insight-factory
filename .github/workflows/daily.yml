@@ -48,27 +48,42 @@ jobs:
           pip install -r requirements.txt
           sudo apt-get update && sudo apt-get install -y fonts-nanum
 
+      - name: 🚀 Start Daily Pipeline
+        run: |
+          echo "=================================================="
+          echo "✅ 일간 파이프라인을 시작합니다."
+          echo "실행 시간 (KST): $(TZ=Asia/Seoul date)"
+          echo "PRO 모드 활성화: ${{ env.USE_PRO }}"
+          echo "=================================================="
+
       - name: Preflight | Check secrets
         run: |
           test -n "${{ secrets.GEMINI_API_KEY }}" || (echo "GEMINI_API_KEY 없음"; exit 1)
           if [ -z "${{ secrets.NAVER_CLIENT_ID }}" ] || [ -z "${{ secrets.NAVER_CLIENT_SECRET }}" ]; then
-            echo "[WARN] NAVER API 키가 없습니다(옵션?)."
+            echo "[WARN] NAVER API 키가 없습니다."
           fi
 
       # --- 일일 데이터 처리 및 분석 모듈 ---
-      - name: Run Daily Data Processing
+      - name: 📊 Run Daily Data Processing
         env:
           NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
         run: |
+          echo -e "\n---  STEP 1: 데이터 수집 및 준비 ---"
           python -m src.module_a
           python -m src.warehouse_append
           python -m scripts.fetch_article_bodies
+
+          echo -e "\n--- STEP 2: 핵심 데이터 분석 ---"
           python -m src.module_b
           python -m src.module_c
           python -m scripts.calculate_daily_sentiment
+
+          echo -e "\n--- STEP 3: 신호 추출 및 기사 선정 ---"
           python -m scripts.signal_export
           python -m scripts.select_top_articles
+
+          echo "✅ 모든 데이터 처리 모듈 실행 완료"
 
       # ▼▼▼▼▼▼ 웨어하우스에 메타 파일 커밋 ▼▼▼▼▼▼
       - name: Commit Latest Meta to Warehouse
@@ -96,12 +111,26 @@ jobs:
           fi
 
       # --- 일간 리포트 생성 ---
-      - name: Generate Daily Visuals & Report
+      - name: 🎨 Generate Daily Visuals & Report
         run: |
+          echo -e "\n--- STEP 4: 시각화 자료 및 리포트 생성 ---"
           python -m scripts.generate_visuals --report-type daily
           python -m src.module_f.daily_report
+          echo "✅ 리포트 생성 완료"
 
-      # 일자별 아카이브(KST)
+      - name: 📝 Log Daily Results
+        if: always() # 이전 단계가 실패해도 항상 실행
+        run: |
+          echo "=================================================="
+          echo "🏁 일간 파이프라인 실행 결과 요약"
+          echo "=================================================="
+          echo "- 수집된 기사 수: $(jq 'length' data/news_meta_*.json | head -n 1 || echo 'N/A')"
+          echo "- 추출된 키워드 수: $(jq '.keywords | length' outputs/keywords.json || echo 'N/A')"
+          echo "- 생성된 토픽 수: $(jq '.topics | length' outputs/topics.json || echo 'N/A')"
+          echo -e "- 생성된 export 파일 목록:\n$(ls -1 outputs/export || echo '  - 내역 없음')"
+          echo "=================================================="
+              
+       # 일자별 아카이브(KST)
       - name: Prepare outputs daily folder (KST)
         shell: bash
         run: |

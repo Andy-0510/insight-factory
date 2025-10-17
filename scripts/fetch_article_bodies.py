@@ -311,39 +311,33 @@ def make_description_short(text: str, target_min=400, target_max=600) -> str:
 
 
 def main() -> int:
+    print("[INFO] [fetch_article_bodies] KICK-OFF: 기사 본문 수집을 시작합니다.") # 시작 로그
     is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
     
     if is_monthly_run:
         meta_path = "outputs/debug/monthly_meta_agg.json"
-        print(f"[INFO] Monthly Run: Using aggregated meta file for {__name__}.")
+        print(f"[INFO] [fetch_article_bodies] 월간 실행 모드: 집계된 메타 파일 사용")
     else:
-        # 일간 실행 시에는 디버깅용 최신 복사본을 우선 사용
         meta_path = "outputs/debug/news_meta_latest.json"
         if not os.path.exists(meta_path):
             meta_path = latest("data/news_meta_*.json")
 
     if not meta_path or not os.path.exists(meta_path):
-        raise SystemExit("Input meta file not found.")
-        
-    print(f"[INFO] Loading meta data from: {meta_path}")
-    meta_items = load_json(meta_path, [])
-
-    
-    meta_path = latest("data/news_meta_*.json")
-    if not meta_path:
-        print("[ERROR] news_meta_ 파일을 찾지 못했습니다.")
+        print("[ERROR] [fetch_article_bodies] 입력 메타 파일을 찾을 수 없습니다.") # 에러 로그 강화
         return 1
+        
+    print(f"[INFO] [fetch_article_bodies] 메타 데이터 로드: {meta_path}") # 입력 파일 로그
+    items: List[Dict[str, Any]] = load_json(meta_path, [])
+    if not items:
+        print("[WARN] [fetch_article_bodies] 처리할 기사가 없습니다. 종료합니다.")
+        return 0
 
-    with open(meta_path, "r", encoding="utf-8") as f:
-        items: List[Dict[str, Any]] = json.load(f)
+    print(f"[INFO] [fetch_article_bodies] 총 {len(items)}개 기사에 대한 본문 수집 시작... (병렬 워커 수: {MAX_WORKERS})")
 
     tried, updated = 0, 0
     per_domain: Dict[str, Dict[str, int]] = {}
-
-    # 대상 인덱스 수집(이미 본문 있는 항목은 그대로 두고 보강만)
     indices = list(range(len(items)))
 
-    # 병렬 처리
     results: Dict[int, Tuple[Optional[Dict[str, Any]], Optional[str]]] = {}
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as ex:
         fut_map = {ex.submit(_process_one, items[i]): i for i in indices}
@@ -351,28 +345,34 @@ def main() -> int:
             i = fut_map[fut]
             try:
                 res_item, domain = fut.result()
-            except Exception:
+            except Exception as e:
                 res_item, domain = None, "-"
+                print(f"[WARN] [fetch_article_bodies] 기사 처리 중 오류 발생 (index={i}): {e}")
+            
             tried += 1
             if domain not in per_domain:
                 per_domain[domain] = {"ok": 0, "fail": 0}
+            
             if res_item is not None:
                 items[i] = res_item
                 updated += 1
                 per_domain[domain]["ok"] += 1
             else:
                 per_domain[domain]["fail"] += 1
+            
+            if tried % 50 == 0:
+                print(f"[INFO] [fetch_article_bodies] 진행률: {tried}/{len(items)} (성공: {updated})")
 
-    with open(meta_path, "w", encoding="utf-8") as f:
-        json.dump(items, f, ensure_ascii=False, indent=2)
+    print(f"[INFO] [fetch_article_bodies] 본문 수집 완료. 변경된 메타 데이터를 파일에 다시 저장합니다: {meta_path}")
+    save_json(meta_path, items) # save_json 유틸리티 사용
 
-    print(f"[INFO] fetch_article_bodies | tried={tried} updated={updated} | file={os.path.basename(meta_path)} | workers={MAX_WORKERS} per_domain={PER_DOMAIN_LIMIT}")
+    # 최종 결과 로그
+    print(f"[SUCCESS] [fetch_article_bodies] 본문 수집 작업 완료 | 시도={tried}, 업데이트={updated}, 파일={os.path.basename(meta_path)}")
     if per_domain:
         stats = ", ".join(f"{d}: ok={v['ok']}, fail={v['fail']}" for d, v in list(per_domain.items())[:15])
-        print("[DEBUG] per-domain:", stats)
+        print(f"[DEBUG] [fetch_article_bodies] 도메인별 수집 현황: {stats}")
     
     return 0
-
 
 if __name__ == "__main__":
     raise SystemExit(main())

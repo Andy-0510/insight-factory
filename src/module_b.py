@@ -10,6 +10,7 @@ import re
 import glob
 import json
 import math
+import time
 import logging
 from typing import List, Dict, Tuple, Optional
 from collections import defaultdict
@@ -342,8 +343,11 @@ def extract_krwordrank(docs: List[str], beta: float=0.85, max_iter: int=20, min_
     return dict(sorted_items[: max(1, int(topk or 1))])
 
 def tfidf_weights(docs: List[str], vocab: List[str]) -> Dict[str, float]:
-    if TfidfVectorizer is None or not docs:
+    # --- ▼▼▼▼▼ [수정] 문서 개수 확인 로직 추가 ▼▼▼▼▼ ---
+    if TfidfVectorizer is None or not docs or len(docs) < 3:
+        # 문서 수가 3개 미만이면 TF-IDF 계산을 건너뛰고 기본 가중치 반환
         return {v: 1.0 for v in vocab}
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
     vec = TfidfVectorizer(ngram_range=(1,3), min_df=3, max_df=0.9)
     X = vec.fit_transform(docs)
     idf = dict(zip(vec.get_feature_names_out(), vec.idf_))
@@ -369,8 +373,11 @@ def hybrid_rank(docs: List[str], beta: float=0.85, max_iter: int=20, topk: int=2
     return dict(sorted_items[: max(1, int(topk or 1))])
 
 def tfidf_only(docs: List[str], topk: int=200) -> Dict[str, float]:
-    if TfidfVectorizer is None or not docs:
+    # --- ▼▼▼▼▼ [수정] 문서 개수 확인 로직 추가 ▼▼▼▼▼ ---
+    if TfidfVectorizer is None or not docs or len(docs) < 3:
+        # 문서 수가 3개 미만이면 빈 딕셔너리 반환
         return {}
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
     vec = TfidfVectorizer(ngram_range=(1,3), min_df=3, max_df=0.9)
     X = vec.fit_transform(docs)
     terms = vec.get_feature_names_out()
@@ -434,22 +441,8 @@ def topic_context_keywords(docs: List[str], model_name: str, umap_neighbors: int
 # Main
 # -------------------------
 def main():
-    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
-    
-    if is_monthly_run:
-        meta_path = "outputs/debug/monthly_meta_agg.json"
-        print(f"[INFO] Monthly Run: Using aggregated meta file for {__name__}.")
-    else:
-        # 일간 실행 시에는 디버깅용 최신 복사본을 우선 사용
-        meta_path = "outputs/debug/news_meta_latest.json"
-        if not os.path.exists(meta_path):
-            meta_path = latest("data/news_meta_*.json")
-
-    if not meta_path or not os.path.exists(meta_path):
-        raise SystemExit("Input meta file not found.")
-        
-    print(f"[INFO] Loading meta data from: {meta_path}")
-    meta_items = load_json(meta_path, [])
+    print("[INFO] [module_b] KICK-OFF: 키워드 추출을 시작합니다.") # 시작 로그
+    t0 = time.time() # 시간 측정 시작
     
     CFG = load_config()
     weights = CFG.get("weights", {}) or {}
@@ -481,16 +474,34 @@ def main():
 
     topn_keywords = int(CFG.get("top_n_keywords", 50))
     use_pro = os.environ.get("USE_PRO", "").lower() in ("1","true","yes","y") or bool(CFG.get("use_pro", False))
+    print(f"[INFO] [module_b] 실행 모드: {'PRO' if use_pro else 'LITE'}")
 
-    meta_path = latest("data/news_meta_*.json")
-    if not meta_path:
-        raise SystemExit("no data/news_meta_*.json found")
+    # --- ▼▼▼▼▼ [수정된 부분] 데이터 로드 로직 ▼▼▼▼▼ ---
+    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
+    
+    if is_monthly_run:
+        meta_path = "outputs/debug/monthly_meta_agg.json"
+        print(f"[INFO] Monthly Run: Using aggregated meta file for {__name__}.")
+    else:
+        # 일간 실행 시에는 디버깅용 최신 복사본을 우선 사용
+        meta_path = "outputs/debug/news_meta_latest.json"
+        if not os.path.exists(meta_path):
+            meta_path = latest("data/news_meta_*.json")
+
+    if not meta_path or not os.path.exists(meta_path):
+        # `no data/news_meta_*.json found` 메시지 대신 더 명확한 에러 메시지
+        raise SystemExit(f"Input meta file not found at expected path: {meta_path}")
+        
+    print(f"[INFO] Loading meta data from: {meta_path}")
     with open(meta_path, encoding="utf-8") as f:
         items = json.load(f)
-
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+    
     raw_docs = build_docs(items)
     if not raw_docs:
         raise SystemExit("no documents")
+    print(f"[INFO] [module_b] 총 {len(raw_docs)}개 문서 로드 완료. 문서 정제 및 전처리를 시작합니다.")
+
 
     # Dedup (optional)
     raw_docs = dedup_docs_by_cosine(raw_docs, threshold=0.93)
@@ -506,14 +517,18 @@ def main():
 
     # Base extraction
     if KRWordRank is not None:
+        print("[INFO] [module_b] 기본 키워드 추출 실행 (KR-WordRank + TF-IDF Hybrid)")
         base_scores = hybrid_rank(pre_docs, beta=beta, max_iter=max_iter, topk=max(200, topn_keywords))
     else:
+        print("[INFO] [module_b] 기본 키워드 추출 실행 (TF-IDF Only)")
         base_scores = tfidf_only(pre_docs, topk=max(200, topn_keywords))
+    print(f"[INFO] [module_b] 기본 추출 완료. 후보 키워드 {len(base_scores)}개 생성.")
 
     combined = base_scores.copy()
 
     # Pro: per-document KeyBERT MMR reranking and aggregation
     if use_pro and KeyBERT is not None and combined:
+        print("[INFO] [module_b] [PRO] KeyBERT MMR 재랭킹을 시작합니다...")
         cand = list(combined.keys())
         model_name = CFG.get("keybert_model", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
         diversity = float(CFG.get("mmr_diversity", 0.5))
@@ -546,9 +561,11 @@ def main():
             mn, mx = (min(vals), max(vals)) if vals else (0.0, 1.0)
             rer_n = {k: (rer_n.get(k,0.0)-mn)/(mx-mn+1e-12) for k in all_keys}
             combined = {k: 0.4*base_n.get(k,0.0) + 0.6*rer_n.get(k,0.0) for k in all_keys}
+        print("[INFO] [module_b] [PRO] KeyBERT 재랭킹 완료.")
 
     # Optional: topic context boost (Pro)
     if use_pro and BERTopic is not None and len(pre_docs) >= 20:
+        print("[INFO] [module_b] [PRO] BERTopic 컨텍스트 가중치 적용 시작...")
         model_name = CFG.get("keybert_model", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
         umap_neighbors = int(CFG.get("umap_neighbors", 15))
         min_cluster_size = int(CFG.get("min_cluster_size", 12))
@@ -560,8 +577,10 @@ def main():
         for k in list(combined.keys()):
             if k in topic_set:
                 combined[k] *= 1.05
+                print("[INFO] [module_b] [PRO] BERTopic 컨텍스트 가중치 적용 완료.")
 
     # Domain/alias/brand/entity weights + debuffs
+    print("[INFO] [module_b] 도메인 사전 가중치 및 디버프를 적용합니다.")
     combined = apply_domain_weights(
         combined,
         domain_hints=CFG.get("domain_hints", []),
@@ -583,11 +602,15 @@ def main():
 
     # Output
     top_items = sort_items_by_value_desc(combined)[: topn_keywords]
+    print(f"[INFO] [module_b] 최종 키워드 {len(top_items)}개 선정. 파일로 저장합니다.")
+    print(f"[SUCCESS] [module_b] 키워드 추출 완료 | 최종 키워드 수: {len(top_items)} | 소요시간: {round(time.time()-t0, 2)}초")
+
 
     os.makedirs("outputs", exist_ok=True)
     with open("outputs/keywords.json", "w", encoding="utf-8") as f:
         json.dump({"keywords": [{"keyword": k, "score": float(s)} for k, s in top_items]}, f, ensure_ascii=False, indent=2)
-
+    print(f"[SUCCESS] [module_b] 키워드 추출 완료 | 최종 키워드 수: {len(top_items)} | 소요시간: {round(time.time()-t0, 2)}초")
+    
     os.makedirs("outputs/debug", exist_ok=True)
     with open("outputs/debug/run_meta_b.json", "w", encoding="utf-8") as f:
         json.dump({

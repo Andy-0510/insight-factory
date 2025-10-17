@@ -233,7 +233,13 @@ def _section_weekly_summary(data):
         competitor_mentions[term] = sum(d.get('cur', 0) for d in history)
     top_competitors = [c for c, v in competitor_mentions.most_common(3) if v > 0]
     
-    top_weak_signals = data["all_weak_signals"].sort_values(by="z_like", ascending=False).drop_duplicates(subset=['term']).head(3)['term'].tolist()
+    # --- ▼▼▼▼▼ [수정] 약한 신호 데이터가 비어있는 경우를 처리합니다 ▼▼▼▼▼ ---
+    df_weak_signals = data.get("all_weak_signals")
+    if df_weak_signals is not None and not df_weak_signals.empty:
+        top_weak_signals = df_weak_signals.sort_values(by="z_like", ascending=False).drop_duplicates(subset=['term']).head(3)['term'].tolist()
+    else:
+        top_weak_signals = [] # 데이터가 없으면 빈 리스트로 처리
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
     context = {
         "분석 기간": f"{data['start_date']} ~ {data['end_date']}",
@@ -242,10 +248,8 @@ def _section_weekly_summary(data):
         "주목할 만한 약한 신호": top_weak_signals
     }
     
-    # LLM 호출하여 요약 생성
     llm_summary = call_gemini_for_weekly_summary(context)
     
-    # 기본 통계 정보
     basic_stats = f"""
 - **분석 기간:** {data['start_date']} ~ {data['end_date']}
 - **총 분석 기사 수:** {_fmt_int(data['total_articles'])}

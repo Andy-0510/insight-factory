@@ -31,6 +31,8 @@ def load_existing_urls(path):
     return urls
 
 def main():
+    print("[INFO] [warehouse_append] KICK-OFF: 데이터 웨어하우스 저장을 시작합니다.") # 시작 로그
+    
     meta_path = latest("data/news_meta_*.json")
     if not meta_path:
         print("[ERROR] meta 파일이 없습니다. Module A부터 실행하세요.")

@@ -3,6 +3,7 @@ import re
 import glob
 import json
 import csv
+import time
 import datetime
 import unicodedata
 from collections import defaultdict, Counter
@@ -234,7 +235,7 @@ def export_trend_strength(rows):
         for r in topk:
             w.writerow([r["term"], r["cur"], r["prev"], r["diff"], round(float(r["ma7"]),3), round(float(r["z_like"]),3), r["total"]])
     os.replace(tmp_path, final_path)
-    print(f"[INFO] trend_strength | rows={len(topk)}")
+    print(f"[INFO] [signal_export] -> trend_strength.csv 생성 완료 ({len(topk)}개 행)")
 
 def export_weak_signals(rows):
     os.makedirs("outputs/export", exist_ok=True)
@@ -292,6 +293,7 @@ def export_weak_signals(rows):
     z_over_1 = sum(1 for r in pre_cand if float(r["z_like"]) > 1.0)
     z_09_10 = sum(1 for r in pre_cand if 0.9 < float(r["z_like"]) <= 1.0)
     z_085_09 = sum(1 for r in pre_cand if 0.85 < float(r["z_like"]) <= 0.9)
+    print(f"[INFO] [signal_export] -> weak_signals.csv 생성 완료 (후보 {len(pre_cand)}개 중 {len(cand)}개 선정)")
     print(f"[DEBUG] z>1.0:{z_over_1} | 0.9<z<=1.0:{z_09_10} | 0.85<z<=0.9:{z_085_09}")
 
 def export_events(out_path="outputs/export/events.csv"):
@@ -317,16 +319,20 @@ def export_events(out_path="outputs/export/events.csv"):
         for r in rows:
             w.writerow(r)
     os.replace(tmp_path, out_path)
-    print(f"[INFO] events.csv exported | rows={len(rows)}")
+    print(f"[INFO] [signal_export] -> events.csv 생성 완료 ({len(rows)}개 이벤트)")
 
 # =================== 메인 ===================
 def main():
+    t0 = time.time()
+    print("[INFO] [signal_export] KICK-OFF: 트렌드 신호 및 이벤트 추출을 시작합니다.")
+
     # 1) 신호 어휘집
     signal_vocab = load_signal_vocabulary()
     print(f"[INFO] 신호 어휘집 로드/정제 완료: {len(signal_vocab)}개")
 
     # 2) 데이터 로드
     rows_raw = load_stable_warehouse_data(days=30)
+    print(f"[INFO] [signal_export] 원본 기사 {len(rows_raw)}건 로드 완료.")
 
     # 3) 어휘집 기반 필터링
     filtered_rows = []
@@ -349,7 +355,7 @@ def main():
         for r in sorted(rows_stat, key=lambda x: (x["cur"], x["z_like"], x["total"]), reverse=True):
             if r["cur"] > 0:
                 w.writerow([r["term"], r["cur"], r["prev"], r["diff"], r["total"], round(float(r["ma7"]),3), round(float(r["z_like"]),3)])
-    print(f"[DEBUG] today_terms.csv exported")
+    print(f"[SUCCESS] [signal_export] 모든 신호 추출 및 파일 생성 완료 | 소요시간: {round(time.time()-t0, 2)}초")
 
     # 6) Export
     export_trend_strength(rows_stat)

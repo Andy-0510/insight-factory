@@ -26,15 +26,16 @@ def http_get(url, params=None, headers=None, timeout=10, max_retry=3):
             r = requests.get(url, params=params, headers=headers, timeout=timeout)
             if r.status_code == 429:
                 wait = 30 + i * 15
-                print(f"[WARN] 429 Too Many Requests, wait {wait}s")
+                print(f"[WARN] [module_a] 429 Too Many Requests, {wait}초 대기 후 재시도") # 로그 강화
                 time.sleep(wait)
                 continue  # 재시도
             if r.status_code >= 500:
                 raise requests.HTTPError(f"5xx {r.status_code}")
             r.raise_for_status()
             return r
-        except Exception:
+        except Exception as e:
             if i == max_retry - 1:
+                print(f"[ERROR] [module_a] HTTP GET 실패: {e}") # 로그 강화
                 raise
             time.sleep(1.2 * (2 ** i) + random.random())
 
@@ -105,6 +106,7 @@ def clean_html(s):
 
 def main():
     t0 = time.time()
+    print("[INFO] [module_a] KICK-OFF: 네이버 뉴스 API 데이터 수집을 시작합니다.") # 시작 로그
     
     # dry_run: 환경 변수가 우선시되며, 없을 경우 CFG 값 사용. 기본값은 True
     dry_run = (os.getenv("DRY_RUN", str(CFG.get("dry_run", True))).lower() == "true")

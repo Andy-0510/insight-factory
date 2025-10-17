@@ -97,9 +97,13 @@ def call_gemini_for_risk_analysis(topic_name, sentiment_drop, evidence):
 # --- ▼▼▼▼▼ [수정] analyze_risks 함수가 articles를 인자로 받도록 변경 ▼▼▼▼▼ ---
 def analyze_risks(articles):
     """토픽별 감성 점수 시계열을 분석하여 리스크를 탐지합니다."""
+    print("[INFO] [module_g_risk] 리스크 분석 시작") # 1. 시작 로그
+
     if not os.path.exists(SENTIMENT_CSV_PATH):
         print(f"[WARN] {SENTIMENT_CSV_PATH} 파일이 없어 리스크 분석을 건너뜁니다.")
         return
+    # 2. 데이터 입출력 기록
+    print(f"[INFO] [module_g_risk] 감성 점수 데이터 로드: {SENTIMENT_CSV_PATH}")
 
     df = pd.read_csv(SENTIMENT_CSV_PATH)
     topics_data = load_json("outputs/topics.json", {"topics": []})
@@ -112,6 +116,8 @@ def analyze_risks(articles):
 
     risk_issues = []
     
+    # 3. 주요 작업 단계 기록
+    print("[INFO] [module_g_risk] 토픽별 감성 점수 하락 패턴 분석 중...")
     for topic_id, group in df.groupby('topic_id'):
         if len(group) < MOVING_AVG_WINDOW:
             continue

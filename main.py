@@ -128,6 +128,7 @@ def build_steps():
         ("f_weekly",  [PY, "-m", "src.module_f.weekly_report"]),
         ("f_monthly",  [PY, "-m", "src.module_f.monthly_report"]),
         ("aggregate_monthly",[PY, "-m", "scripts.aggregate_monthly_data"]),
+        ("aggregate_weekly",[PY, "-m", "scripts.aggregate_weekly_data"])
     ]
 
 def main():
