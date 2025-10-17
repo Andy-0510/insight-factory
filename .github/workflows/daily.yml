@@ -101,22 +101,79 @@ jobs:
           python -m scripts.generate_visuals --report-type daily
           python -m src.module_f.daily_report
 
-      # --- 결과물 아카이빙 및 커밋 ---
-      - name: Archive and Commit Daily Outputs
+      # 일자별 아카이브(KST)
+      - name: Prepare outputs daily folder (KST)
         shell: bash
         run: |
           set -e
           DATE_KST=$(TZ=Asia/Seoul date +'%Y-%m-%d')
           TIME_KST=$(TZ=Asia/Seoul date +'%H%M-KST')
           OUTDIR="outputs/daily/${DATE_KST}/${TIME_KST}"
-          mkdir -p "${OUTDIR}/fig" "${OUTDIR}/export"
-          cp outputs/report.* "${OUTDIR}/" || true # daily_report가 report.md로 생성
-          cp -r outputs/export/* "${OUTDIR}/export/" || true
-          cp -r outputs/fig/* "${OUTDIR}/fig/" || true
+          mkdir -p "${OUTDIR}/fig" "${OUTDIR}/debug" "${OUTDIR}/export"
+
+          # 기본 결과 파일 복사 (json, html, md)
+          cp outputs/*.json             "${OUTDIR}/" || true
+          cp outputs/*.html             "${OUTDIR}/" || true
+          cp outputs/*.md               "${OUTDIR}/" || true
+
+          # 디버그 메타 파일들을 올바른 위치(debug/)에서 상위 폴더로 복사
+          if [ -f outputs/debug/run_meta_b.json ]; then
+            cp outputs/debug/run_meta_b.json "${OUTDIR}/"
+          fi
+          if [ -f outputs/debug/run_meta_c.json ]; then
+            cp outputs/debug/run_meta_c.json "${OUTDIR}/"
+          fi
           
+          # 서브폴더 내용 전체 복사 (export, fig, debug)
+          if [ -d outputs/export ]; then
+            cp -r outputs/export/* "${OUTDIR}/export/" || true
+          fi
+          if [ -d outputs/fig ]; then
+            cp -r outputs/fig/* "${OUTDIR}/fig/" || true
+          fi
+          if [ -d outputs/debug ]; then
+            cp -r outputs/debug/* "${OUTDIR}/debug/" || true
+          fi
+          
+          echo "OUTDIR=${OUTDIR}" >> $GITHUB_ENV
+
+      # outputs 커밋/푸시
+      - name: Archive and Commit Daily Outputs
+        shell: bash
+        run: |
+          set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add "outputs/daily/${DATE_KST}"
-          git commit -m "docs: daily report for ${DATE_KST}" || echo "No changes to commit"
-          git pull --rebase
-          git push
+          git add outputs/daily
+          git commit -m "chore: outputs (KST rotation)" || echo "no changes"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git push origin HEAD:${{ github.ref_name }} || true
+
+      # 오래된 outputs/warehouse 정리
+      - name: Cleanup old warehouse (main only, keep 90 days)
+        if: github.ref_name == 'main'
+        shell: bash
+        run: |
+          set -e
+          test -d data/warehouse || exit 0
+          find data/warehouse -type f -daystart -mtime +90 -print -delete || true
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A data/warehouse
+          git commit -m "chore: cleanup old warehouse (>90d)" || echo "no changes"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git push origin HEAD:${{ github.ref_name }} || true
+
+      - name: Cleanup old outputs (main only, keep 90 days)
+        if: github.ref_name == 'main'
+        shell: bash
+        run: |
+          set -e
+          test -d outputs/daily || exit 0
+          find outputs/daily -mindepth 1 -maxdepth 1 -type d -daystart -mtime +90 -print -exec rm -rf {} \; || true
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A outputs/daily
+          git commit -m "chore: cleanup old outputs (>90d)" || echo "no changes"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git push origin HEAD:${{ github.ref_name }} || true
