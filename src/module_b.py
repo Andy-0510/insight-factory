@@ -440,23 +440,6 @@ def topic_context_keywords(docs: List[str], model_name: str, umap_neighbors: int
 # Main
 # -------------------------
 def main():
-    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
-    
-    if is_monthly_run:
-        meta_path = "outputs/debug/monthly_meta_agg.json"
-        print(f"[INFO] Monthly Run: Using aggregated meta file for {__name__}.")
-    else:
-        # 일간 실행 시에는 디버깅용 최신 복사본을 우선 사용
-        meta_path = "outputs/debug/news_meta_latest.json"
-        if not os.path.exists(meta_path):
-            meta_path = latest("data/news_meta_*.json")
-
-    if not meta_path or not os.path.exists(meta_path):
-        raise SystemExit("Input meta file not found.")
-        
-    print(f"[INFO] Loading meta data from: {meta_path}")
-    meta_items = load_json(meta_path, [])
-    
     CFG = load_config()
     weights = CFG.get("weights", {}) or {}
 
@@ -487,13 +470,28 @@ def main():
 
     topn_keywords = int(CFG.get("top_n_keywords", 50))
     use_pro = os.environ.get("USE_PRO", "").lower() in ("1","true","yes","y") or bool(CFG.get("use_pro", False))
+   
+    # --- ▼▼▼▼▼ [수정된 부분] 데이터 로드 로직 ▼▼▼▼▼ ---
+    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
+    
+    if is_monthly_run:
+        meta_path = "outputs/debug/monthly_meta_agg.json"
+        print(f"[INFO] Monthly Run: Using aggregated meta file for {__name__}.")
+    else:
+        # 일간 실행 시에는 디버깅용 최신 복사본을 우선 사용
+        meta_path = "outputs/debug/news_meta_latest.json"
+        if not os.path.exists(meta_path):
+            meta_path = latest("data/news_meta_*.json")
 
-    meta_path = latest("data/news_meta_*.json")
-    if not meta_path:
-        raise SystemExit("no data/news_meta_*.json found")
+    if not meta_path or not os.path.exists(meta_path):
+        # `no data/news_meta_*.json found` 메시지 대신 더 명확한 에러 메시지
+        raise SystemExit(f"Input meta file not found at expected path: {meta_path}")
+        
+    print(f"[INFO] Loading meta data from: {meta_path}")
     with open(meta_path, encoding="utf-8") as f:
         items = json.load(f)
-
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+    
     raw_docs = build_docs(items)
     if not raw_docs:
         raise SystemExit("no documents")
