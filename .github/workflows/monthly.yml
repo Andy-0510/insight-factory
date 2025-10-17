@@ -41,6 +41,16 @@ jobs:
         run: |
           pip install -r requirements.txt
           sudo apt-get update && sudo apt-get install -y fonts-nanum
+
+      - name: 🚀 Start Monthly Pipeline
+        run: |
+          echo "=================================================="
+          echo "✅ 월간 파이프라인을 시작합니다."
+          echo "실행 시간 (KST): $(TZ=Asia/Seoul date)"
+          echo "PRO 모드 활성화: ${{ env.USE_PRO }}"
+          echo "MONTHLY_RUN: true"
+          echo "=================================================="
+          
       - name: Preflight | Check secrets
         run: |
           test -n "${{ secrets.GEMINI_API_KEY }}" || (echo "GEMINI_API_KEY 없음"; exit 1)
@@ -49,25 +59,45 @@ jobs:
           fi
 
       # --- 월간 리포트에 필요한 모든 모듈 실행 ---
-      - name: Run Monthly Analysis & Reporting
+      - name: 📊 Run Monthly Analysis & Reporting
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           MONTHLY_RUN: "true" # 👈 이미 설정되어 있음
         run: |
-          # 1. 월간 데이터 집계
+          echo -e "\n--- STEP 1: 월간 데이터 집계 ---"
           python -m scripts.aggregate_monthly_data
-          # 2. 집계된 데이터로 모든 분석 모듈 재실행
+
+          echo -e "\n--- STEP 2: 핵심 데이터 재분석 ---"
           python -m src.module_b
           python -m src.module_c
+
+          echo -e "\n--- STEP 3: 기업/경쟁 및 미래 신호 분석 ---"
           python -m src.module_d
           python -m src.module_e
           python -m scripts.future_insights
+
+          echo -e "\n--- STEP 4: 리스크 및 실행 계획 분석 ---"
           python -m src.module_g_risk
           python -m src.module_h_planning
-          # 3. 월간 시각화 및 리포트 생성
+
+          echo -e "\n--- STEP 5: 최종 리포트 생성 ---"
           python -m scripts.generate_visuals --report-type monthly
           python -m src.module_f.monthly_report
           
+          echo "✅ 모든 월간 분석 및 리포트 생성 완료"
+          
+      - name: 📝 Log Monthly Results
+        if: always()
+        run: |
+          echo "=================================================="
+          echo "🏁 월간 파이프라인 실행 결과 요약"
+          echo "=================================================="
+          echo "- 집계된 기사 수: $(jq 'length' outputs/debug/monthly_meta_agg.json || echo 'N/A')"
+          echo "- 신사업 아이디어 수: $(jq '.ideas | length' outputs/biz_opportunities.json || echo 'N/A')"
+          echo "- 탐지된 리스크 수: $( (wc -l < outputs/export/risk_issues.csv 2>/dev/null || echo 1) | xargs -I {} expr {} - 1 )"
+          echo "- 제안된 실행 계획 수: $( (wc -l < outputs/export/two_week_plan.csv 2>/dev/null || echo 1) | xargs -I {} expr {} - 1 )"
+          echo "- 생성된 리포트: $(ls -1 outputs/monthly_report.md || echo '생성 실패')"
+          echo "=================================================="
       
       # --- 결과물 아카이빙 및 커밋 ---
       - name: Archive and Commit Monthly Report

@@ -43,7 +43,16 @@ jobs:
         run: |
           pip install -r requirements.txt
           sudo apt-get update && sudo apt-get install -y fonts-nanum
-          
+
+      - name: 🚀 Start Weekly Pipeline
+        run: |
+          echo "=================================================="
+          echo "✅ 주간 파이프라인을 시작합니다."
+          echo "실행 시간 (KST): $(TZ=Asia/Seoul date)"
+          echo "PRO 모드 활성화: ${{ env.USE_PRO }}"
+          echo "WEEKLY_RUN: true"
+          echo "=================================================="
+
       - name: Preflight | Check secrets
         run: |
           test -n "${{ secrets.GEMINI_API_KEY }}" || (echo "GEMINI_API_KEY 없음"; exit 1)
@@ -51,30 +60,32 @@ jobs:
             echo "[WARN] NAVER API 키가 없습니다(옵션?)."
           fi
 
-      # --- ▼▼▼▼▼ [추가] 주간 데이터 집계 단계 ▼▼▼▼▼ ---
-      - name: Aggregate Weekly Data
-        run: python -m scripts.aggregate_weekly_data
-      
-      - name: Run Weekly Analysis & Reporting
+      # --- 주간 리포트에 필요한 LLM 분석 및 리포트 생성 ---
+      - name: 📊 Run Weekly Analysis & Reporting
         env:
           WEEKLY_RUN: "true"
         run: |
+          echo -e "\n--- STEP 1: 주간 데이터 집계 및 분석 ---"
+          python -m scripts.aggregate_weekly_data
           # 이제 future_insights는 집계된 keywords.json을 사용할 수 있음
           python -m scripts.future_insights 
           python -m src.module_c 
-          python -m src.module_f.weekly_report
 
-      # --- 주간 리포트에 필요한 LLM 분석 및 리포트 생성 ---
-      - name: Run Weekly Analysis & Reporting
-        # ▼▼▼ [추가] WEEKLY_RUN 환경 변수 설정 ▼▼▼
-        env:
-          WEEKLY_RUN: "true"
-        run: |
-          # 주간 LLM 분석 실행 (약한 신호, 토픽 요약 등)
-          python -m scripts.future_insights 
-          python -m src.module_c 
+          echo -e "\n--- STEP 2: LLM 기반 분석 및 리포트 생성 ---"
           python -m src.module_f.weekly_report
       
+      - name: 📝 Log Weekly Results
+        if: always()
+        run: |
+          echo "=================================================="
+          echo "🏁 주간 파이프라인 실행 결과 요약"
+          echo "=================================================="
+          echo "- 집계된 기사 수: $(jq 'length' outputs/debug/weekly_meta_agg.json || echo 'N/A')"
+          echo "- 주간 키워드 수: $(jq '.keywords | length' outputs/keywords.json || echo 'N/A')"
+          echo "- 주간 토픽 수: $(jq '.topics | length' outputs/topics.json || echo 'N/A')"
+          echo "- 생성된 리포트: $(ls -1 outputs/weekly_report.md || echo '생성 실패')"
+          echo "=================================================="
+
       # --- 결과물 아카이빙 및 커밋 ---
       - name: Archive and Commit Weekly Report
         shell: bash
