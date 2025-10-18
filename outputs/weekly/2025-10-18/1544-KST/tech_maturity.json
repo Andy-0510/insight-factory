@@ -1,0 +1,119 @@
+{
+  "results": [
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 310,
+        "sentiment": 0.505899441242218,
+        "events": {
+          "LAUNCH": 22,
+          "INVEST": 6,
+          "ORDER": 4,
+          "CERT": 3,
+          "REGUL": 3,
+          "PARTNERSHIP": 2
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "높은 뉴스 언급 빈도와 안정적인 시장 감성 점수, 그리고 꾸준한 출시 이벤트는 애플 기술이 성숙기에 진입했음을 시사합니다."
+      }
+    },
+    {
+      "technology": "구글",
+      "metrics": {
+        "frequency": 32,
+        "sentiment": 0.504249027797154,
+        "events": {
+          "LAUNCH": 6,
+          "REGUL": 1
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "비교적 낮은 시장 감성 점수에도 불구하고 출시 이벤트가 활발히 일어나는 것을 고려했을 때, 구글 기술은 성장기에 있다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "폴더블",
+      "metrics": {
+        "frequency": 49,
+        "sentiment": 0.5054206933294024,
+        "events": {
+          "LAUNCH": 10,
+          "ORDER": 4,
+          "INVEST": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "폴더블 기술은 비교적 활발한 출시와 수주 활동, 투자 발생을 보이며 긍정적인 시장 감성을 나타내 초기 단계를 지나 성장기에 접어들었다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "삼성",
+      "metrics": {
+        "frequency": 1404,
+        "sentiment": 0.5057895541191101,
+        "events": {
+          "LAUNCH": 86,
+          "INVEST": 49,
+          "ORDER": 18,
+          "PARTNERSHIP": 11,
+          "REGUL": 10,
+          "CERT": 7
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "높은 뉴스 언급 빈도와 투자 및 출시 이벤트의 활발한 발생은 삼성 기술이 성장 단계에 있음을 시사합니다."
+      }
+    },
+    {
+      "technology": "메타",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.50387042760849,
+        "events": {}
+      },
+      "analysis": {
+        "stage": "Emerging",
+        "reason": "뉴스 언급이 없고 투자, 출시, 수주 이벤트가 전혀 없는 것으로 보아 메타 기술은 아직 시장 초기 단계로 판단됩니다."
+      }
+    },
+    {
+      "technology": "패널",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.5097982883453369,
+        "events": {
+          "LAUNCH": 14,
+          "INVEST": 4,
+          "ORDER": 2,
+          "CERT": 2,
+          "PARTNERSHIP": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "뉴스 언급은 없지만 출시 이벤트가 활발하고 투자도 발생하고 있어 시장 성장 단계에 있다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "고성능",
+      "metrics": {
+        "frequency": 11,
+        "sentiment": 0.5041295409202575,
+        "events": {
+          "LAUNCH": 2,
+          "INVEST": 1,
+          "ORDER": 1
+        }
+      },
+      "analysis": {
+        "stage": "Emerging",
+        "reason": "뉴스 언급 빈도가 낮고, 시장 감성 점수도 중간 수준이며, 발생 이벤트 수도 적어 시장 초기 단계로 판단됩니다."
+      }
+    }
+  ]
+}
