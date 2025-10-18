@@ -114,7 +114,7 @@ jobs:
       - name: 🎨 Generate Daily Visuals & Report
         run: |
           echo -e "\n--- STEP 4: 시각화 자료 및 리포트 생성 ---"
-          python -m scripts.generate_visuals --report-type daily
+          python -m scripts.generate_visuals
           python -m src.module_f.daily_report
           echo "✅ 리포트 생성 완료"
 
