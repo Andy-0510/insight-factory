@@ -89,7 +89,7 @@ jobs:
 
           echo -e "\n--- STEP 5: 최종 리포트 생성 ---"
           echo -e "\n--- STEP 5-1_generate_visuals ---"
-          python -m scripts.generate_visuals --report-type monthly
+          python -m scripts.generate_visuals
           echo -e "\n--- STEP 5-2_module_f ---"
           python -m src.module_f.monthly_report
           
