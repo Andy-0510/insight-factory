@@ -1,0 +1,174 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "기간",
+        "점유율",
+        "점에서",
+        "기술적",
+        "모두"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "기술",
+        "기술을",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "rgb",
+        "삼성전자",
+        "제품을",
+        "미국",
+        "디자인"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "oled",
+        "사업",
+        "장비",
+        "패널",
+        "3분기"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "높은",
+        "일부",
+        "중심으로",
+        "시장이",
+        "있을"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "반도체",
+        "매출은",
+        "스마트폰",
+        "ai",
+        "기술이"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "자동차",
+        "차량용",
+        "3분기"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "배터리",
+        "생산",
+        "핵심",
+        "부품",
+        "사업을"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "반도체",
+        "기술",
+        "시스템",
+        "핵심",
+        "차량용"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "ai",
+        "현장",
+        "삼성전자",
+        "하는",
+        "일반"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "반도체",
+        "첨단",
+        "핵심",
+        "부품",
+        "시장에서"
+      ]
+    },
+    {
+      "topic_id": 11,
+      "topic_name": "Topic #11",
+      "summary": "",
+      "words": [
+        "차량",
+        "2024년",
+        "에서",
+        "플랫폼",
+        "2023년"
+      ]
+    },
+    {
+      "topic_id": 12,
+      "topic_name": "Topic #12",
+      "summary": "",
+      "words": [
+        "led",
+        "ai",
+        "점에서",
+        "기술적",
+        "인공지능"
+      ]
+    },
+    {
+      "topic_id": 13,
+      "topic_name": "Topic #13",
+      "summary": "",
+      "words": [
+        "기간",
+        "점유율",
+        "점에서",
+        "기술적",
+        "모두"
+      ]
+    }
+  ],
+  "evidence": {}
+}
