@@ -72,6 +72,8 @@ jobs:
           python -m src.module_b
           echo -e "\n--- STEP 2-2_module_C ---"
           python -m src.module_c
+          echo -e "\n--- STEP 2-3_signal_export ---"
+          python -m scripts.signal_export
 
           echo -e "\n--- STEP 3: 기업/경쟁 및 미래 신호 분석 ---"
           echo -e "\n--- STEP 3-1_module_D ---"
