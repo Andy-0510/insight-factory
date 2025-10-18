@@ -4,6 +4,7 @@ lxml>=4.9.3
 beautifulsoup4>=4.12.2
 pandas>=2.2.2
 dotenv
+argparse
 
 # fetch_article_bodies
 trafilatura>=1.0.0

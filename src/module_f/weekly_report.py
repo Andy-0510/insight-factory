@@ -1,22 +1,14 @@
 import os
 import json
-import re
 import glob
 from pathlib import Path
 from datetime import datetime, timedelta
 import pandas as pd
 from collections import defaultdict, Counter
-from wordcloud import WordCloud
-import matplotlib.font_manager as fm
-import matplotlib.pyplot as plt
-import seaborn as sns
-from src.utils import load_json, save_json, latest
-from src.config import load_config # LLM 호출을 위해 추가
 
-try:
-    from .daily_report import (_fmt_int, _safe_read_csv, _to_markdown_table, _section_header, build_html_from_md_new, _exists, _insert_images)
-except ImportError:
-    from daily_report import (_fmt_int, _safe_read_csv, _to_markdown_table, _section_header, build_html_from_md_new, _exists, _insert_images)
+from src.utils import load_json
+from src.config import load_config
+from .daily_report import (_fmt_int, _safe_read_csv, _to_markdown_table, _section_header, build_html_from_md_new, _exists, _insert_images)
 
 # --- 설정 ---
 ROOT_OUTPUT_DIR = "outputs"
@@ -160,64 +152,7 @@ def load_weekly_data(days=7):
         if not weak_signals_df.empty:
             aggregated_data["all_weak_signals"] = pd.concat([aggregated_data["all_weak_signals"], weak_signals_df], ignore_index=True)
         return aggregated_data
-
-def generate_weekly_visuals(data):
-    """주간 데이터를 기반으로 시각화 자료를 생성합니다."""
-    print("[INFO] Generating weekly visuals...")
-    os.makedirs(FIG_DIR, exist_ok=True)
     
-    # 1. 주간 워드클라우드 생성
-    keyword_scores = defaultdict(float)
-    
-    # --- 💡 [수정된 로직] 키워드 점수를 올바르게 합산합니다. ---
-    for k_data in data['all_keywords']:
-        keyword_scores[k_data['keyword']] += k_data.get('score', 0.0)
-    
-    if keyword_scores:
-        # 워드클라우드 생성 로직
-        font_paths = fm.findSystemFonts(fontpaths=None, fontext='ttf')
-        font_path = next((p for p in font_paths if 'NanumGothic' in p or 'NotoSansKR' in p), None)
-        
-        wc = WordCloud(
-            width=1600, height=900, background_color="white",
-            colormap="tab20c", font_path=font_path,
-            relative_scaling=0.4, random_state=42,
-            collocations=False
-        ).generate_from_frequencies(dict(keyword_scores))
-        
-        output_path = os.path.join(FIG_DIR, "weekly_wordcloud.png")
-        wc.to_file(output_path)
-        print(f"[INFO] Weekly wordcloud saved.")
-
-    # 2. 주간 상승/하강 신호 바차트 생성 (기존과 동일)
-    weekly_trends = []
-    for term, history in data["trend_strength_history"].items():
-        if len(history) > 1:
-            avg_z_like = sum(d['z_like'] for d in history) / len(history)
-            weekly_trends.append({"term": term, "weekly_avg_z_like": avg_z_like})
-    
-    if weekly_trends:
-        df_trends = pd.DataFrame(weekly_trends).sort_values(by="weekly_avg_z_like", ascending=False)
-        rising = df_trends[df_trends['weekly_avg_z_like'] > 0].head(5)
-        falling = df_trends[df_trends['weekly_avg_z_like'] < 0].tail(5)
-        combined = pd.concat([rising, falling])
-        
-        plt.figure(figsize=(12, 8))
-        font_paths = fm.findSystemFonts(fontpaths=None, fontext='ttf')
-        font_path = next((path for path in font_paths if 'NanumGothic' in path or 'NotoSansKR' in path), None)
-        if font_path: plt.rcParams['font.family'] = fm.FontProperties(fname=font_path).get_name()
-        plt.rcParams['axes.unicode_minus'] = False
-
-        sns.barplot(data=combined, y="term", x="weekly_avg_z_like",
-                    palette=["#3b82f6" if x > 0 else "#ef4444" for x in combined['weekly_avg_z_like']])
-        plt.title('주간 핵심 신호 모멘텀 (상승/하강 Top 5)', fontsize=16)
-        plt.xlabel('주간 평균 모멘텀 (z_like)', fontsize=12)
-        plt.ylabel('')
-        plt.tight_layout()
-        plt.savefig(os.path.join(FIG_DIR, "weekly_strong_signals_barchart.png"), dpi=150)
-        plt.close()
-        print(f"[INFO] Weekly strong signals barchart saved.")
-
 # --- ▼▼▼▼▼▼ 주간 경영 요약 섹션 최종 구현 ▼▼▼▼▼▼ ---
 def _section_weekly_summary(data):
     """주간 경영 요약 섹션"""
@@ -260,14 +195,18 @@ def _section_weekly_summary(data):
 
 # --- ▼▼▼▼▼▼ 시장 테마 및 거시적 흐름 분석 섹션 구현 ▼▼▼▼▼▼ ---
 def _section_weekly_market_themes(data):
+    """주간 시장 테마 분석 섹션"""
     keyword_scores = defaultdict(float)
-    for k in data['all_keywords']: keyword_scores[k['keyword']] += k['score']
-    top_10_keywords = sorted(keyword_scores.items(), key=lambda item: item[1], reverse=True)[:10]
-    df_top_keywords = pd.DataFrame(top_10_keywords, columns=["키워드", "주간 누적 점수"])
-    df_top_keywords["주간 누적 점수"] = df_top_keywords["주간 누적 점수"].apply(lambda x: round(x, 2))
+    for k in data['all_keywords']:
+        keyword_scores[k['keyword']] += k.get('score', 0.0)
+    
+    sorted_keywords = sorted(keyword_scores.items(), key=lambda item: item[1], reverse=True)[:10]
+    df_top_keywords = pd.DataFrame(sorted_keywords, columns=["키워드", "주간 누적 점수"])
+    
     lines = [_to_markdown_table(df_top_keywords)]
-    image_path = os.path.join(FIG_DIR, "weekly_wordcloud.png")
-    lines.append(_insert_images(image_path, OUT_MD, captions=["주간 키워드 워드클라우드"]))
+    # 생성된 워드클라우드 이미지를 리포트에 포함
+    lines.append(_insert_images(os.path.join(FIG_DIR, "weekly_wordcloud.png"), OUT_MD, captions=["주간 키워드 워드클라우드"]))
+    
     return "\n".join(lines)
 
 # --- ▼▼▼▼▼▼ 경쟁사 동향 분석 섹션 구현 ▼▼▼▼▼▼ ---
@@ -345,12 +284,11 @@ def _section_weekly_momentum_change(data):
 
     lines = [_to_markdown_table(df_momentum)]
     lines.append(_insert_images(os.path.join(FIG_DIR, "weekly_strong_signals_barchart.png"), OUT_MD, captions=["주간 상승/하강 신호 Top 5"]))
-
+    
     return "\n".join(lines)
 
 def build_weekly_markdown():
     weekly_data = load_weekly_data(days=7)
-    generate_weekly_visuals(weekly_data) # 시각화 생성은 그대로 유지
     
     today_str = datetime.now().strftime("%Y-%m-%d")
     lines = [f"# Weekly Intelligence ({today_str})"]

@@ -138,7 +138,44 @@ def main():
     parser.add_argument("--body-min-len", type=int, default=None, help="본문 최소 길이")
     parser.add_argument("--only", nargs="*", help="선택 실행 단계: a check_a wh body b check_b c check_c export d check_d e check_e gen_visual preflight f check_f")
     parser.add_argument("--archive-daily", action="store_true", help="outputs를 날짜/시간 폴더로 아카이브")
+    parser.add_argument(
+        "--generate-visuals",
+        type=str,
+        choices=['daily', 'weekly', 'monthly'],
+        help="지정된 리포트 타입의 시각화만 생성하고 종료합니다."
+    )
+    
     args = parser.parse_args()
+    if args.generate_visuals:
+        import subprocess
+        import sys
+
+        report_type = args.generate_visuals
+        print(f"--- Running visuals only for report type: {report_type} ---")
+
+        # 현재 파이썬 실행 환경을 그대로 사용하여 generate_visuals.py를 실행
+        command = [
+            sys.executable,
+            "-m", "scripts.generate_visuals",
+            "--report-type", report_type
+        ]
+        
+        # 스크립트 실행
+        result = subprocess.run(command, capture_output=True, text=True, check=False)
+        
+        # 실행 결과 출력
+        print(result.stdout)
+        if result.returncode != 0:
+            print("--- Visuals generation failed ---")
+            print(result.stderr, file=sys.stderr)
+            sys.exit(1) # 오류 코드와 함께 종료
+        else:
+            print("--- Visuals generation successful ---")
+            sys.exit(0) # 정상 종료
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    # --generate-visuals 인자가 없을 경우, 아래의 기존 전체 파이프라인 로직이 실행됩니다.
+    print("--- Running full pipeline ---")
 
     load_env_file()
 
