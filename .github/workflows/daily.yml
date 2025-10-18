@@ -85,6 +85,16 @@ jobs:
 
           echo "✅ 모든 데이터 처리 모듈 실행 완료"
 
+      # --- ▼▼▼▼▼ 센티멘트 데이터 커밋 단계 ▼▼▼▼▼ ---
+      - name: Commit Daily Sentiment Data
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase # 다른 워크플로우와의 충돌 방지를 위해 pull 먼저 실행
+          git add outputs/export/daily_topic_sentiment.csv
+          git commit -m "chore(data): update daily sentiment log" || echo "No changes to commit"
+          git push
+
       # ▼▼▼▼▼▼ 웨어하우스에 메타 파일 커밋 ▼▼▼▼▼▼
       - name: Commit Latest Meta to Warehouse
         shell: bash
