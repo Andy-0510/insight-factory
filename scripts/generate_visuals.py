@@ -998,8 +998,8 @@ def plot_company_network_from_json(json_path="outputs/company_network.json",
 
 def plot_tech_maturity_map(maturity_data):
     """ 4. 기술 성숙도 맵 버블 차트 생성 (범례를 차트 안에 표시) """
-    tech_maturity_data = tech_maturity_data[tech_maturity_data['hue_column'] != 'Error']
     if not maturity_data.get("results"):
+        print("[WARN] [generate_visuals] 기술 성숙도 데이터(tech_maturity.json)가 없어 차트 생성을 건너뜁니다.")
         return
 
     records = []
@@ -1019,6 +1019,13 @@ def plot_tech_maturity_map(maturity_data):
     if df.empty:
         return
 
+    # ▼▼▼ [수정] 필터링 로직을 DataFrame 생성 이후로 이동하고, 올바른 변수(df)와 컬럼명(stage)을 사용합니다. ▼▼▼
+    df = df[df['stage'] != 'Error']
+    if df.empty:
+        print("[INFO] [generate_visuals] 'Error' 단계를 제외한 후 표시할 기술 성숙도 데이터가 없습니다.")
+        return
+    # ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲
+
     # ✅ 성숙도 단계별 색상 지정
     stage_palette = {
         "Emerging": "#9CA3AF",   # 회색
@@ -1033,7 +1040,7 @@ def plot_tech_maturity_map(maturity_data):
     sns.scatterplot(
         data=df, x="frequency", y="sentiment", size="events",
         hue="stage", sizes=(200, 2000), alpha=0.7,
-        palette=stage_palette, ax=ax  # ✅ 고정된 색상 사용
+        palette=stage_palette, ax=ax
     )
 
     # 기술 라벨 표시
@@ -1041,7 +1048,7 @@ def plot_tech_maturity_map(maturity_data):
     for i in range(df.shape[0]):
         texts.append(ax.text(
             x=df.frequency[i], y=df.sentiment[i], s=df.technology[i],
-            fontdict=dict(color='black', size=11, weight='bold')  # ✅ 글자 진하게
+            fontdict=dict(color='black', size=11, weight='bold')
         ))
 
     adjust_text(texts, ax=ax, arrowprops=dict(arrowstyle='-', color='gray', lw=0.5))
@@ -1052,9 +1059,10 @@ def plot_tech_maturity_map(maturity_data):
 
     # 범례 설정
     handles, labels = ax.get_legend_handles_labels()
-    num_stages = df['stage'].nunique()
-    stage_handles = handles[1:num_stages+1]
-    stage_labels = labels[1:num_stages+1]
+    # 'size' 범례 항목을 제외하고 'hue' 범례만 선택
+    num_stages = len(df['stage'].unique())
+    stage_handles = handles[1:num_stages + 1]
+    stage_labels = labels[1:num_stages + 1]
 
     legend = ax.legend(stage_handles, stage_labels, title='성숙도 단계', loc='best', frameon=True, framealpha=0.8)
     if legend:
