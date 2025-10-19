@@ -1,0 +1,48 @@
+{
+  "results": [
+    {
+      "technology": "패널",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.5128629580140114,
+        "events": {}
+      },
+      "analysis": {
+        "stage": "Emerging",
+        "reason": "뉴스 언급 빈도가 0회이고 투자, 출시, 수주 이벤트도 발생하지 않아 시장 관심이 낮으며, 시장 감성 점수 또한 중간 수준으로 초기 단계로 판단됩니다."
+      }
+    },
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.5071955067770821,
+        "events": {
+          "LAUNCH": 4
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "최근 뉴스 언급 빈도가 없고, 투자 및 수주 이벤트가 없으며, 시장 감성 점수가 중간 수준인 반면 출시 이벤트만 발생했다는 것은 애플 기술이 성숙 단계에 진입했음을 시사합니다."
+      }
+    },
+    {
+      "technology": "삼성",
+      "metrics": {
+        "frequency": 349,
+        "sentiment": 0.5135895695005145,
+        "events": {
+          "LAUNCH": 8,
+          "INVEST": 4,
+          "CERT": 3,
+          "REGUL": 3,
+          "PARTNERSHIP": 1
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "뉴스 언급 빈도가 높고, 시장 감성 점수가 중간 수준이며, 출시 이벤트가 투자 이벤트보다 많아 성장기에 있는 것으로 판단됩니다."
+      }
+    }
+  ]
+}
