@@ -106,41 +106,53 @@ jobs:
           echo "=================================================="
               
        # 일자별 아카이브(KST)
-      - name: 💾 Finalize, Archive and Commit All Outputs
+      # 일자별 아카이브(KST)
+      - name: Prepare outputs weekly folder (KST)
+        shell: bash
         run: |
           set -e
-          
-          # --- 1. 그날의 아카이브 폴더 경로 정의 ---
           DATE_KST=$(TZ=Asia/Seoul date +'%Y-%m-%d')
           TIME_KST=$(TZ=Asia/Seoul date +'%H%M-KST')
-          OUTDIR="outputs/daily/${DATE_KST}/${TIME_KST}"
+          OUTDIR="outputs/weekly/${DATE_KST}/${TIME_KST}"
+          mkdir -p "${OUTDIR}/fig" "${OUTDIR}/debug" "${OUTDIR}/export"
+
+          # 기본 결과 파일 복사 (json, html, md)
+          cp outputs/*.json             "${OUTDIR}/" || true
+          cp outputs/*.html             "${OUTDIR}/" || true
+          cp outputs/*.md               "${OUTDIR}/" || true
+
+          # 디버그 메타 파일들을 올바른 위치(debug/)에서 상위 폴더로 복사
+          if [ -f outputs/debug/run_meta_b.json ]; then
+            cp outputs/debug/run_meta_b.json "${OUTDIR}/"
+          fi
+          if [ -f outputs/debug/run_meta_c.json ]; then
+            cp outputs/debug/run_meta_c.json "${OUTDIR}/"
+          fi
           
-          # --- 2. Git 사용자 설정 ---
+          # 서브폴더 내용 전체 복사 (export, fig, debug)
+          if [ -d outputs/export ]; then
+            cp -r outputs/export/* "${OUTDIR}/export/" || true
+          fi
+          if [ -d outputs/fig ]; then
+            cp -r outputs/fig/* "${OUTDIR}/fig/" || true
+          fi
+          if [ -d outputs/debug ]; then
+            cp -r outputs/debug/* "${OUTDIR}/debug/" || true
+          fi
+          
+          echo "OUTDIR=${OUTDIR}" >> $GITHUB_ENV
+
+      # outputs 커밋/푸시
+      - name: Archive and Commit Weekly Report
+        shell: bash
+        run: |
+          set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # --- 3. 커밋할 대상들을 정확히 지정하여 추가 ---
-          # (이 단계에서는 아직 로컬에만 파일이 복사된 상태가 아님)
-          # (따라서 커밋 대상은 원본 경로를 사용)
-          git add "data/warehouse/" # 웨어하우스 변경사항
-          git add "outputs/"      # 오늘 생성된 모든 결과물
-          
-          # --- 4. 단일 커밋 및 푸시 ---
-          git commit -m "docs(daily): update report and data for ${DATE_KST}" || echo "No changes to commit"
-          git pull --rebase
-          git push
-
-          # --- 5. 커밋 후, 아카이빙을 위해 로컬 파일 정리 및 복사 ---
-          # (이 단계는 다음 실행을 위한 것이 아니라, 아카이브 구조를 만들기 위함)
-          # 이 부분은 현재 워크플로우의 "Prepare outputs daily folder" 와 동일한 역할을 합니다.
-          # 단, 커밋은 이미 위에서 완료되었습니다.
-          mkdir -p "${OUTDIR}/fig" "${OUTDIR}/export" "${OUTDIR}/debug"
-          mv outputs/*.json             "${OUTDIR}/" || true
-          mv outputs/*.html             "${OUTDIR}/" || true
-          mv outputs/*.md               "${OUTDIR}/" || true
-          mv outputs/export/* "${OUTDIR}/export/" || true
-          mv outputs/fig/* "${OUTDIR}/fig/" || true
-          mv outputs/debug/* "${OUTDIR}/debug/" || true
+          git add outputs/weekly
+          git commit -m "chore: outputs (KST rotation)" || echo "no changes"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git push origin HEAD:${{ github.ref_name }} || true
 
       # 오래된 outputs/warehouse 정리
       - name: Cleanup old warehouse (main only, keep 90 days)
