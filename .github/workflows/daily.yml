@@ -85,35 +85,14 @@ jobs:
 
           echo "✅ 모든 데이터 처리 모듈 실행 완료"
 
-      # --- ▼▼▼▼▼ [수정] 디버깅 로그가 추가된 커밋 단계 ▼▼▼▼▼ ---
+      # --- ▼▼▼▼▼ Sentiment Data 커밋 단계 ▼▼▼▼▼ ---
       - name: Commit Daily Sentiment Data
         run: |
-          set -x  # 실행되는 모든 명령어를 로그에 출력
-
-          echo "--- Verifying file before commit ---"
-          ls -l outputs/export/daily_topic_sentiment.csv || echo "==> SENTIMENT FILE NOT FOUND BEFORE COMMIT"
-
-          echo "--- Configuring Git ---"
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          
-          echo "--- Checking Git status before pull ---"
-          git status
-          
-          echo "--- Pulling latest changes ---"
           git pull --rebase
-          
-          echo "--- Adding file to Git ---"
           git add outputs/export/daily_topic_sentiment.csv
-          
-          echo "--- Checking Git status after add ---"
-          git status
-          
-          echo "--- Committing changes ---"
-          # "|| true"를 사용하여 커밋할 내용이 없어도 에러로 중단되지 않도록 함
-          git commit -m "chore(data): update daily sentiment log" || true
-          
-          echo "--- Pushing changes ---"
+          git commit -m "chore(data): update daily sentiment log" || echo "No changes to commit"
           git push
       # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
