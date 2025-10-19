@@ -6,12 +6,12 @@
   "OLED 패널", "QD-OLED", "폴더블", "마이크로LED", "미니LED", "QLED", "QNED", "OLEDoS", "LEDos",
   "플렉서블 디스플레이", "투명 디스플레이", "AI 디스플레이", "롤러블 디스플레이", "스트레처블 디스플레이",
   "차량용 디스플레이", "전장", "AR", "LTPO", "디스플레이 시장",
-  "삼성디스플레이", "LG디스플레이", "애플", "삼성전자", "LG전자", "TCL", "BOE", "CSOT","AUO", "Innolux", "Visionox", "Tianma", "JDI", "Sharp",
-  "8.6세대", "IT OLED", "게이밍 모니터 OLED", "노트북 OLED", "자동차 OLED",
+  "삼성디스플레이", "LG디스플레이", "애플", "삼성전자", "LG전자", "TCL", "하이센스", "BOE", "CSOT","AUO", "Innolux", "Visionox", "Tianma", "JDI", "Sharp",
+  "8.6세대", "IT OLED", "게이밍 모니터", "OLED 모니터", "OLED 노트북", "차량용 OLED",
   "OLED", "LCD"
   ],
 
-  "per_query_display": 1,
+  "per_query_display": 20,
   "pages": 1,
   "top_n_keywords": 20,
 
