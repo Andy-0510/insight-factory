@@ -63,6 +63,8 @@ jobs:
         run: |
           echo "--- Verifying 'daily_topic_sentiment.csv' immediately after checkout ---"
           ls -l outputs/export/daily_topic_sentiment.csv || echo "==> File not found right after checkout."
+          echo "--- Verifying 'event.csv' immediately after checkout ---"
+          ls -l outputs/export/event.csv || echo "==> File not found right after checkout."
       # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
       # --- 월간 리포트에 필요한 모든 모듈 실행 ---
