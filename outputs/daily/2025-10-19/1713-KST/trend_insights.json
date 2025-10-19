@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "기술",
+        "ai",
+        "삼성전자는",
+        "오는",
+        "삼성전자"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "lcd",
+        "차세대",
+        "패널"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "애플",
+        "중국",
+        "ai",
+        "반도체",
+        "미국"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "oled",
+        "패널",
+        "lg디스플레이는",
+        "연간",
+        "프리미엄"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "시장에서",
+        "높은",
+        "산업",
+        "이는",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "led",
+        "디스플레이",
+        "가격",
+        "투자",
+        "에서"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "반도체",
+        "삼성전자",
+        "tv",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "기업",
+        "rgb",
+        "주요뉴스",
+        "미국",
+        "진행"
+      ]
+    }
+  ],
+  "evidence": {}
+}
