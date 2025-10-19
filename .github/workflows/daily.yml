@@ -111,7 +111,6 @@ jobs:
           set -e
           
           # --- 1. 일일 아카이브 폴더 생성 및 파일 복사 ---
-          # (기존 'Prepare outputs daily folder'의 역할)
           DATE_KST=$(TZ=Asia/Seoul date +'%Y-%m-%d')
           TIME_KST=$(TZ=Asia/Seoul date +'%H%M-KST')
           OUTDIR="outputs/daily/${DATE_KST}/${TIME_KST}"
@@ -128,19 +127,16 @@ jobs:
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
-          # --- 3. 모든 변경사항을 한 번에 추가 ---
-          # (웨어하우스, 아카이브, outputs/export의 누적 파일 등 모든 변경사항 포함)
-          git add data/warehouse/
-          git add outputs/
+          # --- 3. 커밋할 대상들을 정확히 지정하여 추가 ---
+          git add "${OUTDIR}" # 👈 오늘 생성된 아카이브 폴더만 추가
+          git add data/warehouse/ # 웨어하우스 변경사항 추가
+          
+          # 월간/주간 워크플로우에 필요한 누적 데이터 파일들을 명시적으로 추가
+          git add outputs/export/daily_topic_sentiment.csv || true
           
           # --- 4. 단일 커밋 및 푸시 ---
-          # 커밋할 내용이 없을 경우를 대비하여 || echo ... 추가
           git commit -m "docs(daily): update report and data for ${DATE_KST}" || echo "No changes to commit"
-          
-          # 원격 저장소의 변경사항을 먼저 가져와서 rebase
           git pull --rebase
-          
-          # 최종적으로 푸시
           git push
 
       # 오래된 outputs/warehouse 정리
