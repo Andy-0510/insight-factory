@@ -107,13 +107,13 @@ jobs:
               
        # 일자별 아카이브(KST)
       # 일자별 아카이브(KST)
-      - name: Prepare outputs weekly folder (KST)
+      - name: Prepare outputs daily folder (KST)
         shell: bash
         run: |
           set -e
           DATE_KST=$(TZ=Asia/Seoul date +'%Y-%m-%d')
           TIME_KST=$(TZ=Asia/Seoul date +'%H%M-KST')
-          OUTDIR="outputs/weekly/${DATE_KST}/${TIME_KST}"
+          OUTDIR="outputs/daily/${DATE_KST}/${TIME_KST}"
           mkdir -p "${OUTDIR}/fig" "${OUTDIR}/debug" "${OUTDIR}/export"
 
           # 기본 결과 파일 복사 (json, html, md)
@@ -143,13 +143,13 @@ jobs:
           echo "OUTDIR=${OUTDIR}" >> $GITHUB_ENV
 
       # outputs 커밋/푸시
-      - name: Archive and Commit Weekly Report
+      - name: Archive and Commit daily Report
         shell: bash
         run: |
           set -e
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add outputs/weekly
+          git add outputs/daily
           git commit -m "chore: outputs (KST rotation)" || echo "no changes"
           git pull --rebase --autostash origin ${{ github.ref_name }} || true
           git push origin HEAD:${{ github.ref_name }} || true
