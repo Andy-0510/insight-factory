@@ -4,11 +4,11 @@ from src.utils import load_json, latest
 import os
 import json
 import re
+import glob
 from src.config import load_config
 
 
 # --- 설정 ---
-SENTIMENT_CSV_PATH = "outputs/export/daily_topic_sentiment.csv"
 OUTPUT_CSV_PATH = "outputs/export/risk_issues.csv"
 MOVING_AVG_WINDOW = 7
 STD_DEV_THRESHOLD = 2.0 # 2.0 표준편차 이상 하락 시 리스크로 간주
@@ -94,20 +94,35 @@ def call_gemini_for_risk_analysis(topic_name, sentiment_drop, evidence):
             "mitigation": "API 키 및 네트워크 상태를 확인하세요."
         }
 
-# --- ▼▼▼▼▼ [수정] analyze_risks 함수가 articles를 인자로 받도록 변경 ▼▼▼▼▼ ---
 def analyze_risks(articles):
     """토픽별 감성 점수 시계열을 분석하여 리스크를 탐지합니다."""
-    print("[INFO] [module_g_risk] 리스크 분석 시작") # 1. 시작 로그
+    print("[INFO] [module_g_risk] 리스크 분석 시작")
 
-    if not os.path.exists(SENTIMENT_CSV_PATH):
-        print(f"[WARN] {SENTIMENT_CSV_PATH} 파일이 없어 리스크 분석을 건너뜁니다.")
-        return
-    # 2. 데이터 입출력 기록
-    print(f"[INFO] [module_g_risk] 감성 점수 데이터 로드: {SENTIMENT_CSV_PATH}")
+    # --- ▼▼▼▼▼ [수정] 가장 최신 아카이브에서 센티멘트 파일을 동적으로 찾습니다 ▼▼▼▼▼ ---
+    sentiment_file_path = None
+    # 'outputs/daily/' 폴더 아래의 모든 날짜/시간 폴더를 검색
+    archive_paths = sorted(glob.glob("outputs/daily/*/*"))
+    if archive_paths:
+        # 가장 마지막 폴더가 가장 최신 아카이브
+        latest_archive_path = archive_paths[-1]
+        candidate_path = os.path.join(latest_archive_path, "export", "daily_topic_sentiment.csv")
+        
+        if os.path.exists(candidate_path):
+            sentiment_file_path = candidate_path
 
-    df = pd.read_csv(SENTIMENT_CSV_PATH)
+    if not sentiment_file_path:
+        # 아카이브에서도 못 찾으면, 루트 경로를 한번 더 확인 (폴백)
+        fallback_path = "outputs/export/daily_topic_sentiment.csv"
+        if os.path.exists(fallback_path):
+             sentiment_file_path = fallback_path
+        else:
+            print(f"[WARN] 리스크 분석에 필요한 'daily_topic_sentiment.csv' 파일을 찾을 수 없습니다. 분석을 건너뜁니다.")
+            return
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    print(f"[INFO] [module_g_risk] 감성 점수 데이터 로드: {sentiment_file_path}")
+    df = pd.read_csv(sentiment_file_path)
     topics_data = load_json("outputs/topics.json", {"topics": []})
-    # articles = load_json(latest("data/news_meta_*.json"), []) # <--- 이 라인 삭제
     
     topic_map = {t["topic_id"]: {
         "name": t.get("topic_name", f"Topic {t['topic_id']}"),
