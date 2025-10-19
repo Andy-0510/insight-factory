@@ -1,0 +1,9 @@
+{
+  "OLED_Topic": ["oled", "qd-oled", "woled", "패널", "삼성디스플레이", "lg디스플레이"],
+  "MicroLED_Topic": ["microled", "마이크로led", "사이니지", "the wall"],
+  "Automotive_Topic": ["차량용", "자동차", "전장", "hud", "cid", "hyperscreen"],
+  "Foldable_Topic": ["폴더블", "플렉서블", "롤러블", "z폴드", "z플립"],
+  "XR_Device_Topic": ["ar", "vr", "xr", "메타버스", "비전프로", "헤드셋", "안경"],
+  "Apple_Topic": ["애플", "아이폰", "아이패드", "비전프로", "apple"],
+  "IT_OLED_Topic": ["it oled", "노트북 oled", "8.6세대", "ltpo", "탠덤"]
+}

@@ -98,42 +98,35 @@ def analyze_risks(articles):
     """토픽별 감성 점수 시계열을 분석하여 리스크를 탐지합니다."""
     print("[INFO] [module_g_risk] 리스크 분석 시작")
 
-    # --- ▼▼▼▼▼ [수정] 가장 최신 아카이브에서 센티멘트 파일을 동적으로 찾습니다 ▼▼▼▼▼ ---
     sentiment_file_path = None
-    # 'outputs/daily/' 폴더 아래의 모든 날짜/시간 폴더를 검색
     archive_paths = sorted(glob.glob("outputs/daily/*/*"))
     if archive_paths:
-        # 가장 마지막 폴더가 가장 최신 아카이브
         latest_archive_path = archive_paths[-1]
         candidate_path = os.path.join(latest_archive_path, "export", "daily_topic_sentiment.csv")
-        
         if os.path.exists(candidate_path):
             sentiment_file_path = candidate_path
 
     if not sentiment_file_path:
-        # 아카이브에서도 못 찾으면, 루트 경로를 한번 더 확인 (폴백)
         fallback_path = "outputs/export/daily_topic_sentiment.csv"
         if os.path.exists(fallback_path):
              sentiment_file_path = fallback_path
         else:
-            print(f"[WARN] 리스크 분석에 필요한 'daily_topic_sentiment.csv' 파일을 찾을 수 없습니다. 분석을 건너뜁니다.")
-            return
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+             print(f"[WARN] 리스크 분석에 필요한 'daily_topic_sentiment.csv' 파일을 찾을 수 없습니다. 분석을 건너뜁니다.")
+             return
 
     print(f"[INFO] [module_g_risk] 감성 점수 데이터 로드: {sentiment_file_path}")
     df = pd.read_csv(sentiment_file_path)
-    topics_data = load_json("outputs/topics.json", {"topics": []})
     
-    topic_map = {t["topic_id"]: {
-        "name": t.get("topic_name", f"Topic {t['topic_id']}"),
-        "keywords": [w["word"] for w in t.get("top_words", [])]
-    } for t in topics_data.get("topics", [])}
+    # [수정] topics.json 대신 master_topics.json 파일을 직접 로드합니다.
+    master_topics = load_json("data/dictionaries/master_topics.json", {})
 
     risk_issues = []
     
-    # 3. 주요 작업 단계 기록
     print("[INFO] [module_g_risk] 토픽별 감성 점수 하락 패턴 분석 중...")
-    for topic_id, group in df.groupby('topic_id'):
+    for semantic_key, group in df.groupby('semantic_key'):
+        if semantic_key == "Uncategorized":
+            continue
+        
         if len(group) < MOVING_AVG_WINDOW:
             continue
             
@@ -143,14 +136,21 @@ def analyze_risks(articles):
         
         today_data = group.iloc[-1]
         
-        threshold_value = today_data['ma'] - (STD_DEV_THRESHOLD * today_data['std'])
+        threshold_value = today_data['ma'] * 0.8
         if pd.notna(threshold_value) and today_data['avg_sentiment'] < threshold_value:
             sentiment_drop = today_data['ma'] - today_data['avg_sentiment']
-            topic_info = topic_map.get(topic_id)
-            if not topic_info:
-                continue
+            
+            # [수정] master_topics에서 직접 topic_info를 구성합니다.
+            topic_keywords = master_topics.get(semantic_key)
+            if not topic_keywords:
+                continue # master_topics에 정의되지 않은 키는 건너뜁니다.
 
-            print(f"[INFO] 리스크 탐지: Topic {topic_id} ({topic_info['name']}), 감성 점수 하락폭: {sentiment_drop:.2f}")
+            topic_info = {
+                "name": semantic_key,
+                "keywords": topic_keywords
+            }
+
+            print(f"[INFO] 리스크 탐지: Topic '{topic_info['name']}', 감성 점수 하락폭: {sentiment_drop:.2f}")
             
             evidence = get_negative_sentences(topic_info['keywords'], articles)
             llm_analysis = call_gemini_for_risk_analysis(topic_info['name'], sentiment_drop, evidence)
