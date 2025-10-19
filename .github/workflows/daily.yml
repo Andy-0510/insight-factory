@@ -110,34 +110,37 @@ jobs:
         run: |
           set -e
           
-          # --- 1. 일일 아카이브 폴더 생성 및 파일 복사 ---
+          # --- 1. 그날의 아카이브 폴더 경로 정의 ---
           DATE_KST=$(TZ=Asia/Seoul date +'%Y-%m-%d')
           TIME_KST=$(TZ=Asia/Seoul date +'%H%M-KST')
           OUTDIR="outputs/daily/${DATE_KST}/${TIME_KST}"
-          mkdir -p "${OUTDIR}/fig" "${OUTDIR}/export" "${OUTDIR}/debug"
-          
-          cp outputs/*.json             "${OUTDIR}/" || true
-          cp outputs/*.html             "${OUTDIR}/" || true
-          cp outputs/*.md               "${OUTDIR}/" || true
-          cp -r outputs/export/* "${OUTDIR}/export/" || true
-          cp -r outputs/fig/* "${OUTDIR}/fig/" || true
-          cp -r outputs/debug/* "${OUTDIR}/debug/" || true
           
           # --- 2. Git 사용자 설정 ---
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
 
           # --- 3. 커밋할 대상들을 정확히 지정하여 추가 ---
-          git add "${OUTDIR}" # 👈 오늘 생성된 아카이브 폴더만 추가
-          git add data/warehouse/ # 웨어하우스 변경사항 추가
-          
-          # 월간/주간 워크플로우에 필요한 누적 데이터 파일들을 명시적으로 추가
-          git add outputs/export/daily_topic_sentiment.csv || true
+          # (이 단계에서는 아직 로컬에만 파일이 복사된 상태가 아님)
+          # (따라서 커밋 대상은 원본 경로를 사용)
+          git add "data/warehouse/" # 웨어하우스 변경사항
+          git add "outputs/"      # 오늘 생성된 모든 결과물
           
           # --- 4. 단일 커밋 및 푸시 ---
           git commit -m "docs(daily): update report and data for ${DATE_KST}" || echo "No changes to commit"
           git pull --rebase
           git push
+
+          # --- 5. 커밋 후, 아카이빙을 위해 로컬 파일 정리 및 복사 ---
+          # (이 단계는 다음 실행을 위한 것이 아니라, 아카이브 구조를 만들기 위함)
+          # 이 부분은 현재 워크플로우의 "Prepare outputs daily folder" 와 동일한 역할을 합니다.
+          # 단, 커밋은 이미 위에서 완료되었습니다.
+          mkdir -p "${OUTDIR}/fig" "${OUTDIR}/export" "${OUTDIR}/debug"
+          mv outputs/*.json             "${OUTDIR}/" || true
+          mv outputs/*.html             "${OUTDIR}/" || true
+          mv outputs/*.md               "${OUTDIR}/" || true
+          mv outputs/export/* "${OUTDIR}/export/" || true
+          mv outputs/fig/* "${OUTDIR}/fig/" || true
+          mv outputs/debug/* "${OUTDIR}/debug/" || true
 
       # 오래된 outputs/warehouse 정리
       - name: Cleanup old warehouse (main only, keep 90 days)
