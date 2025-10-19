@@ -467,6 +467,55 @@ def plot_idea_score_distribution(biz_opps_data):
     _savefig(fig, os.path.join(FIG_DIR, 'idea_score_distribution.png'))
     print("[INFO] Idea score distribution chart saved.")
 
+def plot_heatmap(company_matrix_df, topics_data, output_path):
+    """(월간용) 기업-토픽 매트릭스 히트맵을 생성합니다."""
+    print("[INFO] Generating company-topic heatmap...")
+    if company_matrix_df.empty or not topics_data.get("topics"):
+        print("[WARN] No data for heatmap.")
+        return
+
+    # 토픽 ID와 이름을 매핑
+    topics_map = {t['topic_id']: t.get('topic_name', f"Topic {t['topic_id']}") for t in topics_data.get("topics", [])}
+    
+    # pivot_table을 사용하여 히트맵 데이터 구성
+    try:
+        heatmap_data = company_matrix_df.pivot_table(index="org", columns="topic", values="hybrid_score", aggfunc="sum").fillna(0)
+    except Exception as e:
+        print(f"[WARN] Failed to pivot data for heatmap: {e}")
+        return
+        
+    if heatmap_data.empty:
+        print("[WARN] Pivoted heatmap data is empty.")
+        return
+
+    # 상위 15개 기업만 선택
+    top_orgs = heatmap_data.sum(axis=1).nlargest(15).index
+    heatmap_data = heatmap_data.loc[top_orgs]
+
+    # 컬럼 이름을 토픽 ID에서 토픽명으로 변경 (없는 경우 대비)
+    heatmap_data.columns = [topics_map.get(int(col), f"Topic {col}") for col in heatmap_data.columns]
+    
+    fig, ax = plt.subplots(figsize=(16, 10))
+    
+    # --- ▼▼▼ [수정] cmap 인자를 'crest'로 변경 ▼▼▼ ---
+    sns.heatmap(
+        heatmap_data,
+        cmap="crest", # 👈 추천 색상 팔레트 적용
+        linewidths=.5,
+        ax=ax,
+        annot=True, # 각 셀에 값 표시 (선택 사항)
+        fmt=".1f"   # 소수점 첫째 자리까지 표시
+    )
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+    
+    ax.set_title('기업별 토픽 집중도 (Hybrid Score)', fontsize=16, weight='bold')
+    ax.set_xlabel('[토픽]', fontsize=12, weight='bold')
+    ax.set_ylabel('[기업]', fontsize=12, weight='bold')
+    plt.xticks(rotation=45, ha='right')
+    
+    _savefig(fig, output_path)
+    print(f"[INFO] Heatmap saved to {output_path}")
+
 # --- 4. 주기별 시각화 실행 함수 ---
 def run_daily_visuals():
     """일간 리포트에 필요한 시각화만 실행합니다."""
@@ -568,6 +617,13 @@ def run_monthly_visuals():
 
     try: plot_idea_score_distribution(all_data['biz_opps'])
     except Exception as e: print(f"[WARN] plot_idea_score_distribution failed: {e}")
+
+    # --- ▼▼▼ [추가] 히트맵 생성 함수 호출 ▼▼▼ ---
+    try:
+        plot_heatmap(all_data['company_matrix'], all_data['topics'], os.path.join(FIG_DIR, "matrix_heatmap.png"))
+    except Exception as e:
+        print(f"[WARN] plot_heatmap failed: {e}")
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 # --- 5. Main 함수 ---
 def main():

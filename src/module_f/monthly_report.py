@@ -107,9 +107,17 @@ def _section_monthly_competitor_strategy(data):
     matrix_df = data.get("company_matrix")
     network_data = data.get("company_network", {})
     
-    lines = [_insert_images(os.path.join(FIG_DIR, "company_network.png"), OUT_MD, captions=["기업 경쟁/협력 관계망"])]
+    lines = []
+    # --- ▼▼▼ [추가] 히트맵 이미지 삽입 ▼▼▼ ---
+    lines.append("### 3.1. 기업x토픽 MATRIX (상위 15개사)")
+    lines.append(_insert_images(os.path.join(FIG_DIR, "matrix_heatmap.png"), OUT_MD, captions=["기업-토픽 집중도 히트맵"]))
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
     lines.append("### 기업별 토픽 집중도 (상위 5개사)")
     lines.append(_to_markdown_table(matrix_df.head(5)))
+
+    lines.append("### 3.2. 기업 경쟁/협력 관계망")
+    lines.append(_insert_images(os.path.join(FIG_DIR, "company_network.png"), OUT_MD, captions=["기업 경쟁/협력 관계망"]))
     
     top_pairs = network_data.get("top_pairs", [])
     if top_pairs:
