@@ -85,49 +85,6 @@ jobs:
 
           echo "✅ 모든 데이터 처리 모듈 실행 완료"
 
-      # --- ▼▼▼▼▼ Sentiment Data 커밋 단계 ▼▼▼▼▼ ---
-      - name: Commit Daily Analysis Results
-        run: |
-          git config user.name "github-actions[bot]"
-          git config user.email "github-actions[bot]@users.noreply.github.com"
-
-          # outputs 폴더 전체의 변경사항을 add
-          git add outputs/
-          
-          # 커밋할 내용이 없을 경우를 대비하여 || true 추가
-          git commit -m "chore(data): update daily analysis results" || echo "No changes to commit"
-          
-          # 커밋 후에 rebase 실행
-          git pull --rebase
-          
-          git push
-      # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-
-      # ▼▼▼▼▼▼ 웨어하우스에 메타 파일 커밋 ▼▼▼▼▼▼
-      - name: Commit Latest Meta to Warehouse
-        shell: bash
-        run: |
-          set -e
-          LATEST_META=$(ls -t data/news_meta_*.json | head -n 1)
-          if [ -f "$LATEST_META" ]; then
-            DATE_KST=$(TZ=Asia/Seoul date +'%Y-%m-%d')
-            TIME_KST=$(TZ=Asia/Seoul date +'%H%M%S')
-            WAREHOUSE_DIR="data/warehouse/meta/${DATE_KST}"
-            mkdir -p "${WAREHOUSE_DIR}"
-            
-            # 시간까지 포함된 파일명으로 복사하여 하루 여러 번 실행해도 덮어쓰지 않도록 함
-            cp "$LATEST_META" "${WAREHOUSE_DIR}/news_meta_${TIME_KST}.json"
-            
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add "${WAREHOUSE_DIR}"
-            git commit -m "chore(warehouse): add daily meta for ${DATE_KST}" || echo "No changes to commit"
-            git pull --rebase
-            git push
-          else
-            echo "[WARN] No news_meta file found to commit to warehouse."
-          fi
-
       # --- 일간 리포트 생성 ---
       - name: 🎨 Generate Daily Visuals & Report
         run: |
@@ -149,52 +106,42 @@ jobs:
           echo "=================================================="
               
        # 일자별 아카이브(KST)
-      - name: Prepare outputs daily folder (KST)
-        shell: bash
+      - name: 💾 Finalize, Archive and Commit All Outputs
         run: |
           set -e
+          
+          # --- 1. 일일 아카이브 폴더 생성 및 파일 복사 ---
+          # (기존 'Prepare outputs daily folder'의 역할)
           DATE_KST=$(TZ=Asia/Seoul date +'%Y-%m-%d')
           TIME_KST=$(TZ=Asia/Seoul date +'%H%M-KST')
           OUTDIR="outputs/daily/${DATE_KST}/${TIME_KST}"
-          mkdir -p "${OUTDIR}/fig" "${OUTDIR}/debug" "${OUTDIR}/export"
-
-          # 기본 결과 파일 복사 (json, html, md)
+          mkdir -p "${OUTDIR}/fig" "${OUTDIR}/export" "${OUTDIR}/debug"
+          
           cp outputs/*.json             "${OUTDIR}/" || true
           cp outputs/*.html             "${OUTDIR}/" || true
           cp outputs/*.md               "${OUTDIR}/" || true
-
-          # 디버그 메타 파일들을 올바른 위치(debug/)에서 상위 폴더로 복사
-          if [ -f outputs/debug/run_meta_b.json ]; then
-            cp outputs/debug/run_meta_b.json "${OUTDIR}/"
-          fi
-          if [ -f outputs/debug/run_meta_c.json ]; then
-            cp outputs/debug/run_meta_c.json "${OUTDIR}/"
-          fi
+          cp -r outputs/export/* "${OUTDIR}/export/" || true
+          cp -r outputs/fig/* "${OUTDIR}/fig/" || true
+          cp -r outputs/debug/* "${OUTDIR}/debug/" || true
           
-          # 서브폴더 내용 전체 복사 (export, fig, debug)
-          if [ -d outputs/export ]; then
-            cp -r outputs/export/* "${OUTDIR}/export/" || true
-          fi
-          if [ -d outputs/fig ]; then
-            cp -r outputs/fig/* "${OUTDIR}/fig/" || true
-          fi
-          if [ -d outputs/debug ]; then
-            cp -r outputs/debug/* "${OUTDIR}/debug/" || true
-          fi
-          
-          echo "OUTDIR=${OUTDIR}" >> $GITHUB_ENV
-
-      # outputs 커밋/푸시
-      - name: Archive and Commit Daily Outputs
-        shell: bash
-        run: |
-          set -e
+          # --- 2. Git 사용자 설정 ---
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
-          git add outputs/daily
-          git commit -m "chore: outputs (KST rotation)" || echo "no changes"
-          git pull --rebase --autostash origin ${{ github.ref_name }} || true
-          git push origin HEAD:${{ github.ref_name }} || true
+
+          # --- 3. 모든 변경사항을 한 번에 추가 ---
+          # (웨어하우스, 아카이브, outputs/export의 누적 파일 등 모든 변경사항 포함)
+          git add data/warehouse/
+          git add outputs/
+          
+          # --- 4. 단일 커밋 및 푸시 ---
+          # 커밋할 내용이 없을 경우를 대비하여 || echo ... 추가
+          git commit -m "docs(daily): update report and data for ${DATE_KST}" || echo "No changes to commit"
+          
+          # 원격 저장소의 변경사항을 먼저 가져와서 rebase
+          git pull --rebase
+          
+          # 최종적으로 푸시
+          git push
 
       # 오래된 outputs/warehouse 정리
       - name: Cleanup old warehouse (main only, keep 90 days)
