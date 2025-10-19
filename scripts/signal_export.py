@@ -8,6 +8,7 @@ import datetime
 import unicodedata
 from collections import defaultdict, Counter
 from src.timeutil import to_date, kst_date_str, kst_run_suffix
+from src.utils import latest
 
 # =================== 설정 ===================
 DICT_DIR = "data/dictionaries"
@@ -176,10 +177,25 @@ def _latest(path_glob: str):
     return files[-1] if files else None
 
 def _pick_meta_path():
+    """실행 주기(일간/주간/월간)에 맞는 메타 데이터 파일 경로를 반환합니다."""
+    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
+    is_weekly_run = os.getenv("WEEKLY_RUN", "false").lower() == "true"
+
+    if is_monthly_run:
+        path = "outputs/debug/monthly_meta_agg.json"
+        print(f"[INFO] signal_export: Using monthly aggregated meta file: {path}")
+        return path if os.path.exists(path) else None
+    
+    if is_weekly_run:
+        path = "outputs/debug/weekly_meta_agg.json"
+        print(f"[INFO] signal_export: Using weekly aggregated meta file: {path}")
+        return path if os.path.exists(path) else None
+
+    # 일간 실행 (기존 로직)
     p1 = "outputs/debug/news_meta_latest.json"
     if os.path.exists(p1):
         return p1
-    return _latest("data/news_meta_*.json")
+    return latest("data/news_meta_*.json")
 
 def _detect_events_from_items(items: list) -> list:
     rows = []

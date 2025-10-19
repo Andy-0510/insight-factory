@@ -58,15 +58,6 @@ jobs:
             echo "[WARN] NAVER API 키가 없습니다(옵션?)."
           fi
       
-      # --- ▼▼▼▼▼ [검증 1] 체크아웃 직후 파일 확인 ▼▼▼▼▼ ---
-      - name: "DEBUG: Check file after checkout"
-        run: |
-          echo "--- Verifying 'daily_topic_sentiment.csv' immediately after checkout ---"
-          ls -l outputs/daily/export/daily_topic_sentiment.csv || echo "==> File not found right after checkout."
-          echo "--- Verifying 'event.csv' immediately after checkout ---"
-          ls -l outputs/daily/export/event.csv || echo "==> File not found right after checkout."
-      # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-
       # --- 월간 리포트에 필요한 모든 모듈 실행 ---
       - name: 📊 Run Monthly Analysis & Reporting
         env:
@@ -91,12 +82,6 @@ jobs:
           python -m src.module_e
           echo -e "\n--- STEP 3-3_future_insights ---"
           python -m scripts.future_insights
-
-          # --- ▼▼▼ [검증 2] module_g_risk 실행 직전 파일 확인 ▼▼▼ ---
-          echo "--- Verifying file just before running module_g_risk ---"
-          ls -l outputs/export/daily_topic_sentiment.csv || echo "==> File not found before module_g_risk."
-          # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-          
 
           echo -e "\n--- STEP 4: 리스크 및 실행 계획 분석 ---"
           echo -e "\n--- STEP 4-1_module_g_risk ---"
