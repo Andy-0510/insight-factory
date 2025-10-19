@@ -2,6 +2,7 @@ import pandas as pd
 from src.utils import load_json, latest
 import os
 import re
+import glob
 from transformers import pipeline
 from datetime import datetime, timedelta
 
@@ -26,20 +27,17 @@ def get_sentiment_analyzer():
 def calculate_sentiments():
     """
     최신 기사 데이터와 토픽 데이터를 기반으로 토픽별 일일 감성 점수를 계산하고 누적 저장합니다.
-    월간 실행 시에는 이 작업을 건너뜁니다.
     """
-    # --- ▼▼▼▼▼ [추가] 월간 실행 시 함수를 즉시 종료 ▼▼▼▼▼ ---
     is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
     if is_monthly_run:
         print("[INFO] Monthly Run: Skipping daily sentiment calculation.")
         return
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
     analyzer = get_sentiment_analyzer()
     if not analyzer:
         return
 
-    # 1. 데이터 로드
+    # 1. 분석 대상 데이터 로드
     meta_items = load_json(latest("data/news_meta_*.json"), [])
     topics_data = load_json("outputs/topics.json", {"topics": []})
     
@@ -49,47 +47,58 @@ def calculate_sentiments():
 
     today_date = pd.to_datetime("today").strftime("%Y-%m-%d")
 
-    # 2. 토픽별로 기사 매핑 및 감성 분석
-    topic_sentiments = {} # {topic_id: [score1, score2, ...]}
+    # 2. 토픽별 감성 분석 (기존과 동일)
+    topic_sentiments = {}
+    # ... (기존의 토픽별 감성 점수 계산 로직은 그대로 유지) ...
     for topic in topics_data["topics"]:
         topic_id = topic["topic_id"]
         topic_keywords = [w["word"] for w in topic.get("top_words", [])]
         topic_sentiments[topic_id] = []
-
         keyword_pattern = re.compile('|'.join(re.escape(kw) for kw in topic_keywords), re.IGNORECASE)
-
         for item in meta_items:
             content = item.get("body") or item.get("description", "")
             if content and keyword_pattern.search(content):
                 try:
                     result = analyzer(content, truncation=True, max_length=512)[0]
-                    # KcELECTRA 모델은 'LABEL_0'(부정), 'LABEL_1'(긍정)을 반환합니다.
-                    # 'LABEL_1'일 경우 score, 'LABEL_0'일 경우 1 - score로 변환하여 긍정 점수로 통일합니다.
                     score = result['score'] if result['label'] == 'LABEL_1' else 1 - result['score']
                     topic_sentiments[topic_id].append(score)
                 except Exception:
                     continue
     
-    # 3. 토픽별 평균 감성 점수 계산
+    # 3. 오늘 계산된 데이터
     results = []
     for topic_id, scores in topic_sentiments.items():
         if scores:
             avg_score = sum(scores) / len(scores)
-            results.append({
-                "date": today_date,
-                "topic_id": topic_id,
-                "avg_sentiment": round(avg_score, 4),
-                "article_count": len(scores)
-            })
+            results.append({"date": today_date, "topic_id": topic_id, "avg_sentiment": round(avg_score, 4), "article_count": len(scores)})
 
-    # 4. CSV 파일에 누적 저장 (최신 90일 데이터만 유지)
     df_new = pd.DataFrame(results)
-    if os.path.exists(OUTPUT_CSV):
-        df_existing = pd.read_csv(OUTPUT_CSV)
+
+    # 4. 과거 데이터 로드
+    df_existing = pd.DataFrame()
+    # 'outputs/daily/' 폴더 아래의 모든 날짜/시간 폴더를 검색
+    archive_paths = sorted(glob.glob("outputs/daily/*/*"))
+    if archive_paths:
+        # 가장 마지막 폴더가 가장 최신 아카이브
+        latest_archive_path = archive_paths[-1]
+        latest_sentiment_file = os.path.join(latest_archive_path, "export", "daily_topic_sentiment.csv")
+        
+        print(f"[INFO] Loading existing sentiment data from latest archive: {latest_sentiment_file}")
+        if os.path.exists(latest_sentiment_file):
+            df_existing = pd.read_csv(latest_sentiment_file)
+            print(f"  -> Found {len(df_existing)} existing records.")
+        else:
+            print(f"  -> No sentiment file found in the latest archive. Starting fresh.")
+    else:
+        print("[INFO] No daily archives found. Starting fresh.")
+
+    # 5. 데이터 병합 및 저장
+    if not df_existing.empty:
         df_existing = df_existing[df_existing["date"] != today_date]
         df_final = pd.concat([df_existing, df_new], ignore_index=True)
     else:
         df_final = df_new
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
     
     # 90일 이전 데이터 삭제 로직
     df_final['date'] = pd.to_datetime(df_final['date'])
