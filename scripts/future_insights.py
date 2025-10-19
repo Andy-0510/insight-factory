@@ -6,7 +6,6 @@ import re
 from collections import defaultdict
 from src.utils import load_json, save_json, latest
 
-# --- ▼▼▼▼▼ [수정] 데이터 로드 로직을 함수 밖으로 빼고 공통으로 사용 ▼▼▼▼▼ ---
 def get_meta_items():
     """실행 주기(일간/주간/월간)에 맞는 메타 데이터 파일을 로드합니다."""
     is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
@@ -29,8 +28,6 @@ def get_meta_items():
         
     print(f"[INFO] future_insights loading meta data from: {meta_path}")
     return load_json(meta_path, [])
-# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-
 
 def call_gemini_for_maturity(tech_name, data):
     try:
@@ -118,7 +115,7 @@ def analyze_tech_maturity():
     print("\n--- 1. 기술 성숙도 분석 시작 ---")
 
     config = load_json("config.json")
-    keywords_data = load_json("outputs/keywords.json", default={})
+    keywords_data = load_json("outputs/keywords.json", default={}) # 기본값 설정
     top_keywords = {item['keyword'] for item in keywords_data.get('keywords', [])[:20]}
     
     tech_filter = set(config.get('domain_hints', []))
@@ -136,10 +133,7 @@ def analyze_tech_maturity():
         print(f"[ERROR] 분석에 필요한 CSV 파일 없음: {e}")
         return
         
-    # --- ▼▼▼▼▼ [수정] 공통 함수를 통해 메타 데이터 로드 ▼▼▼▼▼ ---
     meta_data = get_meta_items()
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-  
 
     # ✅ Hugging Face Hub에서 바로 모델 로드 (로컬/깃액션 동일)
     from transformers import pipeline
