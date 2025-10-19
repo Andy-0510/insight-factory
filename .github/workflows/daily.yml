@@ -86,13 +86,20 @@ jobs:
           echo "✅ 모든 데이터 처리 모듈 실행 완료"
 
       # --- ▼▼▼▼▼ Sentiment Data 커밋 단계 ▼▼▼▼▼ ---
-      - name: Commit Daily Sentiment Data
+      - name: Commit Daily Analysis Results
         run: |
           git config user.name "github-actions[bot]"
           git config user.email "github-actions[bot]@users.noreply.github.com"
+
+          # outputs 폴더 전체의 변경사항을 add
+          git add outputs/
+          
+          # 커밋할 내용이 없을 경우를 대비하여 || true 추가
+          git commit -m "chore(data): update daily analysis results" || echo "No changes to commit"
+          
+          # 커밋 후에 rebase 실행
           git pull --rebase
-          git add outputs/export/daily_topic_sentiment.csv
-          git commit -m "chore(data): update daily sentiment log" || echo "No changes to commit"
+          
           git push
       # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
