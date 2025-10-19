@@ -73,6 +73,15 @@ def _insert_images(image_paths, md_out_path, captions=None):
     return ("\n".join(lines) + "\n") if lines else ""
 # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
+# --- ▼▼▼▼▼ [신규 추가] 일일 급등 신호 섹션 함수 ▼▼▼▼▼ ---
+def _section_daily_hot_signals(data):
+    """오늘 가장 뜨거운 '급등 신호'를 보여줍니다."""
+    df_hot = _safe_read_csv(os.path.join(EXPORT_DIR, "daily_hot_signals.csv"))
+    return _to_markdown_table(df_hot.rename(columns={
+        'term': '급등 신호', 'cur': '오늘 언급량', 'diff': '어제 대비 증가', 'z_like': '모멘텀(z_like)'
+    }))
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
 def _section_time_series(data):
     """일일 시장 활동량 및 이상 징후 (최근 30일 기준)"""
     ts = data.get("ts", {})
@@ -131,13 +140,14 @@ def _section_time_series(data):
         
     return "\n".join(lines)
 
-def _section_signals_board(data):
-    # ... (기존과 동일)
+def _section_historical_strong_signals(data):
+    """지난 30일 기준의 누적 '강한 신호'를 보여줍니다."""
     df_strong = _safe_read_csv(os.path.join(EXPORT_DIR, "trend_strength.csv"))
     if not df_strong.empty:
-        rows = [{"모멘텀 토픽": row.get("term"), "z_like 점수": _fmt_float(row.get("z_like"), 2), "금일 언급량": _fmt_int(row.get("cur"))} for _, row in df_strong.head(3).iterrows()]
+        # 기존 로직과 동일
+        rows = [{"모멘텀 토픽": row.get("term"), "z_like 점수": _fmt_float(row.get("z_like"), 2), "누적 언급량": _fmt_int(row.get("total"))} for _, row in df_strong.head(5).iterrows()]
         return _to_markdown_table(pd.DataFrame(rows))
-    return "- (강한 신호 데이터 없음)\n"
+    return "- (누적 강한 신호 데이터 없음)\n"
 
 def _section_competitor_events(data):
     # ... (기존과 동일)
@@ -169,11 +179,25 @@ def build_html_from_md_new(md_path=OUT_MD, out_html=OUT_HTML):
 def build_daily_markdown():
     data = _load_data(); today_str = datetime.now().strftime("%Y-%m-%d")
     lines = [f"# Daily Briefing ({today_str})"]
-    lines.append(_section_header("1. 시장 활동량 및 이상 징후")); lines.append(_section_time_series(data))
-    lines.append(_section_header("2. 핵심 모멘텀 토픽 Top 3")); lines.append(_section_signals_board(data))
-    lines.append(_section_header("3. 경쟁사 주요 활동")); lines.append(_section_competitor_events(data))
-    lines.append(_section_header("4. 주요 기사")); lines.append(_section_top_articles(data))
-    with open(OUT_MD, "w", encoding="utf-8") as f: f.write("\n".join(lines))
+    
+    # --- ▼▼▼▼▼ [수정] 리포트 섹션 순서 및 내용 변경 ▼▼▼▼▼ ---
+    lines.append(_section_header("1. 시장 활동량 및 이상 징후"))
+    lines.append(_section_time_series(data))
+
+    lines.append(_section_header("2. 오늘의 급등 신호 (Today's Hot Signals)"))
+    lines.append(_section_daily_hot_signals(data))
+    lines.append(_section_header("참고: 최근 30일 누적 강한 신호 Top 5"))
+    lines.append(_section_historical_strong_signals(data))
+
+    lines.append(_section_header("3. 경쟁사 주요 활동"))
+    lines.append(_section_competitor_events(data))
+    
+    lines.append(_section_header("4. 주요 기사"))
+    lines.append(_section_top_articles(data))
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    with open(OUT_MD, "w", encoding="utf-8") as f:
+        f.write("\n".join(lines))
     return OUT_MD
 
 def main():

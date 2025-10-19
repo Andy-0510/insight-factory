@@ -366,7 +366,7 @@ def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[st
     return edges, sorted(nodes)
 
 
-def compute_company_network(items, period="current"):
+def compute_company_network(items): # items 인자 추가
     edges, nodes = build_cooccurrence_edges(items)
     if not edges and not nodes:
         return None
@@ -472,74 +472,64 @@ def generate_analysis_summary(matrix_path: str, network_obj: Dict[str, Any]) -> 
 
     return summary
 
-# ====== 메인 파이프라인 ======
-def build_company_network(out_json="outputs/company_network.json"):
-    items = load_meta_files(max_files=5)
-    print(f"[DEBUG] Loaded {len(items)} meta items")
-    G = compute_company_network(items)
+
+def build_company_network(meta_items: List[Dict[str, Any]], out_json="outputs/company_network.json"):
+    # items = load_meta_files(max_files=5) # 👈 이 부분을 삭제하고 인자로 받은 meta_items 사용
+    print(f"[DEBUG] Building network from {len(meta_items)} meta items")
+    G = compute_company_network(meta_items) # compute_company_network에 meta_items 전달
     if not G:
         print("[WARN] No network data.")
-        save_json(out_json, {
-            "timestamp": today_utc_iso(),
-            "nodes": [],
-            "edges": [],
-            "top_pairs": [],
-            "centrality": [],
-            "betweenness": [],
-            "communities": []
-        })
+        save_json(out_json, {"timestamp": today_utc_iso(), "nodes": [], "edges": [], "top_pairs": [], "centrality": [], "betweenness": [], "communities": []})
         return
 
     analysis = analyze_network(G, top_n=10)
     save_json(out_json, analysis)
     print(f"[INFO] Saved {out_json} (nodes={len(analysis.get('nodes', []))}, edges={len(analysis.get('edges', []))})")
-
-def main():
-    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
     
+
+# ====== 메인 파이프라인 ======
+def main():
+    print("[INFO] Module D - Analysis 시작")
+
+    # 1. 실행 주기에 맞는 메타 데이터 경로 설정
+    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
     if is_monthly_run:
         meta_path = "outputs/debug/monthly_meta_agg.json"
         print(f"[INFO] Monthly Run: Using aggregated meta file for {__name__}.")
     else:
-        # 일간 실행 시에는 디버깅용 최신 복사본을 우선 사용
         meta_path = "outputs/debug/news_meta_latest.json"
         if not os.path.exists(meta_path):
             meta_path = latest("data/news_meta_*.json")
 
     if not meta_path or not os.path.exists(meta_path):
-        raise SystemExit("Input meta file not found.")
+        raise SystemExit("Input meta file not found for Module D.")
         
+    # 2. 모든 분석에 사용할 데이터 로드 (단 한 번만)
     print(f"[INFO] Loading meta data from: {meta_path}")
     meta_items = load_json(meta_path, [])
-    
-    print("[INFO] Module D - Analysis 시작")
-    os.makedirs("outputs", exist_ok=True)
-    os.makedirs("outputs/export", exist_ok=True)
-
-    # 입력 로드
-    meta_items = load_json(latest("data/news_meta_*.json"), [])
     topics_obj = load_json("outputs/topics.json", {"topics": []})
-
-    # 1) 기업×토픽 매트릭스
+    
+    # 3. 기업×토픽 매트릭스 생성
     try:
         export_company_topic_matrix(meta_items, topics_obj, CFG)
     except Exception as e:
         print(f"[ERROR] Matrix export failed: {e}")
 
-    # 2) 기업 네트워크 JSON
+    # 4. 기업 네트워크 생성
     try:
-        build_company_network(out_json="outputs/company_network.json")
+        build_company_network(meta_items, out_json="outputs/company_network.json")
     except Exception as e:
         print(f"[ERROR] Network analysis failed: {e}")
 
-    # 3) 분석 요약 저장
-    net_obj = load_json("outputs/company_network.json", {"nodes": [], "edges": []})
+    # 5. 분석 요약 저장
+    net_obj = load_json("outputs/company_network.json", {})
     summary = generate_analysis_summary(
         "outputs/export/company_topic_matrix_wide.csv",
         net_obj
     )
     save_json("outputs/analysis_summary.json", summary)
     print("[INFO] Module D 완료")
+
 
 if __name__ == "__main__":
     main()

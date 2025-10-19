@@ -85,31 +85,6 @@ jobs:
 
           echo "✅ 모든 데이터 처리 모듈 실행 완료"
 
-      # ▼▼▼▼▼▼ 웨어하우스에 메타 파일 커밋 ▼▼▼▼▼▼
-      - name: Commit Latest Meta to Warehouse
-        shell: bash
-        run: |
-          set -e
-          LATEST_META=$(ls -t data/news_meta_*.json | head -n 1)
-          if [ -f "$LATEST_META" ]; then
-            DATE_KST=$(TZ=Asia/Seoul date +'%Y-%m-%d')
-            TIME_KST=$(TZ=Asia/Seoul date +'%H%M%S')
-            WAREHOUSE_DIR="data/warehouse/meta/${DATE_KST}"
-            mkdir -p "${WAREHOUSE_DIR}"
-            
-            # 시간까지 포함된 파일명으로 복사하여 하루 여러 번 실행해도 덮어쓰지 않도록 함
-            cp "$LATEST_META" "${WAREHOUSE_DIR}/news_meta_${TIME_KST}.json"
-            
-            git config user.name "github-actions[bot]"
-            git config user.email "github-actions[bot]@users.noreply.github.com"
-            git add "${WAREHOUSE_DIR}"
-            git commit -m "chore(warehouse): add daily meta for ${DATE_KST}" || echo "No changes to commit"
-            git pull --rebase
-            git push
-          else
-            echo "[WARN] No news_meta file found to commit to warehouse."
-          fi
-
       # --- 일간 리포트 생성 ---
       - name: 🎨 Generate Daily Visuals & Report
         run: |
@@ -131,6 +106,7 @@ jobs:
           echo "=================================================="
               
        # 일자별 아카이브(KST)
+      # 일자별 아카이브(KST)
       - name: Prepare outputs daily folder (KST)
         shell: bash
         run: |
@@ -167,7 +143,7 @@ jobs:
           echo "OUTDIR=${OUTDIR}" >> $GITHUB_ENV
 
       # outputs 커밋/푸시
-      - name: Archive and Commit Daily Outputs
+      - name: Archive and Commit daily Report
         shell: bash
         run: |
           set -e

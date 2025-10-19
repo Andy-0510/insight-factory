@@ -71,7 +71,8 @@ jobs:
           python -m scripts.future_insights 
           python -m src.module_c 
 
-          echo -e "\n--- STEP 2: LLM 기반 분석 및 리포트 생성 ---"
+          echo -e "\n--- STEP 2: 시각화 및 LLM 기반 분석 및 리포트 생성 ---"
+          python -m scripts.generate_visuals --report-type weekly
           python -m src.module_f.weekly_report
       
       - name: 📝 Log Weekly Results
