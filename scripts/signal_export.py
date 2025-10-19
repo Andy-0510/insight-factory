@@ -337,6 +337,41 @@ def export_events(out_path="outputs/export/events.csv"):
     os.replace(tmp_path, out_path)
     print(f"[INFO] [signal_export] -> events.csv 생성 완료 ({len(rows)}개 이벤트)")
 
+# --- ▼▼▼▼▼ [신규 추가] 일일 급등 신호 추출 함수 ▼▼▼▼▼ ---
+def export_daily_spikes(rows, out_path="outputs/export/daily_hot_signals.csv"):
+    """
+    당일 데이터(cur)가 전일(prev) 및 7일 평균(ma7)보다 높고,
+    z_like 점수가 특정 임계치를 넘는 '오늘의 급등 신호'만 추출합니다.
+    """
+    spikes = []
+    for r in rows:
+        try:
+            # 급등 조건 정의
+            is_spike = (
+                r["cur"] > r["prev"] and
+                r["cur"] > r["ma7"] and
+                r["z_like"] >= 1.5 and
+                r["diff"] >= 2
+            )
+            if is_spike:
+                spikes.append(r)
+        except (TypeError, KeyError):
+            continue
+            
+    spikes.sort(key=lambda x: (x["z_like"], x["diff"]), reverse=True)
+    
+    # CSV 파일로 저장
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+    with open(out_path, "w", encoding="utf-8", newline="") as f:
+        writer = csv.writer(f)
+        writer.writerow(["term", "cur", "diff", "z_like"])
+        for r in spikes[:10]: # 상위 10개만 저장
+            writer.writerow([r["term"], r["cur"], r["diff"], f"{r['z_like']:.2f}"])
+            
+    print(f"[INFO] [signal_export] -> daily_hot_signals.csv 생성 완료 ({len(spikes)}개 후보 중 {min(len(spikes), 10)}개 선정)")
+
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
 # =================== 메인 ===================
 def main():
     t0 = time.time()
@@ -377,6 +412,9 @@ def main():
     export_trend_strength(rows_stat)
     export_weak_signals(rows_stat)
     export_events()
+    # --- ▼▼▼▼▼ [추가] 신규 함수 호출 ▼▼▼▼▼ ---
+    export_daily_spikes(rows_stat)
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 if __name__ == "__main__":
     main()
