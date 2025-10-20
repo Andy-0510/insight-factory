@@ -2,16 +2,17 @@ import pandas as pd
 from src.utils import load_json, latest
 import os
 from datetime import datetime
+import glob  # [수정] glob 모듈 추가
 
 TOP_N = 3 # 최종 선정할 기사 수
 OUTPUT_CSV = "outputs/export/today_article_list.csv"
 CUMULATIVE_OUTPUT_CSV = "outputs/export/daily_signal_counts.csv"
 SCORE_THRESHOLD = 0.0 # 점수가 0.0 이상인 기사를 '관심 기사'로 간주하고 저장 (토픽 ∩ Event)
 
-
 def select_articles():
     """
-    그날의 핵심 토픽 및 이벤트와 가장 관련성 높은 기사를 선정합니다.
+    그날의 핵심 토픽 및 이벤트와 가장 관련성 높은 기사를 선정하고,
+    관심 기사 수를 집계하여 '가장 최신 아카이브'의 기록에 이어 누적 저장합니다.
     월간 실행 시에는 이 작업을 건너뜁니다.
     """
     # --- ▼▼▼▼▼ [추가] 월간 실행 시 함수를 즉시 종료 ▼▼▼▼▼ ---
@@ -73,14 +74,33 @@ def select_articles():
     df_top_articles.to_csv(OUTPUT_CSV, index=False, encoding="utf-8-sig")
     print(f"[INFO] Top articles for report (max 5) saved to {OUTPUT_CSV}")
 
-    # --- ▼▼▼ '관심 기사 수'를 scored_articles의 전체 개수로 변경 ▼▼▼ ---
+        # --- ▼▼▼▼▼ [수정] 과거 데이터 로딩 로직 변경 ▼▼▼▼▼ ---
+    
     today_date = datetime.now().strftime("%Y-%m-%d")
-    signal_count = len(scored_articles) # TOP_N이 아닌, 점수를 넘긴 모든 기사의 수
-    
+    signal_count = len(scored_articles)
     new_data = {"date": today_date, "signal_article_count": signal_count}
-    
-    if os.path.exists(CUMULATIVE_OUTPUT_CSV):
-        df_existing = pd.read_csv(CUMULATIVE_OUTPUT_CSV)
+
+    df_existing = pd.DataFrame()
+    # 1. 모든 날짜/시간 아카이브 폴더 경로를 찾습니다.
+    archive_paths = sorted(glob.glob("outputs/daily/*/*"))
+    if archive_paths:
+        # 2. 가장 마지막 경로가 가장 최신 아카이브입니다.
+        latest_archive_path = archive_paths[-1]
+        latest_cumulative_file = os.path.join(latest_archive_path, "export", "daily_signal_counts.csv")
+        
+        print(f"[INFO] Loading existing signal counts from latest archive: {latest_cumulative_file}")
+        if os.path.exists(latest_cumulative_file):
+            df_existing = pd.read_csv(latest_cumulative_file)
+            print(f"  -> Found {len(df_existing)} existing records.")
+        else:
+            print("  -> No signal count file found in the latest archive. Starting fresh.")
+    else:
+        print("[INFO] No daily archives found. Starting fresh.")
+
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    # 데이터 병합 및 저장 (기존 로직과 동일)
+    if not df_existing.empty:
         df_existing = df_existing[df_existing["date"] != today_date]
         df_final = pd.concat([df_existing, pd.DataFrame([new_data])], ignore_index=True)
     else:
@@ -89,7 +109,6 @@ def select_articles():
     df_final.sort_values(by="date", inplace=True)
     df_final.to_csv(CUMULATIVE_OUTPUT_CSV, index=False, encoding="utf-8-sig")
     print(f"[INFO] Daily signal count ({signal_count}) saved to {CUMULATIVE_OUTPUT_CSV}")
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 if __name__ == "__main__":
     select_articles()
