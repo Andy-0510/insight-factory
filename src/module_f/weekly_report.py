@@ -17,7 +17,13 @@ FIG_DIR = os.path.join(ROOT_OUTPUT_DIR, "fig")
 OUT_MD = os.path.join(ROOT_OUTPUT_DIR, "weekly_report.md")
 OUT_HTML = os.path.join(ROOT_OUTPUT_DIR, "weekly_report.html")
 EXPORT_DIR = os.path.join(ROOT_OUTPUT_DIR, "export")
-TARGET_COMPETITORS = ["삼성디스플레이", "LG디스플레이", "BOE", "CSOT", "Visionox", "Tianma"]
+TARGET_COMPETITORS = [
+    "삼성전자", # 테스트 용으로 추후 삭제 필요
+    "삼성디스플레이", "Samsung Display", "SANSUNG 디스플레이", "SAMSUNG DISPLAY",
+    "LG DISPLAY", "LG Display", "LG디스플레이", "LGD", "lg디스플레이",
+     "BOE", "boe", "CSOT", "csot", "VISIONOX", "Visionox", "TIANMA", "Tianma",
+     "SHARP", "Sharp", "JOLED", "INNOLUX", "Innolux"
+    ]
 
 # --- ▼▼▼▼▼▼ 주간 경영 요약을 위한 LLM 호출 함수 ▼▼▼▼▼▼ ---
 def call_gemini_for_weekly_summary(context):
