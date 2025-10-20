@@ -549,50 +549,50 @@ def run_daily_visuals():
         print(f"[WARN] Failed to generate daily visuals: {e}")
 
 def run_weekly_visuals():
-    """주간 리포트에 필요한 시각화를 위해 데이터를 집계하고 실행합니다."""
-    print("\n--- Aggregating and Generating Weekly Visuals ---")
+    """
+    주간 리포트에 필요한 시각화를 위해, 미리 집계된 통합 파일을 사용합니다.
+    """
+    print("\n--- Generating Weekly Visuals using Aggregated Data ---")
     
-    # 1. 주간 데이터 집계
-    all_keywords, all_trends = [], pd.DataFrame()
-    for i in range(7):
-        date_str = (datetime.now() - timedelta(days=i)).strftime("%Y-%m-%d")
-        date_folders = sorted(glob.glob(os.path.join(DAILY_ARCHIVE_DIR, date_str, "*")))
-        if not date_folders: continue
-        latest_daily_folder = date_folders[-1]
-        
-        kw_path = os.path.join(latest_daily_folder, "keywords.json")
-        if os.path.exists(kw_path):
-            all_keywords.extend(load_json(kw_path, {"keywords": []}).get("keywords", []))
-            
-        trends_path = os.path.join(latest_daily_folder, "export", "trend_strength.csv")
-        if os.path.exists(trends_path):
-            df = pd.read_csv(trends_path)
-            all_trends = pd.concat([all_trends, df], ignore_index=True)
-    print(f"  -> Aggregated {len(all_keywords)} keywords and {len(all_trends)} trend entries over 7 days.")
+    # --- ▼▼▼ [수정] 7일치 집계 로직을 삭제하고, 통합 파일을 직접 로드합니다. ▼▼▼ ---
 
-    # 2. 주간 워드클라우드 생성
+    # 1. 주간 통합 키워드 로드
+    keywords_data = load_json(os.path.join(ROOT_OUTPUT_DIR, "keywords.json"), {"keywords": []})
+    all_keywords = keywords_data.get("keywords", [])
+
+    # 2. 주간 통합 트렌드 데이터 로드
+    all_trends = _safe_read_csv(os.path.join(EXPORT_DIR, "trend_strength.csv"))
+
+    print(f"  -> Loaded {len(all_keywords)} aggregated keywords and {len(all_trends)} trend entries.")
+    
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    # 3. 주간 워드클라우드 생성 (기존 로직과 동일)
     if all_keywords:
-        weekly_scores = defaultdict(float)
-        for k in all_keywords: weekly_scores[k['keyword']] += k.get('score', 0.0)
-        plot_wordcloud(dict(weekly_scores), os.path.join(FIG_DIR, "weekly_wordcloud.png"))
+        # all_keywords는 이미 keyword와 score를 모두 포함하므로, 바로 사용 가능
+        # (aggregate_weekly_data.py가 score를 합산하여 정렬된 keywords.json을 생성함)
+        weekly_scores = {k['keyword']: k.get('score', 0.0) for k in all_keywords}
+        plot_wordcloud(weekly_scores, os.path.join(FIG_DIR, "weekly_wordcloud.png"))
 
-    # 3. 주간 상승/하강 신호 바차트 생성
+    # 4. 주간 상승/하강 신호 바차트 생성 (기존 로직과 동일)
     if not all_trends.empty:
+        # all_trends는 일별 데이터가 모두 포함된 long-format 데이터프레임입니다.
+        # 따라서 term 별로 z_like의 주간 평균을 계산할 수 있습니다.
         weekly_trends_df = all_trends.groupby('term')['z_like'].mean().reset_index().rename(columns={'z_like': 'weekly_avg_z_like'})
         
-        rising = weekly_trends_df[weekly_trends_df['weekly_avg_z_like'] > 0].head(5)
-        falling = weekly_trends_df[weekly_trends_df['weekly_avg_z_like'] < 0].tail(5)
+        rising = weekly_trends_df[weekly_trends_df['weekly_avg_z_like'] > 0].nlargest(5, 'weekly_avg_z_like')
+        falling = weekly_trends_df[weekly_trends_df['weekly_avg_z_like'] < 0].nsmallest(5, 'weekly_avg_z_like')
         combined = pd.concat([rising, falling])
         
         if not combined.empty:
             fig = plt.figure(figsize=(12, 8))
             sns.barplot(data=combined, y="term", x="weekly_avg_z_like",
                         palette=["#3b82f6" if x > 0 else "#ef4444" for x in combined['weekly_avg_z_like']])
-            plt.title('주간 핵심 신호 모멘텀 (상승/하강 Top 5)', fontsize=16)
+            plt.title('주간 핵심 신호 모멘텀 (상위 상승/하강 term)', fontsize=16)
             plt.xlabel('주간 평균 모멘텀 (z_like)', fontsize=12)
             plt.ylabel('')
             _savefig(fig, os.path.join(FIG_DIR, "weekly_strong_signals_barchart.png"))
-            print(f"[INFO] Weekly strong signals barchart saved.")
+            print("[INFO] Weekly strong signals barchart saved.")
 
 def run_monthly_visuals():
     """월간 리포트에 필요한 시각화를 실행합니다."""

@@ -16,7 +16,14 @@ DAILY_ARCHIVE_DIR = os.path.join(ROOT_OUTPUT_DIR, "daily")
 FIG_DIR = os.path.join(ROOT_OUTPUT_DIR, "fig")
 OUT_MD = os.path.join(ROOT_OUTPUT_DIR, "weekly_report.md")
 OUT_HTML = os.path.join(ROOT_OUTPUT_DIR, "weekly_report.html")
-TARGET_COMPETITORS = ["삼성디스플레이", "LG디스플레이", "BOE", "CSOT", "Visionox", "Tianma"]
+EXPORT_DIR = os.path.join(ROOT_OUTPUT_DIR, "export")
+TARGET_COMPETITORS = [
+    "삼성전자", # 테스트 용으로 추후 삭제 필요
+    "삼성디스플레이", "Samsung Display", "SANSUNG 디스플레이", "SAMSUNG DISPLAY",
+    "LG DISPLAY", "LG Display", "LG디스플레이", "LGD", "lg디스플레이",
+     "BOE", "boe", "CSOT", "csot", "VISIONOX", "Visionox", "TIANMA", "Tianma",
+     "SHARP", "Sharp", "JOLED", "INNOLUX", "Innolux"
+    ]
 
 # --- ▼▼▼▼▼▼ 주간 경영 요약을 위한 LLM 호출 함수 ▼▼▼▼▼▼ ---
 def call_gemini_for_weekly_summary(context):
@@ -100,58 +107,44 @@ def call_gemini_for_weekly_insight(weak_signals):
         return "LLM 분석 중 오류가 발생했습니다."
 
 def load_weekly_data(days=7):
-    print(f"[INFO] Loading data from the last {days} days...")
+    """
+    `aggregate_weekly_data.py`가 생성한 주간 통합 데이터 파일들을 로드하여
+    리포트 생성에 필요한 데이터 구조로 변환합니다.
+    """
+    print(f"[INFO] Loading pre-aggregated weekly data...")
+    
+    # 최종적으로 반환할 데이터 구조
     aggregated_data = {
-        "start_date": "", "end_date": "", "total_articles": 0, "all_keywords": [],
+        "start_date": (datetime.now() - timedelta(days=days - 1)).strftime("%Y-%m-%d"),
+        "end_date": datetime.now().strftime("%Y-%m-%d"),
+        "total_articles": 0,
+        "all_keywords": [],
         "all_events": pd.DataFrame(),
         "trend_strength_history": defaultdict(list),
-        "all_weak_signals": pd.DataFrame() # 약한 신호 데이터프레임 추가
+        "all_weak_signals": pd.DataFrame()
     }
+
+    # 1. 주간 통합 키워드 로드
+    keywords_data = load_json(os.path.join(ROOT_OUTPUT_DIR, "keywords.json"), {"keywords": []})
+    aggregated_data["all_keywords"] = keywords_data.get("keywords", [])
+
+    # 2. 주간 통합 이벤트, 약한 신호 로드
+    aggregated_data["all_events"] = _safe_read_csv(os.path.join(EXPORT_DIR, "events.csv"))
+    aggregated_data["all_weak_signals"] = _safe_read_csv(os.path.join(EXPORT_DIR, "weak_signals.csv"))
     
-    end_date = datetime.now()
-    start_date = end_date - timedelta(days=days - 1)
-    aggregated_data["start_date"] = start_date.strftime("%Y-%m-%d")
-    aggregated_data["end_date"] = end_date.strftime("%Y-%m-%d")
+    # 3. 주간 통합 트렌드 기록 로드 및 history 구조로 변환
+    weekly_trends_df = _safe_read_csv(os.path.join(EXPORT_DIR, "trend_strength.csv"))
+    if not weekly_trends_df.empty:
+        for term, group in weekly_trends_df.groupby('term'):
+            aggregated_data["trend_strength_history"][term] = group[['date', 'cur', 'z_like']].to_dict('records')
 
-    for i in range(days):
-        current_date = start_date + timedelta(days=i)
-        date_str = current_date.strftime("%Y-%m-%d")
-        date_folders = sorted(glob.glob(os.path.join(DAILY_ARCHIVE_DIR, date_str, "*")))
-        if not date_folders: continue
-        
-        latest_daily_folder = date_folders[-1]
-        print(f"[DEBUG] Loading from: {latest_daily_folder}")
-
-        ts_path = os.path.join(latest_daily_folder, "trend_timeseries.json")
-        kw_path = os.path.join(latest_daily_folder, "keywords.json")
-        events_path = os.path.join(latest_daily_folder, "export", "events.csv")
-        trends_path = os.path.join(latest_daily_folder, "export", "trend_strength.csv")
-        weak_signals_path = os.path.join(latest_daily_folder, "export", "weak_signals.csv")
-        
-        ts_data = load_json(ts_path, {"daily": []}) if os.path.exists(ts_path) else {"daily": []}
-        keywords_data = load_json(kw_path, {"keywords": []}) if os.path.exists(kw_path) else {"keywords": []}
-        events_df = _safe_read_csv(events_path)
-        trends_df = _safe_read_csv(trends_path)
-        trends_df = _safe_read_csv(os.path.join(latest_daily_folder, "export", "trend_strength.csv"))
-        weak_signals_df = _safe_read_csv(weak_signals_path)
-
-        if ts_data and ts_data.get("daily"):
-            today_count = next((d['count'] for d in reversed(ts_data['daily']) if d['date'] == date_str), 0)
-            aggregated_data["total_articles"] += today_count
-        if keywords_data and keywords_data.get("keywords"):
-            aggregated_data["all_keywords"].extend(keywords_data["keywords"])
-        if not events_df.empty:
-            aggregated_data["all_events"] = pd.concat([aggregated_data["all_events"], events_df], ignore_index=True)
-        if not trends_df.empty:
-            for _, row in trends_df.iterrows():
-                aggregated_data["trend_strength_history"][row['term']].append({
-                    "date": date_str,
-                    "cur": row.get('cur', 0),
-                    "z_like": row.get('z_like', 0.0)
-                })
-        if not weak_signals_df.empty:
-            aggregated_data["all_weak_signals"] = pd.concat([aggregated_data["all_weak_signals"], weak_signals_df], ignore_index=True)
-        return aggregated_data
+    # 4. 주간 통합 메타 데이터에서 총 기사 수 계산
+    weekly_meta = load_json(os.path.join(ROOT_OUTPUT_DIR, "debug", "weekly_meta_agg.json"), [])
+    aggregated_data["total_articles"] = len(weekly_meta)
+    
+    print(f"  -> Successfully loaded {aggregated_data['total_articles']} articles and related weekly data.")
+    
+    return aggregated_data
     
 # --- ▼▼▼▼▼▼ 주간 경영 요약 섹션 최종 구현 ▼▼▼▼▼▼ ---
 def _section_weekly_summary(data):

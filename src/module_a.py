@@ -8,6 +8,8 @@ import requests
 from bs4 import BeautifulSoup
 from src.config import load_config
 from src.timeutil import kst_date_str, kst_run_suffix
+from concurrent.futures import ThreadPoolExecutor
+import concurrent.futures
 
 
 CFG = load_config()
@@ -84,7 +86,9 @@ def expand_with_og(url):
         "published_time": None
     }
     try:
-        r = http_get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=10, max_retry=2)
+        # [수정] SSL 오류를 우회하기 위해 verify=False 옵션 추가
+        r = http_get(url, headers={"User-Agent": "Mozilla/5.0"}, timeout=10, max_retry=2, verify=False)
+        
         soup = BeautifulSoup(r.text, "lxml")
         def og(name):
             tag = soup.find("meta", property=name)
@@ -94,6 +98,7 @@ def expand_with_og(url):
         meta["description_og"] = og("og:description")
         meta["published_time"] = og("article:published_time")
     except Exception:
+        # 403 Forbidden 같은 오류는 여기서 처리되어 해당 URL만 건너뛰게 됩니다.
         pass
     return meta
 
@@ -106,44 +111,65 @@ def clean_html(s):
 
 def main():
     t0 = time.time()
-    print("[INFO] [module_a] KICK-OFF: 네이버 뉴스 API 데이터 수집을 시작합니다.") # 시작 로그
+    print("[INFO] [module_a] KICK-OFF: 네이버 뉴스 API 데이터 수집을 시작합니다.")
     
-    # dry_run: 환경 변수가 우선시되며, 없을 경우 CFG 값 사용. 기본값은 True
     dry_run = (os.getenv("DRY_RUN", str(CFG.get("dry_run", True))).lower() == "true")
-    
-    # queries: 반드시 비어있지 않은 리스트여야 함. 기본값은 ["unknown"]
     q_raw = CFG.get("queries", ["unknown"])
     queries = q_raw if isinstance(q_raw, list) and q_raw else ["unknown"]
-    
-    # display: 1~100 사이로 제한. 기본값 10
     display = int(CFG.get("per_query_display", 10))
     display = max(1, min(display, 100))
-    
-    # pages: 최소 1, dry_run=False일 경우 최소 1
     pages = int(CFG.get("pages", 1))
     pages = max(1, pages)
     if not dry_run:
         pages = max(1, pages)
     
-    print(f"[INFO] queries={queries} dry_run={dry_run} display={display} pages={pages}")
+    print(f"[INFO] queries={len(queries)} dry_run={dry_run} display={display} pages={pages}")
     
-    all_items =[]
-    for q in queries:
-        batch = fetch_naver_news(q, display=display, pages=pages)
-        all_items.extend(batch)
-        print(f"[INFO] query={q} | fetched={len(batch)} | total={len(all_items)}")
+    # --- ▼▼▼ [수정] 네이버 뉴스 API 호출 병렬 처리 ▼▼▼ ---
+    print(f"[INFO] Starting Naver API calls for {len(queries)} queries in parallel...")
+    all_items = []
+    # API 서버에 과도한 부하를 주지 않도록 max_workers를 5 정도로 제한하는 것이 안정적입니다.
+    with ThreadPoolExecutor(max_workers=5) as executor:
+        # map 함수는 각 쿼리에 대해 fetch_naver_news를 실행하고, 그 결과(batch)들을 순서대로 반환합니다.
+        results = executor.map(
+            lambda q: fetch_naver_news(q, display=display, pages=pages),
+            queries
+        )
+        
+        # map이 반환한 결과(batch들의 이터레이터)를 하나의 리스트로 통합합니다.
+        for batch in results:
+            all_items.extend(batch)
+            
+    print(f"[INFO] Naver API calls finished. Total items fetched: {len(all_items)}")
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+        
     clean_items = dedup_by_url(all_items)
-    
-    meta_list =[]
-    for it in clean_items:
-        url = prefer_link(it)
-        meta = expand_with_og(url)
-        meta["title"] = clean_html(it.get("title"))
-        meta["description"] = clean_html(it.get("description"))
-        meta["pubDate_raw"] = it.get("pubDate")
-        meta["_query"] = it.get("_query")
-        meta_list.append(meta)
-        time.sleep(0.15)
+    print(f"[INFO] Unique articles to process: {len(clean_items)}")
+
+    # --- ▼▼▼ [수정] OG 메타데이터 수집 병렬 처리 ▼▼▼ ---
+    meta_list = []
+    # max_workers: 동시에 실행할 작업의 최대 개수 (네트워크 환경에 따라 조절 가능)
+    with ThreadPoolExecutor(max_workers=10) as executor:
+        # 각 뉴스 아이템의 URL로 OG 메타데이터 수집 작업을 예약합니다.
+        future_to_item = {executor.submit(expand_with_og, prefer_link(it)): it for it in clean_items}
+
+        # 완료되는 작업부터 순서대로 결과를 처리합니다.
+        for future in concurrent.futures.as_completed(future_to_item):
+            it = future_to_item[future]
+            try:
+                # 작업 결과(OG 메타데이터)를 가져옵니다.
+                meta = future.result()
+                
+                # 기존의 데이터 조합 로직은 그대로 유지합니다.
+                meta["title"] = clean_html(it.get("title"))
+                meta["description"] = clean_html(it.get("description"))
+                meta["pubDate_raw"] = it.get("pubDate")
+                meta["_query"] = it.get("_query")
+                meta_list.append(meta)
+            except Exception as e:
+                print(f"[ERROR] OG data collection failed for url {prefer_link(it)}: {e}")
+
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
     os.makedirs("data", exist_ok=True)
     ts_str = f"{kst_date_str()}-{kst_run_suffix()}"
@@ -156,7 +182,6 @@ def main():
         json.dump(meta_list, f, ensure_ascii=False, indent=2)
 
     print(f"[INFO] 저장 완료: {raw_path}, {meta_path} | 총 수집(중복 제거 후): {len(clean_items)} | 경과(초): {round(time.time()-t0,2)}")
-
     
 if __name__ == "__main__":
     main()
