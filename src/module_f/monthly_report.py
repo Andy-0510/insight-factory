@@ -135,9 +135,9 @@ def _section_monthly_new_biz_ideas(data):
     """섹션 5: 데이터 기반 신사업 아이디어 제안"""
     biz_opps_data = data.get("biz_opps", {})
     ideas = biz_opps_data.get("ideas", [])
-    
-    image = _insert_images(os.path.join(FIG_DIR, "idea_score_distribution.png"), OUT_MD, captions=["신사업 아이디어 점수 분포"])
-    
+
+    # 5.1 데이터 기반 신사업 아이디어 TOP 5
+    # 아이디어 표 생성        
     rows = []
     for idea in ideas:
         rows.append({
@@ -146,14 +146,19 @@ def _section_monthly_new_biz_ideas(data):
             "총점": idea.get("score")
         })
     table = _to_markdown_table(pd.DataFrame(rows))
-    return image + table
 
-def _section_monthly_conclusion(data):
-    """섹션 6: 향후 2주 실행 계획 (Action Plan)"""
+    # 이미지 삽입
+    image = _insert_images(os.path.join(FIG_DIR, "idea_score_distribution.png"), OUT_MD, captions=["신사업 아이디어 점수 분포"])
+
+    # 5.2 TOP 1 아이디어 2주 Action Items
     df_plan = data.get("action_plan")
-    return _to_markdown_table(df_plan)
+    if df_plan is not None:
+        action_plan_table = _to_markdown_table(df_plan)
+        plan_section = f"\n\n #### [아이디어 검증: 2주 Action Plan]\n{action_plan_table}"
+    else:
+        plan_section = "\n\n"
 
-# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+    return table + "\n\n" + image + plan_section
 
 def build_monthly_markdown():
     monthly_data = load_monthly_data()
@@ -171,7 +176,6 @@ def build_monthly_markdown():
     lines.append(_section_header("3. 경쟁사 전략적 의도 및 파트너 관계망 분석")); lines.append(_section_monthly_competitor_strategy(monthly_data))
     lines.append(_section_header("4. 전략적 리스크 관리 및 완화 액션 제안")); lines.append(_section_monthly_risk_management(monthly_data))
     lines.append(_section_header("5. 데이터 기반 신사업 아이디어 제안")); lines.append(_section_monthly_new_biz_ideas(monthly_data))
-    lines.append(_section_header("6. Top 1 신사업 아이디어 검증 (향후 2주 실행 계획))")); lines.append(_section_monthly_conclusion(monthly_data))
 
     with open(OUT_MD, "w", encoding="utf-8") as f: f.write("\n".join(lines))
     return OUT_MD
