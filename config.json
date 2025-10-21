@@ -13,7 +13,7 @@
   "OLED", "LCD"
   ],
 
-  "per_query_display": 3,
+  "per_query_display": 20,
   "pages": 1,
   "top_n_keywords": 1,
   "top_n_keywords_임시": 20,
