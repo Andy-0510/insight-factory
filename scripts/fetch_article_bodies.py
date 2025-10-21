@@ -12,62 +12,16 @@ from src.utils import load_json, save_json, latest, clean_text
 from concurrent.futures import ThreadPoolExecutor, as_completed
 from urllib.parse import urlparse
 import threading
-import requests
-from collections import defaultdict
+
+
 
 # 본문 최소 길이(환경변수로 조절). 기본 120자
 MIN_LEN = int(os.environ.get("BODY_MIN_LEN", "120"))
 MAX_WORKERS = int(os.environ.get("FETCH_MAX_WORKERS", "8"))
 PER_DOMAIN_LIMIT = int(os.environ.get("FETCH_PER_DOMAIN", "3"))
 
-# 전역: 도메인별 세마포어 관리 (defaultdict으로 간단화)
-_domain_locks: Dict[str, threading.Semaphore] = defaultdict(lambda: threading.Semaphore(PER_DOMAIN_LIMIT))
-# trafilatura config 캐시
-_CONFIG_CACHE = None
-# requests.Session 재사용
-_SESSION: Optional[requests.Session] = None
-
-# ----------------------------
-# 정규식(사전 컴파일)
-# ----------------------------
-_WS_RE = re.compile(r"\s+")
-_EMAIL_RE = re.compile(r"\b[\w.-]+@[\w.-]+\.\w+\b")
-_URL_RE = re.compile(r"https?://\S+")
-_PRICE_RE = re.compile(r"\b[0-9]{1,3}(?:,[0-9]{3})+(?:\s원(?:부터)?)?\b")
-_PHOTO_CAP_RE = re.compile(r"^\s사진\s*=\s*.*$", flags=re.M)
-_SPECIAL_ICONS_RE = re.compile(r"[│•▪◆■※☆★▷▶▸▹◀◁◾◼︎]+")
-_NAVER_HOST_RE = re.compile(r"^https?://([^/]+).")
-_HOST_EXTRACT_RE = re.compile(r"^https?://([^/]+)/?.*$")
-
-# anchors & noise patterns (확장된 패턴들)
-_ANCHORS = [
-    re.compile(p) for p in [
-        r"^앱토 한마디\b",
-        r"^BEST댓글\b",
-        r"^댓글\b",
-        r"^이 기사를 공유합니다\b",
-        r"^제원표\b",
-        r"^POINT\b",
-        r"^관련기사\b",
-        r"^기사원문\b",
-        r"^관련 기사\b",
-        r"^주요뉴스\b",
-        r"^많이 본 뉴스\b",
-        r"^추천영상\b",
-        r"^이 기사와 함께 보면\b",
-    ]
-]
-
-_NOISE_SUBS = [
-    # (pattern, flags)
-    (re.compile(r"\[[^\]]{0,120}기자\]", flags=re.I), 0),
-    (re.compile(r"[-–—]\s*기자명?\s*[^\s]*기자", flags=re.I), 0),
-    (re.compile(r"(무단전재\s*및\s*재배포\s*금지|무단전재|저작권\s*ⓒ[^,\n]+)", flags=re.I), 0),
-    (re.compile(r"(BEST댓글|댓글삭제|댓글수정|이 기사를 공유합니다|구독해주세요|좋아요)", flags=re.I), 0),
-    (re.compile(r"페이스북\s*공유|트위터\s*공유|공유하기", flags=re.I), 0),
-    (re.compile(r"읽어볼만한 기사|관련기사|추천기사", flags=re.I), 0),
-    (re.compile(r"사진=[^\n]+", flags=re.I), 0),
-]
+_domain_locks: Dict[str, threading.Semaphore] = {}
+_domain_lock_global = threading.Lock()
 
 
 def sha1(s: str) -> str:
@@ -85,45 +39,50 @@ def pick_url(it: Dict[str, Any]) -> str:
         return ""
 
     def _naver_score(u: str) -> int:
-        # 원래 구현의 의도를 유지: 호스트 부분에 naver 관련 도메인이 있으면 우선
         h = re.sub(r"^https?://([^/]+).", r"\1", (u or "").lower())
         return 2 if ("n.news.naver.com" in h or "news.naver.com" in h or "m.news.naver.com" in h) else 1
-
+    
     cand.sort(key=_naver_score, reverse=True)
     u = cand[0]
-    # AMP 경로 제거(원본 구현과 동일 형태 유지)
-    u = re.sub(r"/amp(/|).", "/", u)
+    u = re.sub(r"/amp(/|).", "/", u)  # AMP 경로 제거
     u = u.replace("m.news.naver.com", "n.news.naver.com")
     u = u.replace("news.naver.com", "n.news.naver.com")
     return u
 
 
 def _make_config():
-    global _CONFIG_CACHE
-    if _CONFIG_CACHE is None:
-        cfg = use_config()
-        cfg.set("DEFAULT", "user_agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36")
-        cfg.set("DEFAULT", "timeout", "12")
-        _CONFIG_CACHE = cfg
-    return _CONFIG_CACHE
-
+    cfg = use_config()
+    cfg.set("DEFAULT", "user_agent", "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36")
+    cfg.set("DEFAULT", "timeout", "12")
+    return cfg
 
 def _domain_semaphore(url: str) -> threading.Semaphore:
-    # defaultdict을 사용했으므로 단순히 호스트로 lookup하면 semaphore가 생성됨
     host = urlparse(url).netloc
-    return _domain_locks[host]
+    with _domain_lock_global:
+        sem = _domain_locks.get(host)
+        if sem is None:
+            sem = _domain_locks[host] = threading.Semaphore(PER_DOMAIN_LIMIT)
+        return sem
+
 
 
 # -------- 정제 유틸(노이즈 컷) --------
 def _remove_after_anchors(text: str) -> str:
     """ 특정 앵커가 나오면 그 이후는 노이즈로 간주하고 컷. """
-    if not text:
-        return ""
+    anchors = [
+        r"^앱토 한마디\b",
+        r"^BEST댓글\b",
+        r"^댓글\b",
+        r"^이 기사를 공유합니다\b",
+        r"^제원표\b",
+        r"^POINT\b",
+        r"^관련기사\b",
+        r"^기사원문\b"
+    ]
     lines = text.replace("\r\n", "\n").replace("\r", "\n").split("\n")
     out = []
     for ln in lines:
-        s = ln.strip()
-        if any(p.search(s) for p in _ANCHORS):
+        if any(re.search(p, ln.strip()) for p in anchors):
             break
         out.append(ln)
     return "\n".join(out)
@@ -131,26 +90,23 @@ def _remove_after_anchors(text: str) -> str:
 
 def _strip_common_noise(text: str) -> str:
     """ 기자/저작권/이메일/URL/가격/캡션/UX 문구 제거(보수적). """
-    if not text:
-        return ""
     t = text
-    for pat, _f in _NOISE_SUBS:
-        t = pat.sub(" ", t)
-    t = EMAIL_RE.sub(" ", t)
-    t = URL_RE.sub(" ", t)
-    t = PRICE_RE.sub(" ", t)
+    t = re.sub(r"\[[^[]\n]{0,80}기자]", " ", t)  # [매체 = ... 기자]
+    t = re.sub(r"[-–—]\s기자명?\s[^\s]기자", " ", t)  # - 기자명 ... 기자
+    t = re.sub(r"\b[\w.-]+@[\w.-]+.\w+\b", " ", t)  # 이메일
+    t = re.sub(r"(무단전재\s및\s재배포\s금지|Copyright\s*©[^,\n]+)", " ", t, flags=re.I)
+    t = re.sub(r"(BEST댓글|댓글삭제|댓글수정|이 기사를 공유합니다)", " ", t)  # UX
+    t = re.sub(r"https?://\S+", " ", t)  # URL
+    t = re.sub(r"\b[0-9]{1,3}(?:,[0-9]{3})+(?:\s원(?:부터)?)?\b", " ", t)  # 가격
     t = t.replace("▲", " ")
-    t = _PHOTO_CAP_RE.sub(" ", t)
-    t = _SPECIAL_ICONS_RE.sub(" ", t)
-    # 여러 공백은 한 번에 정리 (최종 정리는 sanitize_article에서 한 번 더 수행)
+    t = re.sub(r"^\s사진\s*=\s*.*$", " ", t, flags=re.M)
+    t = re.sub(r"[│•▪◆■※☆★▷▶▸▹◀◁◾◼︎]+", " ", t)
     t = re.sub(r"\s+", " ", t).strip()
     return t
 
 
 def _dedup_sentences(text: str) -> str:
     """ 완전 동일 문장/문단 중복 제거(순서 유지). """
-    if not text:
-        return ""
     parts = re.split(r"(?<=[.!?다])\s+", text)
     seen, out = set(), []
     for s in parts:
@@ -162,34 +118,9 @@ def _dedup_sentences(text: str) -> str:
     return " ".join(out)
 
 
-def _remove_low_korean_density(text: str, threshold: float = 0.25) -> str:
-    """문장 단위로 한글 비율이 너무 낮으면 제거 (URL/영문/코드 조각 제거에 도움)."""
-    if not text:
-        return ""
-    lines = re.split(r"\n+", text)
-    out = []
-    for ln in lines:
-        ln_s = ln.strip()
-        if not ln_s:
-            continue
-        han = len(re.findall(r"[가-힣]", ln_s))
-        ratio = han / max(len(ln_s), 1)
-        if ratio < threshold:
-            # 단문(짧음)은 보수적으로 유지: 길이 기준으로 짧은 문장은 버리지 않음
-            if len(ln_s) < 30:
-                out.append(ln_s)
-            else:
-                # 제거
-                continue
-        else:
-            out.append(ln_s)
-    return "\n".join(out)
-
-
 def sanitize_article(text: str) -> str:
     """
-    전체 정제 파이프라인: 앵커 컷 → 공통 노이즈 제거 → '제원/스펙' 표 이전 컷
-    → 중복 제거 → 저한글 비율 문장 제거 → 공백 정리.
+    전체 정제 파이프라인: 앵커 컷 → 공통 노이즈 제거 → '제원/스펙' 표 이전 컷 → 중복 제거.
     """
     if not text:
         return ""
@@ -199,8 +130,7 @@ def sanitize_article(text: str) -> str:
     if m:
         t = t[:m.start()].strip()
     t = _dedup_sentences(t)
-    t = _remove_low_korean_density(t)
-    t = _WS_RE.sub(" ", t).strip()
+    t = re.sub(r"\s+", " ", t).strip()
     return t
 
 
@@ -209,7 +139,7 @@ def _strip_html_tags(s: str) -> str:
     s = re.sub(r"<br\s*/?>", "\n", s, flags=re.I)
     s = re.sub(r"</p\s*>", "\n", s, flags=re.I)
     s = re.sub(r"<[^>]+>", " ", s)
-    s = _WS_RE.sub(" ", s).strip()
+    s = re.sub(r"\s+", " ", s).strip()
     return s
 
 
@@ -219,11 +149,11 @@ def extract_naver_body(html: str) -> str:
     m = re.search(r'<div[^>]+id=["\']dic_area["\'][^>]>(.*?)', html, flags=re.I | re.S)
     if not m:
         m = re.search(r'<div[^>]+id=["\']articleBodyContents["\'][^>]>(.*?)', html, flags=re.I | re.S)
-
+    
     txt = _strip_html_tags(m.group(1)) if m else ""
     txt = re.sub(r"\s*ⓒ.?무단전재.?$", "", txt, flags=re.I)
-    txt = EMAIL_RE.sub("", txt)
-    txt = _WS_RE.sub(" ", txt).strip()
+    txt = re.sub(r"\b[\w.-]+@[\w.-]+.\w+\b", "", txt)
+    txt = re.sub(r"\s+", " ", txt).strip()
     return txt
 
 
@@ -242,22 +172,22 @@ def fetch_body(url: str, timeout: int = 12) -> Tuple[str, str]:
     cache_path = os.path.join("data/article_cache", key + ".txt")
     cache_raw_path = os.path.join("data/article_cache", key + ".raw.txt")
 
-    # 캐시 히트(정제본 우선). _read_file 대신 빠른 존재/열기 체크
+    # 캐시 히트(정제본 우선)
     if os.path.exists(cache_path):
         try:
             with open(cache_path, "r", encoding="utf-8") as f:
                 cached = f.read().strip()
-            if len(cached) >= MIN_LEN:
-                raw = ""
-                if os.path.exists(cache_raw_path):
-                    try:
-                        with open(cache_raw_path, "r", encoding="utf-8") as rf:
-                            raw = rf.read().strip()
-                    except Exception:
-                        raw = ""
-                return cached, raw
+                if len(cached) >= MIN_LEN:
+                    # raw 캐시가 있으면 같이 읽어 반환
+                    raw = ""
+                    if os.path.exists(cache_raw_path):
+                        try:
+                            with open(cache_raw_path, "r", encoding="utf-8") as rf:
+                                raw = rf.read().strip()
+                        except Exception:
+                            pass
+                    return cached, raw
         except Exception:
-            # 캐시 읽기 실패 시 무시하고 새로 수집
             pass
 
     cfg = _make_config()
@@ -276,16 +206,15 @@ def fetch_body(url: str, timeout: int = 12) -> Tuple[str, str]:
             ) or ""
             text_raw = clean_text(t)
     except Exception:
-        text_raw = ""
+        pass
 
     # 2차: requests로 HTML → 네이버 전용 파서 → trafilatura(HTML)
     if len(text_raw) < MIN_LEN:
         try:
-            global _SESSION
-            if _SESSION is None:
-                _SESSION = requests.Session()
-                _SESSION.headers.update({"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0 Safari/537.36"})
-            r = _SESSION.get(url, timeout=timeout, allow_redirects=True)
+            import requests
+            headers = {"User-Agent": "Mozilla/5.0 (X11; Linux x86_64) AppleWebKit/537.36 "
+                                     "(KHTML, like Gecko) Chrome/124.0 Safari/537.36"}
+            r = requests.get(url, headers=headers, timeout=timeout, allow_redirects=True)
             if r.ok and r.text:
                 host = re.sub(r"^https?://([^/]+).*$", r"\1", (url or "").lower())
                 t1 = extract_naver_body(r.text) if "naver.com" in host else ""
@@ -302,7 +231,6 @@ def fetch_body(url: str, timeout: int = 12) -> Tuple[str, str]:
                 if len(cand) > len(text_raw):
                     text_raw = cand
         except Exception:
-            # 네트워크/파싱 실패 시 그냥 넘어감
             pass
 
     # 3) 정제는 항상 최종에서 1회 적용
@@ -315,6 +243,7 @@ def fetch_body(url: str, timeout: int = 12) -> Tuple[str, str]:
                 f.write(text_san)
         except Exception:
             pass
+        # raw도 별도 캐시(신호 추출용)
         try:
             with open(cache_raw_path, "w", encoding="utf-8") as rf:
                 rf.write(text_raw)
@@ -322,7 +251,6 @@ def fetch_body(url: str, timeout: int = 12) -> Tuple[str, str]:
             pass
 
     return text_san, text_raw
-
 
 def _process_one(it: Dict[str, Any]) -> Tuple[Optional[Dict[str, Any]], Optional[str]]:
     """
@@ -356,6 +284,7 @@ def _process_one(it: Dict[str, Any]) -> Tuple[Optional[Dict[str, Any]], Optional
         return None, domain
 
 
+
 def make_description_short(text: str, target_min=400, target_max=600) -> str:
     """
     본문 첫 문단/문장 기준으로 400~600자 요약 생성(문장 경계에서 자르기 시도).
@@ -366,63 +295,49 @@ def make_description_short(text: str, target_min=400, target_max=600) -> str:
     # 문단 기준
     para = txt.split("\n")[0].strip()
     base = para if len(para) >= target_min else txt
-
+    
     if len(base) <= target_max:
         return base
-
+    
     # 문장 경계에서 컷
     cut = base[:target_max]
-    # 뒤에서부터 첫 종결부호 찾기 (원래 로직과 동일)
-    m = re.search(r"[.!?다]\s", cut[::-1])
+    m = re.search(r"[.!?다]\s", cut[::-1])  # 뒤에서부터 첫 종결부호 찾기
+    
     if m:
         idx = len(cut) - m.start()
         return cut[:idx].strip()
-
+    
     return cut.strip()
 
 
 def main() -> int:
-    print("[INFO] [fetch_article_bodies] KICK-OFF: 기사 본문 수집을 시작합니다.")  # 시작 로그
-    is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
-
-    if is_monthly_run:
-        meta_path = "outputs/debug/monthly_meta_agg.json"
-        print(f"[INFO] [fetch_article_bodies] 월간 실행 모드: 집계된 메타 파일 사용")
-    else:
-        meta_path = "outputs/debug/news_meta_latest.json"
-        if not os.path.exists(meta_path):
-            meta_path = latest("data/news_meta_*.json")
-
-    if not meta_path or not os.path.exists(meta_path):
-        print("[ERROR] [fetch_article_bodies] 입력 메타 파일을 찾을 수 없습니다.")  # 에러 로그 강화
+    meta_path = latest("data/news_meta_*.json")
+    if not meta_path:
+        print("[ERROR] news_meta_ 파일을 찾지 못했습니다.")
         return 1
 
-    print(f"[INFO] [fetch_article_bodies] 메타 데이터 로드: {meta_path}")  # 입력 파일 로그
-    items: List[Dict[str, Any]] = load_json(meta_path, [])
-    if not items:
-        print("[WARN] [fetch_article_bodies] 처리할 기사가 없습니다. 종료합니다.")
-        return 0
-
-    print(f"[INFO] [fetch_article_bodies] 총 {len(items)}개 기사에 대한 본문 수집 시작... (병렬 워커 수: {MAX_WORKERS})")
+    with open(meta_path, "r", encoding="utf-8") as f:
+        items: List[Dict[str, Any]] = json.load(f)
 
     tried, updated = 0, 0
     per_domain: Dict[str, Dict[str, int]] = {}
+
+    # 대상 인덱스 수집(이미 본문 있는 항목은 그대로 두고 보강만)
     indices = list(range(len(items)))
 
+    # 병렬 처리
+    results: Dict[int, Tuple[Optional[Dict[str, Any]], Optional[str]]] = {}
     with ThreadPoolExecutor(max_workers=MAX_WORKERS) as ex:
         fut_map = {ex.submit(_process_one, items[i]): i for i in indices}
         for fut in as_completed(fut_map):
             i = fut_map[fut]
             try:
                 res_item, domain = fut.result()
-            except Exception as e:
+            except Exception:
                 res_item, domain = None, "-"
-                print(f"[WARN] [fetch_article_bodies] 기사 처리 중 오류 발생 (index={i}): {e}")
-
             tried += 1
             if domain not in per_domain:
                 per_domain[domain] = {"ok": 0, "fail": 0}
-
             if res_item is not None:
                 items[i] = res_item
                 updated += 1
@@ -430,18 +345,14 @@ def main() -> int:
             else:
                 per_domain[domain]["fail"] += 1
 
-            if tried % 50 == 0:
-                print(f"[INFO] [fetch_article_bodies] 진행률: {tried}/{len(items)} (성공: {updated})")
+    with open(meta_path, "w", encoding="utf-8") as f:
+        json.dump(items, f, ensure_ascii=False, indent=2)
 
-    print(f"[INFO] [fetch_article_bodies] 본문 수집 완료. 변경된 메타 데이터를 파일에 다시 저장합니다: {meta_path}")
-    save_json(meta_path, items)  # save_json 유틸리티 사용
-
-    # 최종 결과 로그
-    print(f"[SUCCESS] [fetch_article_bodies] 본문 수집 작업 완료 | 시도={tried}, 업데이트={updated}, 파일={os.path.basename(meta_path)}")
+    print(f"[INFO] fetch_article_bodies | tried={tried} updated={updated} | file={os.path.basename(meta_path)} | workers={MAX_WORKERS} per_domain={PER_DOMAIN_LIMIT}")
     if per_domain:
         stats = ", ".join(f"{d}: ok={v['ok']}, fail={v['fail']}" for d, v in list(per_domain.items())[:15])
-        print(f"[DEBUG] [fetch_article_bodies] 도메인별 수집 현황: {stats}")
-
+        print("[DEBUG] per-domain:", stats)
+    
     return 0
 
 
