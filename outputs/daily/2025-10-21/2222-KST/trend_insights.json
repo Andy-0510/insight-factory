@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "마이크로",
+        "디스플레이",
+        "이는",
+        "패널",
+        "따른"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "핵심",
+        "디스플레이",
+        "증착",
+        "사업",
+        "시장의"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "패널",
+        "oled 패널",
+        "생산",
+        "6세대",
+        "6세대 oled"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "애플",
+        "3분기",
+        "영업이익",
+        "lg디스플레이는",
+        "미국"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "tv",
+        "lcd",
+        "차세대",
+        "마이크로",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "배터리",
+        "모두",
+        "이는",
+        "속도를"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "아직",
+        "알려졌다",
+        "것이란",
+        "업계",
+        "oled를"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "중국",
+        "패널",
+        "6세대",
+        "6세대 oled"
+      ]
+    }
+  ],
+  "evidence": {}
+}
