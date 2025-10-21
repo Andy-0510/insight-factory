@@ -75,6 +75,15 @@ jobs:
           python -m src.warehouse_append
           python -m scripts.fetch_article_bodies
 
+          mkdir -p outputs/debug
+          LATEST_META=$(ls -t data/news_meta_*.json | head -n 1)
+          if [ -f "$LATEST_META" ]; then
+            echo "Copying $LATEST_META to outputs/debug/news_meta_latest.json"
+            cp "$LATEST_META" outputs/debug/news_meta_latest.json
+          else
+            echo "WARN: No news_meta_*.json file found to copy."
+          fi
+
           echo -e "\n--- STEP 2: 핵심 데이터 분석 ---"
           python -m src.module_b
           python -m src.module_c
