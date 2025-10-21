@@ -7,6 +7,9 @@ from pathlib import Path
 from datetime import datetime, timedelta
 import pandas as pd
 from src.utils import load_json
+from src.config import load_config
+import google.generativeai as genai
+
 
 # 헬퍼 함수
 def _safe_read_csv(path, **kwargs):
@@ -67,24 +70,211 @@ def load_monthly_data():
     }
     return monthly_data
 
+# --- LLM 호출 ---
+def call_gemini_for_monthly_summary(context):
+    """
+    LLM을 호출하여 월간 경영 요약을 생성합니다.
+    
+    Args:
+        context (dict): 월간 데이터 분석 결과를 포함한 입력 데이터
+        
+    Returns:
+        str: 생성된 월간 전략 브리핑 텍스트 (실패 시 오류 메시지 반환)
+    """
+    try:
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key:
+            raise RuntimeError("GEMINI_API_KEY가 설정되지 않았습니다.")
+
+        genai.configure(api_key=api_key)
+        cfg = load_config()
+        model_config = cfg.get("llm", {})
+        model_name = model_config.get("model", "gemini-1.5-flash-001")
+        
+        model = genai.GenerativeModel(model_name)
+        print(f"[INFO] Using Gemini model for monthly executive summary: {model_name}")
+
+        prompt = f"""
+        당신은 디스플레이 산업 최고 전략 책임자(CSO)입니다. 아래는 지난 한 달간의 시장 데이터 분석 결과 요약입니다. 
+        이 데이터를 종합하여 CEO 및 경영진을 위한 '월간 전략 브리핑'을 작성해주세요.
+
+        ### 월간 데이터 요약:
+        {json.dumps(context, ensure_ascii=False, indent=2)}
+
+        ### 작성 가이드 (Markdown 형식):
+        1. **월간 핵심 동향 (Key Trends)**: 데이터를 관통하는 가장 중요한 시장의 변화와 거시적 흐름 2-3가지를 짚어주세요.
+        2. **전략적 시사점 (Strategic Implications)**: 이 동향이 우리 비즈니스에 주는 기회와 위협 요소를 명확히 분석해주세요.
+        3. **최우선 실행 과제 (Top Priority Action Items)**: 분석 결과를 바탕으로 다음 달에 가장 먼저 집중해야 할 
+           구체적인 액션 아이템 2-3가지를 제안해주세요.
+        """
+        response = model.generate_content(prompt)
+        return response.text
+
+    except Exception as e:
+        print(f"[ERROR] Gemini 월간 요약 생성 실패: {e}", exc_info=True)
+        return "LLM 요약 생성 중 오류가 발생했습니다."
+        
+
+def call_gemini_for_positioning_insight(topics_data):
+    """LLM을 호출하여 토픽 포지셔닝 맵 분석 및 액션 아이템을 제안받습니다."""
+    try:
+        import google.generativeai as genai
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key: raise RuntimeError("GEMINI_API_KEY가 설정되지 않았습니다.")
+        
+        genai.configure(api_key=api_key)
+        cfg = load_config()
+        model_name = cfg.get("llm", {}).get("model", "gemini-1.5-flash-001")
+        model = genai.GenerativeModel(model_name)
+
+        # 프롬프트에 전달할 토픽 데이터 간소화 (이름, 요약 정보만 전달)
+        simplified_topics = [
+            {"topic_name": t.get("topic_name"), "summary": t.get("topic_summary")}
+            for t in topics_data.get("topics", [])
+        ]
+
+        prompt = f"""
+        당신은 시장 전략 컨설턴트입니다. 아래는 시장의 주요 토픽들을 '시장 관심도(X축)'와 '시장 긍정성(Y축)'으로 분석한 포지셔닝 데이터입니다.
+
+        ### 토픽 데이터:
+        {json.dumps(simplified_topics, ensure_ascii=False, indent=2)}
+
+        ### 분석 요청:
+        1. **4분면 분석**: 위 토픽들을 아래 4가지 영역으로 분류하고, 각 영역의 전략적 의미를 1~2 문장으로 해석해주세요.
+            - **주력 영역 (관심도 높음, 긍정성 높음)**: 현재 시장의 주류이자 핵심 동력인 토픽.
+            - **기회 영역 (관심도 낮음, 긍정성 높음)**: 미래 성장 잠재력이 있는 유망 토픽.
+            - **경쟁/위험 영역 (관심도 높음, 긍정성 낮음)**: 경쟁이 치열하거나 부정적 이슈가 많은 토픽.
+            - **틈새/장기 영역 (관심도 낮음, 긍정성 낮음)**: 장기적 관찰이 필요한 틈새 토픽.
+        2. **핵심 토픽 선정 및 액션 아이템 제안**: 위 분석을 바탕으로, 지금 가장 주목해야 할 '기회 영역'과 '경쟁/위험 영역'의 토픽을 각각 하나씩 선정하고, 그에 대한 초기 액션 아이템을 구체적으로 제안해주세요.
+
+        ### 출력 형식 (Markdown):
+        #### 📈 4분면 분석
+        - **주력 영역**: (분석 내용)
+        - **기회 영역**: (분석 내용)
+        - **경쟁/위험 영역**: (분석 내용)
+        - **틈새/장기 영역**: (분석 내용)
+
+        ####  actionable insights
+        - **[선정된 '기회' 토픽명]**: (초기 액션 아이템 제안. 예: 해당 기술 보유 스타트업 3곳 리스트업 및 기술 검토 착수)
+        - **[선정된 '위험' 토픽명]**: (초기 액션 아이템 제안. 예: 관련 부정 이슈에 대한 언론 반응 및 고객사 문의 현황 전수 조사)
+        """
+        response = model.generate_content(prompt)
+        return response.text
+    except Exception as e:
+        print(f"[ERROR] Gemini 포지셔닝 분석 실패: {e}")
+        return "LLM 기반 포지셔닝 분석 중 오류가 발생했습니다."
+    
+
+def call_gemini_for_strategy_insight(company_name, topics_str):
+    """LLM을 호출하여 기업의 토픽 집중도를 기반으로 전략 방향성을 분석합니다."""
+    try:
+        import google.generativeai as genai
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key: return "LLM API 키가 없습니다."
+        
+        genai.configure(api_key=api_key)
+        cfg = load_config()
+        model_name = cfg.get("llm", {}).get("model", "gemini-1.5-flash-001")
+        model = genai.GenerativeModel(model_name)
+
+        prompt = f"""
+        당신은 B2B 기술 기업 전문 애널리스트입니다. '{company_name}'라는 기업이 최근 아래 토픽들에 집중하고 있습니다. 
+        이를 바탕으로 이 기업의 현재 사업 방향성과 단기 전략을 1~2 문장으로 간결하게 해석해주세요.
+
+        ### 집중 토픽:
+        {topics_str}
+
+        ### 분석 결과 (1~2 문장 요약):
+        """
+        response = model.generate_content(prompt)
+        return response.text.strip().replace("\n", " ")
+    except Exception as e:
+        return f"LLM 분석 실패: {e}"
+
+    
+def call_gemini_for_network_action_item(pair_info):
+    """LLM을 호출하여 경쟁/협력 관계에 대한 액션 아이템을 제안합니다."""
+    try:
+        import google.generativeai as genai
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key: return "LLM API 키가 없습니다."
+
+        genai.configure(api_key=api_key)
+        cfg = load_config()
+        model_name = cfg.get("llm", {}).get("model", "gemini-1.5-flash-001")
+        model = genai.GenerativeModel(model_name)
+
+        prompt = f"""
+        당신은 전략기획팀 리더입니다. 시장 분석 결과, 아래와 같은 기업 간의 주요 관계가 포착되었습니다. 
+        이 관계를 기반으로 우리 팀이 다음 주에 실행해야 할 현실적인 액션 아이템을 1개만 제안해주세요. (20자 내외)
+
+        ### 관계 정보:
+        {pair_info}
+
+        ### 액션 아이템 제안 (1개, 20자 내외):
+        """
+        response = model.generate_content(prompt)
+        return response.text.strip().replace("\n", " ")
+    except Exception as e:
+        return f"LLM 분석 실패: {e}"
+
+
 # --- ▼▼▼▼▼▼ [수정] 월간 리포트 섹션 상세 구현 ▼▼▼▼▼▼ ---
+
+def _section_monthly_executive_summary(data):
+    """
+    섹션 0: EXECUTIVES SUMMARY
+    
+    Args:
+        data (dict): 월간 분석 결과를 포함한 전체 데이터
+        
+    Returns:
+        str: LLM이 생성한 경영진 요약 텍스트
+    """
+    # LLM에 전달할 핵심 월간 데이터 요약 생성
+    context = {
+        "가장 중요한 토픽 Top3": [t.get("topic_name") for t in data.get("topics", {}).get("topics", [])[:3]],
+        "주요 탐지 리스크": [r.get("Topic") for r in data.get("risk_issues", pd.DataFrame()).to_dict('records')[:2]],
+        "주요 기술 성숙도 변화": [
+            f"{t.get('technology')}: {t.get('analysis', {}).get('stage')}" 
+            for t in data.get("tech_maturity", {}).get("results", [])[:3]
+        ],
+        "가장 강한 관계를 맺은 경쟁사/파트너": data.get("company_network", {}).get("top_pairs", [{}])[0],
+        "최우선 신사업 아이디어": (data.get("biz_opps", {}).get("ideas", [{}]))[0].get("idea")
+    }
+
+    # LLM 호출하여 월간 경영 요약 생성
+    llm_summary = call_gemini_for_monthly_summary(context)
+    
+    return llm_summary
 
 def _section_monthly_positioning_map(data):
     """섹션 1: 전략적 시장 포지셔닝 맵"""
     topics_data = data.get("topics", {})
     topic_list = topics_data.get("topics", [])
     
-    df_topics = pd.DataFrame(topic_list)
-    if not df_topics.empty:
-        df_topics['top_words_str'] = df_topics['top_words'].apply(lambda words: ", ".join([w['word'] for w in words[:3]]))
-        table = _to_markdown_table(df_topics[['topic_name', 'topic_summary', 'top_words_str']].rename(columns={
+    # 1. 토픽 버블 차트 이미지 추가
+    image = _insert_images(os.path.join(FIG_DIR, "topics_bubble.png"), OUT_MD, captions=["시장 토픽 포지셔닝 맵"])
+
+    # --- ▼▼▼ [수정] LLM 기반 인사이트 및 액션 아이템 생성 ▼▼▼ ---
+    llm_insight = call_gemini_for_positioning_insight(topics_data)
+    insight_section = f"\n### 전략적 인사이트 및 실행과제 제안\n{llm_insight}"
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    # 3. 상세 데이터 테이블 생성
+    if not topic_list:
+        table = "- (토픽 데이터 없음)\n"
+    else:
+        df_topics = pd.DataFrame(topic_list)
+        df_topics['top_words_str'] = df_topics['top_words'].apply(
+            lambda words: ", ".join([w['word'] for w in words[:3]]) if isinstance(words, list) else ""
+        )
+        table = "\n### 토픽 상세 정보\n" + _to_markdown_table(df_topics[['topic_name', 'topic_summary', 'top_words_str']].rename(columns={
             'topic_name': '토픽명', 'topic_summary': '요약', 'top_words_str': '핵심 키워드'
         }))
-    else:
-        table = "- (토픽 데이터 없음)\n"
-        
-    image = _insert_images(os.path.join(FIG_DIR, "topics_bubble.png"), OUT_MD, captions=["시장 토픽 포지셔닝 맵"])
-    return image + table
+    
+    # 최종적으로 이미지, 인사이트, 테이블 순서로 조합하여 반환
+    return image + insight_section + table
 
 def _section_monthly_tech_lifecycle(data):
     """섹션 2: 기술 수명 주기 및 R&D 투자 타이밍 분석"""
@@ -104,25 +294,62 @@ def _section_monthly_tech_lifecycle(data):
 
 def _section_monthly_competitor_strategy(data):
     """섹션 3: 경쟁사 전략적 의도 및 파트너 관계망 분석"""
-    matrix_df = data.get("company_matrix")
+    matrix_df_wide = data.get("company_matrix")
     network_data = data.get("company_network", {})
     
     lines = []
-    # --- ▼▼▼ [추가] 히트맵 이미지 삽입 ▼▼▼ ---
-    lines.append("### 3.1. 기업x토픽 MATRIX (상위 15개사)")
-    lines.append(_insert_images(os.path.join(FIG_DIR, "matrix_heatmap.png"), OUT_MD, captions=["기업-토픽 집중도 히트맵"]))
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
-    lines.append("### 기업별 토픽 집중도 (상위 5개사)")
-    lines.append(_to_markdown_table(matrix_df.head(5)))
+    # --- 3.1: 기업의 사업 방향성 및 전략 해석 ---
+    lines.append("### 3.1 기업별 전략 방향성 분석")
+    
+    # Long format 데이터가 인사이트 도출에 더 유용하므로, wide 대신 long을 로드
+    matrix_df_long = _safe_read_csv(os.path.join(EXPORT_DIR, "company_topic_matrix_long.csv"))
+    topics_data = data.get("topics", {})
+    topic_map = {t.get("topic_id"): t.get("topic_name", f"Topic #{t['topic_id']}") for t in topics_data.get("topics", [])}
 
-    lines.append("### 3.2. 기업 경쟁/협력 관계망")
+    if not matrix_df_long.empty:
+        # 총점이 가장 높은 상위 3개 기업 선정
+        top_companies = matrix_df_long.groupby('org')['hybrid_score'].sum().nlargest(3).index
+
+        insight_rows = []
+        for company in top_companies:
+            # 해당 기업의 상위 토픽 3개 추출
+            top_topics = matrix_df_long[matrix_df_long['org'] == company].nlargest(3, 'hybrid_score')
+            top_topics_str = ", ".join([topic_map.get(int(t_id), f"Topic {t_id}") for t_id in top_topics['topic']])
+            
+            # LLM 호출하여 전략 방향성 해석
+            insight = call_gemini_for_strategy_insight(company, top_topics_str)
+            insight_rows.append({
+                "기업": company,
+                "핵심 집중 토픽": top_topics_str,
+                "전략 방향성 해석": insight
+            })
+        lines.append(_to_markdown_table(pd.DataFrame(insight_rows)))
+    else:
+        lines.append("- (기업별 토픽 집중도 데이터가 없습니다.)\n")
+
+    # --- 3.2: 경쟁/협력 관계망 분석 및 액션 아이템 ---
+    lines.append("\n### 3.2 경쟁/협력 관계망 분석 및 실행과제")
     lines.append(_insert_images(os.path.join(FIG_DIR, "company_network.png"), OUT_MD, captions=["기업 경쟁/협력 관계망"]))
     
     top_pairs = network_data.get("top_pairs", [])
     if top_pairs:
-        lines.append("### 가장 강한 관계 Top 5")
-        lines.append(_to_markdown_table(pd.DataFrame(top_pairs).head(5)))
+        actionable_pairs = []
+        for pair in top_pairs[:3]: # 상위 3개 관계에 대해서만 분석
+            pair_info_str = f"기업1: {pair['source']}, 기업2: {pair['target']}, 관계 유형: {pair['rel_type']}"
+
+            # LLM 호출하여 액션 아이템 제안
+            action_item = call_gemini_for_network_action_item(pair_info_str)
+            
+            actionable_pairs.append({
+                "주요 관계": f"{pair['source']} ↔ {pair['target']}",
+                "유형": pair['rel_type'],
+                "액션 아이템 제안": action_item
+            })
+        lines.append(_to_markdown_table(pd.DataFrame(actionable_pairs)))
+        lines.append("\n >두 기업이 함께 언급된 문맥 안에서, 키워드의 빈도가 **경쟁 > 협력**인 경우 'rivalry', 반대의 경우 'partnership'으로 분류")        
+    else:
+        lines.append("- (주요 관계 데이터가 없습니다.)\n")
         
     return "\n".join(lines)
 
@@ -163,7 +390,6 @@ def _section_monthly_new_biz_ideas(data):
 def build_monthly_markdown():
     monthly_data = load_monthly_data()
     
-    # 분석 기간 계산
     days_to_analyze = 30
     end_date = datetime.now()
     start_date = end_date - timedelta(days=days_to_analyze - 1)
@@ -171,6 +397,9 @@ def build_monthly_markdown():
     
     lines = [f"# Monthly Strategic Review {date_range_str}"]
     
+    lines.append(_section_header("Executive Summary"))
+    lines.append(_section_monthly_executive_summary(monthly_data))
+
     lines.append(_section_header("1. 전략적 시장 포지셔닝 맵")); lines.append(_section_monthly_positioning_map(monthly_data))
     lines.append(_section_header("2. 기술 수명 주기 및 R&D 투자 타이밍 분석")); lines.append(_section_monthly_tech_lifecycle(monthly_data))
     lines.append(_section_header("3. 경쟁사 전략적 의도 및 파트너 관계망 분석")); lines.append(_section_monthly_competitor_strategy(monthly_data))
@@ -192,3 +421,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
