@@ -105,6 +105,14 @@ jobs:
           python -m src.module_f.daily_report
           echo "✅ 리포트 생성 완료"
 
+    #  # --- ▼▼▼ 이 부분을 추가해 주세요 ▼▼▼ ---
+    #  - name: ✍️ Generate Daily Detailed Commentary Report
+    #    run: |
+    #      echo -e "\n--- STEP 5: 상세 해설 리포트 생성 ---"
+    #      python -m src.module_f.daily_commentary_report
+    #      echo "✅ 상세 해설 리포트 생성 완료"
+    #  # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
       - name: 📝 Log Daily Results
         if: always() # 이전 단계가 실패해도 항상 실행
         run: |

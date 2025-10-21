@@ -94,6 +94,11 @@ jobs:
           python -m scripts.generate_visuals --report-type monthly
           echo -e "\n--- STEP 5-2_module_f ---"
           python -m src.module_f.monthly_report
+
+        #  # --- ▼▼▼ 이 부분을 추가해 주세요 ▼▼▼ ---
+        #  echo -e "\n--- STEP 6: 월간 상세 해설 리포트 생성 ---"
+        #  python -m src.module_f.monthly_commentary_report
+        #  # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
           
           echo "✅ 모든 월간 분석 및 리포트 생성 완료"
           

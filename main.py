@@ -122,13 +122,16 @@ def build_steps():
         ("gen_visual",[PY, "-m", "scripts.generate_visuals"]),
         ("preflight",[PY, "-m", "scripts.preflight"]),
         ("f_daily",  [PY, "-m", "src.module_f.daily_report"]),
+        ("f_cmt_daily",  [PY, "-m", "src.module_f.daily_commentary_report"]),
             #("check_f",  [PY, "-m", "src.check_f"]),
+        ("aggregate_monthly",[PY, "-m", "scripts.aggregate_monthly_data"]),
+        ("aggregate_weekly",[PY, "-m", "scripts.aggregate_weekly_data"]),
         ("g_risk",   [PY, "-m", "src.module_g_risk"]),
         ("h_planning",[PY, "-m", "src.module_h_planning"]),
         ("f_weekly",  [PY, "-m", "src.module_f.weekly_report"]),
+        ("f_cmt_weekly",  [PY, "-m", "src.module_f.weekly_commentary_report"]), 
         ("f_monthly",  [PY, "-m", "src.module_f.monthly_report"]),
-        ("aggregate_monthly",[PY, "-m", "scripts.aggregate_monthly_data"]),
-        ("aggregate_weekly",[PY, "-m", "scripts.aggregate_weekly_data"])
+        ("f_cmt_monthly",  [PY, "-m", "src.module_f.monthly_commentary_report"])
     ]
 
 def main():
