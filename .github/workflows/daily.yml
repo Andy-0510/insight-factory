@@ -105,7 +105,6 @@ jobs:
           echo -e "- 생성된 export 파일 목록:\n$(ls -1 outputs/export || echo '  - 내역 없음')"
           echo "=================================================="
               
-       # 일자별 아카이브(KST)
       # 일자별 아카이브(KST)
       - name: Prepare outputs daily folder (KST)
         shell: bash
@@ -121,14 +120,17 @@ jobs:
           cp outputs/*.html             "${OUTDIR}/" || true
           cp outputs/*.md               "${OUTDIR}/" || true
 
-          # 디버그 메타 파일들을 올바른 위치(debug/)에서 상위 폴더로 복사
-          if [ -f outputs/debug/run_meta_b.json ]; then
-            cp outputs/debug/run_meta_b.json "${OUTDIR}/"
+          # news_meta_latest.json 복사
+          latest_file=$(ls -1t data/news_meta_*.json 2>/dev/null | head -n 1)
+          if [ -n "$latest_file" ]; then
+            cp "$latest_file" "${OUTDIR}/debug/news_meta_latest.json"
           fi
-          if [ -f outputs/debug/run_meta_c.json ]; then
-            cp outputs/debug/run_meta_c.json "${OUTDIR}/"
+
+          # 서브폴더 내용 전체 복사 (export, fig, debug)
+          if [ -d outputs/export ]; then
+            cp -r outputs/export/* "${OUTDIR}/export/" || true
           fi
-          
+
           # 서브폴더 내용 전체 복사 (export, fig, debug)
           if [ -d outputs/export ]; then
             cp -r outputs/export/* "${OUTDIR}/export/" || true
