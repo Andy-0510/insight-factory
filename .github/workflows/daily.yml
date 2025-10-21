@@ -75,6 +75,7 @@ jobs:
           python -m src.warehouse_append
           python -m scripts.fetch_article_bodies
 
+          echo -e "\n---  STEP 1-1: news_meta_latest.json 저장 ---"
           mkdir -p outputs/debug
           LATEST_META=$(ls -t data/news_meta_*.json | head -n 1)
           if [ -f "$LATEST_META" ]; then
