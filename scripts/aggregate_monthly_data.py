@@ -1,5 +1,3 @@
-# 파일 경로: scripts/aggregate_monthly_data.py
-
 import os
 import json
 import glob
@@ -8,8 +6,8 @@ import pandas as pd
 from collections import defaultdict
 from src.utils import load_json
 
-# --- 설정 ---
-WAREHOUSE_META_DIR = "data/warehouse/meta"
+# --- [수정] WAREHOUSE_META_DIR 변수 삭제 ---
+# WAREHOUSE_META_DIR = "data/warehouse/meta"
 DAILY_ARCHIVE_DIR = "outputs/daily"
 OUTPUT_DIR = "outputs"
 EXPORT_DIR = os.path.join(OUTPUT_DIR, "export")
@@ -17,44 +15,57 @@ DEBUG_DIR = os.path.join(OUTPUT_DIR, "debug")
 DAYS_TO_AGGREGATE = 30
 
 def aggregate_monthly_data():
-    """지난 30일간의 모든 주요 데이터를 집계하여 메인 outputs 폴더에 저장합니다."""
+    """
+    [수정] 지난 30일간의 '일일 아카이브(outputs/daily)'에서 모든 주요 데이터를 집계하여
+    메인 outputs 폴더에 저장합니다.
+    """
     print(f"[INFO] Aggregating all monthly data from the last {DAYS_TO_AGGREGATE} days...")
 
-    # 집계할 데이터 초기화
     all_articles, all_keywords = [], []
     all_trends = pd.DataFrame()
     all_events = pd.DataFrame()
     all_weak_signals = pd.DataFrame()
     seen_urls = set()
 
-    # 폴더 생성
     os.makedirs(EXPORT_DIR, exist_ok=True)
     os.makedirs(DEBUG_DIR, exist_ok=True)
 
     end_date = datetime.now()
     start_date = end_date - timedelta(days=DAYS_TO_AGGREGATE)
 
-    # 1. 웨어하우스에서 30일치 news_meta 데이터 집계
+    # --- ▼▼▼ [수정] news_meta 데이터 집계 방식을 weekly와 동일하게 변경 ▼▼▼ ---
+
+    print("[INFO] Aggregating news_meta data from daily archives...")
     for i in range(DAYS_TO_AGGREGATE + 1):
         current_date = start_date + timedelta(days=i)
         date_str = current_date.strftime("%Y-%m-%d")
-        daily_folder = os.path.join(WAREHOUSE_META_DIR, date_str)
-        if os.path.isdir(daily_folder):
-            daily_meta_files = glob.glob(os.path.join(daily_folder, "news_meta_*.json"))
-            if daily_meta_files:
-                latest_file_for_day = sorted(daily_meta_files)[-1]
-                try:
-                    with open(latest_file_for_day, "r", encoding="utf-8") as fp:
-                        articles = json.load(fp)
-                        for article in articles:
-                            url = article.get("url")
-                            if url and url not in seen_urls:
-                                all_articles.append(article)
-                                seen_urls.add(url)
-                except Exception as e:
-                    print(f"[WARN] Failed to process {latest_file_for_day}: {e}")
+        
+        # 해당 날짜의 모든 시간대 폴더를 찾아서 가장 최신 폴더를 선택
+        date_folders = sorted(glob.glob(os.path.join(DAILY_ARCHIVE_DIR, date_str, "*")))
+        if not date_folders:
+            continue
+        
+        latest_daily_folder = date_folders[-1]
+        
+        # 주간 집계와 동일하게, 본문 수집까지 완료된 meta 파일을 사용
+        meta_path = os.path.join(latest_daily_folder, "debug", "news_meta_latest.json")
+        
+        if os.path.exists(meta_path):
+            try:
+                with open(meta_path, "r", encoding="utf-8") as fp:
+                    articles = json.load(fp)
+                    for article in articles:
+                        url = article.get("url")
+                        if url and url not in seen_urls:
+                            all_articles.append(article)
+                            seen_urls.add(url)
+            except Exception as e:
+                print(f"[WARN] Failed to process {meta_path}: {e}")
 
-    # 2. 일일 아카이브에서 30일치 분석 결과 데이터 집계
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    # 2. 일일 아카이브에서 30일치 분석 결과 데이터 집계 (기존 로직과 동일)
+    print("[INFO] Aggregating keywords, trends, events, and signals from daily archives...")
     for i in range(DAYS_TO_AGGREGATE + 1):
         current_date = start_date + timedelta(days=i)
         date_str = current_date.strftime("%Y-%m-%d")
@@ -62,23 +73,21 @@ def aggregate_monthly_data():
         if not date_folders: continue
         latest_daily_folder = date_folders[-1]
 
-        # keywords.json 집계
+        # keywords.json, trend_strength.csv 등 나머지 데이터 집계
+        # (이 부분은 원래부터 daily archive를 사용하고 있었으므로 수정할 필요가 없습니다)
         kw_path = os.path.join(latest_daily_folder, "keywords.json")
         if os.path.exists(kw_path):
             all_keywords.extend(load_json(kw_path, {"keywords": []}).get("keywords", []))
 
-        # trend_strength.csv 집계
         trends_path = os.path.join(latest_daily_folder, "export", "trend_strength.csv")
         if os.path.exists(trends_path):
             df = pd.read_csv(trends_path)
             all_trends = pd.concat([all_trends, df], ignore_index=True)
 
-        # events.csv 집계
         events_path = os.path.join(latest_daily_folder, "export", "events.csv")
         if os.path.exists(events_path):
             all_events = pd.concat([all_events, pd.read_csv(events_path)], ignore_index=True)
 
-        # weak_signals.csv 집계
         weak_signals_path = os.path.join(latest_daily_folder, "export", "weak_signals.csv")
         if os.path.exists(weak_signals_path):
             all_weak_signals = pd.concat([all_weak_signals, pd.read_csv(weak_signals_path)], ignore_index=True)

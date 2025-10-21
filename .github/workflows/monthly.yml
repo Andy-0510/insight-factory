@@ -124,14 +124,6 @@ jobs:
           cp outputs/*.json             "${OUTDIR}/" || true
           cp outputs/*.html             "${OUTDIR}/" || true
           cp outputs/*.md               "${OUTDIR}/" || true
-
-          # 디버그 메타 파일들을 올바른 위치(debug/)에서 상위 폴더로 복사
-          if [ -f outputs/debug/run_meta_b.json ]; then
-            cp outputs/debug/run_meta_b.json "${OUTDIR}/"
-          fi
-          if [ -f outputs/debug/run_meta_c.json ]; then
-            cp outputs/debug/run_meta_c.json "${OUTDIR}/"
-          fi
           
           # 서브폴더 내용 전체 복사 (export, fig, debug)
           if [ -d outputs/export ]; then

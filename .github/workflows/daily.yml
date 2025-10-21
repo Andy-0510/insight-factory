@@ -65,6 +65,7 @@ jobs:
 
       # --- 일일 데이터 처리 및 분석 모듈 ---
       - name: 📊 Run Daily Data Processing
+        shell: bash
         env:
           NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
@@ -72,6 +73,17 @@ jobs:
           echo -e "\n---  STEP 1: 데이터 수집 및 준비 ---"
           python -m src.module_a
           python -m src.warehouse_append
+
+          echo -e "\n---  Commit warehouse file ---"
+          set -e
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git add -A data/warehouse
+          git commit -m "chore: warehouse append (daily)" || echo "no changes"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true
+          git push origin HEAD:${{ github.ref_name }} || true
+
+          echo -e "\n--- 본문 수집 및 덮어쓰기  ---"
           python -m scripts.fetch_article_bodies
 
           echo -e "\n--- STEP 2: 핵심 데이터 분석 ---"
@@ -105,7 +117,6 @@ jobs:
           echo -e "- 생성된 export 파일 목록:\n$(ls -1 outputs/export || echo '  - 내역 없음')"
           echo "=================================================="
               
-       # 일자별 아카이브(KST)
       # 일자별 아카이브(KST)
       - name: Prepare outputs daily folder (KST)
         shell: bash
@@ -121,14 +132,17 @@ jobs:
           cp outputs/*.html             "${OUTDIR}/" || true
           cp outputs/*.md               "${OUTDIR}/" || true
 
-          # 디버그 메타 파일들을 올바른 위치(debug/)에서 상위 폴더로 복사
-          if [ -f outputs/debug/run_meta_b.json ]; then
-            cp outputs/debug/run_meta_b.json "${OUTDIR}/"
+          # news_meta_latest.json 복사
+          latest_file=$(ls -1t data/news_meta_*.json 2>/dev/null | head -n 1)
+          if [ -n "$latest_file" ]; then
+            cp "$latest_file" "${OUTDIR}/debug/news_meta_latest.json"
           fi
-          if [ -f outputs/debug/run_meta_c.json ]; then
-            cp outputs/debug/run_meta_c.json "${OUTDIR}/"
+
+          # 서브폴더 내용 전체 복사 (export, fig, debug)
+          if [ -d outputs/export ]; then
+            cp -r outputs/export/* "${OUTDIR}/export/" || true
           fi
-          
+
           # 서브폴더 내용 전체 복사 (export, fig, debug)
           if [ -d outputs/export ]; then
             cp -r outputs/export/* "${OUTDIR}/export/" || true
