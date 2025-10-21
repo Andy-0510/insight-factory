@@ -100,7 +100,7 @@ jobs:
         #  python -m src.module_f.monthly_commentary_report
         #  # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
           
-          echo "✅ 모든 월간 분석 및 리포트 생성 완료"
+        echo "✅ 모든 월간 분석 및 리포트 생성 완료"
           
       - name: 📝 Log Monthly Results
         if: always()
