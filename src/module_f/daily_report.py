@@ -8,6 +8,7 @@ from pathlib import Path
 from datetime import datetime, timedelta
 import pandas as pd
 from src.utils import load_json, save_json, latest
+from src.config import load_config
 
 # --- 설정 ---
 ROOT_OUTPUT_DIR = "outputs"
@@ -82,6 +83,43 @@ def _section_daily_hot_signals(data):
     }))
 # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
+# 기사 요약을 위한 LLM 호출
+def call_gemini_for_article_summary(article_text: str) -> str:
+    """LLM을 호출하여 기사 본문을 3줄로 요약합니다."""
+    # 본문이 너무 짧으면 요약 요청을 보내지 않음
+    if not article_text or len(article_text) < 150:
+        return "- 기사 본문이 짧아 요약을 생성할 수 없습니다."
+    
+    try:
+        import google.generativeai as genai
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key: return "- LLM API 키가 없습니다."
+
+        genai.configure(api_key=api_key)
+        cfg = load_config()
+        model_name = cfg.get("llm", {}).get("model", "gemini-1.5-flash-001")
+        model = genai.GenerativeModel(model_name)
+
+        # LLM 토큰 제한을 넘지 않도록 본문 길이 조절 (앞부분 4000자)
+        prompt = f"""
+        당신은 IT 전문 기자입니다. 아래 기사 본문을 읽고, 가장 중요한 핵심 내용 3가지를 각각 한 문장의 불릿포인트(-)로 요약해주세요.
+
+        ### 기사 본문:
+        {article_text[:4000]}
+
+        ### 요약 (반드시 3개의 불릿포인트, 각 항목은 한 문장):
+        """
+        response = model.generate_content(prompt)
+        summary = response.text.strip().replace("* ", "- ")
+        # LLM이 불릿포인트 대신 다른 형식으로 답변했을 경우 보정
+        if not summary.startswith('-'):
+            summary = '- ' + summary.replace('\n', '\n- ')
+        return summary
+    except Exception as e:
+        print(f"[WARN] Gemini article summary failed: {e}")
+        return "- LLM 요약 생성 중 오류가 발생했습니다."
+
+# 리포트 섹션
 def _section_time_series(data):
     """일일 시장 활동량 및 이상 징후 (최근 30일 기준)"""
     ts = data.get("ts", {})
@@ -158,12 +196,37 @@ def _section_competitor_events(data):
     return "- (주요 이벤트 데이터 없음)\n"
 
 def _section_top_articles(data):
-    # ... (기존과 동일)
+    """주요 기사 제목과 함께 LLM 기반 3줄 요약을 제공합니다."""
     df_articles = _safe_read_csv(os.path.join(EXPORT_DIR, "today_article_list.csv"))
-    if not df_articles.empty:
-        df_articles['제목'] = df_articles.apply(lambda row: f"[{_truncate(row['title'], 100)}]({row['url']})", axis=1)
-        return _to_markdown_table(df_articles[['제목']])
-    return "- (선정된 주요 기사 없음)\n"
+    if df_articles.empty:
+        return "- (선정된 주요 기사 없음)\n"
+
+    # 전체 기사 메타데이터에서 URL을 키로 하는 본문 조회용 딕셔너리 생성
+    meta_items = data.get("meta_items", [])
+    url_to_body = {item.get("url"): item.get("body", "") for item in meta_items if item.get("url")}
+    
+    md_lines = []
+    # CSV에 저장된 주요 기사 목록을 순회
+    for _, row in df_articles.iterrows():
+        title = row.get("title", "제목 없음")
+        url = row.get("url")
+        
+        # 기사 제목을 링크가 포함된 헤더로 추가
+        md_lines.append(f"#### [{_truncate(title, 100)}]({url})")
+        
+        # URL을 이용해 기사 본문을 찾음
+        body = url_to_body.get(url, "")
+        
+        if body:
+            # 본문이 있으면 LLM을 호출하여 요약 생성
+            summary = call_gemini_for_article_summary(body)
+            md_lines.append(summary)
+        else:
+            md_lines.append("- (기사 본문을 찾을 수 없어 요약을 생성하지 못했습니다.)")
+        
+        md_lines.append("---") # 기사 간 구분을 위한 라인 추가
+
+    return "\n".join(md_lines)
 
 def build_html_from_md_new(md_path=OUT_MD, out_html=OUT_HTML):
     # ... (기존과 동일)
@@ -209,3 +272,4 @@ def main():
 
 if __name__ == "__main__":
     main()
+
