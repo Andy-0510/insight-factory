@@ -68,7 +68,6 @@ jobs:
         env:
           NAVER_CLIENT_ID: ${{ secrets.NAVER_CLIENT_ID }}
           NAVER_CLIENT_SECRET: ${{ secrets.NAVER_CLIENT_SECRET }}
-        shell: bash
         run: |
           echo -e "\n---  STEP 1: 데이터 수집 및 준비 ---"
           python -m src.module_a
