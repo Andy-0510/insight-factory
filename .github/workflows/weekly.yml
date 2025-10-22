@@ -41,8 +41,11 @@ jobs:
 
       - name: Install dependencies & Fonts
         run: |
+          python -m pip install --upgrade pip
           pip install -r requirements.txt
-          sudo apt-get update && sudo apt-get install -y fonts-nanum
+
+          sudo apt-get update && sudo apt-get install -y fonts-nanum fonts-noto-cjk
+          fc-cache -f
 
       - name: 🚀 Start Weekly Pipeline
         run: |
@@ -53,26 +56,38 @@ jobs:
           echo "WEEKLY_RUN: true"
           echo "=================================================="
 
-      - name: Preflight | Check secrets
-        run: |
-          test -n "${{ secrets.GEMINI_API_KEY }}" || (echo "GEMINI_API_KEY 없음"; exit 1)
-          if [ -z "${{ secrets.NAVER_CLIENT_ID }}" ] || [ -z "${{ secrets.NAVER_CLIENT_SECRET }}" ]; then
-            echo "[WARN] NAVER API 키가 없습니다(옵션?)."
-          fi
-
       # --- 주간 리포트에 필요한 LLM 분석 및 리포트 생성 ---
-      - name: 📊 Run Weekly Analysis & Reporting
+      - name: Aggregate Weekly Data (keywords.json, events.csv, weak_signals.csv, trend_strength.csv, news_meta_agg.json)
+        shell: bash
         env:
           WEEKLY_RUN: "true"
         run: |
-          echo -e "\n--- STEP 1: 주간 데이터 집계 및 분석 ---"
           python -m scripts.aggregate_weekly_data
-          # 이제 future_insights는 집계된 keywords.json을 사용할 수 있음
-          python -m scripts.future_insights 
+
+      - name: Future Insights (Analysis tech maturity, weak signal insight)
+        shell: bash
+        env:
+          WEEKLY_RUN: "true"
+        run: |
+          python -m scripts.future_insights
+
+      - name: Topics Analysis / Stable Timeseries calculation / Insight (Only Weekly&Monthly)
+        shell: bash
+        env:
+          WEEKLY_RUN: "true"
+        run: |       
           python -m src.module_c 
 
-          echo -e "\n--- STEP 2: 시각화 및 LLM 기반 분석 및 리포트 생성 ---"
+      - name: Generate Daily Visuals
+        shell: bash
+        env:
+          WEEKLY_RUN: "true"
+        run: |       
           python -m scripts.generate_visuals --report-type weekly
+          
+      - name: Generate Weekly Report
+        shell: bash
+        run: |
           python -m src.module_f.weekly_report
 
         #  # --- ▼▼▼ 이 부분을 추가해 주세요 ▼▼▼ ---
