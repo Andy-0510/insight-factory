@@ -78,7 +78,7 @@ jobs:
         run: |       
           python -m src.module_c 
 
-      - name: Generate Daily Visuals
+      - name: Generate Weekly Visuals
         shell: bash
         env:
           WEEKLY_RUN: "true"
