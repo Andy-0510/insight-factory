@@ -473,9 +473,18 @@ def main():
     patterns = compile_patterns(CFG)
 
     topn_keywords = int(CFG.get("top_n_keywords", 50))
-    use_pro = os.environ.get("USE_PRO", "").lower() in ("1","true","yes","y") or bool(CFG.get("use_pro", False))
+    
+    # --- Pro/Lite 모드 결정 로직 (환경변수(.yml, .env) 우선 -> config.json) ---
+    env_pro = os.getenv("USE_PRO", "").lower()
+    if env_pro in ("1", "true", "yes", "y"):
+        use_pro = True
+    elif env_pro in ("0", "false", "no", "n"):
+        use_pro = False
+    else:
+        # 환경 변수가 없거나 인식할 수 없는 값이면 config.json 확인
+        use_pro = bool(CFG.get("use_pro", False))
     print(f"[INFO] [module_b] 실행 모드: {'PRO' if use_pro else 'LITE'}")
-
+    
     # --- ▼▼▼▼▼ [수정된 부분] 데이터 로드 로직 ▼▼▼▼▼ ---
     is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
     

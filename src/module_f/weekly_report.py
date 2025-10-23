@@ -8,7 +8,43 @@ from collections import defaultdict, Counter
 
 from src.utils import load_json
 from src.config import load_config
-from .daily_report import (_fmt_int, _safe_read_csv, _to_markdown_table, _section_header, build_html_from_md_new, _exists, _insert_images)
+from .daily_report import build_html_from_md_new
+
+# --- ▼▼▼ [추가] weekly_report 자체 헬퍼 함수 정의 ▼▼▼ ---
+def _fmt_int(x):
+    try: return f"{int(x):,}"
+    except Exception:
+        try: return f"{float(x):.0f}"
+        except Exception: return str(x) if x is not None else "-"
+
+def _safe_read_csv(path, **kwargs):
+    try:
+        if os.path.exists(path): return pd.read_csv(path, **kwargs)
+    except Exception: pass
+    return pd.DataFrame()
+
+def _to_markdown_table(df: pd.DataFrame, max_rows=50):
+    if df is None or df.empty: return "- (데이터 없음)\n"
+    return df.head(max_rows).copy().to_markdown(index=False) + "\n"
+
+def _section_header(title):
+    return f"\n## {title}\n"
+
+def _exists(path):
+    return path and os.path.exists(path)
+
+def _insert_images(image_paths, md_out_path, captions=None):
+    lines = []
+    if not isinstance(image_paths, (list, tuple)): image_paths = [image_paths]
+    captions = captions or []
+    md_dir = os.path.dirname(md_out_path)
+    for i, p in enumerate(image_paths):
+        if _exists(p):
+            relative_path = os.path.relpath(p, start=md_dir).replace("\\", "/")
+            cap = captions[i] if i < len(captions) else ""
+            lines.append(f"![{cap or 'Figure'}]({relative_path})")
+    return ("\n".join(lines) + "\n") if lines else ""
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 # --- 설정 ---
 ROOT_OUTPUT_DIR = "outputs"
@@ -192,15 +228,33 @@ def _section_weekly_market_themes(data):
     keyword_scores = defaultdict(float)
     for k in data['all_keywords']:
         keyword_scores[k['keyword']] += k.get('score', 0.0)
-    
+
     sorted_keywords = sorted(keyword_scores.items(), key=lambda item: item[1], reverse=True)[:10]
     df_top_keywords = pd.DataFrame(sorted_keywords, columns=["키워드", "주간 누적 점수"])
-    
+
     lines = [_to_markdown_table(df_top_keywords)]
     # 생성된 워드클라우드 이미지를 리포트에 포함
     lines.append(_insert_images(os.path.join(FIG_DIR, "weekly_wordcloud.png"), OUT_MD, captions=["주간 키워드 워드클라우드"]))
-    
+
+    # --- ▼▼▼ [추가] 키워드 네트워크 및 클러스터 추가 ▼▼▼ ---
+    lines.append("\n### 키워드 연관성 네트워크\n")
+    lines.append("> 키워드 간 동시 출현 빈도를 기반으로 주요 테마 클러스터를 시각화합니다.\n")
+    # 키워드 네트워크 이미지 경로 확인 및 추가
+    keyword_network_img = os.path.join(FIG_DIR, "keyword_network.png")
+    lines.append(_insert_images(keyword_network_img, OUT_MD, captions=["주간 키워드 네트워크"]))
+
+    # 키워드 클러스터 테이블 경로 확인 및 추가
+    clusters_csv = os.path.join(EXPORT_DIR, "keyword_clusters.csv")
+    df_clusters = _safe_read_csv(clusters_csv)
+    if not df_clusters.empty:
+        lines.append("\n### 주요 키워드 클러스터\n")
+        lines.append(_to_markdown_table(df_clusters))
+    else:
+        lines.append("\n- (키워드 클러스터 데이터 없음)\n") # 데이터 없을 경우 메시지
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
     return "\n".join(lines)
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 # --- ▼▼▼▼▼▼ 경쟁사 동향 분석 섹션 구현 ▼▼▼▼▼▼ ---
 def _section_weekly_competitor_trends(data):
@@ -297,10 +351,11 @@ def build_weekly_markdown():
 def main():
     try:
         md_path = build_weekly_markdown()
-        build_html_from_md_new(md_path, OUT_HTML)
+        build_html_from_md_new(md_path, OUT_HTML) # HTML 생성 함수 호출
         print(f"[INFO] Weekly report generated: {md_path}, {OUT_HTML}")
     except Exception as e:
-        import traceback; traceback.print_exc()
+        import traceback
+        traceback.print_exc() #
         print(f"[ERROR] Weekly report generation failed: {e}")
 
 if __name__ == "__main__":

@@ -4,7 +4,8 @@ import pandas as pd
 from datetime import datetime, timedelta
 from src.utils import load_json
 from src.config import load_config
-from .daily_commentary_report import _safe_read_csv, _to_markdown_table, _section_header, _insert_image, build_html_from_md
+# [수정] weekly_report에 필요한 헬퍼 함수들을 직접 가져오거나 정의
+from .daily_commentary_report import (_safe_read_csv, _to_markdown_table, _section_header, _insert_image, build_html_from_md)
 
 # --- 설정 ---
 ROOT_OUTPUT_DIR = "outputs"
@@ -12,7 +13,7 @@ FIG_DIR = os.path.join(ROOT_OUTPUT_DIR, "fig")
 EXPORT_DIR = os.path.join(ROOT_OUTPUT_DIR, "export")
 OUT_MD = os.path.join(ROOT_OUTPUT_DIR, "weekly_commentary_report.md")
 OUT_HTML = os.path.join(ROOT_OUTPUT_DIR, "weekly_commentary_report.html")
-TARGET_COMPETITORS = ["삼성디스플레이", "LG디스플레이", "BOE", "CSOT", "Visionox", "Tianma"]
+TARGET_COMPETITORS = ["삼성디스플레이", "LG디스플레이", "BOE", "CSOT", "Visionox", "Tianma"] #
 
 # --- LLM 호출 함수 ---
 def call_gemini_for_weekly_exec_summary(context: dict) -> str:
@@ -76,14 +77,81 @@ def call_gemini_for_weak_signal_analysis(weak_signals: list) -> str:
     except Exception as e:
         return f"> LLM 해설 생성 실패: {e}"
 
-# --- 섹션별 컨텐츠 생성 함수 ---
+# --- ▼▼▼ [신규 추가] 키워드 네트워크/클러스터 해설 생성을 위한 LLM 함수 ▼▼▼ ---
+def call_gemini_for_keyword_network_commentary(top_keywords, clusters_df):
+    """LLM을 호출하여 키워드 네트워크 및 클러스터의 의미를 분석합니다."""
+    if clusters_df is None or clusters_df.empty:
+        cluster_info = "키워드 클러스터 정보 없음."
+    else:
+        cluster_info_list = []
+        for _, row in clusters_df.head(5).iterrows(): # 상위 5개 클러스터 정보 사용
+             cluster_info_list.append(f"- Cluster {row.get('cluster_id', '?')}: {row.get('keywords', '')}")
+        cluster_info = "\n".join(cluster_info_list)
 
+    top_keywords_str = ", ".join(top_keywords)
+
+    try:
+        import google.generativeai as genai
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key: return "> LLM API 키 없음."
+
+        genai.configure(api_key=api_key)
+        cfg = load_config()
+        model_name = cfg.get("llm", {}).get("model", "gemini-1.5-flash-001")
+        model = genai.GenerativeModel(model_name)
+
+        prompt = f"""
+        당신은 시장 동향 분석 전문가입니다.
+        지난 주 시장의 주요 키워드와 이들의 클러스터링 결과는 다음과 같습니다.
+
+        ### 주간 Top 키워드 (참고용):
+        {top_keywords_str}
+
+        ### 주요 키워드 클러스터:
+        {cluster_info}
+
+        ### 분석 요청:
+        위 정보를 바탕으로, 지난 주 시장을 관통하는 **핵심 테마 2~3가지**를 도출하고, 각 테마가 **어떤 키워드 클러스터와 연관**되는지 간략하게 설명해주세요. 키워드 네트워크 시각화 자료를 함께 본다고 가정하고 해설해주세요.
+
+        ### 분석 결과 (Markdown 형식):
+        #### 주간 핵심 테마 분석
+        - **테마 1**: (테마 설명 및 관련 클러스터 언급)
+        - **테마 2**: (테마 설명 및 관련 클러스터 언급)
+        """
+        response = model.generate_content(prompt)
+        return response.text.strip()
+    except Exception as e:
+        return f"> LLM 해설 생성 실패: {e}"
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+
+# --- 섹션별 컨텐츠 생성 함수 ---
+# --- ▼▼▼ [수정] 주간 시장 테마 섹션 수정 (네트워크/클러스터 및 LLM 해설 추가) ▼▼▼ ---
 def _section_weekly_market_themes(df_keywords):
     lines = [_section_header("1. 주간 시장 테마 및 거시적 흐름 분석")]
-    lines.append("> 지난 한 주간 누적된 키워드 점수를 통해 시장의 핵심 테마를 분석합니다.\n")
+    lines.append("> 지난 한 주간 누적된 키워드 점수를 통해 시장의 핵심 테마와 그 연관성을 분석합니다.\n") # 문구 수정
     lines.append(_insert_image(os.path.join(FIG_DIR, "weekly_wordcloud.png"), "주간 키워드 워드클라우드"))
-    lines.append(_to_markdown_table(df_keywords.rename(columns={'keyword': 'Top 10 키워드', 'score': '누적 점수'})))
+    lines.append(_to_markdown_table(df_keywords.rename(columns={'keyword': 'Top 10 키워드', 'score': '누적 점수'}))) #
+
+    # --- ▼▼▼ [추가] 키워드 네트워크 및 클러스터, LLM 해설 ▼▼▼ ---
+    lines.append("\n### 키워드 연관성 분석\n")
+    lines.append(_insert_image(os.path.join(FIG_DIR, "keyword_network.png"), "주간 키워드 네트워크")) # 이미지 추가
+    df_clusters = _safe_read_csv(os.path.join(EXPORT_DIR, "keyword_clusters.csv")) # 클러스터 데이터 로드
+    if not df_clusters.empty:
+        lines.append("\n#### 주요 키워드 클러스터\n")
+        lines.append(_to_markdown_table(df_clusters)) # 클러스터 테이블 추가
+        # LLM 해설 생성 및 추가
+        top_keywords_list = df_keywords['keyword'].tolist() if not df_keywords.empty else []
+        llm_commentary = call_gemini_for_keyword_network_commentary(top_keywords_list, df_clusters)
+        lines.append("\n#### 네트워크 및 클러스터 해설 (AI)\n")
+        lines.append(llm_commentary)
+    else:
+        lines.append("\n> 키워드 네트워크/클러스터 데이터가 없습니다.\n")
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
     return "\n".join(lines)
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
 
 def _section_weekly_competitors(trends_df):
     lines = [_section_header("2. 경쟁사 활동 강도 및 전략 전환 경보")]
@@ -155,13 +223,13 @@ def main():
     period = f"{start_date_str} ~ {today_str}"
 
     # 1. 데이터 로드
-    keywords_data = load_json(os.path.join(ROOT_OUTPUT_DIR, "keywords.json"), {"keywords": []})
-    df_keywords = pd.DataFrame(keywords_data.get("keywords", [])).head(10)
-    
-    trends_df = _safe_read_csv(os.path.join(EXPORT_DIR, "trend_strength.csv"))
-    df_weak = _safe_read_csv(os.path.join(EXPORT_DIR, "weak_signals.csv"))
-    
-    # 2. Executive Summary 컨텍스트 준비
+    keywords_data = load_json(os.path.join(ROOT_OUTPUT_DIR, "keywords.json"), {"keywords": []}) #
+    df_keywords = pd.DataFrame(keywords_data.get("keywords", [])).head(10) #
+
+    trends_df = _safe_read_csv(os.path.join(EXPORT_DIR, "trend_strength.csv")) #
+    df_weak = _safe_read_csv(os.path.join(EXPORT_DIR, "weak_signals.csv")) #
+
+    # 2. Executive Summary 컨텍스트 준비 (기존 로직 유지)
     top_competitors = []
     if not trends_df.empty:
         competitor_mentions = {}
@@ -169,9 +237,9 @@ def main():
             total_mentions = trends_df[trends_df['term'] == competitor]['cur'].sum()
             if total_mentions > 0:
                 competitor_mentions[competitor] = total_mentions
-        top_competitors = [comp for comp, _ in sorted(competitor_mentions.items(), key=lambda item: item[1], reverse=True)][:3]
+        top_competitors = [comp for comp, _ in sorted(competitor_mentions.items(), key=lambda item: item[1], reverse=True)][:3] #
 
-    rising_signals = trends_df[trends_df['z_like'] > 0].sort_values(by='z_like', ascending=False) if not trends_df.empty else pd.DataFrame()
+    rising_signals = trends_df[trends_df['z_like'] > 0].sort_values(by='z_like', ascending=False) if not trends_df.empty else pd.DataFrame() #
 
     summary_context = {
         "period": period,
@@ -182,24 +250,24 @@ def main():
     }
 
     # 3. 리포트 컨텐츠 조립
-    lines = [f"# 주간 상세 해설 리포트\n<div class='subtitle'>Period: {period} | Generated by Market Intelligence Team</div>\n"]
-    
+    lines = [f"# 주간 상세 해설 리포트\n<div class='subtitle'>Period: {period} | Generated by Market Intelligence Team</div>\n"] #
+
     lines.append(_section_header("Executive Summary", level=2))
-    summary_text = call_gemini_for_weekly_exec_summary(summary_context)
+    summary_text = call_gemini_for_weekly_exec_summary(summary_context) #
     lines.append(f"<div class='executive-summary'>{summary_text}</div>\n")
-    
-    lines.append(_section_weekly_market_themes(df_keywords))
-    lines.append(_section_weekly_competitors(trends_df))
-    lines.append(_section_weekly_future_signals(df_weak))
-    lines.append(_section_weekly_momentum(trends_df))
+
+    lines.append(_section_weekly_market_themes(df_keywords)) # 수정된 함수 호출
+    lines.append(_section_weekly_competitors(trends_df)) #
+    lines.append(_section_weekly_future_signals(df_weak)) #
+    lines.append(_section_weekly_momentum(trends_df)) #
 
     # 4. 파일 저장 및 변환
     report_content = "\n".join(lines)
     with open(OUT_MD, "w", encoding="utf-8") as f:
         f.write(report_content)
-    
-    build_html_from_md(OUT_MD, OUT_HTML)
+
+    build_html_from_md(OUT_MD, OUT_HTML) # HTML 생성 함수 호출
     print(f"[SUCCESS] Professional weekly commentary report generated: {OUT_MD}, {OUT_HTML}")
 
-if __name__ == "__main__":
+if __name__ == "__main__": #
     main()
