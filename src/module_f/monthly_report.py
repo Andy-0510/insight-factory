@@ -45,9 +45,11 @@ def build_html_from_md_new(md_path, out_html):
         import markdown
         with open(md_path, "r", encoding="utf-8") as f: md = f.read()
         html = markdown.markdown(md, extensions=["extra", "tables", "toc"])
-        html_tpl = f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>Monthly Strategic Review</title><style>body{{font-family:sans-serif;line-height:1.6;padding:24px;max-width:900px;margin:20px auto}}img{{max-width:100%;border:1px solid #ddd}}table{{border-collapse:collapse;width:100%}}th,td{{border:1px solid #ddd;padding:8px}}th{{background:#f7f7f7}}h2{{margin-top:32px;border-bottom:2px solid #eee}}</style></head><body>{html}</body></html>"""
+        # Use a more professional HTML template
+        html_tpl = f"""<!doctype html><html lang="ko"><head><meta charset="utf-8"><title>Monthly Strategic Review</title><style>body{{font-family:-apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Noto Sans KR', sans-serif;line-height:1.6;padding:30px;max-width:960px;margin:30px auto;color:#333}}img{{max-width:100%;height:auto;border:1px solid #e0e0e0;margin:1.5em 0;display:block}}table{{border-collapse:collapse;width:100%;margin:1.5em 0;font-size:0.9em}}th,td{{border:1px solid #ddd;padding:12px;text-align:left;vertical-align:top}}th{{background:#f9f9f9;font-weight:600}}h1,h2,h3{{font-weight:600;margin-top:2.2em;margin-bottom:1em}}h1{{font-size:2em;text-align:center;border-bottom:none;margin-bottom:1.2em}}h2{{font-size:1.6em;border-bottom:2px solid #eee;padding-bottom:0.4em}}h3{{font-size:1.25em;border-bottom:1px solid #eee;padding-bottom:0.3em}}blockquote{{border-left:4px solid #eee;padding-left:1em;margin-left:0;color:#555}}code{{background:#f0f0f0;padding:2px 4px;border-radius:3px;font-size:0.9em}}a{{color:#007bff;text-decoration:none}}a:hover{{text-decoration:underline}}</style></head><body>{html}</body></html>"""
         with open(out_html, "w", encoding="utf-8") as f: f.write(html_tpl)
     except Exception as e: print(f"[WARN] HTML 변환 실패: {e}")
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 # --- 설정 ---
 ROOT_OUTPUT_DIR = "outputs"
@@ -252,29 +254,45 @@ def _section_monthly_positioning_map(data):
     """섹션 1: 전략적 시장 포지셔닝 맵"""
     topics_data = data.get("topics", {})
     topic_list = topics_data.get("topics", [])
-    
-    # 1. 토픽 버블 차트 이미지 추가
-    image = _insert_images(os.path.join(FIG_DIR, "topics_bubble.png"), OUT_MD, captions=["시장 토픽 포지셔닝 맵"])
 
-    # --- ▼▼▼ [수정] LLM 기반 인사이트 및 액션 아이템 생성 ▼▼▼ ---
+    # 1. 토픽 버블 차트 이미지 추가
+    image_bubble = _insert_images(os.path.join(FIG_DIR, "topics_bubble.png"), OUT_MD, captions=["시장 토픽 포지셔닝 맵"])
+
+    # 2. [추가] 토픽 미니 트렌드 이미지 (파일 존재 시)
+    mini_trends_img = os.path.join(FIG_DIR, "topics_mini_trends.png")
+    image_trends = _insert_images(mini_trends_img, OUT_MD, captions=["주요 토픽별 주간 트렌드"])
+
+    # 3. LLM 기반 인사이트 및 액션 아이템 생성
     llm_insight = call_gemini_for_positioning_insight(topics_data)
     insight_section = f"\n### 전략적 인사이트 및 실행과제 제안\n{llm_insight}"
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
-    # 3. 상세 데이터 테이블 생성
+    # 4. 상세 데이터 테이블 생성
     if not topic_list:
-        table = "- (토픽 데이터 없음)\n"
+        table_detail = "- (토픽 데이터 없음)\n"
     else:
         df_topics = pd.DataFrame(topic_list)
         df_topics['top_words_str'] = df_topics['top_words'].apply(
-            lambda words: ", ".join([w['word'] for w in words[:3]]) if isinstance(words, list) else ""
+            lambda words: ", ".join([w.get('word', '') for w in words[:3]]) if isinstance(words, list) else "" # word 키 확인
         )
-        table = "\n### 토픽 상세 정보\n" + _to_markdown_table(df_topics[['topic_name', 'topic_summary', 'top_words_str']].rename(columns={
-            'topic_name': '토픽명', 'topic_summary': '요약', 'top_words_str': '핵심 키워드'
+        # Use topic_name if available, otherwise topic_id
+        df_topics['Topic Identifier'] = df_topics.apply(lambda row: row.get('topic_name', f"Topic #{row.get('topic_id')}"), axis=1)
+
+        table_detail = "\n### 토픽 상세 정보\n" + _to_markdown_table(df_topics[['Topic Identifier', 'topic_summary', 'top_words_str']].rename(columns={
+            'Topic Identifier': '토픽', 'topic_summary': '요약', 'top_words_str': '핵심 키워드'
         }))
-    
+
+    # 5. [추가] 토픽 성장/하락 테이블 (파일 존재 시)
+    table_growth = ""
+    growth_csv = os.path.join(EXPORT_DIR, "topic_growth.csv")
+    df_growth = _safe_read_csv(growth_csv)
+    if not df_growth.empty:
+        table_growth = "\n### 토픽 성장/하락 추세\n" + _to_markdown_table(df_growth)
+    else:
+        table_growth = "\n- (토픽 성장/하락 데이터 없음)\n" # 데이터 없을 경우 메시지
+
     # 최종적으로 이미지, 인사이트, 테이블 순서로 조합하여 반환
-    return image + insight_section + table
+    return image_bubble + image_trends + insight_section + table_detail + table_growth
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 def _section_monthly_tech_lifecycle(data):
     """섹션 2: 기술 수명 주기 및 R&D 투자 타이밍 분석"""
@@ -330,6 +348,9 @@ def _section_monthly_competitor_strategy(data):
 
     # --- 3.2: 경쟁/협력 관계망 분석 및 액션 아이템 ---
     lines.append("\n### 3.2 경쟁/협력 관계망 분석 및 실행과제")
+    # --- ▼▼▼ [추가] 월간 키워드 네트워크 이미지 삽입 ▼▼▼ ---
+    lines.append(_insert_images(os.path.join(FIG_DIR, "keyword_network.png"), OUT_MD, captions=["월간 키워드 네트워크"]))
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
     lines.append(_insert_images(os.path.join(FIG_DIR, "company_network.png"), OUT_MD, captions=["기업 경쟁/협력 관계망"]))
     
     top_pairs = network_data.get("top_pairs", [])
@@ -355,8 +376,23 @@ def _section_monthly_competitor_strategy(data):
 
 def _section_monthly_risk_management(data):
     """섹션 4: 전략적 리스크 관리 및 완화 액션 제안"""
+    lines = []
+    # [추가] 리스크 관련 시각화 이미지 (파일 존재 시)
+    risk_images = [
+        os.path.join(FIG_DIR, "risk_negative_spikes.png"),
+        os.path.join(FIG_DIR, "risk_keyword_network.png")
+    ]
+    lines.append(_insert_images(risk_images, OUT_MD, captions=["주요 토픽 부정 감성 추이", "리스크 연관 키워드 네트워크"]))
+
     df_risks = data.get("risk_issues")
-    return _to_markdown_table(df_risks)
+    # 테이블 추가 전에 데이터 유효성 검사
+    if df_risks is not None and not df_risks.empty:
+        lines.append(_to_markdown_table(df_risks))
+    else:
+        lines.append("- (리스크/이슈 데이터 없음)\n") # 데이터 없을 경우 메시지
+
+    return "\n".join(lines)
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 def _section_monthly_new_biz_ideas(data):
     """섹션 5: 데이터 기반 신사업 아이디어 제안"""
@@ -412,11 +448,11 @@ def build_monthly_markdown():
 def main():
     try:
         md_path = build_monthly_markdown()
-        build_html_from_md_new(md_path, OUT_HTML)
+        build_html_from_md_new(md_path, OUT_HTML) # HTML generation call
         print(f"[INFO] Monthly report generated: {md_path}, {OUT_HTML}")
     except Exception as e:
         import traceback
-        traceback.print_exc()
+        traceback.print_exc() #
         print(f"[ERROR] Monthly report generation failed: {e}")
 
 if __name__ == "__main__":

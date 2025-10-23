@@ -91,6 +91,14 @@ jobs:
         run: |    
           python -m scripts.signal_export
 
+      - name: calculate topic growth
+        shell: bash
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MONTHLY_RUN: "true"        
+        run: |    
+          python -m scripts.calculate_topic_growth
+
       - name: Company Analysis (Topic Matrix, Relationship, Competition Network)
         shell: bash
         env:

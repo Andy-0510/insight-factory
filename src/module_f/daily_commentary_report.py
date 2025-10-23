@@ -1,11 +1,10 @@
-# 파일 경로: src/module_f/daily_commentary_report.py
-
 import os
 import pandas as pd
+import re
 from datetime import datetime
-from src.utils import load_json, latest # [수정] latest 추가
-from src.config import load_config       # [수정] config 로더 추가
-from transformers import pipeline # [수정] transformers의 pipeline 추가
+from src.utils import load_json, latest
+from src.config import load_config
+from transformers import pipeline
 
 # --- 설정 ---
 ROOT_OUTPUT_DIR = "outputs"
@@ -14,8 +13,11 @@ EXPORT_DIR = os.path.join(ROOT_OUTPUT_DIR, "export")
 OUT_MD = os.path.join(ROOT_OUTPUT_DIR, "daily_commentary_report.md")
 OUT_HTML = os.path.join(ROOT_OUTPUT_DIR, "daily_commentary_report.html")
 
-# --- 헬퍼 함수 ---
-# ... (_safe_read_csv, _to_markdown_table, _section_header, _insert_image, build_html_from_md 함수는 기존과 동일) ...
+# --- ▼▼▼ 필요한 헬퍼 함수 가져오기 (daily_report와 중복되는 부분) ▼▼▼ ---
+def _fmt_float(x, nd=2):
+    try: return f"{float(x):.{nd}f}"
+    except Exception: return "-"
+
 def _safe_read_csv(path, **kwargs):
     try:
         if os.path.exists(path): return pd.read_csv(path, **kwargs)
@@ -30,10 +32,16 @@ def _section_header(title, level=2):
     return f"\n{'#' * level} {title}\n"
 
 def _insert_image(path, caption=""):
+    # Use relative path logic from daily_report
     if os.path.exists(path):
-        relative_path = os.path.relpath(path, start=ROOT_OUTPUT_DIR).replace("\\", "/")
-        return f"![{caption}]({relative_path})\n"
+        try:
+            # Try making relative to ROOT_OUTPUT_DIR for consistency
+            relative_path = os.path.relpath(path, start=ROOT_OUTPUT_DIR).replace("\\", "/")
+            return f"![{caption}]({relative_path})\n"
+        except ValueError: # Handle cases where path is outside ROOT_OUTPUT_DIR (e.g., during testing)
+             return f"![{caption}]({os.path.basename(path)})\n" # Fallback to basename
     return ""
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 
 # 전역 변수로 요약 파이프라인을 저장하여 매번 로드하지 않도록 최적화
@@ -190,7 +198,124 @@ def call_gemini_for_spike_analysis(spike_info: str, article_titles: list) -> str
     except Exception as e:
         return f"LLM 분석 실패: {e}"
 
+# --- ▼▼▼ [신규 추가] 리스크 코멘트 생성을 위한 LLM 호출 함수 ▼▼▼ ---
+def call_gemini_for_risk_commentary(topic_name, sentiment_drop, related_titles):
+    """LLM을 호출하여 감성 급락 원인에 대한 해설을 생성합니다."""
+    if not related_titles: related_titles = ["관련 기사 제목 없음"]
+    try:
+        import google.generativeai as genai
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key: return "LLM API 키 없음."
+
+        genai.configure(api_key=api_key)
+        cfg = load_config()
+        model_name = cfg.get("llm", {}).get("model", "gemini-1.5-flash-001")
+        model = genai.GenerativeModel(model_name)
+
+        titles_str = "- " + "\n- ".join(related_titles[:5]) # 최대 5개 제목 사용
+
+        prompt = f"""
+        당신은 시장 리스크 분석가입니다.
+        오늘 '{topic_name}' 토픽에서 평균 대비 {sentiment_drop:.2f} 만큼의 감성 점수 급락이 관측되었습니다.
+
+        ### 관련 기사 제목 (참고용):
+        {titles_str}
+
+        ### 요청:
+        위 정보를 바탕으로, '{topic_name}' 토픽의 감성 점수가 급락한 가장 유력한 **원인**과 이로 인해 발생할 수 있는 잠재적 **영향**을 각각 한 문장으로 간결하게 분석해주세요.
+
+        ### 분석 결과:
+        - **원인**: (원인 분석)
+        - **잠재 영향**: (잠재 영향 분석)
+        """
+        response = model.generate_content(prompt)
+        # 결과에서 "원인:", "잠재 영향:" 부분을 추출하여 결합
+        lines = response.text.strip().split('\n')
+        commentary = " ".join([line.split(':', 1)[1].strip() for line in lines if ':' in line])
+        return commentary if commentary else "LLM 분석 실패"
+
+    except Exception as e:
+        return f"LLM 해설 생성 실패: {e}"
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+
+
 # --- 섹션별 컨텐츠 생성 함수 ---
+# --- ▼▼▼ [신규 추가] 일간 리스크 신호 섹션 함수 (daily_report.py 로직 기반) ▼▼▼ ---
+def _section_daily_risk_signals_commentary(data):
+    """토픽별 감성 점수 급락 현황 분석 및 LLM 해설 추가"""
+    lines = [_section_header("1.5 오늘의 리스크 신호 (감성 급락)", level=3)] # 레벨 조정
+    lines.append("> 토픽별 일일 감성 점수의 급락 패턴을 탐지하고 그 원인을 분석합니다.\n")
+
+    df_sentiment = data.get("sentiment") # _load_data 함수 필요
+    meta_items = data.get("meta_items", []) # _load_data 함수 필요
+
+    if df_sentiment is None or df_sentiment.empty:
+        lines.append("> - 감성 데이터 없음\n")
+        return "\n".join(lines)
+    if 'semantic_key' not in df_sentiment.columns:
+        lines.append("> - 감성 데이터에 'semantic_key' 컬럼 없음\n")
+        return "\n".join(lines)
+
+    risky_topics_data = [] # 테이블용 데이터
+    today_date_dt = datetime.now()
+    df_sentiment['date'] = pd.to_datetime(df_sentiment['date'])
+    df_sentiment = df_sentiment[df_sentiment['semantic_key'] != "Uncategorized"]
+
+    # master_topics 로드 (semantic_key -> keywords 매핑용)
+    master_topics = load_json("data/dictionaries/master_topics.json", {})
+
+    for key, group in df_sentiment.groupby('semantic_key'):
+        group = group[group['date'] <= today_date_dt].sort_values('date').tail(8)
+        if len(group) < 8: continue
+
+        today_row = group.iloc[-1]
+        if today_row['date'].strftime('%Y-%m-%d') != today_date_dt.strftime('%Y-%m-%d'): continue
+
+        past_7_days = group.iloc[:-1]
+        if past_7_days.empty: continue
+
+        today_score = today_row['avg_sentiment']
+        avg_7_days = past_7_days['avg_sentiment'].mean()
+        std_7_days = past_7_days['avg_sentiment'].std()
+
+        threshold_std = avg_7_days - 1.5 * std_7_days if pd.notna(std_7_days) and std_7_days > 0 else avg_7_days * 0.9
+        threshold_pct = avg_7_days * 0.8
+        is_risky = pd.notna(today_score) and pd.notna(avg_7_days) and \
+                   (today_score < threshold_std or today_score < threshold_pct)
+
+        if is_risky:
+            sentiment_drop = avg_7_days - today_score
+            topic_keywords = master_topics.get(key, []) # semantic_key에 해당하는 키워드 찾기
+
+            # 관련 기사 제목 추출
+            related_titles = []
+            if topic_keywords:
+                 kw_pattern = re.compile('|'.join(re.escape(kw) for kw in topic_keywords), re.IGNORECASE)
+                 related_titles = [
+                     item.get("title", "") for item in meta_items
+                     if item.get("title") and kw_pattern.search(item.get("title", ""))
+                 ][:5] # 최대 5개
+
+            # LLM 해설 생성
+            llm_comment = call_gemini_for_risk_commentary(key, sentiment_drop, related_titles)
+
+            risky_topics_data.append({
+                "토픽": key,
+                "하락 폭": _fmt_float(sentiment_drop, 3),
+                "오늘 점수": _fmt_float(today_score, 3),
+                "7일 평균": _fmt_float(avg_7_days, 3),
+                "LLM 해설": llm_comment
+            })
+
+    if not risky_topics_data:
+        lines.append("> 금일 감성 급락으로 인한 리스크 신호는 포착되지 않았습니다.\n")
+    else:
+        df_risky = pd.DataFrame(risky_topics_data).sort_values(by="하락 폭", ascending=False)
+        lines.append(_to_markdown_table(df_risky))
+
+    return "\n".join(lines)
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 def _section_activity_spikes(meta_items: list):
     lines = [_section_header("1. 시장 활동량 및 이상 징후")]
@@ -226,42 +351,66 @@ def _section_activity_spikes(meta_items: list):
             lines.append("> 금일 유의미한 스파이크는 포착되지 않았습니다.\n")
     return "\n".join(lines)
 
-# ... (_section_hot_signals, _section_competitor_events 등 나머지 함수는 기존과 동일) ...
-def _section_hot_signals(meta_items: list):
-    lines = [_section_header("2. 오늘의 급등 신호")]
+def _section_hot_signals(data): # data 딕셔너리를 인자로 받음
+    lines = [_section_header("2. 오늘의 급등 신호", level=3)] # 레벨 조정
     lines.append("> 전일 및 주간 평균 대비 언급량이 급증하고 모멘텀이 높은 신호를 분석합니다.\n")
-    
-    df_trends = _safe_read_csv(os.path.join(EXPORT_DIR, "trend_strength.csv"))
-    if not df_trends.empty:
-        # 급등 신호 조건: z_like > 1.5 그리고 diff > 0, 상위 10개로 제한
-        hot_signals = df_trends[(df_trends['z_like'] > 1.5) & (df_trends['diff'] > 0)].head(10).copy()
-        
-        # --- ▼▼▼ [수정] LLM 해설 생성 로직 추가 ▼▼▼ ---
-        if not hot_signals.empty:
-            commentaries = []
-            for _, row in hot_signals.iterrows():
-                term = row['term']
-                # 해당 신호를 포함하는 오늘 기사 제목들을 컨텍스트로 찾기 (최대 5개)
-                related_titles = [
-                    item.get("title", "") for item in meta_items 
-                    if item.get("title") and term.lower() in item.get("title", "").lower()
-                ][:5]
 
-                if related_titles:
-                    commentary = call_gemini_for_signal_commentary(term, related_titles)
-                    commentaries.append(commentary)
-                else:
-                    commentaries.append("당일 연관 기사 부족으로 분석 불가")
-            
-            hot_signals['해설'] = commentaries
-            lines.append(_to_markdown_table(hot_signals[['term', 'cur', 'diff', 'z_like', '해설']].rename(columns={
-                'term': '급등 신호', 'cur': '금일 언급량', 'diff': '전일 대비 증가', 'z_like': '모멘텀'
-            })))
+    # Load hot signals (daily_hot_signals.csv preferred)
+    df_hot = _safe_read_csv(os.path.join(EXPORT_DIR, "daily_hot_signals.csv"))
+    if df_hot.empty:
+        # Fallback to trend_strength if hot signals file not found
+        df_trends = _safe_read_csv(os.path.join(EXPORT_DIR, "trend_strength.csv"))
+        if not df_trends.empty:
+            # Calculate hot signals from trends_df if needed
+            df_hot = df_trends[(df_trends['z_like'] > 1.5) & (df_trends['diff'] > 0)].head(10).copy()
         else:
             lines.append("> 금일 유의미한 급등 신호는 포착되지 않았습니다.\n")
-        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+            return "\n".join(lines)
+
+    # Check again if df_hot is still empty after fallback
+    if df_hot.empty:
+        lines.append("> 금일 유의미한 급등 신호는 포착되지 않았습니다.\n")
+        return "\n".join(lines)
+
+    meta_items = data.get('meta_items', []) # data 딕셔너리에서 meta_items 가져오기
+
+    commentaries = []
+    for _, row in df_hot.iterrows():
+        term = row.get('term', '') # Use .get for safety
+        if not term: continue # Skip if term is empty
+
+        # --- ▼▼▼ 수정된 부분 ▼▼▼ ---
+        # Find related titles from meta_items, ensuring item is a dict
+        related_titles = [
+            item.get("title", "") # item이 dict일 때만 .get() 호출
+            for item in meta_items
+            # Check if item is a dictionary before accessing .get()
+            if isinstance(item, dict) and item.get("title") and term.lower() in item.get("title", "").lower()
+        ][:5] # Limit to 5 titles
+        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+        # Generate commentary using LLM
+        if related_titles:
+            commentary = call_gemini_for_signal_commentary(term, related_titles)
+            commentaries.append(commentary)
+        else:
+            commentaries.append("당일 연관 기사 부족으로 분석 불가") # No related articles found
+
+    # Add commentaries to the DataFrame
+    # Ensure the length matches, handle potential errors if lengths differ
+    if len(commentaries) == len(df_hot):
+         df_hot['해설'] = commentaries
     else:
-        lines.append("> - 데이터 없음\n")
+         # Fallback if lengths don't match (e.g., add placeholder)
+         df_hot['해설'] = ["해설 생성 오류"] * len(df_hot)
+         print(f"[WARN] Length mismatch between hot signals ({len(df_hot)}) and commentaries ({len(commentaries)}).")
+
+
+    # Prepare table for Markdown
+    lines.append(_to_markdown_table(df_hot[['term', 'cur', 'diff', 'z_like', '해설']].rename(columns={
+        'term': '급등 신호', 'cur': '금일 언급량', 'diff': '전일 대비 증가', 'z_like': '모멘텀'
+    })))
+
     return "\n".join(lines)
 
 def _section_competitor_events():
@@ -271,35 +420,45 @@ def _section_competitor_events():
     lines.append(_to_markdown_table(df_events))
     return "\n".join(lines)
 
-def _section_top_articles(meta_items: list):
-    lines = [_section_header("4. 주요 기사")]
+def _section_top_articles(data): # data 딕셔너리를 인자로 받음
+    lines = [_section_header("4. 주요 기사", level=3)] # 레벨 조정
     lines.append("> 오늘의 핵심 이슈와 가장 관련성이 높은 기사 목록과 요약입니다.\n")
-    
+
     df_articles = _safe_read_csv(os.path.join(EXPORT_DIR, "today_article_list.csv"))
     if df_articles.empty:
         lines.append("> - 선정된 주요 기사 없음\n")
         return "\n".join(lines)
 
-    # --- ▼▼▼ [수정] 기사 요약 로직 추가 ▼▼▼ ---
-    url_to_body = {item.get("url"): (item.get("body") or item.get("description", "")) for item in meta_items if item.get("url")}
-    
+    meta_items = data.get('meta_items', []) # data 딕셔너리에서 meta_items 가져오기
+
+    # --- ▼▼▼ 수정된 부분 ▼▼▼ ---
+    # Create url_to_body mapping, ensuring item is a dict
+    url_to_body = {
+        item.get("url"): (item.get("body") or item.get("description", ""))
+        for item in meta_items
+        # Check if item is a dictionary before accessing .get()
+        if isinstance(item, dict) and item.get("url")
+    }
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    # --- ▼▼▼ 기사 요약 로직 추가 ▼▼▼ ---
     for _, row in df_articles.iterrows():
         title = row.get("title", "제목 없음")
         url = row.get("url")
-        
-        lines.append(f"### [{title}]({url})")
-        
-        body = url_to_body.get(url, "")
-        
+
+        lines.append(f"### [{title}]({url})") # Add link to title
+
+        body = url_to_body.get(url, "") # Use the created mapping
+
         if body:
-            summary = summarize_text_with_hf(body)
+            summary = summarize_text_with_hf(body) # Use HF summarizer
             lines.append(summary)
         else:
             lines.append("> (기사 본문을 찾을 수 없어 요약을 생성하지 못했습니다.)")
-        
+
         lines.append("\n---\n") # 기사 간 구분선 추가
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-    
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
     return "\n".join(lines)
 
 def _section_appendix_strong_signals():
@@ -316,53 +475,58 @@ def _section_appendix_strong_signals():
     return "\n".join(lines)
 
 
-# --- ▼▼▼ [수정] main 함수를 새로운 리포트 구조에 맞게 변경 ▼▼▼ ---
+# --- ▼▼▼ [수정] main 함수 수정 (데이터 로드 및 새 섹션 호출 추가) ▼▼▼ ---
 def main():
     """논문/기사 형식의 일간 상세 해설 리포트 생성 메인 함수"""
     print("[INFO] Generating Professional Daily Commentary Report...")
     today_str = datetime.now().strftime("%Y-%m-%d")
 
-    # 1. 분석에 필요한 모든 데이터 로드
+    # 1. 분석에 필요한 모든 데이터 로드 (sentiment 포함)
+    #    _load_data 함수를 daily_report.py 에서 가져오거나 여기에 정의해야 함
+    #    여기서는 필요한 데이터만 직접 로드하는 것으로 가정
     meta_items = load_json(latest(os.path.join("data", "news_meta_*.json")), [])
     df_spikes = _safe_read_csv(os.path.join(EXPORT_DIR, "timeseries_spikes_enhanced.csv"))
     df_trends = _safe_read_csv(os.path.join(EXPORT_DIR, "trend_strength.csv"))
     df_events = _safe_read_csv(os.path.join(EXPORT_DIR, "events.csv"))
-    
-    # 2. Executive Summary 생성을 위한 컨텍스트 준비
+    df_sentiment = _safe_read_csv(os.path.join(EXPORT_DIR, "daily_topic_sentiment.csv")) # 감성 데이터 로드
+
+    report_data = { # 섹션 함수에 전달할 데이터 딕셔너리
+        "meta_items": meta_items,
+        "sentiment": df_sentiment,
+        # 필요한 다른 데이터도 추가 가능
+    }
+
+
+    # 2. Executive Summary 생성을 위한 컨텍스트 준비 (기존 로직 유지)
     today_spikes = df_spikes[df_spikes['date'] == today_str] if not df_spikes.empty else pd.DataFrame()
     hot_signals = df_trends[(df_trends['z_like'] > 1.5) & (df_trends['diff'] > 0)] if not df_trends.empty else pd.DataFrame()
-    
     summary_context = {
         "spike_info": f"{len(today_spikes)}건의 스파이크 발생 ({', '.join(today_spikes['metric'])})" if not today_spikes.empty else "특이사항 없음",
         "top_hot_signal": hot_signals.iloc[0]['term'] if not hot_signals.empty else "해당 없음",
         "top_event": f"{df_events.iloc[0]['title']} ({df_events.iloc[0]['types']})" if not df_events.empty else "해당 없음"
     }
-    
+
     # 3. 리포트 컨텐츠 조립
-    # Header
     lines = [f"# 일간 상세 해설 리포트\n<div class='subtitle'>Date: {today_str} | Generated by Market Intelligence Team</div>\n"]
-    
-    # Executive Summary (초록)
     lines.append(_section_header("Executive Summary", level=2))
     summary_text = call_gemini_for_daily_exec_summary(summary_context)
     lines.append(f"<div class='executive-summary'>{summary_text}</div>\n")
-    
-    # Main Body (본문)
-    lines.append(_section_activity_spikes(meta_items))
-    lines.append(_section_hot_signals(meta_items))
-    lines.append(_section_competitor_events())
-    lines.append(_section_top_articles(meta_items))
-    
-    # Appendix (참고)
-    lines.append(_section_appendix_strong_signals())
-    
+
+    lines.append(_section_activity_spikes(report_data)) # 데이터 전달
+    lines.append(_section_daily_risk_signals_commentary(report_data)) # <-- 새 섹션 호출
+    lines.append(_section_hot_signals(report_data)) # 데이터 전달
+    lines.append(_section_competitor_events()) # 기존 함수 (필요시 데이터 전달)
+    lines.append(_section_top_articles(report_data)) # 데이터 전달
+    lines.append(_section_appendix_strong_signals()) # 기존 함수 (필요시 데이터 전달)
+
     # 4. 파일 저장 및 변환
     report_content = "\n".join(lines)
     with open(OUT_MD, "w", encoding="utf-8") as f:
         f.write(report_content)
-    
-    build_html_from_md(OUT_MD, OUT_HTML)
+
+    build_html_from_md(OUT_MD, OUT_HTML) # HTML 생성 함수 호출
     print(f"[SUCCESS] Professional daily commentary report generated: {OUT_MD}, {OUT_HTML}")
 
 if __name__ == "__main__":
     main()
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
