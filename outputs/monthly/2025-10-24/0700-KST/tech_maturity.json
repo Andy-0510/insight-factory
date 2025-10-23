@@ -1,0 +1,59 @@
+{
+  "results": [
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 126,
+        "sentiment": 0.0,
+        "events": {
+          "LAUNCH": 139,
+          "INVEST": 47,
+          "REGUL": 25,
+          "CERT": 21,
+          "ORDER": 11,
+          "PARTNERSHIP": 6
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "높은 출시 빈도와 낮은 시장 감성 점수는 애플 기술이 성숙기에 접어들어 혁신보다는 안정적인 제품 라인업 유지에 집중하고 있음을 시사합니다."
+      }
+    },
+    {
+      "technology": "폴더블",
+      "metrics": {
+        "frequency": 49,
+        "sentiment": 0.0,
+        "events": {
+          "LAUNCH": 54,
+          "INVEST": 20,
+          "ORDER": 5,
+          "CERT": 5
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "출시 건수가 투자 및 수주 건수를 압도적으로 상회하며 뉴스 언급 빈도 또한 높아 시장 관심도가 상승하는 성장 단계로 판단됩니다."
+      }
+    },
+    {
+      "technology": "삼성",
+      "metrics": {
+        "frequency": 466,
+        "sentiment": 0.0,
+        "events": {
+          "LAUNCH": 763,
+          "INVEST": 347,
+          "CERT": 139,
+          "PARTNERSHIP": 113,
+          "REGUL": 95,
+          "ORDER": 83
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "높은 출시 빈도와 투자 건수는 삼성 기술이 시장에서 성장 단계에 있음을 시사하지만, 낮은 시장 감성 점수는 시장의 반응이 긍정적이지만은 않음을 나타낸다."
+      }
+    }
+  ]
+}
