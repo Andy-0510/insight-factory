@@ -295,12 +295,12 @@ def plot_tech_maturity_map(maturity_data):
     _savefig(fig, os.path.join(FIG_DIR, 'tech_maturity_map.png'))
     print("[INFO] Tech maturity map updated and saved.")
 
-def plot_company_network_from_json(json_path="outputs/company_network.json",
-                                   output_path="outputs/fig/company_network.png",
+def plot_company_network_from_json(json_path=os.path.join(ROOT_OUTPUT_DIR, "company_network.json"), # 경로 수정
+                                   output_path=os.path.join(FIG_DIR, "company_network.png"), # 경로 수정
                                    top_edges=30, top_nodes=10):
 
     if not os.path.exists(json_path):
-        print("[WARN] company_network.json not found")
+        print(f"[WARN] company_network.json not found at {json_path}") # 경로 명시
         return
 
     with open(json_path, "r", encoding="utf-8") as f:
