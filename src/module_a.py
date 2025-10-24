@@ -23,7 +23,7 @@ def naver_headers():
         "User-Agent": "Mozilla/5.0"
     }
 
-def http_get(url, params=None, headers=None, timeout=10, max_retry=3, verify=True): # Added verify parameter
+def http_get(url, params=None, headers=None, timeout=10, max_retry=3, verify=False): # Added verify parameter
     for i in range(max_retry):
         try:
             # Pass verify parameter to requests.get
