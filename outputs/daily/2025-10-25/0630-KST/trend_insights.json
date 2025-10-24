@@ -1,0 +1,150 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "n32",
+        "ai",
+        "브랜드",
+        "ceo",
+        "배터리"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "반도체",
+        "소재",
+        "장비",
+        "로봇",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "렌즈",
+        "유리기판",
+        "ai",
+        "반도체",
+        "t30"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "공공디자인",
+        "전시",
+        "대한민국",
+        "주제로",
+        "공공디자인대상"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "미국",
+        "금리",
+        "실적",
+        "트럼프",
+        "사상"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "게임",
+        "신뢰성",
+        "체험",
+        "오는",
+        "이노테크는"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "제품",
+        "삼성위크",
+        "oled",
+        "구매"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "기술",
+        "디스플레이",
+        "led",
+        "마이크로"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "oled",
+        "디스플레이",
+        "중국",
+        "패널",
+        "lcd"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "쿠쿠",
+        "김치냉장고",
+        "김해",
+        "게이밍",
+        "미식컬렉션"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "oled",
+        "중국",
+        "패널",
+        "3분기",
+        "한국"
+      ]
+    },
+    {
+      "topic_id": 11,
+      "topic_name": "Topic #11",
+      "summary": "",
+      "words": [
+        "ai",
+        "xr",
+        "갤럭시",
+        "아이폰",
+        "애플"
+      ]
+    }
+  ],
+  "evidence": {}
+}
