@@ -1,6 +1,6 @@
 {
   "dry_run": false,
-  "use_pro": true,
+  "use_pro": false,
   
   "queries": [
   "OLED 패널", "QD-OLED", "폴더블", "마이크로LED", "미니LED", "QLED", "QNED", "OLEDoS", "LEDos",
@@ -11,7 +11,7 @@
   "OLED", "LCD"
   ],
 
-  "per_query_display": 20,
+  "per_query_display": 2,
   "pages": 1,
   "top_n_keywords": 20,
 
