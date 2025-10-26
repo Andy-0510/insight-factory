@@ -52,6 +52,11 @@ jobs:
           sudo apt-get update && sudo apt-get install -y fonts-nanum fonts-noto-cjk
           fc-cache -f
 
+      - name: Download spaCy Korean model  # <-- 새로운 단계 추가
+        run: |
+          python -m spacy download ko_core_news_sm
+        shell: bash
+
       - name: 🚀 Start Daily Pipeline
         run: |
           echo "=================================================="

@@ -52,6 +52,26 @@ try:
 except Exception:
     BERTopic, UMAP, HDBSCAN = None, None, None
 
+# -------------------------
+# Optional deps # Load Korean NER model globally (if available)
+# -------------------------
+try:
+    import spacy
+    try:
+        # Load the model once when the module is imported
+        NLP = spacy.load("ko_core_news_sm")
+        print("[INFO] [module_b] spaCy Korean model 'ko_core_news_sm' loaded successfully.")
+    except OSError:
+        print("[WARN] [module_b] spaCy model 'ko_core_news_sm' not found. Download it using: python -m spacy download ko_core_news_sm. NER features will be limited.")
+        NLP = None
+    except Exception as e:
+        print(f"[WARN] [module_b] Failed to load spaCy model: {e}. NER features disabled.")
+        NLP = None
+except ImportError:
+    print("[WARN] [module_b] spaCy library not found. Install it using: pip install spacy. NER features disabled.")
+    spacy = None
+    NLP = None
+
 
 # -------------------------
 # Utilities / IO
@@ -139,21 +159,21 @@ def nounish_strip(sentence: str) -> str:
 # Patterns / Locations
 # -------------------------
 def compile_patterns(CFG: dict):
-    rp = CFG.get("regex_patterns", {}) or {}
-    def _comp(key, default):
-        try:
-            return re.compile(rp.get(key, default))
-        except Exception:
-            return re.compile(default)
-    pats = {
-        "NUMERIC_ONLY": _comp("NUMERIC_ONLY", r"^\d+$"),
-        "DATE_PAT": _comp("DATE_PAT", r"^\d{1,2}일$|^\d{1,2}월$|^\d{4}년$|^\d{4}$"),
-        "CURRENCY_PAT": _comp("CURRENCY_PAT", r"^[0-9,\.]+(원|달러|유로|엔|위안|억원|조원)$"),
-        "PERSON_NAME_PAT": _comp("PERSON_NAME_PAT", r"^[가-힣]{2,4}$"),
-        # 숫자+단위(%, 배, 건, 개, 명, 곳, 회, 대, 종, 분기 등)
-        "UNIT_TOKEN_PAT": re.compile(r"^\d+(?:[.,]\d+)?(%|배|건|개|명|곳|회|대|종|분기)$")
+    rp = CFG.get("regex_patterns", {}) or {} 
+    def _comp(key, default): 
+        try: 
+            return re.compile(rp.get(key, default)) 
+        except Exception: 
+            return re.compile(default) 
+    pats = { 
+        "NUMERIC_ONLY": _comp("NUMERIC_ONLY", r"^\d+$"), 
+        "DATE_PAT": _comp("DATE_PAT", r"^\d{1,2}일$|^\d{1,2}월$|^\d{4}년$|^\d{4}$"), 
+        "CURRENCY_PAT": _comp("CURRENCY_PAT", r"^[0-9,\.]+(원|달러|유로|엔|위안|억원|조원)$"), 
+        "PERSON_NAME_PAT": _comp("PERSON_NAME_PAT", r"^[가-힣]{2,4}$"), 
     }
-    return pats
+    # config.json에 정의된 UNIT_TOKEN_PAT을 로드 시도, 없으면 기본 빈 패턴
+    pats["UNIT_TOKEN_PAT"] = _comp("UNIT_TOKEN_PAT", r"^\d+([.,]\d+)?(PLACEHOLDER_UNIT)$") # Placeholder, 실제 패턴은 config에서 로드됨
+    return pats #
 
 _LOCATION_CORE = {
     "서울","부산","대구","인천","광주","대전","울산","세종",
@@ -261,52 +281,114 @@ def apply_domain_weights(scores: Dict[str, float],
         return {}
     P = patterns or {}
     boosted = {}
-    db = float(weight_CFG.get("domain_hint_boost", 1.0))
-    cd = float(weight_CFG.get("common_debuff", 1.0))
-    entity_boost = float(weight_CFG.get("entity_boost", 1.35))
-    brand_boost  = float(weight_CFG.get("brand_boost", 1.2))
-    person_debuf = float(weight_CFG.get("person_name_debuff", 0.8))
-    loc_debuf    = float(weight_CFG.get("location_debuff", 0.6))
-    num_debuf    = float(weight_CFG.get("number_debuff", 0.5))
+    # Load weights from config
+    dh_boost = float(weight_CFG.get("domain_hint_boost", 1.6)) 
+    cd_debuff = float(weight_CFG.get("common_debuff", 0.55)) 
+    entity_boost_config = float(weight_CFG.get("entity_boost", 1.4))
+    brand_boost_config = float(weight_CFG.get("brand_boost", 1.2)) 
+    person_debuff = float(weight_CFG.get("person_name_debuff", 0.8))
+    loc_debuff = float(weight_CFG.get("location_debuff", 0.6)) 
+    num_debuff = float(weight_CFG.get("number_debuff", 0.5))
 
-    dh = set(domain_hints or [])
-    cm = set(common_debuff or [])
-    brands = brands or set()
-    entities = entities or set()
+    # --- ▼▼▼ NER 기반 가중치 추가 ▼▼▼ ---
+    ner_org_boost = 1.7 # spaCy가 ORG로 인식한 경우 가중치 (기존 entity_boost보다 약간 높게 설정 가능)
+    ner_product_boost = 1.5 # spaCy가 PRODUCT로 인식한 경우 (모델이 지원한다면)
+    # --- ▲▲▲ NER 기반 가중치 추가 ▲▲▲ ---
+
+    # Prepare sets for faster lookup
+    dh = set(h.lower() for h in (domain_hints or [])) # lowercase comparison
+    cm = set(c.lower() for c in (common_debuff or [])) # lowercase comparison
+    brands_set = brands or set()
+    entities_set = entities or set()
+
+    # Process items only once to avoid duplicate lookups
+    keywords_to_process = list(scores.keys())
+    ner_results = {} # Cache NER results
+
+    # --- ▼▼▼ NER 분석 (Optional) ▼▼▼ ---
+    if NLP: # Only run if spaCy model loaded successfully
+        # Process keywords in batches for efficiency if list is very large
+        # For moderate lists, processing one by one is fine
+        print(f"[INFO] [module_b] Running NER on {len(keywords_to_process)} candidate keywords...")
+        # Note: NLP.pipe is more efficient for large numbers, but simple loop is okay here
+        for k in keywords_to_process:
+            try:
+                doc = NLP(k) # Process keyword with spaCy
+                # Store the first recognized entity label (if any)
+                if doc.ents:
+                    ner_results[k] = doc.ents[0].label_ # Get label like 'ORG', 'PERSON'
+                else:
+                     ner_results[k] = None # No entity found
+            except Exception as ner_err:
+                # Log error for the specific keyword and continue
+                # print(f"[WARN] [module_b] NER failed for keyword '{k}': {ner_err}")
+                ner_results[k] = None # Mark as failed/None
+
+        print("[INFO] [module_b] NER analysis complete.")
+    # --- ▲▲▲ NER 분석 완료 ▲▲▲ ---
 
     for k, v in scores.items():
-        k2 = normalize_alias(k, alias_map)
-        s = v
+        k_normalized = normalize_alias(k, alias_map) # Apply alias normalization
+        s = v # Initial score
+        ner_label = ner_results.get(k) # Get cached NER result for original keyword k
 
-        if any(h.lower() in k2.lower() for h in dh):
-            s *= db
-        if k2 in cm or any(c.lower() == k2.lower() for c in cm):
-            s *= cd
+        # --- ▼▼▼ 가중치 적용 로직 통합 ▼▼▼ ---
+        final_boost = 1.0
+        final_debuff = 1.0
 
-        if k2 in entities:
-            s *= entity_boost
-        if k2 in brands:
-            s *= brand_boost
+        # 1. Domain Hints Boost (using normalized keyword)
+        if any(h in k_normalized.lower() for h in dh): # Use lowercase for hints check
+            final_boost = max(final_boost, dh_boost)
 
-        # 인명(2~4자 한글) 약화(엔티티 제외)
-        if P.get("PERSON_NAME_PAT") and P["PERSON_NAME_PAT"].fullmatch(k2):
-            if k2 not in entities and k2 not in brands:
-                s *= person_debuf
+        # 2. NER-based Boost (using original keyword k for NER label)
+        if ner_label == 'ORG':
+            final_boost = max(final_boost, ner_org_boost)
+        elif ner_label == 'PRODUCT': # If your spaCy model supports PRODUCT
+            final_boost = max(final_boost, ner_product_boost)
+        # Add more elif for other entity types if needed
 
-        # 행정지명 약화
-        if is_location_token(k2):
-            s *= loc_debuf
+        # 3. List-based Boost (using normalized keyword)
+        # Apply only if NER didn't already give a stronger boost
+        if k_normalized in entities_set and final_boost < entity_boost_config:
+            final_boost = max(final_boost, entity_boost_config)
+        if k_normalized in brands_set and final_boost < brand_boost_config:
+            final_boost = max(final_boost, brand_boost_config)
 
-        # 숫자/날짜/통화/단위 토큰 약화(전처리 누락 대비)
-        if (P.get("NUMERIC_ONLY") and P["NUMERIC_ONLY"].match(k2)) \
-           or (P.get("DATE_PAT") and P["DATE_PAT"].match(k2)) \
-           or (P.get("CURRENCY_PAT") and P["CURRENCY_PAT"].match(k2)) \
-           or (P.get("UNIT_TOKEN_PAT") and P["UNIT_TOKEN_PAT"].match(k2)):
-            s *= num_debuf
+        # 4. Debuffs (using normalized keyword)
+        if k_normalized.lower() in cm: # Use lowercase for common debuff check
+            final_debuff = min(final_debuff, cd_debuff)
+
+        # NER Person Debuff (using original keyword k for NER label)
+        # Apply person debuff if NER identified as PERSON, *unless* it's also in entities/brands list
+        if ner_label == 'PERSON' and k_normalized not in entities_set and k_normalized not in brands_set:
+             final_debuff = min(final_debuff, person_debuff)
+        # Fallback Regex Person Debuff (if NER didn't run or didn't identify)
+        elif ner_label is None and P.get("PERSON_NAME_PAT") and P["PERSON_NAME_PAT"].fullmatch(k_normalized):
+             if k_normalized not in entities_set and k_normalized not in brands_set:
+                 final_debuff = min(final_debuff, person_debuff)
+
+        # Location Debuff (normalized keyword)
+        if is_location_token(k_normalized):
+            final_debuff = min(final_debuff, loc_debuff)
+
+        # Number/Date/Currency/Unit Debuff (normalized keyword)
+        if (P.get("NUMERIC_ONLY") and P["NUMERIC_ONLY"].match(k_normalized)) \
+           or (P.get("DATE_PAT") and P["DATE_PAT"].match(k_normalized)) \
+           or (P.get("CURRENCY_PAT") and P["CURRENCY_PAT"].match(k_normalized)) \
+           or (P.get("UNIT_TOKEN_PAT") and P["UNIT_TOKEN_PAT"].match(k_normalized)):
+            final_debuff = min(final_debuff, num_debuff)
+
+        # Apply final combined boost and debuff
+        s = s * final_boost * final_debuff
+        # --- ▲▲▲ 가중치 적용 로직 통합 완료 ▲▲▲ ---
 
         if s <= 0:
             continue
-        boosted[k2] = max(boosted.get(k2, 0.0), s)
+
+        # Store the potentially updated score for the NORMALIZED keyword
+        # Use max to handle cases where different original keywords map to the same normalized one
+        boosted[k_normalized] = max(boosted.get(k_normalized, 0.0), s)
+
     return boosted
 
 
@@ -535,42 +617,124 @@ def main():
 
     combined = base_scores.copy()
 
-    # Pro: per-document KeyBERT MMR reranking and aggregation
+    # Pro: per-document KeyBERT MMR reranking and aggregation (Modified with TF-IDF weighting)
     if use_pro and KeyBERT is not None and combined:
-        print("[INFO] [module_b] [PRO] KeyBERT MMR 재랭킹을 시작합니다...")
+        print("[INFO] [module_b] [PRO] KeyBERT MMR 재랭킹 (TF-IDF 가중치 적용)을 시작합니다...") # 로그 수정
         cand = list(combined.keys())
-        model_name = CFG.get("keybert_model", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2")
-        diversity = float(CFG.get("mmr_diversity", 0.5))
-        max_docs_rerank = int(CFG.get("max_docs_rerank", 80))
-        sel_docs = pre_docs[:max_docs_rerank]
+        model_name = CFG.get("keybert_model", "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2") # 
+        diversity = float(weights.get("mmr_diversity", 0.65)) # config.json에서 가져오도록 수정 
+        max_docs_rerank = int(CFG.get("max_docs_rerank", 135)) # 
+        sel_docs = pre_docs[:max_docs_rerank] #
 
-        agg, cnt = defaultdict(float), defaultdict(int)
-        for d in sel_docs:
-            rer = keybert_rerank_doc(d, candidates=cand, model_name=model_name,
-                                     topn=min(len(cand), topn_keywords),
-                                     use_mmr=True, diversity=diversity, ngram_range=(1,3), stopwords=set(stopwords))
-            if not rer:
-                continue
-            vals = list(rer.values())
-            mn, mx = min(vals), max(vals)
-            for k, v in rer.items():
-                nv = (v - mn) / (mx - mn + 1e-12)
-                agg[k] += nv
-                cnt[k] += 1
+        # --- ▼▼▼ TF-IDF 가중치 계산 추가 ▼▼▼ ---
+        doc_term_weights = defaultdict(lambda: defaultdict(float))
+        if TfidfVectorizer is not None and len(sel_docs) >= 3: # TF-IDF 계산 조건 확인
+            try:
+                # Use parameters consistent with tfidf_only or hybrid_rank
+                tfidf_vec = TfidfVectorizer(ngram_range=(1,3), min_df=3, max_df=0.9, stop_words=list(stopwords)) # stopwords 추가
+                X_tfidf = tfidf_vec.fit_transform(sel_docs) #
+                feature_names = tfidf_vec.get_feature_names_out() #
+                # Map feature names to their indices for quick lookup
+                feature_indices = {name: idx for idx, name in enumerate(feature_names)}
 
-        if agg:
-            all_keys = list(set(list(combined.keys()) + list(agg.keys())))
-            def norm(d):
-                vals = [d.get(k,0.0) for k in all_keys]
-                mn, mx = min(vals), max(vals)
-                return {k: (d.get(k,0.0)-mn)/(mx-mn+1e-12) for k in all_keys}
-            base_n = norm(combined)
-            rer_n = {k: (agg[k]/max(1,cnt[k])) for k in all_keys}
-            vals = list(rer_n.values())
-            mn, mx = (min(vals), max(vals)) if vals else (0.0, 1.0)
-            rer_n = {k: (rer_n.get(k,0.0)-mn)/(mx-mn+1e-12) for k in all_keys}
-            combined = {k: 0.4*base_n.get(k,0.0) + 0.6*rer_n.get(k,0.0) for k in all_keys}
-        print("[INFO] [module_b] [PRO] KeyBERT 재랭킹 완료.")
+                # Store TF-IDF score for each term in each document
+                rows, cols = X_tfidf.nonzero()
+                for row, col in zip(rows, cols):
+                    term = feature_names[col]
+                    # Check if the term is in our candidate list to reduce memory usage
+                    if term in cand:
+                         doc_term_weights[row][term] = X_tfidf[row, col]
+                print(f"[INFO] [module_b] [PRO] TF-IDF 가중치 계산 완료 ({len(doc_term_weights)} 문서)")
+            except Exception as tfidf_err:
+                 print(f"[WARN] [module_b] [PRO] TF-IDF 가중치 계산 실패: {tfidf_err}. 가중치 없이 진행합니다.")
+                 # Clear weights if calculation failed
+                 doc_term_weights.clear() #
+        else:
+             print("[INFO] [module_b] [PRO] 문서 수가 적거나 TfidfVectorizer 없음. TF-IDF 가중치 없이 진행.")
+        # --- ▲▲▲ TF-IDF 가중치 계산 완료 ▲▲▲ ---
+
+
+        agg_weighted_score, agg_weight_sum = defaultdict(float), defaultdict(float) # 가중 합계, 가중치 합계
+
+        # Initialize KeyBERT model once
+        try:
+            kb_model = KeyBERT(model=model_name)
+        except Exception as kb_init_err:
+             print(f"[ERROR] [module_b] [PRO] KeyBERT 모델 초기화 실패: {kb_init_err}. Pro 모드 중단.")
+             kb_model = None
+
+        if kb_model: # Proceed only if KeyBERT model initialized successfully
+            print(f"[INFO] [module_b] [PRO] 문서별 KeyBERT 추출 시작 (문서 수: {len(sel_docs)})")
+            # Process documents one by one
+            for doc_idx, d in enumerate(sel_docs):
+                try:
+                    # Extract keywords using KeyBERT MMR
+                    rer = kb_model.extract_keywords( # Renamed variable from kb
+                        d, #
+                        keyphrase_ngram_range=(1,3), #
+                        stop_words=list(stopwords) if stopwords else None, # Use consistent stopwords
+                        use_mmr=True, #
+                        diversity=diversity, #
+                        top_n=min(len(cand), topn_keywords * 2) # Extract slightly more candidates initially
+                    )
+                except Exception as kb_extract_err:
+                    # Log error for the specific document and continue
+                    print(f"[WARN] [module_b] [PRO] 문서 {doc_idx} KeyBERT 추출 실패: {kb_extract_err}")
+                    rer = [] # Set to empty list on failure
+
+
+                if not rer:
+                    continue
+
+                # Filter results to only include candidates from the initial list (cand)
+                filtered_rer = {p: s for (p, s) in rer if p in cand}
+
+                if not filtered_rer:
+                    continue
+
+                # Normalize KeyBERT scores within the document (0 to 1)
+                vals = list(filtered_rer.values()) #
+                mn, mx = min(vals), max(vals) #
+                norm_factor = (mx - mn + 1e-12) # Add epsilon for stability
+
+                # Get TF-IDF weights for this document (or default to 1.0)
+                current_doc_tfidf = doc_term_weights.get(doc_idx, {})
+
+                # Aggregate scores weighted by TF-IDF
+                for k, v in filtered_rer.items():
+                    keybert_score_norm = (v - mn) / norm_factor # Normalized KeyBERT score
+                    # Use TF-IDF weight if available, otherwise default weight is 1.0
+                    tfidf_weight = current_doc_tfidf.get(k, 1.0)
+
+                    # Weighted score contribution from this document
+                    agg_weighted_score[k] += keybert_score_norm * tfidf_weight
+                    agg_weight_sum[k] += tfidf_weight # Sum of weights (TF-IDF or 1.0)
+
+            # Calculate the final weighted average score
+            if agg_weighted_score:
+                final_reranked_scores = {
+                    k: agg_weighted_score[k] / agg_weight_sum[k]
+                    for k in agg_weighted_score if agg_weight_sum[k] > 0
+                }
+
+                # Blend the original base scores with the new reranked scores
+                all_keys = list(set(list(combined.keys()) + list(final_reranked_scores.keys())))
+                def norm_dict(d, keys): # Helper to normalize scores
+                    valid_scores = [d.get(k, 0.0) for k in keys]
+                    mn, mx = min(valid_scores), max(valid_scores)
+                    norm_factor = (mx - mn + 1e-12)
+                    return {k: (d.get(k, 0.0) - mn) / norm_factor for k in keys}
+
+                base_n = norm_dict(combined, all_keys) # Normalize original scores
+                rer_n = norm_dict(final_reranked_scores, all_keys) # Normalize new scores
+
+                # Combine scores (adjust weights 0.4/0.6 as needed)
+                combined = {k: 0.4 * base_n.get(k, 0.0) + 0.6 * rer_n.get(k, 0.0) for k in all_keys}
+                print("[INFO] [module_b] [PRO] KeyBERT 재랭킹 및 TF-IDF 가중 평균 적용 완료.")
+            else:
+                 print("[INFO] [module_b] [PRO] KeyBERT 재랭킹 결과가 없어 기본 점수 유지.")
+
+    # ... (Rest of the code: Optional BERTopic boost, apply_domain_weights, hard drop, Output) ...
 
     # Optional: topic context boost (Pro)
     if use_pro and BERTopic is not None and len(pre_docs) >= 20:

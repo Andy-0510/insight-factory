@@ -1,45 +1,38 @@
 {
   "dry_run": false,
-  "use_pro": false,
+  "use_pro": true,
   
   "queries": [
     "OLED", "QD-OLED", "LCD", "마이크로LED", "미니LED", "QLED", "QNED", "OLEDoS", "LEDos",
-
     "폴더블 디스플레이", "플렉서블 디스플레이", "투명 디스플레이", "AI 디스플레이", "롤러블 디스플레이", "스트레처블 디스플레이",
-
     "LG디스플레이", "삼성디스플레이", "BOE", "CSOT", "AUO", "Innolux", "Visionox", "Tianma", "JDI", "Sharp",
-    
     "애플", "삼성전자", "LG전자", "TCL", "하이센스", "DELL", "HP", "레노버", "ASUS",
-
     "TV", "모니터", "노트북", "테블릿", "스마트폰", "차량용 디스플레이", "AR", "XR", "IT OLED", "게이밍 모니터", "OLED 모니터", "OLED 노트북", "차량용 OLED",
-
     "8.6세대", "LTPO", "디스플레이 시장"
   ],
 
   "per_query_display": 25,
   "pages": 1,
-  "top_n_keywords": 20,
 
-  "min_docfreq": 3,
+  "top_n_keywords": 20,
+  "min_docfreq": 6,
   "min_docfreq_autotune": true,
 
   "stopwords": [
-    "위한", "대한", "이번", "시대", "제공", "개최", "지역", "기자", "사진", "영상", "속보",
-    "단독", "종합", "네이버", "뉴스", "연합뉴스", "국가", "정부", "대통령", "위원회", "있다",
-    "최근에는", "직접", "운영", "강화", "출범", "이어", "기반", "활용", "국제", "프로그램", "국내",
-    "보도","취재","특집","기획","속보","단신","해설","칼럼","사설"
+    "규모", "정상화", "각각", "가전", "기기", "콘텐츠", "실제", "선보", "업체", "콤보", "경주", "정상회", "정상회담", "기록",
+    "모두", "기관", "수상", "세계", "부문", "기능", "삼성", "설명", "열리"
   ],
 
   "phrase_stop": [
-    "것으로 보인다","것으로 예상된다","것으로 전망된다","이어가고 있다","업계에 따르면",
-    "서울 뉴시스","있다 특히","지난 일부터","개선될 것으로","환경을 제공한다",
-    "한국거래소에 따르면","제공할 예정이다","이라고 말","재배포 금지",
-    "순조롭게 진행되고","달성을 목표로","거점으로 자리매김할","경쟁력을 갖출",
-    "이번 협약","적극 지원하겠다","지원하겠다 밝혔다",
-    "관계자는 밝혔다","전망이다","밝혔다","강조했다","라고 말했다",
-    "무단전재 재배포 금지","사진 제공","기사 원문","관련 기사"
+    "것으로 보인다", "것으로 예상된다", "것으로 전망된다", "이어가고 있다", "업계에 따르면",
+    "서울 뉴시스", "있다 특히", "지난 일부터", "개선될 것으로", "환경을 제공한다"
   ],
   
+  "alias": {
+    "oled":"OLED", "올레드":"OLED", "유기발광다이오드":"OLED",
+    "microled":"MicroLED","마이크로 led":"MicroLED","마이크로led":"MicroLED","uLED":"MicroLED","µLED":"MicroLED"
+  },
+
   "common_debuff": [
     "지원", "사용", "분야", "첨단", "가능", "오는", "오른", "상승", "성장", "개선",
     "마련", "기능", "기여", "프로젝트", "조성", "안전", "보안", "거래일",
@@ -52,64 +45,78 @@
   ],
 
   "domain_hints": [
-    "oled", "올레드", "microled", "마이크로엘이디", "ltpo", "LTPO", "tft", "TFT", "igzo", "IGZO", "qd-oled", "QD-올레드", "w-oled", "W-올레드",
-    "inkjet", "잉크젯", "evaporation", "증착", "tfe", "박막봉지", "foldable", "폴더블", "polarizer", "편광판", "ito", "ITO",
-    "automotive display", "자동차 디스플레이", "XR", "VR", "가상현실", "AR", "증강현실", "metaverse", "메타버스", "glass substrate", "유리 기판",
-    "samsung", "삼성", "lg", "엘지", "apple", "애플", "meta", "메타", "google", "구글", "microsoft", "마이크로소프트",
-    "samsung electronics", "삼성전자", "lg electronics", "엘지전자",
-    "samsung display", "삼성디스플레이", "lg display", "엘지디스플레이",
-    "tft lcd", "TFT LCD", "am oled", "능동형 OLED", "pm oled", "수동형 OLED", "flexible oled", "플렉서블 OLED", "rigid oled", "리지드 OLED",
-    "transparent oled", "투명 OLED", "quantum dot", "퀀텀닷", "quantum dot oled", "퀀텀닷 OLED", "qd oled", "QD OLED",
-    "mini led", "미니 LED", "mini-led", "미니-LED", "miniled", "미니엘이디", "micro led", "마이크로 LED", "micro-led", "마이크로-LED",
-    "ltps", "LTPS", "low temperature polysilicon", "저온 다결정 실리콘", "oxide tft", "산화물 TFT", "oxide", "산화물",
-    "high resolution", "고해상도", "high brightness", "고휘도", "high speed", "고속", "high efficiency", "고효율",
-    "low power", "저전력", "low cost", "저비용", "high performance", "고성능",
-    "supply chain", "공급망", "supply chains", "supply-demand", "수요-공급", "supply demand", "수요 공급",
-    "production capacity", "생산 능력", "production line", "생산 라인", "manufacturing process", "제조 공정", "manufacturing technology", "제조 기술",
-    "yield rate", "수율", "defect rate", "불량률", "failure rate", "고장률", "mass production", "양산", "pilot production", "시험 생산",
-    "디스플레이 제조", "공정 자동화", "롤러블", "스트레처블", "자동차용 디스플레이", 
-    "게이밍", "비전프로", "FMM", "파인 메탈 마스크", "WOLED", "화이트 OLED",
-    "MLA", "마이크로 렌즈 어레이", "패널", "TADF", "삼중항 유도 발광", "PHOLED", "인광 OLED", "HTL", "정공 수송층", "ETL", "전자 수송층", "EML", "발광층",
-    "ITO", "투명 전극", "편광판", "컬러 필터", "봉지", "박막 봉지", "TFE", "CF",
-    "backplane", "백플레인", "encapsulation", "color gamut", "색영역", "refresh rate", "주사율", "response time", "응답 속도", "contrast ratio", "명암비", "resolution", "해상도",
-    "ppi", "nit", "니트", "cd/m2", "HDR", "하이 다이내믹 레인지",
-    "FHD", "풀 HD", "UHD", "울트라 HD", "4K", "8K",
-    "VRR", "가변 주사율", "MPRT", "모션 퍼포먼스 리스폰스 타임", "HDR10+", "돌비 비전", "돌비 애트모스"
+    "디스플레이", "OLED", "WOLED", "QD-OLED", "QD-OLED", "LCD", "AMOLED", "PMOLED",
+    "플렉서블 OLED", "Rigid OLED", "투명 OLED", "Mini LED", "Micro LED", 
+    "LTPO", "LTPS", "Oxide TFT", "IGZO", "Quantum Dot", "MLA", "TADF", 
+    "XR", "VR", "AR", "eLEAP", "PHOTONIC OLED", "Hybrid TFT",
+
+    "잉크젯", "증착", "FMM", "TFE", "박막 봉지", "봉지",
+    "백플레인", "컬러 필터", "편광판", "Glass Substrate", "유리 기판",
+    "ITO", "투명 전극", "제조 공정", "제조 기술", "양산",
+    "수율", "불량률", "고장률", "생산 라인", "생산 능력",
+    "공정 자동화", "ALD", "PECVD", "Sputter", "Photolithography",
+    "Etching", "Inspection", "Repair",
+
+    "HTL", "정공 수송층", "ETL", "전자 수송층", "EML", "발광층",
+    "유기 발광 재료", "Emitter", "Host", "Dopant",
+    "Blue Phosphorescent Material", "청색 인광 소재",
+    "Encapsulation Film", "Barrier Film", "Adhesive", "Sealant",
+
+    "잉크젯 장비", "증착기", "노광기", "검사 장비",
+    "CVD", "Transfer Equipment", "Laser Lift-Off", "LLO",
+
+    "Smartphone Display", "Mobile Panel", "Tablet Display",
+    "스마트폰", "모바일", "태블릿", "노트북", "모니터", "TV", "스마트워치",
+    "TV Panel", "OLED TV", "Automotive Display", "자동차 디스플레이",
+    "XR Display", "VR Headset", "AR Headset",
+    "Rollable", "롤러블", "Stretchable", "스트레처블",
+    "게이밍 디스플레이", "Vision Pro", "비전프로",
+    "Wearable Display", "스마트워치", "Notebook Display", "Monitor Display",
+    "Signage", "Digital Signage",
+
+    "Supply Chain", "공급망", "Supply-Demand", "수요-공급",
+    "Market Share", "시장 점유율", "Production Capacity", "생산능력",
+    "High Resolution", "고해상도", "High Brightness", "고휘도",
+    "High Efficiency", "고효율", "Low Power", "저전력",
+    "Low Cost", "저비용", "High Performance", "고성능",
+    "CAPEX", "설비투자", "ASP", "평균판매단가",
+    "Market Trend", "Demand Forecast", "Panel Shipment", "생산량", "수출입",
+
+    "LG Electronics", "엘지전자", "LG Display", "엘지디스플레이",
+    "Samsung Electronics", "삼성전자", "Samsung Display", "삼성디스플레이",
+    "Apple", "애플", "Meta", "메타", "Google", "구글", "Microsoft", "마이크로소프트",
+    "BOE", "CSOT", "Tianma", "Visionox", "AUO", "Innolux",
+    "Japan Display", "JDI", "Sharp", "Sony",
+    "Universal Display", "UDC", "Corning", "Merck",
+
+    "Resolution", "해상도", "Color Gamut", "색영역",
+    "Refresh Rate", "주사율", "Response Time", "응답속도",
+    "Contrast Ratio", "명암비", "PPI", "Nit", "니트", "cd/m2",
+    "HDR", "하이 다이내믹 레인지", "FHD", "풀 HD",
+    "UHD", "울트라 HD", "4K", "8K",
+    "VRR", "가변 주사율", "MPRT", "모션 퍼포먼스 리스폰스 타임",
+    "HDR10+", "돌비 비전", "돌비 애트모스",
+    "Peak Brightness", "최대 휘도", "Color Accuracy", "색정확도", "Viewing Angle", "시야각"
   ],
 
-  "alias": {
-    "디스플": "디스플레이",
-    "디스플레": "디스플레이",
-    "oled":"OLED", "올레드":"OLED", "유기발광다이오드":"OLED",
-    "microled":"MicroLED","마이크로 led":"MicroLED","마이크로led":"MicroLED","uLED":"MicroLED","µLED":"MicroLED",
-    "mini led":"MiniLED","miniled":"MiniLED","미니led":"MiniLED",
-    "qd oled":"QD-OLED","qdoled":"QD-OLED","QD OLED":"QD-OLED",
-    "올레도스": "OLEDos", "레도스": "LEDos",
-    "삼성D": "삼성디스플레이", "samsung electronics": "삼성전자",
-    "엘지디스플레이": "LG디스플레이", "lgd": "LG디스플레이", "lg display": "LG디스플레이", "lg elec": "LG전자",
-    "apple": "애플", "meta": "메타", "facebook": "메타",
-    "oxide tft":"Oxide","산화물 tft":"Oxide",
-    "tandem oled": "Tandem OLED",
-    "색영역": "color gamut", "주사율": "refresh rate"
-  },
+  "weights": {    
+    "domain_hint_boost": 2.0,
+    "entity_boost": 1.6,
+    "brand_boost": 1.4,
 
-  "weights": {
-    "entity_boost": 1.4,
-    "brand_boost": 1.2,
-    "common_debuff": 0.55,
-    "person_name_debuff": 0.8,
-    "location_debuff": 0.6,
-    "number_debuff": 0.5,
-    "domain_hint_boost": 1.6,
+    "common_debuff": 0.5,
+    "person_name_debuff": 0.7,
+    "location_debuff": 0.5,
+    "number_debuff": 0.3,
+
+    "mmr_diversity": 0.7,
+    "beta": 0.92,
+    "max_iter": 30,
+
 
     "bigram_top30_boost": 1.35,
     "trigram_top_boost": 1.25,
     "entity_exact_boost": 1.5,
-
-    "beta": 0.92,
-    "max_iter": 30,
-
-    "mmr_diversity": 0.65,
     "title_boost": 1.6,
     "lead_boost": 1.4,
     "firstpara_boost": 1.25
@@ -117,9 +124,6 @@
 
   "keybert_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
   "max_docs_rerank": 135,
-
-  "umap_neighbors": 11,
-  "min_cluster_size": 10,
 
   "keyword_extraction_defaults": {
     "FIX_MAP": {
@@ -142,6 +146,7 @@
     ]
   },
 
+
   "regex_patterns": {
     "CURRENCY_PAT": "^[0-9,\\.]+(원|달러|유로|엔|위안|억원|조원)$",
     "DATE_PAT": "^\\d{1,2}일$|^\\d{1,2}월$|^\\d{4}년$|^\\d{4}$",
@@ -149,7 +154,8 @@
     "BROKEN_KO": "^[ㄱ-ㅎㅏ-ㅣ]+$",
     "PERSON_NAME_PAT": "^[가-힣]{2,4}$",
     "TAIL_BAD_RE": "(하기\\s?위|위해|위한|하며|하고|하는|으로|로|에|에서|부터|까지)$",
-    "BAD_ENDING_PAT": "(을|를)\\s*활용한$|(하|되)겠다$|(했|혔)다$|(이|라)며$|(하|되)는\\s*(핵심|기술|방안)$|(을|를)\\s*통(해)?$|(다|고|라)는$"
+    "BAD_ENDING_PAT": "(을|를)\\s*활용한$|(하|되)겠다$|(했|혔)다$|(이|라)며$|(하|되)는\\s*(핵심|기술|방안)$|(을|를)\\s*통(해)?$|(다|고|라)는$",
+    "UNIT_TOKEN_PAT": "^\\d+([.,]\\d+)?(%|배|건|개|명|곳|회|대|종|분기|가지|마리|척|채|켤레|그루|포기|원|달러|위안|엔|년|월|일|시|분|초|kg|g|mg|l|ml|m|cm|mm|hz|w|kw|mw|wh|kwh|mwh|gb|mb|tb|등|위|차)$"
   },
 
   "news_byline_patterns": [
@@ -165,17 +171,21 @@
     "temperature": 0.3
   },
 
-  "topic_k_candidates": [8, 10, 12, 14],
-  "topic_min_df": 5,
+  "topic_min_df": 12,
   "topic_max_df": 0.9,
-  "pro_topic_min_size": 5,
-  "pro_nr_topics": 12,
+  "topic_k_candidates": [8, 10, 12, 14],
 
+  "pro_nr_topics": null,
+  "pro_topic_min_size": 10,
+  "min_cluster_size": 10,
+  "umap_neighbors": 11,
+  "min_core_keyword_match": 2,
   "pro_topic_core_keywords": [
-    "디스플레이", "패널", "oled", "lcd", "led", "화면", "화질", "기판", "백플레인", "수율",
-    "삼성", "lg", "애플", "아이폰", "갤럭시", "폴더블", "롤러블", "스트레처블", 
-    "차량용", "자동차", "스마트폰", "모니터", "사이니지", "헤드셋", "안경",
-    "ar", "vr", "xr", "메타버스", "microled"
+    "디스플레이", "패널", "oled", "lcd", "led", "화질", "백플레인", "수율",
+    "LG디스플레이", "삼성디스플레이", "BOE", "CSOT", 
+    "삼성전자", "LG전자", "애플", "아이폰", "아이패드", "맥북", "애플워치", "갤럭시",
+    "폴더블", "롤러블", "스트레처블", "차량용", "TV", "스마트폰", "모니터", "노트북", "태블릿",
+    "사이니지", "AR", "VR", "XR", "마이크로LED", "IT OLED", "수율"
   ],
 
   "llm_context_max_topics": 12,

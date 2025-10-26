@@ -23,11 +23,10 @@ def naver_headers():
         "User-Agent": "Mozilla/5.0"
     }
 
-def http_get(url, params=None, headers=None, timeout=10, max_retry=3, verify=False): # Added verify parameter
+def http_get(url, params=None, headers=None, timeout=10, max_retry=3):
     for i in range(max_retry):
         try:
-            # Pass verify parameter to requests.get
-            r = requests.get(url, params=params, headers=headers, timeout=timeout, verify=verify)
+            r = requests.get(url, params=params, headers=headers, timeout=timeout)
             if r.status_code == 429:
                  wait = 30 + i * 15
                  print(f"[WARN] [module_a] 429 Too Many Requests, {wait}초 대기 후 재시도")

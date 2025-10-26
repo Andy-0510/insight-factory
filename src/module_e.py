@@ -154,26 +154,25 @@ def build_prompt(context: Dict[str, Any], want: int = 5) -> str:
     maturity_prompt_injection = ""
     if context.get("tech_maturity"):
         maturity_prompt_injection = (
-            f"  5) 아래 '기술 성숙도' 정보를 반드시 참고하여, 각 아이디어가 어떤 기술 단계(Emerging, Growth, Maturity)에 있는지 전략적 타이밍 관점에서 언급하세요.\n"
+            f"  6) 아래 '기술 성숙도' 정보를 반드시 참고하여, 각 아이디어가 어떤 기술 단계(Emerging, Growth, Maturity)에 있는지 전략적 타이밍 관점에서 언급하세요.\n"
             f"     (예: 이 아이디어는 아직 Emerging 단계인 OOO 기술에 선제적으로 진입하는 것입니다.)\n"
         )
 
     return (
-        f"당신은 글로벌 1위 디스플레이 패널 제조 기업(B2B)의 '신사업 개발 총괄'입니다. "
-        f"아래 컨텍스트를 기반으로 구체적인 신사업 아이디어를 제안해 주세요.\n"
+        f"당신은 글로벌 1위 디스플레이 패널 제조 기업(B2B)의 '신사업 개발 총괄'입니다. \n"
+        f"아래 컨텍스트를 기반으로 구체적인 신사업 아이디어를 제안해 주세요. \n"
         f"- 아이디어 개수: 정확히 {want}개\n"
-        f"- JSON 배열 형식만 출력하세요. 설명은 필요 없습니다.\n"
+        f"- JSON 배열 형식만 출력하세요. 설명은 필요 없습니다. \n"
         f"- 각 아이템은 아래 스키마 키를 정확히 사용하세요: {json.dumps(schema, ensure_ascii=False)}\n"
         f"- 제약 조건:\n"
-        # --- ✨✨✨ 바로 이 부분이 수정되었습니다 ✨✨✨ ---
-        f"  1) 아이디어는 **구체적인 '제품', '기술', '서비스', 또는 '공정 개선 방안'**의 형태여야 합니다. '플랫폼'이나 '솔루션' 같은 추상적인 개념 대신, **실체가 명확하고 현실적인 사업 아이템**을 제안해주세요. (예: '의료용 12K 고해상도 MicroLED 패널 개발', '롤러블 디스플레이 수율 20% 향상을 위한 AI 공정 모니터링 서비스')\n"
-        # --- ✨✨✨ 여기까지 ---
-        f"  2) 각 아이디어의 'problem' 항목에는 반드시 최신 트렌드나 'Why now' 관점을 1문장 이상 포함하여 문제의 시의성을 강조하세요.\n"
-        f"  3) 'target_customer'는 '글로벌 완성차 OEM', '북미 빅테크 기업'처럼 구체적으로 명시하세요.\n"
-        f"  4) 'priority_score'는 시장 잠재력, 기술 실현 가능성, 경쟁 강도를 고려하여 객관적으로 평가해주세요.\n"
+        f"  1) 아이디어는 **구체적인 '제품', '기술', '서비스', '신규 비즈니스 모델' 또는 '공정 개선 방안'**의 형태여야 합니다. 만약 '플랫폼'이나 '솔루션'을 제안한다면, **매우 구체적이고 실현 가능한 사업 모델**을 명확히 제시해야 합니다.\n"
+        f"  2) 제안하는 아이디어는 **우리 회사의 핵심 역량(예: 디스플레이 패널 제조, 디스플레이 패널 제조 인프라, 공정 기술, B2B 공급망)과 명확한 시너지**를 낼 수 있어야 합니다.\n"
+        f"  3) 각 아이디어의 'problem' 항목에는 반드시 최신 트렌드나 'Why now' 관점을 1문장 이상 포함하여 문제의 시의성을 강조하세요.\n"
+        f"  4) 'target_customer'는 '글로벌 완성차 OEM', '북미 빅테크 기업'처럼 구체적으로 명시하세요.\n"
+        f"  5) 'priority_score'는 시장 잠재력, 기술 실현 가능성, 경쟁 강도를 고려하여 객관적으로 평가해주세요.\n"
         f"{maturity_prompt_injection}"
         f"컨텍스트:\n"
-        f"{json.dumps(context, ensure_ascii=False)}"
+        f"{json.dumps(context, ensure_ascii=False)}" 
     )
 
 def strip_code_fence(text: str) -> str:
@@ -646,7 +645,7 @@ def fill_opportunities_to_five(ideas: list, keywords_obj: dict, want: int = 5) -
             "solution": ["파일럿", "파트너십", "인증/규격 검토", "조달/유통 테스트"],
             "risks": ["규제/표준 불확실성", "ROI 불확실성"],
             "priority_score": 3.0,
-            "score": 60.0,
+            "score": 0.0,
             "score_breakdown": {"market":0.5,"urgency":0.5,"feasibility":0.6,"risk":0.0,"notes":{}},
             "evidence": []
         }
@@ -682,7 +681,6 @@ def main():
     
     # 새로 추가: 분석 결과 로드
     analysis_summary = load_json("outputs/analysis_summary.json", {})
-    
     trend_rows = load_trend_strength_csv("outputs/export/trend_strength.csv")
     events_rows = load_events_csv("outputs/export/events.csv")
 
