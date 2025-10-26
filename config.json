@@ -3,15 +3,24 @@
   "use_pro": false,
   
   "queries": [
-  "OLED 패널", "QD-OLED", "폴더블", "마이크로LED", "미니LED", "QLED", "QNED", "OLEDoS", "LEDos",
-  "플렉서블 디스플레이", "투명 디스플레이", "AI 디스플레이", "롤러블 디스플레이", "스트레처블 디스플레이",
-  "차량용 디스플레이", "전장", "AR", "LTPO", "디스플레이 시장",
-  "삼성디스플레이", "LG디스플레이", "애플", "삼성전자", "LG전자", "TCL", "하이센스", "BOE", "CSOT","AUO", "Innolux", "Visionox", "Tianma", "JDI", "Sharp",
-  "8.6세대", "IT OLED", "게이밍 모니터", "OLED 모니터", "OLED 노트북", "차량용 OLED",
-  "OLED", "LCD"
+    "OLED", "QD-OLED", "LCD", "마이크로LED", "미니LED", "QLED", "QNED", "OLEDoS", "LEDos",
+
+    "폴더블 디스플레이", "플렉서블 디스플레이", "투명 디스플레이", "AI 디스플레이", "롤러블 디스플레이", "스트레처블 디스플레이",
+
+    "LG디스플레이", "삼성디스플레이", "BOE", "CSOT", "AUO", "Innolux", "Visionox", "Tianma", "JDI", "Sharp",
+    
+    "애플", "삼성전자", "LG전자", "TCL", "하이센스", "DELL", "HP", "레노버", "ASUS",
+
+    "TV", "모니터", "노트북", "테블릿", "스마트폰", "차량용 디스플레이", "AR", "XR", "IT OLED", "게이밍 모니터", "OLED 모니터", "OLED 노트북", "차량용 OLED",
+
+    "8.6세대", "LTPO", "디스플레이 시장"
   ],
 
+<<<<<<< HEAD
   "per_query_display": 2,
+=======
+  "per_query_display": 30,
+>>>>>>> f4f03b304608b58001d25651edc63add88532dcc
   "pages": 1,
   "top_n_keywords": 20,
 
@@ -49,7 +58,7 @@
   "domain_hints": [
     "oled", "올레드", "microled", "마이크로엘이디", "ltpo", "LTPO", "tft", "TFT", "igzo", "IGZO", "qd-oled", "QD-올레드", "w-oled", "W-올레드",
     "inkjet", "잉크젯", "evaporation", "증착", "tfe", "박막봉지", "foldable", "폴더블", "polarizer", "편광판", "ito", "ITO",
-    "automotive display", "자동차 디스플레이", "vr", "가상현실", "ar", "증강현실", "metaverse", "메타버스", "glass substrate", "유리 기판",
+    "automotive display", "자동차 디스플레이", "XR", "VR", "가상현실", "AR", "증강현실", "metaverse", "메타버스", "glass substrate", "유리 기판",
     "samsung", "삼성", "lg", "엘지", "apple", "애플", "meta", "메타", "google", "구글", "microsoft", "마이크로소프트",
     "samsung electronics", "삼성전자", "lg electronics", "엘지전자",
     "samsung display", "삼성디스플레이", "lg display", "엘지디스플레이",
@@ -62,14 +71,12 @@
     "supply chain", "공급망", "supply chains", "supply-demand", "수요-공급", "supply demand", "수요 공급",
     "production capacity", "생산 능력", "production line", "생산 라인", "manufacturing process", "제조 공정", "manufacturing technology", "제조 기술",
     "yield rate", "수율", "defect rate", "불량률", "failure rate", "고장률", "mass production", "양산", "pilot production", "시험 생산",
-    "next generation", "차세대", "next-gen", "넥스트젠", "cutting-edge", "최첨단", "state-of-the-art", "최신식",
-    "디스플레이 제조", "디스플레이 제조", "공정 자동화", "공정 자동화", "AR/VR", "AR/VR",
-    "롤러블", "롤러블", "스트레처블", "스트레처블", "자동차용 디스플레이", "자동차용 디스플레이",
-    "게이밍", "게이밍", "비전프로", "비전프로", "FMM", "파인 메탈 마스크", "WOLED", "화이트 OLED",
-    "MLA", "마이크로 렌즈 어레이", "패널", "패널", "TADF", "삼중항 유도 발광", "PHOLED", "인광 OLED", "HTL", "정공 수송층", "ETL", "전자 수송층", "EML", "발광층",
-    "ITO", "투명 전극", "편광판", "편광판", "컬러 필터", "컬러 필터", "봉지", "박막 봉지", "TFE", "박막 봉지", "CF", "컬러 필터",
-    "backplane", "백플레인", "encapsulation", "봉지", "color gamut", "색영역", "refresh rate", "주사율", "response time", "응답 속도", "contrast ratio", "명암비", "resolution", "해상도",
-    "ppi", "인치당 픽셀 수", "nit", "니트", "cd/m2", "칸델라 제곱미터", "HDR", "하이 다이내믹 레인지",
+    "디스플레이 제조", "공정 자동화", "롤러블", "스트레처블", "자동차용 디스플레이", 
+    "게이밍", "비전프로", "FMM", "파인 메탈 마스크", "WOLED", "화이트 OLED",
+    "MLA", "마이크로 렌즈 어레이", "패널", "TADF", "삼중항 유도 발광", "PHOLED", "인광 OLED", "HTL", "정공 수송층", "ETL", "전자 수송층", "EML", "발광층",
+    "ITO", "투명 전극", "편광판", "컬러 필터", "봉지", "박막 봉지", "TFE", "CF",
+    "backplane", "백플레인", "encapsulation", "color gamut", "색영역", "refresh rate", "주사율", "response time", "응답 속도", "contrast ratio", "명암비", "resolution", "해상도",
+    "ppi", "nit", "니트", "cd/m2", "HDR", "하이 다이내믹 레인지",
     "FHD", "풀 HD", "UHD", "울트라 HD", "4K", "8K",
     "VRR", "가변 주사율", "MPRT", "모션 퍼포먼스 리스폰스 타임", "HDR10+", "돌비 비전", "돌비 애트모스"
   ],
