@@ -201,14 +201,22 @@ def build_topics_lite(docs: List[str],
     # 2. config.json 및 사전의 불용어 목록 통합
     phrase_stop_cfg = set(CFG.get("phrase_stop", []) or [])
     stopwords_cfg = set(CFG.get("stopwords", []) or [])
-    
-    # phrase_stop은 텍스트에서 먼저 제거 (코드는 함수 후반부에 이미 존재)
-    
-    # CountVectorizer에 적용할 최종 불용어 목록
-    final_stopwords = list(set(EN_STOP) | set(KO_FUNC) | stopwords_cfg)
-    
-    print(f"[DEBUG][C] LITE builder 진입 | k_candidates={k_candidates} min_df={min_df_val} max_df={max_df_val}")
-    
+
+    # --- ▼▼▼ stopwords_ext.txt 로드 및 통합 추가 ▼▼▼ ---
+    stopwords_ext_path = "data/dictionaries/stopwords_ext.txt"
+    stopwords_ext = set()
+    try:
+        with open(stopwords_ext_path, "r", encoding="utf-8") as f:
+            stopwords_ext = {line.strip() for line in f if line.strip()}
+        print(f"[INFO] [module_c] Loaded {len(stopwords_ext)} stopwords from {stopwords_ext_path}")
+    except Exception as e:
+        print(f"[WARN] [module_c] Failed to load {stopwords_ext_path}: {e}")
+
+    # CountVectorizer에 적용할 최종 불용어 목록 (모두 합치기)
+    final_stopwords = list(set(EN_STOP) | set(KO_FUNC) | stopwords_cfg | stopwords_ext) # stopwords_ext 추가
+    print(f"[INFO] [module_c] Total unique stopwords for topic modeling: {len(final_stopwords)}")
+    # --- ▲▲▲ stopwords_ext.txt 로드 및 통합 완료 ▲▲▲ ---
+
     # 3. 문서 리스트에서 phrase_stop 먼저 제거
     processed_docs = []
     if docs:
@@ -219,16 +227,15 @@ def build_topics_lite(docs: List[str],
             processed_docs.append(temp_doc)
     else:
         return {"topics": []}
-
+    
     vec = CountVectorizer(
-        ngram_range=(1, 3), # 3-gram(tri-gram) 포함
+        ngram_range=(1, 2), # 3-gram(tri-gram) 포함
         max_features=max_features,
         min_df=min_df_val, # 상향된 min_df 적용
         max_df=max_df_val,
         token_pattern=r"[가-힣A-Za-z0-9_]{2,}",
         stop_words=final_stopwords # 통합된 불용어 목록 적용
     )
-    # --- 제안 내용 반영 끝 ---
 
     X = vec.fit_transform(processed_docs)
     vocab = vec.get_feature_names_out()
@@ -330,8 +337,24 @@ def pro_build_topics_bertopic(docs, topn=10):
     # --- 주제 필터링 로직 끝 ---
 
     emb = SentenceTransformer("jhgan/ko-sroberta-multitask")
+
+    # --- ▼▼▼ stopwords_ext.txt 로드 및 통합 추가 (Pro 모드용) ▼▼▼ ---
+    stopwords_ext_path = "data/dictionaries/stopwords_ext.txt"
+    stopwords_ext = set()
+    try:
+        with open(stopwords_ext_path, "r", encoding="utf-8") as f:
+            stopwords_ext = {line.strip() for line in f if line.strip()}
+        print(f"[INFO] [module_c - Pro] Loaded {len(stopwords_ext)} stopwords from {stopwords_ext_path}")
+    except Exception as e:
+        print(f"[WARN] [module_c - Pro] Failed to load {stopwords_ext_path}: {e}")
+
+    # CountVectorizer에 적용할 최종 불용어 목록 (Pro 모드용)
+    final_stopwords_pro = list(set(EN_STOP) | set(KO_FUNC) | stopwords_ext) # stopwords_ext 추가
+    print(f"[INFO] [module_c - Pro] Total unique stopwords for BERTopic: {len(final_stopwords_pro)}")
+    # --- ▲▲▲ stopwords_ext.txt 로드 및 통합 완료 (Pro 모드용) ▲▲▲ ---
+
     vectorizer_model = CountVectorizer(
-        ngram_range=(1,3),
+        ngram_range=(1,2),
         min_df=2,
         token_pattern=r"[가-힣A-Za-z0-9_]{2,}",
         stop_words=list(set(EN_STOP)|set(KO_FUNC))
@@ -340,6 +363,9 @@ def pro_build_topics_bertopic(docs, topn=10):
     
     min_topic_size_pro = int(CFG.get("pro_topic_min_size", 5))
     nr_topics_pro = CFG.get("pro_nr_topics", None)
+    # Handle possible string 'null' from config if not parsed correctly
+    if isinstance(nr_topics_pro, str) and nr_topics_pro.lower() == 'null':
+        nr_topics_pro = None
 
     model = BERTopic(
         embedding_model=emb,

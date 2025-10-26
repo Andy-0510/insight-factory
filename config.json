@@ -125,9 +125,6 @@
   "keybert_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2",
   "max_docs_rerank": 135,
 
-  "umap_neighbors": 11,
-  "min_cluster_size": 10,
-
   "keyword_extraction_defaults": {
     "FIX_MAP": {
       "디스플레": "디스플레이", "디스플": "디스플레이",
@@ -157,7 +154,8 @@
     "BROKEN_KO": "^[ㄱ-ㅎㅏ-ㅣ]+$",
     "PERSON_NAME_PAT": "^[가-힣]{2,4}$",
     "TAIL_BAD_RE": "(하기\\s?위|위해|위한|하며|하고|하는|으로|로|에|에서|부터|까지)$",
-    "BAD_ENDING_PAT": "(을|를)\\s*활용한$|(하|되)겠다$|(했|혔)다$|(이|라)며$|(하|되)는\\s*(핵심|기술|방안)$|(을|를)\\s*통(해)?$|(다|고|라)는$"
+    "BAD_ENDING_PAT": "(을|를)\\s*활용한$|(하|되)겠다$|(했|혔)다$|(이|라)며$|(하|되)는\\s*(핵심|기술|방안)$|(을|를)\\s*통(해)?$|(다|고|라)는$",
+    "UNIT_TOKEN_PAT": "^\\d+([.,]\\d+)?(%|배|건|개|명|곳|회|대|종|분기|가지|마리|척|채|켤레|그루|포기|원|달러|위안|엔|년|월|일|시|분|초|kg|g|mg|l|ml|m|cm|mm|hz|w|kw|mw|wh|kwh|mwh|gb|mb|tb|등|위|차)$"
   },
 
   "news_byline_patterns": [
@@ -173,17 +171,21 @@
     "temperature": 0.3
   },
 
-  "topic_k_candidates": [8, 10, 12, 14],
-  "topic_min_df": 5,
+  "topic_min_df": 12,
   "topic_max_df": 0.9,
-  "pro_topic_min_size": 5,
-  "pro_nr_topics": 12,
+  "topic_k_candidates": [8, 10, 12, 14],
 
+  "pro_nr_topics": null,
+  "pro_topic_min_size": 10,
+  "min_cluster_size": 10,
+  "umap_neighbors": 11,
+  "min_core_keyword_match": 2,
   "pro_topic_core_keywords": [
-    "디스플레이", "패널", "oled", "lcd", "led", "화면", "화질", "기판", "백플레인", "수율",
-    "삼성", "lg", "애플", "아이폰", "갤럭시", "폴더블", "롤러블", "스트레처블", 
-    "차량용", "자동차", "스마트폰", "모니터", "사이니지", "헤드셋", "안경",
-    "ar", "vr", "xr", "메타버스", "microled"
+    "디스플레이", "패널", "oled", "lcd", "led", "화질", "백플레인", "수율",
+    "LG디스플레이", "삼성디스플레이", "BOE", "CSOT", 
+    "삼성전자", "LG전자", "애플", "아이폰", "아이패드", "맥북", "애플워치", "갤럭시",
+    "폴더블", "롤러블", "스트레처블", "차량용", "TV", "스마트폰", "모니터", "노트북", "태블릿",
+    "사이니지", "AR", "VR", "XR", "마이크로LED", "IT OLED", "수율"
   ],
 
   "llm_context_max_topics": 12,

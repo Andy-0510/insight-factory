@@ -159,21 +159,21 @@ def nounish_strip(sentence: str) -> str:
 # Patterns / Locations
 # -------------------------
 def compile_patterns(CFG: dict):
-    rp = CFG.get("regex_patterns", {}) or {}
-    def _comp(key, default):
-        try:
-            return re.compile(rp.get(key, default))
-        except Exception:
-            return re.compile(default)
-    pats = {
-        "NUMERIC_ONLY": _comp("NUMERIC_ONLY", r"^\d+$"),
-        "DATE_PAT": _comp("DATE_PAT", r"^\d{1,2}일$|^\d{1,2}월$|^\d{4}년$|^\d{4}$"),
-        "CURRENCY_PAT": _comp("CURRENCY_PAT", r"^[0-9,\.]+(원|달러|유로|엔|위안|억원|조원)$"),
-        "PERSON_NAME_PAT": _comp("PERSON_NAME_PAT", r"^[가-힣]{2,4}$"),
-        # 숫자+단위(%, 배, 건, 개, 명, 곳, 회, 대, 종, 분기 등)
-        "UNIT_TOKEN_PAT": re.compile(r"^\d+(?:[.,]\d+)?(%|배|건|개|명|곳|회|대|종|분기)$")
+    rp = CFG.get("regex_patterns", {}) or {} 
+    def _comp(key, default): 
+        try: 
+            return re.compile(rp.get(key, default)) 
+        except Exception: 
+            return re.compile(default) 
+    pats = { 
+        "NUMERIC_ONLY": _comp("NUMERIC_ONLY", r"^\d+$"), 
+        "DATE_PAT": _comp("DATE_PAT", r"^\d{1,2}일$|^\d{1,2}월$|^\d{4}년$|^\d{4}$"), 
+        "CURRENCY_PAT": _comp("CURRENCY_PAT", r"^[0-9,\.]+(원|달러|유로|엔|위안|억원|조원)$"), 
+        "PERSON_NAME_PAT": _comp("PERSON_NAME_PAT", r"^[가-힣]{2,4}$"), 
     }
-    return pats
+    # config.json에 정의된 UNIT_TOKEN_PAT을 로드 시도, 없으면 기본 빈 패턴
+    pats["UNIT_TOKEN_PAT"] = _comp("UNIT_TOKEN_PAT", r"^\d+([.,]\d+)?(PLACEHOLDER_UNIT)$") # Placeholder, 실제 패턴은 config에서 로드됨
+    return pats #
 
 _LOCATION_CORE = {
     "서울","부산","대구","인천","광주","대전","울산","세종",
