@@ -15,7 +15,7 @@ networkx>=3.2.1
 soynlp>=0.0.493
 krwordrank>=1.0.3
 tomotopy>=0.12.6
-spacy
+spacy>=3.0.0
 transformers
 torch
 tqdm
