@@ -1219,13 +1219,14 @@ def plot_risk_keyword_network(meta_items, output_path, min_weight=1):
 
 
 # --- 4. 주기별 시각화 실행 함수 ---
+
 def run_daily_visuals():
     """일간 리포트에 필요한 시각화만 실행합니다."""
     print("\n--- Generating Daily Visuals ---")
-    
+
     ts_json_path = os.path.join(ROOT_OUTPUT_DIR, "trend_timeseries.json")
     signal_csv_path = os.path.join(EXPORT_DIR, "daily_signal_counts.csv")
-    
+
     print(f"Loading daily data: '{ts_json_path}', '{signal_csv_path}'")
     ts_data = load_json(ts_json_path, {"daily": []})
     df_total = pd.DataFrame(ts_data.get("daily", []))
@@ -1234,19 +1235,54 @@ def run_daily_visuals():
 
     if df_total.empty:
         print("[WARN] Timeseries data is empty. Skipping daily chart generation.")
+        # --- ▼▼▼ 추가: 빈 데이터프레임이라도 빈 CSV 파일 생성 ▼▼▼ ---
+        empty_df_path = os.path.join(EXPORT_DIR, "daily_article_ratios.csv")
+        os.makedirs(EXPORT_DIR, exist_ok=True)
+        pd.DataFrame(columns=['date', 'total_articles', 'signal_articles', 'signal_ratio']).to_csv(
+            empty_df_path, index=False, encoding="utf-8-sig"
+        )
+        print(f"[INFO] Empty daily_article_ratios.csv created due to empty timeseries data.")
+        # --- ▲▲▲ 추가 완료 ▲▲▲ ---
         return
 
+    # 데이터 병합 및 비율 계산 (기존 로직)
     df_merged = pd.merge(df_total, df_signal, on="date", how="left").fillna(0)
-        
-    # 'signal_ratio'가 없는 경우를 대비
+
     if 'signal_article_count' in df_merged.columns and 'count' in df_merged.columns:
         df_merged['signal_ratio'] = (df_merged['signal_article_count'] / df_merged['count']).where(df_merged['count'] > 0, 0)
     else:
-        # 필요한 컬럼이 없으면 0으로 채움
         df_merged['signal_ratio'] = 0
 
+    # --- ▼▼▼ CSV 파일 저장 로직 추가 ▼▼▼ ---
+    output_ratio_csv = os.path.join(EXPORT_DIR, "daily_article_ratios.csv")
     try:
-        plot_enhanced_timeseries(df_merged.tail(30))
+        # 필요한 컬럼 선택 및 이름 변경
+        df_ratios = df_merged[['date', 'count', 'signal_article_count', 'signal_ratio']].copy()
+        df_ratios.rename(columns={
+            'count': 'total_articles',
+            'signal_article_count': 'signal_articles'
+        }, inplace=True)
+
+        # 날짜 오름차순 정렬
+        df_ratios.sort_values(by='date', inplace=True)
+
+        # CSV 파일로 저장
+        os.makedirs(EXPORT_DIR, exist_ok=True) # Ensure export directory exists
+        df_ratios.to_csv(output_ratio_csv, index=False, encoding="utf-8-sig", float_format='%.4f') # 소수점 4자리까지 저장
+        print(f"[INFO] Daily article ratios saved to: {output_ratio_csv} ({len(df_ratios)} rows)")
+
+    except Exception as e:
+        print(f"[WARN] Failed to save daily article ratios CSV: {e}")
+        # --- 추가: 에러 발생 시 빈 파일 생성 ---
+        if not os.path.exists(output_ratio_csv):
+             pd.DataFrame(columns=['date', 'total_articles', 'signal_articles', 'signal_ratio']).to_csv(
+                 output_ratio_csv, index=False, encoding="utf-8-sig"
+             )
+             print(f"[INFO] Empty daily_article_ratios.csv created due to error.")
+
+    # 시계열 차트 생성 (기존 로직)
+    try:
+        plot_enhanced_timeseries(df_merged.tail(30)) # Use df_merged directly
     except Exception as e:
         print(f"[WARN] Failed to generate daily visuals: {e}")
 
