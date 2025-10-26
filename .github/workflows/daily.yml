@@ -89,6 +89,19 @@ jobs:
         run: |
           python -m scripts.fetch_article_bodies
 
+      - name: Copy latest meta file for debugging
+        shell: bash
+        run: |
+          set -e
+          mkdir -p outputs/debug
+          LATEST_META=$(ls -t data/news_meta_*.json | head -n 1)
+          if [ -f "$LATEST_META" ]; then
+            echo "Copying $LATEST_META to outputs/debug/news_meta_latest.json"
+            cp "$LATEST_META" outputs/debug/news_meta_latest.json
+          else
+            echo "WARN: No news_meta_*.json file found to copy."
+          fi
+
       - name: Keywords Analysis
         shell: bash
         run: |

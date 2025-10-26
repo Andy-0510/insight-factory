@@ -1,20 +1,21 @@
-import os
-import json
-import glob
-import time
-import hashlib
-import re
-import unicodedata
-from typing import List, Dict, Any, Tuple, Optional
-import trafilatura
-from trafilatura.settings import use_config
-from src.utils import load_json, save_json, latest, clean_text
-from concurrent.futures import ThreadPoolExecutor, as_completed
-from urllib.parse import urlparse
-import threading
-import requests
-from collections import defaultdict
-from bs4 import BeautifulSoup  # ✅ 추가
+# File: scripts/fetch_article_bodies.py
+import os # Make sure os is imported
+import json # Make sure json is imported
+import glob # Make sure glob is imported
+import time # Make sure time is imported
+import hashlib # Make sure hashlib is imported
+import re # Make sure re is imported
+import unicodedata # Make sure unicodedata is imported
+from typing import List, Dict, Any, Tuple, Optional # Make sure typing imports are present
+import trafilatura # Make sure trafilatura is imported
+from trafilatura.settings import use_config # Make sure use_config is imported
+from src.utils import load_json, save_json, latest, clean_text # Make sure utils imports are present
+from concurrent.futures import ThreadPoolExecutor, as_completed # Make sure concurrent imports are present
+from urllib.parse import urlparse # Make sure urlparse is imported
+import threading # Make sure threading is imported
+import requests # Make sure requests is imported
+from collections import defaultdict # Make sure defaultdict is imported
+from bs4 import BeautifulSoup # Make sure BeautifulSoup is imported
 
 # ----------------------------
 # 설정값
@@ -196,7 +197,7 @@ def fetch_body(url: str, timeout=12) -> Tuple[str, str, Dict[str, str]]:
             _SESSION = requests.Session()
             _SESSION.headers.update({"User-Agent": "Mozilla/5.0 (X11; Linux x86_64)"})
         try:
-            r = _SESSION.get(url, timeout=timeout)
+            r = _SESSION.get(url, timeout=timeout, verify=False)
             if r.ok and r.text:
                 html = r.text
                 meta = extract_meta_from_html(html)
@@ -259,11 +260,21 @@ def _process_one(it: Dict[str, Any]) -> Tuple[Optional[Dict[str, Any]], Optional
 def main() -> int:
     print("[INFO] 기사 본문 수집 시작")
     is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
-    meta_path = "outputs/debug/monthly_meta_agg.json" if is_monthly_run else "outputs/debug/news_meta_latest.json"
-    if not os.path.exists(meta_path):
+
+    if is_monthly_run:
+        meta_path = "outputs/debug/monthly_meta_agg.json"
+        print(f"[INFO] Monthly Run: Using aggregated meta file.") # Simplified log
+    else: # 일간 실행
+        # data/ 디렉토리의 최신 news_meta_*.json 파일을 직접 사용
         meta_path = latest("data/news_meta_*.json")
-    if not meta_path:
-        print("[ERROR] 입력 파일 없음")
+        print(f"[INFO] Daily Run: Using latest meta file from data/ directory.") # Simplified log
+
+    # --- ▼▼▼ 추가: 선택된 입력 파일 경로 로그 ▼▼▼ ---
+    print(f"Selected Input File: {meta_path}")
+    # --- ▲▲▲ 추가 완료 ▲▲▲ ---
+
+    if not meta_path or not os.path.exists(meta_path):
+        print(f"[ERROR] 입력 파일 없음. 경로 확인: {meta_path}")
         return 1
 
     items = load_json(meta_path, [])
@@ -290,8 +301,13 @@ def main() -> int:
             if tried % 50 == 0:
                 print(f"[INFO] 진행률 {tried}/{len(items)} (성공 {updated})")
 
-    save_json(meta_path, items)
-    print(f"[SUCCESS] 완료 | 시도={tried}, 업데이트={updated}")
+    # --- ▼▼▼ 추가: 저장될 출력 파일 경로 로그 ▼▼▼ ---
+    print(f"Saving updated data back to: {meta_path}")
+    # --- ▲▲▲ 추가 완료 ▲▲▲ ---
+    save_json(meta_path, items) # Save back to the *same* file it read from
+    # --- ▼▼▼ 수정: 최종 성공 메시지에 출력 파일 경로 포함 ▼▼▼ ---
+    print(f"[SUCCESS] 완료 | 시도={tried}, 업데이트={updated} | Output File: {meta_path}")
+    # --- ▲▲▲ 수정 완료 ▲▲▲ ---
     return 0
 
 if __name__ == "__main__":
