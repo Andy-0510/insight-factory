@@ -1,12 +1,13 @@
 (function(){
   // -----------------------
-  // DOM 요소
+  // DOM 요소 (index.html 구조와 일치해야 함)
   // -----------------------
-  const reportTypeSelect = document.getElementById('reportType'); // daily / weekly / monthly
+  const reportTypeSelect = document.getElementById('reportType');
   const reportYearSelect = document.getElementById('reportYear');
   const reportMonthSelect = document.getElementById('reportMonth');
   const reportDaySelect = document.getElementById('reportDay');
-  // internal hidden selects for time/file handling
+
+  // hidden internal selects (시간/파일 관리를 위해 내부적으로 사용)
   let internalTimeSelect = document.getElementById('internalTimeSelect');
   if(!internalTimeSelect){
     internalTimeSelect = document.createElement('select');
@@ -22,7 +23,7 @@
     document.body.appendChild(internalFileSelect);
   }
 
-  const reportFrame = document.getElementById('reportFrame');
+  const reportContainer = document.getElementById('reportContainer'); // 여기에 샌드박스 iframe을 넣음
   const loadingIndicator = document.getElementById('loadingIndicator');
   const themeToggle = document.getElementById('themeToggle');
   const themeText = document.getElementById('themeText');
@@ -30,12 +31,12 @@
   // -----------------------
   // 상태 및 설정
   // -----------------------
-  let reportIndexData = {};            // 원본 JSON 데이터
-  let availableDatesByType = {};       // { type: ['YYYY-MM-DD', ...], ... }
+  let reportIndexData = {};
+  let availableDatesByType = {};
   const REPORT_INDEX_PATH = './report_index.json'; // 필요시 경로 수정
 
   // -----------------------
-  // 유틸리티 함수
+  // 유틸 함수
   // -----------------------
   function normalizeDateKey(raw) {
     if(!raw) return null;
@@ -48,7 +49,6 @@
     if(!/^\d{4}$/.test(y) || !/^\d{2}$/.test(m) || !/^\d{2}$/.test(d)) return null;
     return `${y}-${m}-${d}`;
   }
-
   function parseDateKey(dateKey){
     const parts = String(dateKey).split('-');
     if(parts.length !== 3) return null;
@@ -56,7 +56,7 @@
   }
 
   // -----------------------
-  // 테마 처리 (로컬 저장)
+  // 테마 초기화 (localStorage)
   // -----------------------
   const savedTheme = localStorage.getItem('ir_theme') || 'light';
   setTheme(savedTheme);
@@ -66,13 +66,11 @@
       themeToggle?.classList.add('active');
       themeToggle?.setAttribute('aria-checked','true');
       if(themeText) themeText.textContent = '다크';
-      applyIframeDarkMode(true);
     } else {
       document.documentElement.removeAttribute('data-theme');
       themeToggle?.classList.remove('active');
       themeToggle?.setAttribute('aria-checked','false');
       if(themeText) themeText.textContent = '라이트';
-      applyIframeDarkMode(false);
     }
     try{ localStorage.setItem('ir_theme', mode); }catch(e){}
   }
@@ -90,11 +88,11 @@
   // -----------------------
   function showLoading(){
     if(loadingIndicator) loadingIndicator.style.display = 'flex';
-    if(reportFrame) reportFrame.style.opacity = '0.6';
+    if(reportContainer) reportContainer.style.opacity = '0.6';
   }
   function hideLoading(){
     if(loadingIndicator) loadingIndicator.style.display = 'none';
-    if(reportFrame) reportFrame.style.opacity = '1';
+    if(reportContainer) reportContainer.style.opacity = '1';
   }
 
   // -----------------------
@@ -107,15 +105,14 @@
       const rawDates = Object.keys(reportIndexData[type] || {});
       const normalized = rawDates.map(d => normalizeDateKey(d)).filter(Boolean);
       const uniq = Array.from(new Set(normalized));
-      // 최신순(내림차순)
       uniq.sort((a,b) => b.localeCompare(a));
       availableDatesByType[type] = uniq;
     });
-    console.log('buildAvailableDatesMap ->', availableDatesByType);
+    console.log('availableDatesByType ->', availableDatesByType);
   }
 
   // -----------------------
-  // 인덱스 기반 드롭다운 채우기 (연/월/일)
+  // 연/월/일 채우기 (인덱스 기반)
   // -----------------------
   function populateYearsFromIndex(type){
     if(!reportYearSelect) return;
@@ -137,7 +134,6 @@
     reportYearSelect.value = years[0];
     populateMonthsFromIndex(type, reportYearSelect.value);
   }
-
   function populateMonthsFromIndex(type, year){
     if(!reportMonthSelect) return;
     reportMonthSelect.innerHTML = '';
@@ -162,7 +158,6 @@
     reportMonthSelect.value = months[0];
     populateDaysFromIndex(type, year, reportMonthSelect.value);
   }
-
   function populateDaysFromIndex(type, year, month){
     if(!reportDaySelect) return;
     reportDaySelect.innerHTML = '';
@@ -184,12 +179,11 @@
     });
     reportDaySelect.disabled = false;
     reportDaySelect.value = days[0];
-    // 시간 목록 채우기
     populateTimes();
   }
 
   // -----------------------
-  // 시간/파일 채우기 (인덱스 기반)
+  // 시간/파일 채우기
   // -----------------------
   function getSelectedDateString(){
     const y = reportYearSelect?.value;
@@ -198,7 +192,6 @@
     if(!y || !m || !d) return null;
     return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
   }
-
   function populateTimes(){
     const type = reportTypeSelect?.value;
     const dateStr = getSelectedDateString();
@@ -208,14 +201,14 @@
     if(!type || !dateStr){
       internalTimeSelect.innerHTML = '<option>--</option>';
       internalTimeSelect.disabled = true;
-      reportFrame.src = 'about:blank';
+      if(reportContainer) reportContainer.innerHTML = '';
       return;
     }
     const timeEntries = reportIndexData[type]?.[dateStr] || [];
     if(!Array.isArray(timeEntries) || timeEntries.length === 0){
       internalTimeSelect.innerHTML = '<option>선택 가능 시간 없음</option>';
       internalTimeSelect.disabled = true;
-      reportFrame.src = 'about:blank';
+      if(reportContainer) reportContainer.innerHTML = '';
       return;
     }
     timeEntries.forEach(entry => {
@@ -226,18 +219,20 @@
     populateFilesFromEntry(type, dateStr, internalTimeSelect.value);
     internalTimeSelect.onchange = () => populateFilesFromEntry(type, dateStr, internalTimeSelect.value);
   }
-
   function populateFilesFromEntry(type, dateStr, time){
     internalFileSelect.innerHTML = '';
     internalFileSelect.disabled = true;
-    reportFrame.src = 'about:blank';
-    if(!type || !dateStr || !time) return;
+    if(!type || !dateStr || !time){
+      if(reportContainer) reportContainer.innerHTML = '';
+      return;
+    }
     const timeEntries = reportIndexData[type]?.[dateStr] || [];
     const selectedEntry = timeEntries.find(e => e.time === time) || {};
     const reports = Array.isArray(selectedEntry.reports) ? selectedEntry.reports : [];
     if(reports.length === 0){
       internalFileSelect.innerHTML = '<option>선택 가능 리포트 없음</option>';
       internalFileSelect.disabled = true;
+      if(reportContainer) reportContainer.innerHTML = '';
       return;
     }
     let defaultReportPath = '';
@@ -253,89 +248,82 @@
   }
 
   // -----------------------
-  // 실제 리포트 로드
+  // 안전 실행: 샌드박스 iframe으로 리포트 HTML 로드
   // -----------------------
-  function loadReportFromPath(path){
-    if(!reportFrame) return;
+  // 기존 innerHTML 방식 대신 안전한 sandbox iframe 생성.
+  // sandboxAttrs: allow-scripts 허용(스크립트 실행), allow-forms 허용(폼), allow-popups 허용(팝업)
+  // 하지만 allow-same-origin은 사용하지 않아 부모 접근을 차단함.
+  function createSandboxIframeForHtml(htmlText, baseUrl) {
+    // 제거된 이전 iframe/blob URL 정리
+    while(reportContainer.firstChild) {
+      const node = reportContainer.firstChild;
+      // revoke blob if data-blob attrib exists
+      if(node.dataset && node.dataset.blobUrl) {
+        try{ URL.revokeObjectURL(node.dataset.blobUrl); }catch(e){}
+      }
+      reportContainer.removeChild(node);
+    }
+
+    // blob으로 만들기: srcdoc보다 base 처리/상대경로 제어에 유리
+    const finalHtml = htmlText;
+    const blob = new Blob([finalHtml], { type: 'text/html' });
+    const blobUrl = URL.createObjectURL(blob);
+
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('sandbox', 'allow-scripts allow-forms allow-popups'); // parent와 분리(안전)
+    iframe.style.width = '100%';
+    iframe.style.height = '100%';
+    iframe.style.border = '0';
+    iframe.style.minHeight = '360px';
+    iframe.dataset.blobUrl = blobUrl;
+    iframe.src = blobUrl;
+
+    reportContainer.appendChild(iframe);
+    return iframe;
+  }
+
+  // loadReportFromPath: fetch HTML, inject <base>, create sandbox iframe
+  async function loadReportFromPath(path){
+    if(!reportContainer) return;
     if(!path){
-      reportFrame.src = 'about:blank';
+      reportContainer.innerHTML = '';
       hideLoading();
       return;
     }
     showLoading();
-    reportFrame.onload = () => {
-      hideLoading();
-      if(document.documentElement.getAttribute('data-theme') === 'dark') applyIframeDarkMode(true);
-    };
-    reportFrame.onerror = () => {
-      hideLoading();
-      console.error('Failed to load report:', path);
-      reportFrame.src = 'about:blank';
-    };
-    console.log('Setting iframe.src =', path);
-    reportFrame.src = path;
-  }
+    try{
+      const res = await fetch(path, { cache: 'no-cache' });
+      if(!res.ok) throw new Error('Failed to fetch: ' + res.status);
+      let html = await res.text();
 
-  // -----------------------
-  // iframe 다크모드 처리 (same-origin이면 스타일 주입, 아니면 filter)
-  // 여기서 표 헤더 음영(헤더 셀 배경/box-shadow) 강제 덮어쓰기 규칙 포함
-  // -----------------------
-  function applyIframeDarkMode(enable){
-    if(!reportFrame) return;
-    reportFrame.style.filter = '';
-    try {
-      const doc = reportFrame.contentDocument || reportFrame.contentWindow.document;
-      if(!doc) throw new Error('no doc');
-      const STYLE_ID = 'injected-dark-style';
-      let s = doc.getElementById(STYLE_ID);
-      const injectedCss = `
-        :root, body { background: #0b1220 !important; color: #e6eef9 !important; }
-        body, p, div, span, td, th, li, a { color: #e6eef9 !important; background: transparent !important; }
-        table, pre, code { color: #e6eef9 !important; }
-        a { color: #7ea2ff !important; }
-
-        /* ========== 표 헤더 보강 (다크모드에서 음영/배경 덮어쓰기) ========== */
-        thead, thead tr, thead th, table thead th {
-          background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
-          color: #e6eef9 !important;
-          border-bottom: 1px solid rgba(255,255,255,0.06) !important;
-        }
-        thead th, table thead th {
-          box-shadow: inset 0 -6px 12px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.02) !important;
-        }
-        /* 특정 테이블 라이브러리 클래스들도 덮어쓰기 */
-        .table-header, .thead-dark, .table .header-row, .tbl-header {
-          background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
-          color: #e6eef9 !important;
-        }
-        /* inline style로 들어간 경우에도 강제 적용(광범위, 주의) */
-        *[style] thead, *[style] thead th, *[style] .table-header {
-          background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
-          color: #e6eef9 !important;
-        }
-      `;
-      if(enable){
-        if(!s){
-          s = doc.createElement('style');
-          s.id = STYLE_ID;
-          s.innerHTML = injectedCss;
-          doc.head ? doc.head.appendChild(s) : doc.documentElement.appendChild(s);
+      // base 태그 삽입: 리포트 내 상대경로를 원래 디렉토리 기준으로 동작하도록 함
+      try{
+        const baseUrl = new URL(path, location.href).href.replace(/\/[^/]*$/, '/'); // 절대 디렉토리 경로
+        if(/<base[^>]*>/i.test(html)){
+          // 이미 base 있으면 교체
+          html = html.replace(/<base[^>]*>/i, `<base href="${baseUrl}">`);
+        } else if(/<head[^>]*>/i.test(html)){
+          // head 존재하면 head 직후 삽입
+          html = html.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${baseUrl}">`);
         } else {
-          s.innerHTML = injectedCss;
+          // head가 없으면 최상단에 삽입
+          html = `<base href="${baseUrl}">` + html;
         }
-      } else {
-        if(s) s.remove();
-      }
-      reportFrame.style.filter = '';
-      return;
-    } catch (e) {
-      // cross-origin -> fallback to filter
-      if(enable){
-        reportFrame.style.filter = 'invert(1) hue-rotate(180deg) contrast(1.02)';
-      } else {
-        reportFrame.style.filter = '';
-      }
-      return;
+      }catch(e){ console.warn('base inject failed', e); }
+
+      // OPTIONAL: strip top-level <script> tags? 여기서는 그대로 두고 샌드박스 iframe에 넣음.
+      // (샌드박스이므로 부모 보호는 됨. 다만 외부 리포트의 스크립트가 내부에서 네트워크 호출할 수 있음.)
+      // 만약 스크립트 제거를 원하면 아래 주석 해제:
+      // html = html.replace(/<script[\s\S]*?<\/script>/gi, '<!-- script removed -->');
+
+      // create sandbox iframe from html
+      createSandboxIframeForHtml(html, path);
+
+      hideLoading();
+    }catch(err){
+      console.error('report fetch/load error', err);
+      reportContainer.innerHTML = `<div style="color:#e00;padding:12px;">리포트를 불러오지 못했습니다. (${err.message})</div>`;
+      hideLoading();
     }
   }
 
@@ -389,16 +377,17 @@
       console.error('Error loading report index:', err);
       reportIndexData = {};
       if(internalTimeSelect) internalTimeSelect.innerHTML = '<option>목록 로드 실패</option>';
-      if(internalFileSelect) internalFileSelect.innerHTML = '<option>--</option>';
-      reportFrame.src = 'about:blank';
+      reportContainer.innerHTML = '';
       hideLoading();
     }
   }
   fetchReportIndex();
 
-  // expose for debug
+  // expose debug helpers
   window.IR = window.IR || {};
   window.IR.fetchReportIndex = fetchReportIndex;
   window.IR.reportIndexData = reportIndexData;
   window.IR.availableDatesByType = availableDatesByType;
+  window.IR.loadReportFromPath = loadReportFromPath;
+
 })();
