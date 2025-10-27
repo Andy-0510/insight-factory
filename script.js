@@ -23,7 +23,7 @@
     document.body.appendChild(internalFileSelect);
   }
 
-  const reportContainer = document.getElementById('reportContainer'); // 리포트가 들어갈 컨테이너
+  const reportContainer = document.getElementById('reportContainer'); // 여기에 샌드박스 iframe을 넣음
   const loadingIndicator = document.getElementById('loadingIndicator');
   const themeToggle = document.getElementById('themeToggle');
   const themeText = document.getElementById('themeText');
@@ -105,15 +105,14 @@
       const rawDates = Object.keys(reportIndexData[type] || {});
       const normalized = rawDates.map(d => normalizeDateKey(d)).filter(Boolean);
       const uniq = Array.from(new Set(normalized));
-      // 최신순(내림차순)
       uniq.sort((a,b) => b.localeCompare(a));
       availableDatesByType[type] = uniq;
     });
-    console.log('buildAvailableDatesMap ->', availableDatesByType);
+    console.log('availableDatesByType ->', availableDatesByType);
   }
 
   // -----------------------
-  // 인덱스 기반 드롭다운 채우기 (연/월/일)
+  // 연/월/일 채우기 (인덱스 기반)
   // -----------------------
   function populateYearsFromIndex(type){
     if(!reportYearSelect) return;
@@ -135,7 +134,6 @@
     reportYearSelect.value = years[0];
     populateMonthsFromIndex(type, reportYearSelect.value);
   }
-
   function populateMonthsFromIndex(type, year){
     if(!reportMonthSelect) return;
     reportMonthSelect.innerHTML = '';
@@ -160,7 +158,6 @@
     reportMonthSelect.value = months[0];
     populateDaysFromIndex(type, year, reportMonthSelect.value);
   }
-
   function populateDaysFromIndex(type, year, month){
     if(!reportDaySelect) return;
     reportDaySelect.innerHTML = '';
@@ -182,7 +179,6 @@
     });
     reportDaySelect.disabled = false;
     reportDaySelect.value = days[0];
-    // 시간 목록 채우기
     populateTimes();
   }
 
@@ -196,7 +192,6 @@
     if(!y || !m || !d) return null;
     return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
   }
-
   function populateTimes(){
     const type = reportTypeSelect?.value;
     const dateStr = getSelectedDateString();
@@ -224,7 +219,6 @@
     populateFilesFromEntry(type, dateStr, internalTimeSelect.value);
     internalTimeSelect.onchange = () => populateFilesFromEntry(type, dateStr, internalTimeSelect.value);
   }
-
   function populateFilesFromEntry(type, dateStr, time){
     internalFileSelect.innerHTML = '';
     internalFileSelect.disabled = true;
@@ -256,21 +250,27 @@
   // -----------------------
   // 안전 실행: 샌드박스 iframe으로 리포트 HTML 로드
   // -----------------------
-  function createSandboxIframeForHtml(htmlText) {
-    // 이전 blob URL 정리
+  // 기존 innerHTML 방식 대신 안전한 sandbox iframe 생성.
+  // sandboxAttrs: allow-scripts 허용(스크립트 실행), allow-forms 허용(폼), allow-popups 허용(팝업)
+  // 하지만 allow-same-origin은 사용하지 않아 부모 접근을 차단함.
+  function createSandboxIframeForHtml(htmlText, baseUrl) {
+    // 제거된 이전 iframe/blob URL 정리
     while(reportContainer.firstChild) {
       const node = reportContainer.firstChild;
+      // revoke blob if data-blob attrib exists
       if(node.dataset && node.dataset.blobUrl) {
         try{ URL.revokeObjectURL(node.dataset.blobUrl); }catch(e){}
       }
       reportContainer.removeChild(node);
     }
 
-    const blob = new Blob([htmlText], { type: 'text/html' });
+    // blob으로 만들기: srcdoc보다 base 처리/상대경로 제어에 유리
+    const finalHtml = htmlText;
+    const blob = new Blob([finalHtml], { type: 'text/html' });
     const blobUrl = URL.createObjectURL(blob);
 
     const iframe = document.createElement('iframe');
-    iframe.setAttribute('sandbox', 'allow-scripts allow-forms allow-popups'); // 부모와 분리
+    iframe.setAttribute('sandbox', 'allow-scripts allow-forms allow-popups'); // parent와 분리(안전)
     iframe.style.width = '100%';
     iframe.style.height = '100%';
     iframe.style.border = '0';
@@ -282,6 +282,7 @@
     return iframe;
   }
 
+  // loadReportFromPath: fetch HTML, inject <base>, create sandbox iframe
   async function loadReportFromPath(path){
     if(!reportContainer) return;
     if(!path){
@@ -295,23 +296,28 @@
       if(!res.ok) throw new Error('Failed to fetch: ' + res.status);
       let html = await res.text();
 
-      // base 태그 삽입: 상대경로 보정
+      // base 태그 삽입: 리포트 내 상대경로를 원래 디렉토리 기준으로 동작하도록 함
       try{
-        const baseUrl = new URL(path, location.href).href.replace(/\/[^/]*$/, '/');
+        const baseUrl = new URL(path, location.href).href.replace(/\/[^/]*$/, '/'); // 절대 디렉토리 경로
         if(/<base[^>]*>/i.test(html)){
+          // 이미 base 있으면 교체
           html = html.replace(/<base[^>]*>/i, `<base href="${baseUrl}">`);
         } else if(/<head[^>]*>/i.test(html)){
+          // head 존재하면 head 직후 삽입
           html = html.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${baseUrl}">`);
         } else {
+          // head가 없으면 최상단에 삽입
           html = `<base href="${baseUrl}">` + html;
         }
       }catch(e){ console.warn('base inject failed', e); }
 
-      // (선택) 스크립트 제거를 원하면 아래 주석 해제
+      // OPTIONAL: strip top-level <script> tags? 여기서는 그대로 두고 샌드박스 iframe에 넣음.
+      // (샌드박스이므로 부모 보호는 됨. 다만 외부 리포트의 스크립트가 내부에서 네트워크 호출할 수 있음.)
+      // 만약 스크립트 제거를 원하면 아래 주석 해제:
       // html = html.replace(/<script[\s\S]*?<\/script>/gi, '<!-- script removed -->');
 
-      // create sandbox iframe
-      createSandboxIframeForHtml(html);
+      // create sandbox iframe from html
+      createSandboxIframeForHtml(html, path);
 
       hideLoading();
     }catch(err){
