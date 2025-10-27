@@ -216,6 +216,23 @@ jobs:
           git pull --rebase --autostash origin ${{ github.ref_name }} || true
           git push origin HEAD:${{ github.ref_name }} || true
 
+      # --- ▼▼▼ 리포트 인덱스 생성 단계 추가 ▼▼▼ ---
+      - name: Generate Report Index
+        run: |
+          python scripts/generate_report_index.py 
+        shell: bash
+
+      - name: Commit Report Index
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true # 충돌 방지
+          git add report_index.json # 생성된 인덱스 파일 추가
+          git commit -m "chore: update report index" || echo "no changes to report index"
+          git push origin HEAD:${{ github.ref_name }} || true # 푸시 실패해도 워크플로우 중단 방지
+        shell: bash
+      # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
       # 오래된 outputs/warehouse 정리
       - name: Cleanup old warehouse (main only, keep 90 days)
         if: github.ref_name == 'main'

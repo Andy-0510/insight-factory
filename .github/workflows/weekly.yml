@@ -151,3 +151,20 @@ jobs:
           git commit -m "chore: outputs (KST rotation)" || echo "no changes"
           git pull --rebase --autostash origin ${{ github.ref_name }} || true
           git push origin HEAD:${{ github.ref_name }} || true
+
+      # --- ▼▼▼ 리포트 인덱스 생성 단계 추가 ▼▼▼ ---
+      - name: Generate Report Index
+        run: |
+          python scripts/generate_report_index.py # 위에서 작성한 스크립트 실행
+        shell: bash
+
+      - name: Commit Report Index
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git pull --rebase --autostash origin ${{ github.ref_name }} || true # 충돌 방지
+          git add report_index.json # 생성된 인덱스 파일 추가
+          git commit -m "chore: update report index" || echo "no changes to report index"
+          git push origin HEAD:${{ github.ref_name }} || true # 푸시 실패해도 워크플로우 중단 방지
+        shell: bash
+      # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
