@@ -138,17 +138,14 @@ jobs:
         run: |
           python -m scripts.generate_visuals --report-type daily
 
-      - name: Generate Daily Report
-        shell: bash
-        run: |
-          python -m src.module_f.daily_report
-
-    #  # --- ▼▼▼ 이 부분을 추가해 주세요 ▼▼▼ ---
-    #  - name: Generate Daily Detailed Commentary Report
+    #  - name: Generate Daily Report
+    #    shell: bash
     #    run: |
-    #      python -m src.module_f.daily_commentary_report
-    #      echo "✅ 상세 해설 리포트 생성 완료"
-    #  # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+    #      python -m src.module_f.daily_report
+    
+      - name: Generate Daily Detailed Commentary Report
+        run: |
+          python -m src.module_f.daily_commentary_report
 
       - name: Log Daily Results
         if: always() # 이전 단계가 실패해도 항상 실행

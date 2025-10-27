@@ -144,7 +144,7 @@ def build_daily_steps():
         # ("future",         [PY, "-m", "scripts.future_insights"]), # future_insights not in daily.yml
         ("gen_visual_daily", [PY, "-m", "scripts.generate_visuals", "--report-type", "daily"]), # Added arg
         # ("preflight",      [PY, "-m", "scripts.preflight"]), # Not explicitly in daily.yml execution block
-        ("f_daily",          [PY, "-m", "src.module_f.daily_report"]),
+        # ("f_daily",          [PY, "-m", "src.module_f.daily_report"]),
         ("f_cmt_daily",      [PY, "-m", "src.module_f.daily_commentary_report"]), # Keep commented out
         ("report_index",     [PY, "-m", "scripts.generate_report_index"]),
     ]
@@ -156,7 +156,7 @@ def build_weekly_steps():
         ("future",           [PY, "-m", "scripts.future_insights"]), # Uses aggregated data
         ("c",                [PY, "-m", "src.module_c"]), # Uses aggregated data
         ("gen_visual_weekly",[PY, "-m", "scripts.generate_visuals", "--report-type", "weekly"]), # Added arg
-        ("f_weekly",         [PY, "-m", "src.module_f.weekly_report"]),
+        # ("f_weekly",         [PY, "-m", "src.module_f.weekly_report"]),
         ("f_cmt_weekly",   [PY, "-m", "src.module_f.weekly_commentary_report"]), # Keep commented out
     ]
 
@@ -174,7 +174,7 @@ def build_monthly_steps():
         ("g_risk",           [PY, "-m", "src.module_g_risk"]),
         ("h_planning",       [PY, "-m", "src.module_h_planning"]),
         ("gen_visual_monthly",[PY, "-m", "scripts.generate_visuals", "--report-type", "monthly"]), # Added arg
-        ("f_monthly",        [PY, "-m", "src.module_f.monthly_report"]),
+        # ("f_monthly",        [PY, "-m", "src.module_f.monthly_report"]),
         ("f_cmt_monthly",  [PY, "-m", "src.module_f.monthly_commentary_report"]), # Keep commented out
     ]
 # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
