@@ -3,19 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Market Intelligence Report Viewer</title>
+    <title>Intelligence Report Viewer</title>
     <link rel="stylesheet" href="style.css">
     <link rel="preconnect" href="https://fonts.googleapis.com">
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700&display=swap" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
+    <div class="container glassmorphism">
         <header>
-            <h1>📊 Market Intelligence Report Viewer</h1>
+            <h1><span class="icon">💎</span> Intelligence Report Viewer</h1>
+            <div class="theme-switch-wrapper">
+                <label class="theme-switch" for="darkModeToggle">
+                    <input type="checkbox" id="darkModeToggle" />
+                    <div class="slider round"></div>
+                </label>
+                <span id="themeLabel">Light Mode</span>
+            </div>
         </header>
 
-        <nav class="controls">
+        <nav class="controls glassmorphism-controls">
             <div class="control-group">
                 <label for="reportType">리포트 종류</label>
                 <select id="reportType">
@@ -25,35 +32,35 @@
                 </select>
             </div>
             <div class="control-group">
-                <label for="reportDate">날짜</label>
-                <select id="reportDate" disabled>
-                    <option>로딩 중...</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="reportTime">시간</label>
-                <select id="reportTime" disabled>
+                <label for="reportYear">연도</label>
+                <select id="reportYear" disabled>
                     <option>--</option>
                 </select>
             </div>
             <div class="control-group">
-                <label for="reportFile">리포트 파일</label>
-                <select id="reportFile" disabled>
+                <label for="reportMonth">월</label>
+                <select id="reportMonth" disabled>
+                    <option>--</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="reportDay">일</label>
+                <select id="reportDay" disabled>
                     <option>--</option>
                 </select>
             </div>
         </nav>
 
         <main class="report-view">
-            <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+            <div id="loadingIndicator" class="loading-indicator glassmorphism-controls" style="display: none;">
                 <div class="spinner"></div>
-                <span>리포트 로딩 중...</span>
+                <span>Loading Report...</span>
             </div>
             <iframe id="reportFrame" src="about:blank" frameborder="0" title="Report Content"></iframe>
         </main>
 
         <footer>
-            <p>&copy; 2025 Your Company Name. All rights reserved.</p>
+             <p>&copy; 2025 Market Intelligence Team. All rights reserved.</p>
         </footer>
     </div>
 
