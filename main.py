@@ -145,7 +145,8 @@ def build_daily_steps():
         ("gen_visual_daily", [PY, "-m", "scripts.generate_visuals", "--report-type", "daily"]), # Added arg
         # ("preflight",      [PY, "-m", "scripts.preflight"]), # Not explicitly in daily.yml execution block
         ("f_daily",          [PY, "-m", "src.module_f.daily_report"]),
-        ("f_cmt_daily",    [PY, "-m", "src.module_f.daily_commentary_report"]), # Keep commented out
+        ("f_cmt_daily",      [PY, "-m", "src.module_f.daily_commentary_report"]), # Keep commented out
+        ("report_index",     [PY, "-m", "scripts.generate_report_index"]),
     ]
 
 def build_weekly_steps():

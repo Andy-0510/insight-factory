@@ -1,0 +1,171 @@
+/* --- Base Styles --- */
+:root {
+    --primary-color: #4a69bd; /* Example blue */
+    --secondary-color: #6c757d; /* Grey */
+    --light-grey: #f8f9fa;
+    --border-color: #dee2e6;
+    --text-color: #212529;
+    --bg-color: #ffffff;
+    --font-family: 'Noto Sans KR', sans-serif;
+    --border-radius: 4px;
+}
+
+body {
+    font-family: var(--font-family);
+    margin: 0;
+    padding: 0;
+    background-color: var(--light-grey);
+    color: var(--text-color);
+    line-height: 1.6;
+}
+
+.container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background-color: var(--bg-color);
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+    border-radius: var(--border-radius);
+}
+
+/* --- Header --- */
+header {
+    text-align: center;
+    margin-bottom: 30px;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 20px;
+}
+
+header h1 {
+    color: var(--primary-color);
+    font-weight: 700;
+    margin: 0;
+}
+
+/* --- Controls --- */
+.controls {
+    display: flex;
+    flex-wrap: wrap; /* Allow wrapping on smaller screens */
+    gap: 20px;
+    margin-bottom: 30px;
+    padding: 15px;
+    background-color: #fdfdff; /* Slightly different background */
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+}
+
+.control-group {
+    display: flex;
+    flex-direction: column; /* Stack label and select */
+    flex: 1; /* Allow groups to grow */
+    min-width: 150px; /* Minimum width before wrapping */
+}
+
+.control-group label {
+    font-weight: bold;
+    margin-bottom: 5px;
+    font-size: 0.9em;
+    color: var(--secondary-color);
+}
+
+.control-group select {
+    padding: 10px 8px;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: var(--bg-color);
+    font-size: 1em;
+    cursor: pointer;
+    transition: border-color 0.2s ease;
+}
+
+.control-group select:disabled {
+    background-color: var(--light-grey);
+    cursor: not-allowed;
+}
+
+.control-group select:focus {
+    border-color: var(--primary-color);
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(74, 105, 189, 0.2);
+}
+
+/* --- Report View --- */
+.report-view {
+    position: relative; /* Needed for absolute positioning of loader */
+    min-height: 70vh; /* Minimum height */
+}
+
+.report-view iframe {
+    width: 100%;
+    height: 75vh;
+    border: 1px solid var(--border-color);
+    border-radius: var(--border-radius);
+    background-color: #fff; /* White background while loading */
+}
+
+/* --- Loading Indicator --- */
+.loading-indicator {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    padding: 15px 25px;
+    background-color: rgba(255, 255, 255, 0.9);
+    border-radius: var(--border-radius);
+    box-shadow: 0 1px 5px rgba(0, 0, 0, 0.15);
+    z-index: 10;
+}
+
+.spinner {
+    border: 4px solid #f3f3f3;
+    border-top: 4px solid var(--primary-color);
+    border-radius: 50%;
+    width: 20px;
+    height: 20px;
+    animation: spin 1s linear infinite;
+    margin-right: 10px;
+}
+
+@keyframes spin {
+    0% { transform: rotate(0deg); }
+    100% { transform: rotate(360deg); }
+}
+
+.loading-indicator span {
+    font-size: 0.9em;
+    color: var(--secondary-color);
+}
+
+
+/* --- Footer --- */
+footer {
+    text-align: center;
+    margin-top: 30px;
+    padding-top: 20px;
+    border-top: 1px solid var(--border-color);
+    font-size: 0.85em;
+    color: var(--secondary-color);
+}
+
+/* --- Responsive adjustments --- */
+@media (max-width: 768px) {
+    .container {
+        margin: 10px;
+        padding: 15px;
+    }
+    .controls {
+        flex-direction: column; /* Stack controls vertically on small screens */
+        gap: 15px;
+    }
+    .control-group {
+        width: 100%; /* Full width for control groups */
+    }
+    header h1 {
+        font-size: 1.5em;
+    }
+    .report-view iframe {
+        height: 70vh;
+    }
+}

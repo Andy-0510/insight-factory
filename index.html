@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Market Intelligence Report Viewer</title>
+    <link rel="stylesheet" href="style.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+KR:wght@400;700&display=swap" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <header>
+            <h1>📊 Market Intelligence Report Viewer</h1>
+        </header>
+
+        <nav class="controls">
+            <div class="control-group">
+                <label for="reportType">리포트 종류</label>
+                <select id="reportType">
+                    <option value="daily">일간</option>
+                    <option value="weekly">주간</option>
+                    <option value="monthly">월간</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="reportDate">날짜</label>
+                <select id="reportDate" disabled>
+                    <option>로딩 중...</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="reportTime">시간</label>
+                <select id="reportTime" disabled>
+                    <option>--</option>
+                </select>
+            </div>
+            <div class="control-group">
+                <label for="reportFile">리포트 파일</label>
+                <select id="reportFile" disabled>
+                    <option>--</option>
+                </select>
+            </div>
+        </nav>
+
+        <main class="report-view">
+            <div id="loadingIndicator" class="loading-indicator" style="display: none;">
+                <div class="spinner"></div>
+                <span>리포트 로딩 중...</span>
+            </div>
+            <iframe id="reportFrame" src="about:blank" frameborder="0" title="Report Content"></iframe>
+        </main>
+
+        <footer>
+            <p>&copy; 2025 Your Company Name. All rights reserved.</p>
+        </footer>
+    </div>
+
+    <script src="script.js"></script>
+</body>
+</html>
