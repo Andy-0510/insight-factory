@@ -1,22 +1,23 @@
 (function(){
-  // DOM
-  const reportTypeSelect = document.getElementById('reportType');
-  const reportYearSelect = document.getElementById('reportYear');
-  const reportMonthSelect = document.getElementById('reportMonth');
-  const reportDaySelect = document.getElementById('reportDay');
+  // DOM 요소 (현재 UI에 맞춘 id)
+  const reportTypeSelect = document.getElementById('reportType'); // 리포트 종류
+  const reportYearSelect = document.getElementById('reportYear'); // 연도
+  const reportMonthSelect = document.getElementById('reportMonth'); // 월
+  const reportDaySelect = document.getElementById('reportDay'); // 일
+  const reportTimeSelect = document.getElementById('reportTime'); // 시간(기존 인덱스 기반)
+  const reportFileSelect = document.getElementById('reportFile'); // 파일 리스트(경로 값)
   const reportFrame = document.getElementById('reportFrame');
   const loadingIndicator = document.getElementById('loadingIndicator');
   const themeToggle = document.getElementById('themeToggle');
   const themeText = document.getElementById('themeText');
 
-  // 상태
+  // 상태 및 설정
   let reportIndexData = {};
-  const REPORT_INDEX_PATH = './report_index.json'; // 필요 시 경로 변경
+  const REPORT_INDEX_PATH = './report_index.json'; // 필요시 경로 변경
 
   // 테마 초기화 (localStorage)
   const savedTheme = localStorage.getItem('ir_theme') || 'light';
   setTheme(savedTheme);
-
   function setTheme(mode){
     if(mode === 'dark'){
       document.documentElement.setAttribute('data-theme','dark');
@@ -31,22 +32,26 @@
     }
     try{ localStorage.setItem('ir_theme', mode); }catch(e){}
   }
-
   themeToggle?.addEventListener('click', ()=> {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     setTheme(isDark ? 'light' : 'dark');
-    // 뷰어 폭 다시 맞춤 (테마 변경으로 레이아웃 영향 가능성 대비)
     setTimeout(fitViewerWidth, 120);
   });
   themeToggle?.addEventListener('keydown', (e)=>{
     if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); themeToggle.click(); }
   });
 
-  // 로딩 인디케이터 제어
-  function showLoading(){ if(loadingIndicator) loadingIndicator.style.display = 'flex'; }
-  function hideLoading(){ if(loadingIndicator) loadingIndicator.style.display = 'none'; }
+  // 로딩 인디케이터
+  function showLoading(){
+    if(loadingIndicator) loadingIndicator.style.display = 'flex';
+    if(reportFrame) reportFrame.style.opacity = '0.6';
+  }
+  function hideLoading(){
+    if(loadingIndicator) loadingIndicator.style.display = 'none';
+    if(reportFrame) reportFrame.style.opacity = '1';
+  }
 
-  // 연/월/일 채우기
+  // 연/월/일 기본 채우기 (UI 유지)
   function populateYears(range = 10){
     const cur = new Date().getFullYear();
     if(!reportYearSelect) return;
@@ -88,47 +93,101 @@
     }
   }
 
-  // --- Report Loading ---
-  function loadReport() {
-    if(!reportFrame || !reportTypeSelect || !reportYearSelect || !reportMonthSelect || !reportDaySelect) return;
+  // Helper: 선택된 연/월/일을 "YYYY-MM-DD" 형식으로 반환
+  function getSelectedDateString(){
+    const y = reportYearSelect?.value;
+    const m = reportMonthSelect?.value;
+    const d = reportDaySelect?.value;
+    if(!y || !m || !d) return null;
+    return `${y}-${m}-${d}`;
+  }
 
-    const selectedType = reportTypeSelect.value;
-    const selectedYear = reportYearSelect.value;
-    const selectedMonth = reportMonthSelect.value;
-    const selectedDay = reportDaySelect.value;
+  // --- 기존 로직을 연/월/일 UI에 맞춰 재구성 ---
+  // populateTimes: 선택한 타입 + 날짜 -> 해당 날짜의 time entries로 select 채움
+  function populateTimes(){
+    if(!reportTimeSelect || !reportFileSelect) return;
+    const selectedType = reportTypeSelect?.value;
+    const selectedDate = getSelectedDateString();
+    reportTimeSelect.innerHTML = '';
+    reportFileSelect.innerHTML = '<option>--</option>';
+    reportFileSelect.disabled = true;
+    reportFrame.src = 'about:blank';
 
-    // Check if all parts of the date are selected
-    if (!selectedYear || !selectedMonth || !selectedDay || selectedYear === '--' || selectedMonth === '--' || selectedDay === '--') {
-      reportFrame.src = 'about:blank';
-      return; // Don't load if date is incomplete
-    }
-
-    const selectedDate = `${selectedYear}-${selectedMonth}-${selectedDay}`;
-
-    // Find the latest time entry for the selected date
-    const timeEntries = reportIndexData[selectedType]?.[selectedDate] || [];
-    if (timeEntries.length === 0) {
-      console.warn(`No time entries found for ${selectedType} on ${selectedDate}`);
-      reportFrame.src = 'about:blank';
+    if(!selectedType || !selectedDate){
+      reportTimeSelect.innerHTML = '<option>--</option>';
+      reportTimeSelect.disabled = true;
       return;
     }
-    // Assume timeEntries are sorted descending by time in report_index.json
-    const latestTimeEntry = timeEntries[0];
-    const reports = latestTimeEntry.reports || [];
 
-    // Find the default HTML report (e.g., not commentary)
-    let reportToLoad = reports.find(r => r.path && r.path.endsWith('.html') && !r.path.includes('commentary'));
-    // Fallback to the first available HTML report if default not found
-    if (!reportToLoad) {
-      reportToLoad = reports.find(r => r.path && r.path.endsWith('.html'));
-    }
-    // Fallback to the first report if no HTML found
-    if (!reportToLoad && reports.length > 0) {
-      reportToLoad = reports[0];
+    const timeEntries = reportIndexData[selectedType]?.[selectedDate] || [];
+    if(!Array.isArray(timeEntries) || timeEntries.length === 0){
+      reportTimeSelect.innerHTML = '<option>선택 가능 시간 없음</option>';
+      reportTimeSelect.disabled = true;
+      return;
     }
 
-    const selectedReportPath = reportToLoad ? reportToLoad.path : null;
+    // timeEntries 배열에서 각 entry.time을 option으로 추가
+    timeEntries.forEach(entry => {
+      const opt = document.createElement('option');
+      opt.value = entry.time;
+      opt.textContent = entry.time;
+      reportTimeSelect.appendChild(opt);
+    });
 
+    reportTimeSelect.disabled = false;
+    // 기본으로 최신(첫 항목) 선택
+    reportTimeSelect.value = timeEntries[0].time;
+    populateFiles(); // 시간 채운 뒤 파일 목록 채우기
+  }
+
+  // populateFiles: 선택된 타입/날짜/시간 -> reports 목록 채워서 파일 select에 넣음
+  function populateFiles(){
+    if(!reportFileSelect || !reportTimeSelect) return;
+    const selectedType = reportTypeSelect?.value;
+    const selectedDate = getSelectedDateString();
+    const selectedTime = reportTimeSelect?.value;
+    reportFileSelect.innerHTML = '';
+    reportFrame.src = 'about:blank';
+
+    if(!selectedType || !selectedDate || !selectedTime){
+      reportFileSelect.innerHTML = '<option>--</option>';
+      reportFileSelect.disabled = true;
+      return;
+    }
+
+    const timeEntries = reportIndexData[selectedType]?.[selectedDate] || [];
+    const selectedEntry = timeEntries.find(e => e.time === selectedTime) || {};
+    const reports = selectedEntry.reports || [];
+
+    if(!Array.isArray(reports) || reports.length === 0){
+      reportFileSelect.innerHTML = '<option>선택 가능 리포트 없음</option>';
+      reportFileSelect.disabled = true;
+      return;
+    }
+
+    let defaultReportPath = '';
+    // reports: { name, path, ... } 구조 가정
+    reports.forEach(rep => {
+      const opt = document.createElement('option');
+      opt.value = rep.path;
+      opt.textContent = rep.name || rep.path;
+      reportFileSelect.appendChild(opt);
+      if(!defaultReportPath && typeof rep.path === 'string' && rep.path.endsWith('.html') && !(rep.name || '').toLowerCase().includes('commentary')){
+        defaultReportPath = rep.path;
+      }
+    });
+
+    reportFileSelect.disabled = false;
+    // 기본값 설정: 우선 defaultReportPath, 없으면 첫 리포트
+    reportFileSelect.value = defaultReportPath || (reports[0] && reports[0].path) || '';
+    // 자동으로 로드
+    loadReport();
+  }
+
+  // --- loadReport (파일 선택 시 iframe 로드) ---
+  function loadReport() {
+    if(!reportFileSelect || !reportFrame) return;
+    const selectedReportPath = reportFileSelect.value;
     if (selectedReportPath) {
       showLoading();
       reportFrame.onload = hideLoading;
@@ -137,28 +196,43 @@
         console.error("Failed to load report:", selectedReportPath);
         reportFrame.src = 'about:blank';
       };
-      // Use the path directly from report_index.json
       reportFrame.src = selectedReportPath;
-      console.log("Loading report:", selectedReportPath);
     } else {
-      console.warn(`No suitable report found for ${selectedType} on ${selectedDate}` + (latestTimeEntry?.time ? ` at time ${latestTimeEntry.time}` : ''));
       reportFrame.src = 'about:blank';
       hideLoading();
     }
   }
 
-  // --- Event Listeners ---
-  reportTypeSelect?.addEventListener('change', ()=> loadReport());
-  reportYearSelect?.addEventListener('change', ()=> { populateDays(reportYearSelect.value, reportMonthSelect.value); });
-  reportMonthSelect?.addEventListener('change', ()=> { populateDays(reportYearSelect.value, reportMonthSelect.value); });
-  reportDaySelect?.addEventListener('change', loadReport);
+  // --- Event listeners 연결 ---
+  // 리포트 종류 바뀌면 날짜(연/월/일) 기반으로 다시 time/file 채우기 시도
+  reportTypeSelect?.addEventListener('change', () => {
+    // 기존 인덱스에서 사용 가능한 날짜 중 현재 선택 연/월/일이 없을 수 있으므로 검증 필요
+    // 간단히 populateTimes 호출해서 가능한 시간/파일 목록 갱신
+    populateTimes();
+  });
 
-  // --- Initial populate ---
+  // 연/월/일 변경 시에는 날짜 문자열 다시 계산해서 시간 목록 갱신
+  reportYearSelect?.addEventListener('change', () => {
+    populateDays(reportYearSelect.value, reportMonthSelect.value);
+    // populateDays 내부에서 day값 셋팅 되므로 그 후에 시간 목록 갱신
+    setTimeout(populateTimes, 0);
+  });
+  reportMonthSelect?.addEventListener('change', () => {
+    populateDays(reportYearSelect.value, reportMonthSelect.value);
+    setTimeout(populateTimes, 0);
+  });
+  reportDaySelect?.addEventListener('change', populateTimes);
+
+  // 시간/파일 변경 리스너
+  reportTimeSelect?.addEventListener('change', populateFiles);
+  reportFileSelect?.addEventListener('change', loadReport);
+
+  // --- 초기화: 연/월/일 채우기 및 인덱스 fetch ---
   populateYears(8);
   populateMonths();
   populateDays(reportYearSelect.value, reportMonthSelect.value);
 
-  // --- fit viewer width to controls-inner ---
+  // fit viewer width (controls-inner과 동일 너비 유지)
   function fitViewerWidth(){
     const viewer = document.querySelector('.viewer');
     const inner = document.querySelector('.controls-inner');
@@ -170,28 +244,36 @@
   fitViewerWidth();
   window.addEventListener('resize', fitViewerWidth);
 
-  // --- fetch report index and initial load ---
+  // --- report_index.json 불러오기 (기존 fetch 로직 재사용) ---
   async function fetchReportIndex(){
+    // 비활성화 상태 표시: 시간/파일 셀렉트 (초기 로딩 UX)
+    if(reportTimeSelect) { reportTimeSelect.disabled = true; reportTimeSelect.innerHTML = '<option>로딩...</option>'; }
+    if(reportFileSelect) { reportFileSelect.disabled = true; reportFileSelect.innerHTML = '<option>--</option>'; }
     try{
       const res = await fetch(REPORT_INDEX_PATH, { cache: 'no-cache' });
       if(!res.ok) throw new Error(`Failed to fetch report index: ${res.status}`);
       const data = await res.json();
       reportIndexData = data || {};
       console.log('Loaded report index');
-      // try to load report after index is ready
-      loadReport();
+      // 인덱스 로드 후 현재 선택된 연/월/일(또는 기본 값)으로 시간/파일 채우기 시도
+      populateTimes();
     }catch(err){
       console.error('Error loading report index:', err);
       reportIndexData = {};
+      if(reportTimeSelect) reportTimeSelect.innerHTML = '<option>목록 로드 실패</option>';
+      if(reportFileSelect) reportFileSelect.innerHTML = '<option>--</option>';
+      if(reportTimeSelect) reportTimeSelect.disabled = true;
+      if(reportFileSelect) reportFileSelect.disabled = true;
       reportFrame.src = 'about:blank';
       hideLoading();
     }
   }
   fetchReportIndex();
 
-  // expose for debugging
+  // 디버깅용 노출
   window.IR = window.IR || {};
   window.IR.loadReport = loadReport;
   window.IR.fetchReportIndex = fetchReportIndex;
+  window.IR.reportIndexData = reportIndexData;
 
 })();
