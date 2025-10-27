@@ -6,7 +6,7 @@
   const reportYearSelect = document.getElementById('reportYear');
   const reportMonthSelect = document.getElementById('reportMonth');
   const reportDaySelect = document.getElementById('reportDay');
-  // internal hidden selects for time/file handling (keeps UI simple)
+  // internal hidden selects for time/file handling
   let internalTimeSelect = document.getElementById('internalTimeSelect');
   if(!internalTimeSelect){
     internalTimeSelect = document.createElement('select');
@@ -124,7 +124,6 @@
     if(dates.length === 0){
       reportYearSelect.innerHTML = '<option>선택 가능 연도 없음</option>';
       reportYearSelect.disabled = true;
-      // clear downstream selects
       reportMonthSelect.innerHTML = '<option>--</option>'; reportMonthSelect.disabled = true;
       reportDaySelect.innerHTML = '<option>--</option>'; reportDaySelect.disabled = true;
       return;
@@ -219,15 +218,12 @@
       reportFrame.src = 'about:blank';
       return;
     }
-    // timeEntries assumed to be in desired order (we kept latest first when building map)
     timeEntries.forEach(entry => {
       const opt = document.createElement('option'); opt.value = entry.time; opt.textContent = entry.time; internalTimeSelect.appendChild(opt);
     });
     internalTimeSelect.disabled = false;
     internalTimeSelect.value = timeEntries[0].time;
-    // populate files for this selected time
     populateFilesFromEntry(type, dateStr, internalTimeSelect.value);
-    // attach onchange to keep behavior consistent if internalTimeSelect changes
     internalTimeSelect.onchange = () => populateFilesFromEntry(type, dateStr, internalTimeSelect.value);
   }
 
@@ -253,7 +249,6 @@
     });
     internalFileSelect.disabled = false;
     internalFileSelect.value = defaultReportPath || (reports[0] && reports[0].path) || '';
-    // 자동 로드
     loadReportFromPath(internalFileSelect.value);
   }
 
@@ -270,7 +265,6 @@
     showLoading();
     reportFrame.onload = () => {
       hideLoading();
-      // after load, re-apply iframe dark mode if active
       if(document.documentElement.getAttribute('data-theme') === 'dark') applyIframeDarkMode(true);
     };
     reportFrame.onerror = () => {
@@ -284,36 +278,50 @@
 
   // -----------------------
   // iframe 다크모드 처리 (same-origin이면 스타일 주입, 아니면 filter)
+  // 여기서 표 헤더 음영(헤더 셀 배경/box-shadow) 강제 덮어쓰기 규칙 포함
   // -----------------------
   function applyIframeDarkMode(enable){
     if(!reportFrame) return;
-    // clear previous filter
     reportFrame.style.filter = '';
     try {
       const doc = reportFrame.contentDocument || reportFrame.contentWindow.document;
       if(!doc) throw new Error('no doc');
       const STYLE_ID = 'injected-dark-style';
       let s = doc.getElementById(STYLE_ID);
+      const injectedCss = `
+        :root, body { background: #0b1220 !important; color: #e6eef9 !important; }
+        body, p, div, span, td, th, li, a { color: #e6eef9 !important; background: transparent !important; }
+        table, pre, code { color: #e6eef9 !important; }
+        a { color: #7ea2ff !important; }
+
+        /* ========== 표 헤더 보강 (다크모드에서 음영/배경 덮어쓰기) ========== */
+        thead, thead tr, thead th, table thead th {
+          background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
+          color: #e6eef9 !important;
+          border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+        }
+        thead th, table thead th {
+          box-shadow: inset 0 -6px 12px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.02) !important;
+        }
+        /* 특정 테이블 라이브러리 클래스들도 덮어쓰기 */
+        .table-header, .thead-dark, .table .header-row, .tbl-header {
+          background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
+          color: #e6eef9 !important;
+        }
+        /* inline style로 들어간 경우에도 강제 적용(광범위, 주의) */
+        *[style] thead, *[style] thead th, *[style] .table-header {
+          background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
+          color: #e6eef9 !important;
+        }
+      `;
       if(enable){
         if(!s){
           s = doc.createElement('style');
           s.id = STYLE_ID;
-          s.innerHTML = `
-            :root, body { background: #0b1220 !important; color: #e6eef9 !important; }
-            body, p, div, span, td, th, li, a { color: #e6eef9 !important; background: transparent !important; }
-            table, pre, code { color: #e6eef9 !important; }
-            a { color: #7ea2ff !important; }
-            img, svg, video { filter: none !important; }
-          `;
+          s.innerHTML = injectedCss;
           doc.head ? doc.head.appendChild(s) : doc.documentElement.appendChild(s);
         } else {
-          s.innerHTML = `
-            :root, body { background: #0b1220 !important; color: #e6eef9 !important; }
-            body, p, div, span, td, th, li, a { color: #e6eef9 !important; background: transparent !important; }
-            table, pre, code { color: #e6eef9 !important; }
-            a { color: #7ea2ff !important; }
-            img, svg, video { filter: none !important; }
-          `;
+          s.innerHTML = injectedCss;
         }
       } else {
         if(s) s.remove();
@@ -364,7 +372,6 @@
   // report_index.json 로드
   // -----------------------
   async function fetchReportIndex(){
-    // disable selects during load
     if(reportYearSelect) reportYearSelect.disabled = true;
     if(reportMonthSelect) reportMonthSelect.disabled = true;
     if(reportDaySelect) reportDaySelect.disabled = true;
@@ -375,7 +382,6 @@
       const data = await res.json();
       reportIndexData = data || {};
       buildAvailableDatesMap();
-      // ensure reportTypeSelect has a valid value
       const selType = reportTypeSelect?.value || Object.keys(reportIndexData)[0];
       if(selType) populateYearsFromIndex(selType);
       console.log('reportIndexData loaded:', Object.keys(reportIndexData));
