@@ -1,258 +1,190 @@
-// --- Element References ---
-const reportTypeSelect = document.getElementById('reportType');
-const reportYearSelect = document.getElementById('reportYear'); // New
-const reportMonthSelect = document.getElementById('reportMonth'); // New
-const reportDaySelect = document.getElementById('reportDay');   // New
-const reportFrame = document.getElementById('reportFrame');
-const loadingIndicator = document.getElementById('loadingIndicator');
-const darkModeToggle = document.getElementById('darkModeToggle'); // New
-const themeLabel = document.getElementById('themeLabel'); // New
-let reportIndexData = {};
-let availableDates = {}; // Store dates per type { daily: {'2025': {'10': ['26', '27']...}}, weekly: {...} }
+(function(){
+  // DOM 요소
+  const reportTypeSelect = document.getElementById('reportType');
+  const reportYearSelect = document.getElementById('reportYear');
+  const reportMonthSelect = document.getElementById('reportMonth');
+  const reportDaySelect = document.getElementById('reportDay');
+  const reportFrame = document.getElementById('reportFrame');
+  const loadingIndicator = document.getElementById('loadingIndicator');
+  const themeToggle = document.getElementById('themeToggle');
+  const themeText = document.getElementById('themeText');
 
-// --- Theme Handling ---
-function applyTheme(isDark) {
-    if (isDark) {
-        document.body.classList.add('dark-mode');
-        themeLabel.textContent = 'Dark Mode';
+  // 내부 상태
+  let reportIndexData = {}; // report_index.json 로드 결과 저장
+  const REPORT_INDEX_PATH = './report_index.json'; // 필요시 경로 변경
+
+  // 토글 테마 (기존 코드 유지)
+  const savedTheme = localStorage.getItem('ir_theme') || 'light';
+  setTheme(savedTheme);
+  function setTheme(mode){
+    if(mode === 'dark'){
+      document.documentElement.setAttribute('data-theme','dark');
+      themeToggle.classList.add('active');
+      themeToggle.setAttribute('aria-checked','true');
+      themeText.textContent = '다크';
     } else {
-        document.body.classList.remove('dark-mode');
-        themeLabel.textContent = 'Light Mode';
+      document.documentElement.removeAttribute('data-theme');
+      themeToggle.classList.remove('active');
+      themeToggle.setAttribute('aria-checked','false');
+      themeText.textContent = '라이트';
     }
-}
+    localStorage.setItem('ir_theme', mode);
+  }
+  themeToggle?.addEventListener('click', ()=> {
+    const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
+    setTheme(isDark ? 'light' : 'dark');
+  });
+  themeToggle?.addEventListener('keydown', (e)=>{
+    if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); themeToggle.click(); }
+  });
 
-function toggleTheme() {
-    const isDark = darkModeToggle.checked;
-    applyTheme(isDark);
-    localStorage.setItem('darkMode', isDark); // Persist preference
-}
+  // 로딩 표시 제어
+  function showLoading(){
+    if(loadingIndicator) loadingIndicator.style.display = 'flex';
+  }
+  function hideLoading(){
+    if(loadingIndicator) loadingIndicator.style.display = 'none';
+  }
 
-// Check saved theme on load
-const savedDarkMode = localStorage.getItem('darkMode') === 'true';
-darkModeToggle.checked = savedDarkMode;
-applyTheme(savedDarkMode);
-
-// Add listener for toggle
-darkModeToggle.addEventListener('change', toggleTheme);
-
-// --- Loading Indicator ---
-function showLoading() { /* (Previous logic) */
-    loadingIndicator.style.display = 'flex';
-    reportFrame.style.opacity = '0.3'; // Make it more faded
-}
-function hideLoading() { /* (Previous logic) */
-    loadingIndicator.style.display = 'none';
-    reportFrame.style.opacity = '1';
-}
-
-// --- Data Fetching and Processing ---
-async function fetchReportIndex() {
-    // Disable all date selects initially
-    reportYearSelect.disabled = true; reportYearSelect.innerHTML = '<option>로딩 중...</option>';
-    reportMonthSelect.disabled = true; reportMonthSelect.innerHTML = '<option>--</option>';
-    reportDaySelect.disabled = true; reportDaySelect.innerHTML = '<option>--</option>';
-
-    try {
-        const response = await fetch('report_index.json');
-        if (!response.ok) throw new Error(`HTTP error! status: ${response.status}`);
-        reportIndexData = await response.json();
-        processAvailableDates(); // Process dates into hierarchical structure
-        populateReportTypes();
-        populateYears(); // Start population chain
-    } catch (error) {
-        console.error('Error fetching report index:', error);
-        reportYearSelect.innerHTML = '<option>목록 로드 실패</option>';
-    }
-}
-
-// Pre-process dates for easier lookup
-function processAvailableDates() {
-    availableDates = { daily: {}, weekly: {}, monthly: {} };
-    for (const type in reportIndexData) {
-        if (reportIndexData.hasOwnProperty(type)) {
-            const dates = Object.keys(reportIndexData[type]);
-            dates.forEach(dateStr => { // dateStr is YYYY-MM-DD
-                const [year, month, day] = dateStr.split('-');
-                if (!availableDates[type][year]) {
-                    availableDates[type][year] = {};
-                }
-                if (!availableDates[type][year][month]) {
-                    availableDates[type][year][month] = [];
-                }
-                if (!availableDates[type][year][month].includes(day)) {
-                     availableDates[type][year][month].push(day);
-                     availableDates[type][year][month].sort().reverse(); // Sort days descending
-                }
-            });
-             // Sort months descending for each year
-            for(const year in availableDates[type]){
-                 availableDates[type][year] = Object.fromEntries(
-                      Object.entries(availableDates[type][year]).sort(([m1],[m2]) => m2.localeCompare(m1))
-                 );
-            }
-            // Sort years descending
-             availableDates[type] = Object.fromEntries(
-                 Object.entries(availableDates[type]).sort(([y1],[y2]) => y2.localeCompare(y1))
-             );
-        }
-    }
-}
-
-
-// --- Dropdown Population ---
-function populateReportTypes() {
-    reportTypeSelect.value = 'daily'; // Default
-}
-
-function populateYears() {
-    const selectedType = reportTypeSelect.value;
+  // 연/월/일 채우기 함수
+  function populateYears(range = 10){
+    const cur = new Date().getFullYear();
     reportYearSelect.innerHTML = '';
-    reportMonthSelect.innerHTML = '<option>--</option>'; reportMonthSelect.disabled = true;
-    reportDaySelect.innerHTML = '<option>--</option>'; reportDaySelect.disabled = true;
-    reportFrame.src = 'about:blank';
-
-    const years = availableDates[selectedType] ? Object.keys(availableDates[selectedType]) : [];
-
-    if (years.length === 0) {
-        reportYearSelect.innerHTML = '<option>연도 없음</option>'; reportYearSelect.disabled = true;
-        return;
+    for(let y = cur; y >= cur - range; y--){
+      const opt = document.createElement('option');
+      opt.value = y;
+      opt.textContent = `${y}년`;
+      reportYearSelect.appendChild(opt);
     }
-
-    // Years are already sorted descending
-    years.forEach(year => {
-        const option = document.createElement('option');
-        option.value = year;
-        option.textContent = year;
-        reportYearSelect.appendChild(option);
-    });
-
-    reportYearSelect.disabled = false;
-    if (years.length > 0) {
-        reportYearSelect.value = years[0]; // Select latest year
-        populateMonths(); // Populate months for the selected year
-    }
-}
-
-function populateMonths() {
-    const selectedType = reportTypeSelect.value;
-    const selectedYear = reportYearSelect.value;
+    reportYearSelect.value = cur;
+  }
+  function populateMonths(){
     reportMonthSelect.innerHTML = '';
-    reportDaySelect.innerHTML = '<option>--</option>'; reportDaySelect.disabled = true;
-    reportFrame.src = 'about:blank';
-
-    const months = availableDates[selectedType]?.[selectedYear] ? Object.keys(availableDates[selectedType][selectedYear]) : [];
-
-    if (months.length === 0) {
-        reportMonthSelect.innerHTML = '<option>월 없음</option>'; reportMonthSelect.disabled = true;
-        return;
+    for(let m=1;m<=12;m++){
+      const opt = document.createElement('option');
+      opt.value = String(m).padStart(2,'0');
+      opt.textContent = `${m}월`;
+      reportMonthSelect.appendChild(opt);
     }
-
-    // Months are already sorted descending
-    months.forEach(month => {
-        const option = document.createElement('option');
-        option.value = month;
-        option.textContent = month;
-        reportMonthSelect.appendChild(option);
-    });
-
-    reportMonthSelect.disabled = false;
-    if (months.length > 0) {
-        reportMonthSelect.value = months[0]; // Select latest month
-        populateDays(); // Populate days for the selected month
-    }
-}
-
-function populateDays() {
-    const selectedType = reportTypeSelect.value;
-    const selectedYear = reportYearSelect.value;
-    const selectedMonth = reportMonthSelect.value;
+    reportMonthSelect.value = String(new Date().getMonth()+1).padStart(2,'0');
+  }
+  function populateDays(y, m){
+    const daysInMonth = new Date(Number(y), Number(m), 0).getDate();
     reportDaySelect.innerHTML = '';
-    reportFrame.src = 'about:blank';
-
-    const days = availableDates[selectedType]?.[selectedYear]?.[selectedMonth] || [];
-
-    if (days.length === 0) {
-        reportDaySelect.innerHTML = '<option>일 없음</option>'; reportDaySelect.disabled = true;
-        return;
+    for(let d=1; d<=daysInMonth; d++){
+      const opt = document.createElement('option');
+      opt.value = String(d).padStart(2,'0');
+      opt.textContent = `${d}일`;
+      reportDaySelect.appendChild(opt);
     }
-
-    // Days are already sorted descending
-    days.forEach(day => {
-        const option = document.createElement('option');
-        option.value = day;
-        option.textContent = day;
-        reportDaySelect.appendChild(option);
-    });
-
-    reportDaySelect.disabled = false;
-    if (days.length > 0) {
-        reportDaySelect.value = days[0]; // Select latest day
-        loadReport(); // Load the report for the selected date
+    const today = new Date();
+    if(Number(y) === today.getFullYear() && Number(m) === (today.getMonth()+1)){
+      reportDaySelect.value = String(today.getDate()).padStart(2,'0');
+    } else {
+      reportDaySelect.value = '01';
     }
-}
+  }
 
-// --- Report Loading ---
-function loadReport() {
+  // --- 네가 주신 실제 로드 로직을 반영한 loadReport ---
+  function loadReport() {
     const selectedType = reportTypeSelect.value;
     const selectedYear = reportYearSelect.value;
     const selectedMonth = reportMonthSelect.value;
     const selectedDay = reportDaySelect.value;
 
-    // Check if all parts of the date are selected
+    // 날짜가 완전한지 체크
     if (!selectedYear || !selectedMonth || !selectedDay || selectedYear === '--' || selectedMonth === '--' || selectedDay === '--') {
-        reportFrame.src = 'about:blank';
-        return; // Don't load if date is incomplete
+      reportFrame.src = 'about:blank';
+      return; // 날짜 불완전 시 로드 중단
     }
 
     const selectedDate = `${selectedYear}-${selectedMonth}-${selectedDay}`;
 
-    // Find the latest time entry for the selected date
+    // 인덱스에서 해당 타입/날짜의 시간 항목 찾기
     const timeEntries = reportIndexData[selectedType]?.[selectedDate] || [];
-    if (timeEntries.length === 0) {
-        console.warn(`No time entries found for ${selectedType} on ${selectedDate}`);
-        reportFrame.src = 'about:blank';
-        return;
+    if (!Array.isArray(timeEntries) || timeEntries.length === 0) {
+      console.warn(`No time entries found for ${selectedType} on ${selectedDate}`);
+      reportFrame.src = 'about:blank';
+      return;
     }
-    // Assume timeEntries are sorted descending by time in report_index.json
+
+    // report_index.json이 시간순(내림차순) 정렬되어 있다고 가정 -> 첫 항목이 최신
     const latestTimeEntry = timeEntries[0];
     const reports = latestTimeEntry.reports || [];
 
-    // Find the default HTML report (e.g., not commentary)
-    let reportToLoad = reports.find(r => r.path.endsWith('.html') && !r.path.includes('commentary'));
-    // Fallback to the first available HTML report if default not found
+    // 우선순위: HTML 리포트(주석 제외) -> HTML 리포트(첫번째) -> 첫 리포트(어떤 형식이든)
+    let reportToLoad = reports.find(r => typeof r.path === 'string' && r.path.endsWith('.html') && !r.path.includes('commentary'));
     if (!reportToLoad) {
-        reportToLoad = reports.find(r => r.path.endsWith('.html'));
+      reportToLoad = reports.find(r => typeof r.path === 'string' && r.path.endsWith('.html'));
     }
-    // Fallback to the first report if no HTML found (though HTML is preferred)
     if (!reportToLoad && reports.length > 0) {
-        reportToLoad = reports[0];
+      reportToLoad = reports[0];
     }
 
     const selectedReportPath = reportToLoad ? reportToLoad.path : null;
 
     if (selectedReportPath) {
-        showLoading();
-        reportFrame.onload = hideLoading;
-        reportFrame.onerror = () => {
-            hideLoading();
-            console.error("Failed to load report:", selectedReportPath);
-            reportFrame.src = 'about:blank';
-        };
-        // Use the path directly from report_index.json
-        reportFrame.src = selectedReportPath;
-        console.log("Loading report:", selectedReportPath);
-    } else {
-        console.warn(`No suitable report found for ${selectedType} on ${selectedDate} at time ${latestTimeEntry.time}`);
-        reportFrame.src = 'about:blank';
+      showLoading();
+      // onload / onerror 핸들러 설정
+      reportFrame.onload = () => {
         hideLoading();
+        console.log('Report loaded:', selectedReportPath);
+      };
+      reportFrame.onerror = () => {
+        hideLoading();
+        console.error('Failed to load report:', selectedReportPath);
+        reportFrame.src = 'about:blank';
+      };
+      // 실제 경로 사용
+      reportFrame.src = selectedReportPath;
+      console.log('Loading report:', selectedReportPath);
+    } else {
+      console.warn(`No suitable report found for ${selectedType} on ${selectedDate}` + (latestTimeEntry?.time ? ` at time ${latestTimeEntry.time}` : ''));
+      reportFrame.src = 'about:blank';
+      hideLoading();
     }
-}
+  }
 
-// --- Event Listeners ---
-reportTypeSelect.addEventListener('change', populateYears);
-reportYearSelect.addEventListener('change', populateMonths);
-reportMonthSelect.addEventListener('change', populateDays);
-reportDaySelect.addEventListener('change', loadReport); // Load report when day changes
+  // --- report_index.json 불러오기 ---
+  async function fetchReportIndex(){
+    try{
+      const res = await fetch(REPORT_INDEX_PATH, { cache: 'no-cache' });
+      if(!res.ok) throw new Error(`Failed to fetch report index: ${res.status}`);
+      const data = await res.json();
+      reportIndexData = data;
+      console.log('Loaded report index:', Object.keys(reportIndexData));
+      // 인덱스 로드 후 필요하면 UI 초기값 조정(예: 연도/월/일 옵션을 인덱스 기반으로 만들려면 여기서 처리)
+      // 현재는 기본 populate 후 loadReport 호출
+      loadReport();
+    }catch(err){
+      console.error('Error loading report index:', err);
+      reportIndexData = {};
+      // 인덱스 없을 때 기본 동작: 빈 프레임
+      reportFrame.src = 'about:blank';
+      hideLoading();
+    }
+  }
 
-// --- Initial Load ---
-fetchReportIndex();
+  // 이벤트 연결
+  reportTypeSelect.addEventListener('change', ()=> {
+    // 타입 변경 시, 필요하면 연/월/일을 인덱스 기반으로 조정 가능
+    // 지금은 기존 날짜 유지하고 리포트 로드
+    loadReport();
+  });
+  reportYearSelect.addEventListener('change', ()=> {
+    populateDays(reportYearSelect.value, reportMonthSelect.value);
+  });
+  reportMonthSelect.addEventListener('change', ()=> {
+    populateDays(reportYearSelect.value, reportMonthSelect.value);
+  });
+  reportDaySelect.addEventListener('change', loadReport);
+
+  // 초기화
+  populateYears(8);
+  populateMonths();
+  populateDays(reportYearSelect.value, reportMonthSelect.value);
+
+  // 인덱스 fetch 및 초기 로드
+  fetchReportIndex();
+
+})();

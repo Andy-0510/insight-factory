@@ -1,286 +1,250 @@
-/* --- Base Styles & Variables --- */
-:root {
-    --primary-color: #5a7bda; /* Slightly softer blue */
-    --secondary-color: #6c757d;
-    --light-grey: #f1f3f5;
-    --border-color: rgba(255, 255, 255, 0.2); /* For glass effect */
-    --text-color: #212529;
-    --bg-color: #ffffff;
-    --font-family: 'Pretendard', sans-serif;
-    --border-radius-main: 16px; /* Increased roundness */
-    --border-radius-controls: 10px;
-
-    /* Glassmorphism */
-    --glass-bg: rgba(255, 255, 255, 0.5);
-    --glass-blur: 10px;
-    --glass-border: 1px solid var(--border-color);
-    --glass-shadow: 0 4px 15px rgba(0, 0, 0, 0.1);
-
-    /* Transitions */
-    --transition-speed: 0.3s;
+:root{
+  --bg: #f2f5fb;
+  --card: rgba(255,255,255,0.6);
+  --muted: #6b7280;
+  --accent: #6c8cff;
+  --glass-shadow: rgba(99,102,241,0.08);
+  --text: #0f172a;
+  --radius: 14px;
+  --glass-border: rgba(255,255,255,0.45);
+}
+[data-theme="dark"]{
+  --bg: #0b1220;
+  --card: rgba(20,24,31,0.55);
+  --muted: #9aa4b2;
+  --accent: #7ea2ff;
+  --glass-shadow: rgba(0,0,0,0.6);
+  --text: #e6eef9;
+  --glass-border: rgba(255,255,255,0.03);
 }
 
-body {
-    font-family: var(--font-family);
-    margin: 0;
-    padding: 20px; /* Add padding around the container */
-    background: linear-gradient(135deg, #e0eafc 0%, #cfdef3 100%); /* Subtle gradient background */
-    color: var(--text-color);
-    line-height: 1.6;
-    min-height: 100vh; /* Ensure gradient covers full height */
-    transition: background-color var(--transition-speed) ease, color var(--transition-speed) ease;
+*{box-sizing:border-box}
+html,body{height:100%}
+body{
+  margin:0;
+  font-family:"Pretendard",system-ui,-apple-system,Segoe UI,Roboto,"Helvetica Neue",Arial;
+  background: linear-gradient(180deg, var(--bg) 0%, color-mix(in srgb, var(--bg) 90%, white 10%) 100%);
+  color:var(--text);
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  padding:28px;
 }
 
-/* --- Dark Mode Variables --- */
-body.dark-mode {
-    --primary-color: #7a9cff;
-    --secondary-color: #adb5bd;
-    --light-grey: #212529;
-    --border-color: rgba(255, 255, 255, 0.1);
-    --text-color: #f8f9fa;
-    --bg-color: #343a40;
-    --glass-bg: rgba(52, 58, 64, 0.6); /* Darker glass */
-    background: linear-gradient(135deg, #2c3e50 0%, #4a69bd 100%); /* Dark gradient */
+/* 컨테이너 */
+.container{
+  width:100%;
+  max-width:980px;
+  border-radius:20px;
+  padding:28px;
+  backdrop-filter: blur(10px) saturate(120%);
+  -webkit-backdrop-filter: blur(10px) saturate(120%);
+  background: linear-gradient(180deg, rgba(255,255,255,0.55), rgba(255,255,255,0.30));
+  box-shadow: 0 8px 30px var(--glass-shadow);
+  border: 1px solid var(--glass-border);
+}
+[data-theme="dark"] .container{
+  background: linear-gradient(180deg, rgba(30,34,42,0.6), rgba(16,20,28,0.36));
 }
 
-/* --- Container & Glassmorphism --- */
-.container {
-    max-width: 1200px;
-    margin: 20px auto;
-    padding: 30px;
-    border-radius: var(--border-radius-main);
-    box-shadow: var(--glass-shadow);
-    position: relative;
-    overflow: hidden; /* Needed for pseudo-element */
-    z-index: 1;
+header{
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  gap:12px;
+  margin-bottom:20px;
+}
+.title{
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.logo{
+  width:44px;
+  height:44px;
+  border-radius:10px;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-size:20px;
+  background: linear-gradient(135deg, var(--accent), color-mix(in srgb, var(--accent) 40%, white 60%));
+  color:white;
+  box-shadow: 0 6px 20px rgba(110,120,255,0.18);
+}
+h1{
+  font-size:18px;
+  margin:0;
+  font-weight:600;
+  letter-spacing:-0.2px;
+}
+.subtitle{
+  font-size:12px;
+  color:var(--muted);
 }
 
-.glassmorphism {
-    background: var(--glass-bg);
-    backdrop-filter: blur(var(--glass-blur));
-    -webkit-backdrop-filter: blur(var(--glass-blur)); /* Safari */
-    border: var(--glass-border);
+/* 토글 */
+.theme-switch-wrapper{
+  display:flex;
+  align-items:center;
+  gap:10px;
+  font-size:13px;
+  color:var(--muted);
+}
+.toggle{
+  width:46px;
+  height:26px;
+  background:rgba(255,255,255,0.7);
+  border-radius:999px;
+  position:relative;
+  border:1px solid rgba(0,0,0,0.06);
+  cursor:pointer;
+  transition:all .22s ease;
+}
+.toggle:after{
+  content:"";
+  width:20px;
+  height:20px;
+  background:white;
+  position:absolute;
+  top:2px;
+  left:2px;
+  border-radius:50%;
+  box-shadow:0 3px 10px rgba(16,24,40,0.12);
+  transition:all .22s ease;
+}
+.toggle.active{
+  background:linear-gradient(90deg,var(--accent), color-mix(in srgb, var(--accent) 40%, white 60%));
+}
+.toggle.active:after{
+  left:24px;
+  background:linear-gradient(180deg, white, color-mix(in srgb, white 90%, var(--accent) 10%));
 }
 
-
-/* --- Header --- */
-header {
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    margin-bottom: 30px;
-    padding-bottom: 20px;
-    border-bottom: 1px solid var(--border-color); /* Subtle border */
+/* 컨트롤 영역 */
+.controls{
+  display:flex;
+  gap:14px;
+  align-items:end;
+  flex-wrap:wrap;
+  margin-bottom:18px;
+}
+.control{
+  background:var(--card);
+  border-radius:12px;
+  padding:12px 14px;
+  min-width:150px;
+  border:1px solid var(--glass-border);
+  box-shadow: 0 6px 18px var(--glass-shadow);
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.control label{
+  font-size:12px;
+  color:var(--muted);
+}
+.control select{
+  -webkit-appearance:none;
+  appearance:none;
+  border:0;
+  outline:0;
+  padding:8px 10px;
+  background:transparent;
+  font-size:14px;
+  color:var(--text);
+  border-radius:8px;
+}
+.control select:focus{
+  box-shadow: 0 4px 12px rgba(99,102,241,0.12);
 }
 
-header h1 {
-    color: var(--primary-color);
-    font-weight: 700;
-    margin: 0;
-    font-size: 1.8em;
-    display: flex;
-    align-items: center;
+/* 리포트 뷰 */
+.report-view{
+  display:grid;
+  grid-template-columns: 1fr;
+  gap:14px;
 }
-header h1 .icon {
-    margin-right: 10px;
-    font-size: 1.2em; /* Adjust icon size */
+.viewer{
+  height:420px;
+  border-radius:14px;
+  overflow:hidden;
+  border:1px solid var(--glass-border);
+  background: linear-gradient(180deg, rgba(255,255,255,0.2), rgba(255,255,255,0.06));
+  box-shadow: 0 10px 30px var(--glass-shadow);
 }
-
-
-/* --- Dark Mode Toggle --- */
-.theme-switch-wrapper {
-    display: flex;
-    align-items: center;
-}
-
-.theme-switch {
-    display: inline-block;
-    height: 24px;
-    position: relative;
-    width: 48px;
-    margin-right: 8px;
+.viewer iframe{
+  width:100%;
+  height:100%;
+  border:0;
+  display:block;
+  background:transparent;
 }
 
-.theme-switch input {
-    display: none;
+.loading{
+  display:flex;
+  gap:12px;
+  align-items:center;
+  padding:12px;
+  color:var(--muted);
+  font-size:14px;
+}
+.spinner{
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  border:2px solid rgba(0,0,0,0.08);
+  border-top-color:var(--accent);
+  animation:spin 1s linear infinite;
+}
+@keyframes spin{to{transform:rotate(360deg)}}
+
+footer{
+  margin-top:14px;
+  text-align:center;
+  color:var(--muted);
+  font-size:12px;
 }
 
-.slider {
-    background-color: #ccc;
-    bottom: 0;
-    cursor: pointer;
-    left: 0;
-    position: absolute;
-    right: 0;
-    top: 0;
-    transition: var(--transition-speed);
+/* 반응형 */
+@media (max-width:760px){
+  .controls{gap:10px}
+  .control{min-width:140px}
+  .viewer{height:320px}
 }
 
-.slider:before {
-    background-color: #fff;
-    bottom: 3px;
-    content: "";
-    height: 18px;
-    left: 3px;
-    position: absolute;
-    transition: var(--transition-speed);
-    width: 18px;
+/* select / option 글자색 고정 (다크/라이트 공통) */
+.control select,
+.control select option {
+  color: var(--text) !important;
+  background: transparent;
 }
 
-input:checked + .slider {
-    background-color: var(--primary-color);
+/* option의 배경을 카드 색상으로 맞춤 (드롭다운 내부 배경) */
+.control select option {
+  background: var(--card);
 }
 
-input:checked + .slider:before {
-    transform: translateX(24px);
+/* 일부 브라우저(특히 Firefox)에서 포커스 시 글자가 사라지는 문제 방지 */
+.control select:-moz-focusring {
+  color: transparent;
+  text-shadow: 0 0 0 var(--text);
 }
 
-.slider.round {
-    border-radius: 24px;
+/* 기본 화살표 숨김(원하면 커스텀 화살표 추가 가능) */
+.control select::-ms-expand { display: none; }
+
+/* 웹킷(사파리)에서 텍스트 컬러 강제 적용 */
+.control select {
+  -webkit-text-fill-color: var(--text);
 }
 
-.slider.round:before {
-    border-radius: 50%;
+/* 포커스 시 가시성 향상 */
+.control select:focus {
+  box-shadow: 0 6px 18px rgba(99,102,241,0.12);
+  outline: none;
 }
 
-#themeLabel {
-    font-size: 0.9em;
-    color: var(--secondary-color);
-}
-
-/* --- Controls --- */
-.controls {
-    display: grid; /* Use grid for better alignment */
-    grid-template-columns: repeat(auto-fit, minmax(150px, 1fr)); /* Responsive grid */
-    gap: 15px;
-    margin-bottom: 30px;
-    padding: 20px;
-    border-radius: var(--border-radius-controls);
-}
-
-.glassmorphism-controls {
-    background: rgba(255, 255, 255, 0.4); /* Slightly less transparent */
-    backdrop-filter: blur(5px);
-    -webkit-backdrop-filter: blur(5px);
-    border: 1px solid rgba(255, 255, 255, 0.15);
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.05);
-}
-body.dark-mode .glassmorphism-controls {
-    background: rgba(52, 58, 64, 0.5); /* Darker */
-    border: 1px solid rgba(255, 255, 255, 0.08);
-}
-
-
-.control-group label {
-    font-weight: bold;
-    margin-bottom: 6px;
-    font-size: 0.85em;
-    color: var(--secondary-color);
-    display: block; /* Ensure label is above select */
-}
-
-.control-group select {
-    width: 100%; /* Full width within grid cell */
-    padding: 10px 12px;
-    border: 1px solid transparent; /* Remove default border */
-    border-radius: var(--border-radius-controls);
-    background-color: rgba(255, 255, 255, 0.7); /* Control background */
-    font-size: 0.95em;
-    cursor: pointer;
-    transition: all var(--transition-speed) ease;
-    appearance: none; /* Remove default arrow */
-    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5" viewBox="0 0 10 5"><path fill="%236c757d" d="M0 0l5 5 5-5z"/></svg>'); /* Custom arrow */
-    background-repeat: no-repeat;
-    background-position: right 10px center;
-    background-size: 10px 5px;
-}
-body.dark-mode .control-group select {
-    background-color: rgba(73, 80, 87, 0.7); /* Darker control background */
-    color: var(--text-color);
-    background-image: url('data:image/svg+xml;charset=US-ASCII,<svg xmlns="http://www.w3.org/2000/svg" width="10" height="5" viewBox="0 0 10 5"><path fill="%23adb5bd" d="M0 0l5 5 5-5z"/></svg>'); /* Darker arrow */
-}
-
-
-.control-group select:disabled {
-    background-color: rgba(233, 236, 239, 0.7);
-    cursor: not-allowed;
-    opacity: 0.7;
-}
-body.dark-mode .control-group select:disabled {
-     background-color: rgba(52, 58, 64, 0.5);
-}
-
-
-.control-group select:focus {
-    border-color: var(--primary-color);
-    outline: none;
-    box-shadow: 0 0 0 3px rgba(90, 123, 218, 0.3);
-}
-
-/* --- Report View & Loading --- */
-.report-view {
-    position: relative;
-    min-height: 70vh;
-}
-
-.report-view iframe {
-    width: 100%;
-    height: 75vh;
-    border: none; /* Remove border */
-    border-radius: var(--border-radius-controls); /* Rounded corners */
-    background-color: var(--bg-color);
-    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
-    transition: opacity var(--transition-speed) ease;
-}
-
-.loading-indicator {
-    /* (Previous styles remain the same, just added glassmorphism-controls class in HTML) */
-     border-radius: var(--border-radius-controls);
-     padding: 15px 25px;
-     position: absolute;
-     top: 50%;
-     left: 50%;
-     transform: translate(-50%, -50%);
-     display: flex;
-     align-items: center;
-     z-index: 10;
-}
-body.dark-mode .loading-indicator span {
-    color: var(--text-color); /* Ensure text is visible in dark mode */
-}
-
-
-.spinner { /* (Previous styles remain the same) */
-    border: 4px solid rgba(0, 0, 0, 0.1);
-    border-top: 4px solid var(--primary-color);
-    border-radius: 50%;
-    width: 20px;
-    height: 20px;
-    animation: spin 1s linear infinite;
-    margin-right: 12px;
-}
-
-@keyframes spin { /* (Previous styles remain the same) */
-    0% { transform: rotate(0deg); }
-    100% { transform: rotate(360deg); }
-}
-
-/* --- Footer --- */
-footer { /* (Previous styles remain the same) */
-    text-align: center;
-    margin-top: 30px;
-    padding-top: 20px;
-    border-top: 1px solid var(--border-color);
-    font-size: 0.85em;
-    color: var(--secondary-color);
-}
-
-/* --- Responsive adjustments --- */
-@media (max-width: 768px) { /* (Previous styles remain the same) */
-    body { padding: 10px; }
-    .container { padding: 15px; }
-    header { flex-direction: column; gap: 15px; }
-    .controls { grid-template-columns: 1fr; } /* Stack controls vertically */
-    header h1 { font-size: 1.5em; }
-    .report-view iframe { height: 70vh; }
+/* 드롭다운 리스트가 어두운 배경에 숨겨보일 때 대비 보정 (선택사항) */
+[data-theme="dark"] .control select {
+  background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(255,255,255,0.01));
 }

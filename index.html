@@ -1,69 +1,71 @@
 <!DOCTYPE html>
 <html lang="ko">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Intelligence Report Viewer</title>
-    <link rel="stylesheet" href="style.css">
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;700&display=swap" rel="stylesheet">
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width,initial-scale=1" />
+  <title>Intelligence Report Viewer</title>
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;800&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
 </head>
 <body>
-    <div class="container glassmorphism">
-        <header>
-            <h1><span class="icon">💎</span> Intelligence Report Viewer</h1>
-            <div class="theme-switch-wrapper">
-                <label class="theme-switch" for="darkModeToggle">
-                    <input type="checkbox" id="darkModeToggle" />
-                    <div class="slider round"></div>
-                </label>
-                <span id="themeLabel">Light Mode</span>
-            </div>
-        </header>
+  <div class="container" id="app">
+    <header>
+      <div class="title">
+        <div class="logo">IR</div>
+        <div>
+          <h1>Intelligence Report Viewer</h1>
+          <div class="subtitle">간결하고 감각적인 리포트 뷰어</div>
+        </div>
+      </div>
 
-        <nav class="controls glassmorphism-controls">
-            <div class="control-group">
-                <label for="reportType">리포트 종류</label>
-                <select id="reportType">
-                    <option value="daily">일간</option>
-                    <option value="weekly">주간</option>
-                    <option value="monthly">월간</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="reportYear">연도</label>
-                <select id="reportYear" disabled>
-                    <option>--</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="reportMonth">월</label>
-                <select id="reportMonth" disabled>
-                    <option>--</option>
-                </select>
-            </div>
-            <div class="control-group">
-                <label for="reportDay">일</label>
-                <select id="reportDay" disabled>
-                    <option>--</option>
-                </select>
-            </div>
-        </nav>
+      <div class="theme-switch-wrapper" aria-hidden="false">
+        <div id="themeToggle" class="toggle" role="switch" aria-checked="false" tabindex="0" title="다크 모드 토글"></div>
+        <div id="themeText">라이트</div>
+      </div>
+    </header>
 
-        <main class="report-view">
-            <div id="loadingIndicator" class="loading-indicator glassmorphism-controls" style="display: none;">
-                <div class="spinner"></div>
-                <span>Loading Report...</span>
-            </div>
-            <iframe id="reportFrame" src="about:blank" frameborder="0" title="Report Content"></iframe>
-        </main>
+    <nav class="controls" aria-label="report controls">
+      <div class="control" style="min-width:180px;">
+        <label for="reportType">리포트 종류</label>
+        <select id="reportType" aria-label="리포트 종류">
+          <option value="daily">일간</option>
+          <option value="weekly">주간</option>
+          <option value="monthly">월간</option>
+        </select>
+      </div>
 
-        <footer>
-             <p>&copy; 2025 Market Intelligence Team. All rights reserved.</p>
-        </footer>
-    </div>
+      <div class="control">
+        <label for="reportYear">연도</label>
+        <select id="reportYear" aria-label="연도"></select>
+      </div>
 
-    <script src="script.js"></script>
+      <div class="control">
+        <label for="reportMonth">월</label>
+        <select id="reportMonth" aria-label="월"></select>
+      </div>
+
+      <div class="control">
+        <label for="reportDay">일</label>
+        <select id="reportDay" aria-label="일"></select>
+      </div>
+    </nav>
+
+    <main class="report-view">
+      <div class="loading" id="loadingIndicator" style="display:none">
+        <div class="spinner" aria-hidden="true"></div>
+        <div>리포트 로딩 중...</div>
+      </div>
+
+      <div class="viewer" aria-live="polite">
+        <iframe id="reportFrame" src="about:blank" title="Report Content"></iframe>
+      </div>
+    </main>
+
+    <footer>
+      <div>&copy; Business Development Team</div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
 </body>
 </html>
