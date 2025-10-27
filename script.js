@@ -1,28 +1,63 @@
 (function(){
+  // -----------------------
   // DOM 요소
-  const reportTypeSelect = document.getElementById('reportType');
+  // -----------------------
+  const reportTypeSelect = document.getElementById('reportType'); // daily / weekly / monthly
   const reportYearSelect = document.getElementById('reportYear');
   const reportMonthSelect = document.getElementById('reportMonth');
   const reportDaySelect = document.getElementById('reportDay');
-  const reportTimeSelect = document.getElementById('reportTime'); // optional: not shown in UI, only for backward compat if needed
-  const reportFileSelect = document.createElement('select'); // hidden select used internally if needed
-  // BUT our UI uses file selection automatically: we'll keep reportFileSelect as virtual; instead we insert actual selection via JS when needed
-  // For compatibility, create an invisible select element attached to DOM (optional)
-  reportFileSelect.id = 'reportFile';
-  reportFileSelect.style.display = 'none';
-  document.body.appendChild(reportFileSelect);
+  // internal hidden selects for time/file handling (keeps UI simple)
+  let internalTimeSelect = document.getElementById('internalTimeSelect');
+  if(!internalTimeSelect){
+    internalTimeSelect = document.createElement('select');
+    internalTimeSelect.id = 'internalTimeSelect';
+    internalTimeSelect.style.display = 'none';
+    document.body.appendChild(internalTimeSelect);
+  }
+  let internalFileSelect = document.getElementById('internalFileSelect');
+  if(!internalFileSelect){
+    internalFileSelect = document.createElement('select');
+    internalFileSelect.id = 'internalFileSelect';
+    internalFileSelect.style.display = 'none';
+    document.body.appendChild(internalFileSelect);
+  }
 
   const reportFrame = document.getElementById('reportFrame');
   const loadingIndicator = document.getElementById('loadingIndicator');
   const themeToggle = document.getElementById('themeToggle');
   const themeText = document.getElementById('themeText');
 
-  // 상태
-  let reportIndexData = {};
-  let availableDatesByType = {}; // { type: [ "YYYY-MM-DD", ... ] }
-  const REPORT_INDEX_PATH = './report_index.json';
+  // -----------------------
+  // 상태 및 설정
+  // -----------------------
+  let reportIndexData = {};            // 원본 JSON 데이터
+  let availableDatesByType = {};       // { type: ['YYYY-MM-DD', ...], ... }
+  const REPORT_INDEX_PATH = './report_index.json'; // 필요시 경로 수정
 
-  // 테마 초기화
+  // -----------------------
+  // 유틸리티 함수
+  // -----------------------
+  function normalizeDateKey(raw) {
+    if(!raw) return null;
+    const s = String(raw).trim();
+    const parts = s.split('-').map(p => p.trim());
+    if(parts.length !== 3) return null;
+    const y = parts[0].padStart(4,'0');
+    const m = parts[1].padStart(2,'0');
+    const d = parts[2].padStart(2,'0');
+    if(!/^\d{4}$/.test(y) || !/^\d{2}$/.test(m) || !/^\d{2}$/.test(d)) return null;
+    return `${y}-${m}-${d}`;
+  }
+
+  function parseDateKey(dateKey){
+    const parts = String(dateKey).split('-');
+    if(parts.length !== 3) return null;
+    return { year: parts[0], month: parts[1].padStart(2,'0'), day: parts[2].padStart(2,'0') };
+  }
+
+  // -----------------------
+  // 테마 처리 (로컬 저장)
+  // -----------------------
   const savedTheme = localStorage.getItem('ir_theme') || 'light';
   setTheme(savedTheme);
   function setTheme(mode){
@@ -50,7 +85,9 @@
     if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); themeToggle.click(); }
   });
 
+  // -----------------------
   // 로딩 인디케이터
+  // -----------------------
   function showLoading(){
     if(loadingIndicator) loadingIndicator.style.display = 'flex';
     if(reportFrame) reportFrame.style.opacity = '0.6';
@@ -60,25 +97,26 @@
     if(reportFrame) reportFrame.style.opacity = '1';
   }
 
-  // 유틸: parse date key YYYY-MM-DD
-  function parseDateKey(dateKey){
-    const parts = String(dateKey).split('-');
-    if(parts.length !== 3) return null;
-    return { year: parts[0], month: parts[1].padStart(2,'0'), day: parts[2].padStart(2,'0') };
-  }
-
-  // buildAvailableDatesMap
+  // -----------------------
+  // availableDates 맵 구성
+  // -----------------------
   function buildAvailableDatesMap(){
     availableDatesByType = {};
-    Object.keys(reportIndexData || {}).forEach(type => {
-      const dates = Object.keys(reportIndexData[type] || {});
-      // 최신 우선으로 정렬(내림차순)
-      dates.sort((a,b) => b.localeCompare(a));
-      availableDatesByType[type] = dates;
+    if(!reportIndexData || typeof reportIndexData !== 'object') return;
+    Object.keys(reportIndexData).forEach(type => {
+      const rawDates = Object.keys(reportIndexData[type] || {});
+      const normalized = rawDates.map(d => normalizeDateKey(d)).filter(Boolean);
+      const uniq = Array.from(new Set(normalized));
+      // 최신순(내림차순)
+      uniq.sort((a,b) => b.localeCompare(a));
+      availableDatesByType[type] = uniq;
     });
+    console.log('buildAvailableDatesMap ->', availableDatesByType);
   }
 
-  // 인덱스 기반으로 연/월/일 채우기
+  // -----------------------
+  // 인덱스 기반 드롭다운 채우기 (연/월/일)
+  // -----------------------
   function populateYearsFromIndex(type){
     if(!reportYearSelect) return;
     reportYearSelect.innerHTML = '';
@@ -86,10 +124,13 @@
     if(dates.length === 0){
       reportYearSelect.innerHTML = '<option>선택 가능 연도 없음</option>';
       reportYearSelect.disabled = true;
+      // clear downstream selects
+      reportMonthSelect.innerHTML = '<option>--</option>'; reportMonthSelect.disabled = true;
+      reportDaySelect.innerHTML = '<option>--</option>'; reportDaySelect.disabled = true;
       return;
     }
-    const years = Array.from(new Set(dates.map(d=>parseDateKey(d)?.year).filter(Boolean)));
-    years.sort((a,b)=> b.localeCompare(a));
+    const years = Array.from(new Set(dates.map(d => parseDateKey(d)?.year).filter(Boolean)));
+    years.sort((a,b) => b.localeCompare(a));
     years.forEach(y => {
       const opt = document.createElement('option'); opt.value = String(y); opt.textContent = `${y}년`; reportYearSelect.appendChild(opt);
     });
@@ -97,6 +138,7 @@
     reportYearSelect.value = years[0];
     populateMonthsFromIndex(type, reportYearSelect.value);
   }
+
   function populateMonthsFromIndex(type, year){
     if(!reportMonthSelect) return;
     reportMonthSelect.innerHTML = '';
@@ -110,6 +152,7 @@
     if(months.length === 0){
       reportMonthSelect.innerHTML = '<option>선택 가능 월 없음</option>';
       reportMonthSelect.disabled = true;
+      reportDaySelect.innerHTML = '<option>--</option>'; reportDaySelect.disabled = true;
       return;
     }
     months.sort((a,b)=> b.localeCompare(a));
@@ -120,6 +163,7 @@
     reportMonthSelect.value = months[0];
     populateDaysFromIndex(type, year, reportMonthSelect.value);
   }
+
   function populateDaysFromIndex(type, year, month){
     if(!reportDaySelect) return;
     reportDaySelect.innerHTML = '';
@@ -141,11 +185,13 @@
     });
     reportDaySelect.disabled = false;
     reportDaySelect.value = days[0];
-    // 시간 채우기
+    // 시간 목록 채우기
     populateTimes();
   }
 
-  // 선택된 연/월/일 -> YYYY-MM-DD
+  // -----------------------
+  // 시간/파일 채우기 (인덱스 기반)
+  // -----------------------
   function getSelectedDateString(){
     const y = reportYearSelect?.value;
     const m = reportMonthSelect?.value;
@@ -154,76 +200,66 @@
     return `${y}-${String(m).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
   }
 
-  // populateTimes (type + date -> time entries)
   function populateTimes(){
-    const selectedType = reportTypeSelect?.value;
-    const selectedDate = getSelectedDateString();
-    // create or use hidden selects for time/file if needed
-    // We'll use internal flow: populate time select (create on the fly if not present)
-    // ensure a time select exists in DOM for events (we can keep it hidden)
-    let timeSelect = document.getElementById('internalTimeSelect');
-    if(!timeSelect){
-      timeSelect = document.createElement('select');
-      timeSelect.id = 'internalTimeSelect';
-      timeSelect.style.display = 'none';
-      document.body.appendChild(timeSelect);
-    }
-    timeSelect.innerHTML = '';
-    // reset file hidden select
-    reportFileSelect.innerHTML = '';
-    reportFileSelect.disabled = true;
-    if(!selectedType || !selectedDate){
-      timeSelect.innerHTML = '<option>--</option>';
-      timeSelect.disabled = true;
+    const type = reportTypeSelect?.value;
+    const dateStr = getSelectedDateString();
+    internalTimeSelect.innerHTML = '';
+    internalFileSelect.innerHTML = '';
+    internalFileSelect.disabled = true;
+    if(!type || !dateStr){
+      internalTimeSelect.innerHTML = '<option>--</option>';
+      internalTimeSelect.disabled = true;
       reportFrame.src = 'about:blank';
       return;
     }
-    const timeEntries = reportIndexData[selectedType]?.[selectedDate] || [];
+    const timeEntries = reportIndexData[type]?.[dateStr] || [];
     if(!Array.isArray(timeEntries) || timeEntries.length === 0){
-      timeSelect.innerHTML = '<option>선택 가능 시간 없음</option>';
-      timeSelect.disabled = true;
+      internalTimeSelect.innerHTML = '<option>선택 가능 시간 없음</option>';
+      internalTimeSelect.disabled = true;
       reportFrame.src = 'about:blank';
       return;
     }
+    // timeEntries assumed to be in desired order (we kept latest first when building map)
     timeEntries.forEach(entry => {
-      const opt = document.createElement('option'); opt.value = entry.time; opt.textContent = entry.time; timeSelect.appendChild(opt);
+      const opt = document.createElement('option'); opt.value = entry.time; opt.textContent = entry.time; internalTimeSelect.appendChild(opt);
     });
-    timeSelect.disabled = false;
-    timeSelect.value = timeEntries[0].time;
-    // populate files for the chosen time
-    populateFilesFromEntry(selectedType, selectedDate, timeSelect.value);
-    // attach change handler so if we ever expose internalTimeSelect it updates files
-    timeSelect.onchange = () => populateFilesFromEntry(selectedType, selectedDate, timeSelect.value);
+    internalTimeSelect.disabled = false;
+    internalTimeSelect.value = timeEntries[0].time;
+    // populate files for this selected time
+    populateFilesFromEntry(type, dateStr, internalTimeSelect.value);
+    // attach onchange to keep behavior consistent if internalTimeSelect changes
+    internalTimeSelect.onchange = () => populateFilesFromEntry(type, dateStr, internalTimeSelect.value);
   }
 
-  // populateFilesFromEntry (type,date,time) -> fills hidden reportFileSelect and triggers loadReport
-  function populateFilesFromEntry(type, date, time){
-    reportFileSelect.innerHTML = '';
-    reportFileSelect.disabled = true;
+  function populateFilesFromEntry(type, dateStr, time){
+    internalFileSelect.innerHTML = '';
+    internalFileSelect.disabled = true;
     reportFrame.src = 'about:blank';
-    if(!type || !date || !time) return;
-    const timeEntries = reportIndexData[type]?.[date] || [];
-    const selectedEntry = timeEntries.find(e => e.time === time);
-    const reports = (selectedEntry && Array.isArray(selectedEntry.reports)) ? selectedEntry.reports : [];
+    if(!type || !dateStr || !time) return;
+    const timeEntries = reportIndexData[type]?.[dateStr] || [];
+    const selectedEntry = timeEntries.find(e => e.time === time) || {};
+    const reports = Array.isArray(selectedEntry.reports) ? selectedEntry.reports : [];
     if(reports.length === 0){
-      reportFileSelect.innerHTML = '<option>선택 가능 리포트 없음</option>';
-      reportFileSelect.disabled = true;
+      internalFileSelect.innerHTML = '<option>선택 가능 리포트 없음</option>';
+      internalFileSelect.disabled = true;
       return;
     }
     let defaultReportPath = '';
     reports.forEach(rep => {
-      const opt = document.createElement('option'); opt.value = rep.path; opt.textContent = rep.name || rep.path; reportFileSelect.appendChild(opt);
-      if(!defaultReportPath && typeof rep.path === 'string' && rep.path.endsWith('.html') && !(rep.name || '').toLowerCase().includes('commentary')){
+      const opt = document.createElement('option'); opt.value = rep.path; opt.textContent = rep.name || rep.path; internalFileSelect.appendChild(opt);
+      if(!defaultReportPath && typeof rep.path === 'string' && rep.path.endsWith('.html') && !((rep.name||'').toLowerCase().includes('commentary'))){
         defaultReportPath = rep.path;
       }
     });
-    reportFileSelect.disabled = false;
-    reportFileSelect.value = defaultReportPath || reports[0].path;
-    // auto load
-    loadReportFromPath(reportFileSelect.value);
+    internalFileSelect.disabled = false;
+    internalFileSelect.value = defaultReportPath || (reports[0] && reports[0].path) || '';
+    // 자동 로드
+    loadReportFromPath(internalFileSelect.value);
   }
 
-  // loadReportFromPath: 실제 iframe 로드 (이전 loadReport와 동일)
+  // -----------------------
+  // 실제 리포트 로드
+  // -----------------------
   function loadReportFromPath(path){
     if(!reportFrame) return;
     if(!path){
@@ -232,10 +268,9 @@
       return;
     }
     showLoading();
-    // onload: try to inject styles if same-origin (handled in applyIframeDarkMode)
     reportFrame.onload = () => {
       hideLoading();
-      // after load, also reapply dark-mode styling if active
+      // after load, re-apply iframe dark mode if active
       if(document.documentElement.getAttribute('data-theme') === 'dark') applyIframeDarkMode(true);
     };
     reportFrame.onerror = () => {
@@ -243,20 +278,20 @@
       console.error('Failed to load report:', path);
       reportFrame.src = 'about:blank';
     };
+    console.log('Setting iframe.src =', path);
     reportFrame.src = path;
   }
 
-  // === iframe dark-mode handling ===
-  // Attempt to inject CSS into iframe if same-origin; if cross-origin, fall back to CSS filter
+  // -----------------------
+  // iframe 다크모드 처리 (same-origin이면 스타일 주입, 아니면 filter)
+  // -----------------------
   function applyIframeDarkMode(enable){
     if(!reportFrame) return;
-    // clear any previously applied filter first
+    // clear previous filter
     reportFrame.style.filter = '';
-    // try to inject style into iframe document
     try {
       const doc = reportFrame.contentDocument || reportFrame.contentWindow.document;
       if(!doc) throw new Error('no doc');
-      // create/replace style id
       const STYLE_ID = 'injected-dark-style';
       let s = doc.getElementById(STYLE_ID);
       if(enable){
@@ -268,7 +303,7 @@
             body, p, div, span, td, th, li, a { color: #e6eef9 !important; background: transparent !important; }
             table, pre, code { color: #e6eef9 !important; }
             a { color: #7ea2ff !important; }
-            img, svg, video { filter: none !important; } /* 이미지 색 보정 원치 않음 */
+            img, svg, video { filter: none !important; }
           `;
           doc.head ? doc.head.appendChild(s) : doc.documentElement.appendChild(s);
         } else {
@@ -283,14 +318,11 @@
       } else {
         if(s) s.remove();
       }
-      // success -> ensure no filter on iframe
       reportFrame.style.filter = '';
       return;
     } catch (e) {
-      // cross-origin or access denied -> fallback
+      // cross-origin -> fallback to filter
       if(enable){
-        // apply CSS filter to iframe to invert dark text -> light
-        // note: this inverts images too; we try to mitigate by double-inverting if necessary (complex), but keep simple
         reportFrame.style.filter = 'invert(1) hue-rotate(180deg) contrast(1.02)';
       } else {
         reportFrame.style.filter = '';
@@ -299,9 +331,12 @@
     }
   }
 
-  // Attaching event listeners for the visible selects (type/year/month/day)
+  // -----------------------
+  // 이벤트 연결 (UI selects)
+  // -----------------------
   reportTypeSelect?.addEventListener('change', () => {
-    populateYearsFromIndex(reportTypeSelect.value);
+    const newType = reportTypeSelect.value;
+    populateYearsFromIndex(newType);
   });
   reportYearSelect?.addEventListener('change', () => {
     populateMonthsFromIndex(reportTypeSelect.value, reportYearSelect.value);
@@ -311,7 +346,9 @@
   });
   reportDaySelect?.addEventListener('change', populateTimes);
 
-  // fit viewer width
+  // -----------------------
+  // 뷰어 너비 맞춤
+  // -----------------------
   function fitViewerWidth(){
     const viewer = document.querySelector('.viewer');
     const inner = document.querySelector('.controls-inner');
@@ -323,38 +360,39 @@
   fitViewerWidth();
   window.addEventListener('resize', fitViewerWidth);
 
-  // fetch index
+  // -----------------------
+  // report_index.json 로드
+  // -----------------------
   async function fetchReportIndex(){
-    // initial UI lock
+    // disable selects during load
     if(reportYearSelect) reportYearSelect.disabled = true;
     if(reportMonthSelect) reportMonthSelect.disabled = true;
     if(reportDaySelect) reportDaySelect.disabled = true;
-    if(reportTimeSelect) { reportTimeSelect.disabled = true; reportTimeSelect.innerHTML = '<option>로딩...</option>'; }
-
+    if(internalTimeSelect) { internalTimeSelect.disabled = true; internalTimeSelect.innerHTML = '<option>로딩...</option>'; }
     try{
       const res = await fetch(REPORT_INDEX_PATH, { cache: 'no-cache' });
       if(!res.ok) throw new Error(`Failed to fetch report index: ${res.status}`);
       const data = await res.json();
       reportIndexData = data || {};
       buildAvailableDatesMap();
-      // ensure reportTypeSelect exists and has value
+      // ensure reportTypeSelect has a valid value
       const selType = reportTypeSelect?.value || Object.keys(reportIndexData)[0];
       if(selType) populateYearsFromIndex(selType);
-      console.log('Loaded report index and populated date selects.');
+      console.log('reportIndexData loaded:', Object.keys(reportIndexData));
     }catch(err){
       console.error('Error loading report index:', err);
       reportIndexData = {};
-      if(reportTimeSelect) reportTimeSelect.innerHTML = '<option>목록 로드 실패</option>';
+      if(internalTimeSelect) internalTimeSelect.innerHTML = '<option>목록 로드 실패</option>';
+      if(internalFileSelect) internalFileSelect.innerHTML = '<option>--</option>';
       reportFrame.src = 'about:blank';
       hideLoading();
     }
   }
   fetchReportIndex();
 
-  // expose for debugging
+  // expose for debug
   window.IR = window.IR || {};
-  window.IR.loadReportFromPath = loadReportFromPath;
   window.IR.fetchReportIndex = fetchReportIndex;
   window.IR.reportIndexData = reportIndexData;
-
+  window.IR.availableDatesByType = availableDatesByType;
 })();
