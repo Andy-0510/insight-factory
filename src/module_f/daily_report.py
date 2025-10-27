@@ -99,37 +99,40 @@ def _section_daily_hot_signals(data):
 summarizer = None
 
 def summarize_text_with_hf(text: str) -> str:
-    """허깅페이스 모델을 사용해 기사 본문을 자연스러운 요약문으로 생성합니다."""
+    """허깅페이스 모델을 사용해 기사 본문을 자연스러운 요약문으로 생성합니다 (num_beams 추가)."""
     global summarizer
-    
+
     if summarizer is None:
         print("[INFO] Initializing Hugging Face summarization model...")
-        # You passed along ... 경고는 무시하셔도 괜찮습니다.
-        summarizer = pipeline('summarization', model='gogamza/kobart-summarization')
-        print("[INFO] Model initialized.")
+        try: # Add try-except for pipeline initialization
+            summarizer = pipeline('summarization', model='gogamza/kobart-summarization')
+            print("[INFO] Model initialized.")
+        except Exception as e:
+            print(f"[ERROR] Failed to initialize summarization model: {e}")
+            return "> 요약 모델 초기화 실패." # Return error message
+
 
     if not text or len(text.split()) < 50:
         return "> 기사 본문이 짧아 요약할 수 없습니다."
-    
+
     try:
-        summary_result = summarizer(text, max_length=150, min_length=40, do_sample=False)
-        
+        # --- ▼▼▼ [수정] num_beams=4 파라미터 추가 ▼▼▼ ---
+        summary_result = summarizer(text, max_length=150, min_length=40, do_sample=False, num_beams=4) # num_beams 추가
+        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
         if summary_result and isinstance(summary_result, list) and 'summary_text' in summary_result[0]:
             summary = summary_result[0]['summary_text']
-            
-            # --- ▼▼▼ [수정] 불릿포인트 변환 로직 삭제 및 인용문 형식으로 변경 ▼▼▼ ---
             if summary:
-                # Markdown 인용문 형식(>)을 사용하여 단락 전체를 깔끔하게 보여줍니다.
                 return f"> {summary.strip()}"
             else:
                 return "> 요약문 생성에 실패했습니다."
-            # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
         else:
             return "> 요약 생성에 실패했습니다 (모델이 결과를 반환하지 않음)."
-
     except Exception as e:
         print(f"[WARN] Hugging Face summarization failed: {e}")
-        return "> 로컬 요약 모델 실행 중 오류가 발생했습니다."
+        # Add more detail to the error message if possible
+        error_detail = str(e)
+        return f"> 로컬 요약 모델 실행 중 오류 발생: {error_detail[:100]}" # Show first 100 chars of error
 
 # 리포트 섹션
 def _section_time_series(data):
