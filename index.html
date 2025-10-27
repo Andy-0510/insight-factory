@@ -11,10 +11,8 @@
   <div class="container" id="app">
     <header>
       <div class="title">
-        <div class="logo">IR</div>
         <div>
           <h1>Intelligence Report Viewer</h1>
-          <div class="subtitle">간결하고 감각적인 리포트 뷰어</div>
         </div>
       </div>
 
@@ -24,29 +22,32 @@
       </div>
     </header>
 
-    <nav class="controls" aria-label="report controls">
-      <div class="control" style="min-width:180px;">
-        <label for="reportType">리포트 종류</label>
-        <select id="reportType" aria-label="리포트 종류">
-          <option value="daily">일간</option>
-          <option value="weekly">주간</option>
-          <option value="monthly">월간</option>
-        </select>
-      </div>
+    <!-- 컨트롤: 한 줄로 정렬되며 뷰어와 같은 가로 너비를 가지도록 컨테이너에 맞춤 -->
+    <nav class="controls-row" aria-label="report controls">
+      <div class="controls-inner">
+        <div class="control" style="min-width:180px;">
+          <label for="reportType">리포트 종류</label>
+          <select id="reportType" aria-label="리포트 종류">
+            <option value="daily">일간</option>
+            <option value="weekly">주간</option>
+            <option value="monthly">월간</option>
+          </select>
+        </div>
 
-      <div class="control">
-        <label for="reportYear">연도</label>
-        <select id="reportYear" aria-label="연도"></select>
-      </div>
+        <div class="control">
+          <label for="reportYear">연도</label>
+          <select id="reportYear" aria-label="연도"></select>
+        </div>
 
-      <div class="control">
-        <label for="reportMonth">월</label>
-        <select id="reportMonth" aria-label="월"></select>
-      </div>
+        <div class="control">
+          <label for="reportMonth">월</label>
+          <select id="reportMonth" aria-label="월"></select>
+        </div>
 
-      <div class="control">
-        <label for="reportDay">일</label>
-        <select id="reportDay" aria-label="일"></select>
+        <div class="control">
+          <label for="reportDay">일</label>
+          <select id="reportDay" aria-label="일"></select>
+        </div>
       </div>
     </nav>
 
