@@ -1,4 +1,10 @@
-/* 전체 스타일 — 다크모드 select 확장창 검정, 컨트롤 한 줄 정렬, 뷰어 너비 정렬/높이 증가 */
+/* ============================================================
+   style.css — Intelligence Report Viewer
+   - 다크/라이트 테마 변수
+   - 연/월/일 인덱스 기반 드롭다운
+   - 콤보박스 호버/선택 스타일
+   - 뷰어 반응형(vh) 높이
+   ============================================================ */
 
 /* 테마 변수 */
 :root{
@@ -20,7 +26,7 @@
   --glass-border: rgba(255,255,255,0.03);
 }
 
-/* 기본 */
+/* 기본 레이아웃 */
 *{box-sizing:border-box}
 html,body{height:100%}
 body{
@@ -35,7 +41,7 @@ body{
   -webkit-font-smoothing:antialiased;
 }
 
-/* 컨테이너 (글로모피즘) */
+/* 컨테이너 */
 .container{
   width:100%;
   max-width:980px;
@@ -54,14 +60,7 @@ body{
 }
 
 /* 헤더 */
-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  gap:12px;
-  margin-bottom:12px;
-  padding-top:2px;
-}
+header{ display:flex; align-items:center; justify-content:space-between; gap:12px; margin-bottom:12px; padding-top:2px; }
 .title h1{ font-size:17px; margin:0; font-weight:600; }
 
 /* 다크 토글 */
@@ -71,196 +70,55 @@ header{
 .toggle.active{ background:linear-gradient(90deg,var(--accent), color-mix(in srgb, var(--accent) 40%, white 60%)); }
 .toggle.active:after{ left:24px; }
 
-/* -------- 컨트롤 한 줄로 배치 및 너비 맞춤 -------- */
-/* controls-row는 전체 컨테이너 너비에 맞춰 중앙 정렬 */
+/* 컨트롤 한 줄 배치 */
 .controls-row{ width:100%; display:flex; justify-content:center; margin-bottom:12px; }
-.controls-inner{
-  width:100%;
-  max-width:calc(980px - 36px); /* 컨테이너 내부 padding 고려: 980 - left/right padding */
-  display:flex;
-  gap:12px;
-  align-items:flex-end;
-  flex-wrap:nowrap;
-}
+.controls-inner{ width:100%; max-width:calc(980px - 36px); display:flex; gap:12px; align-items:flex-end; flex-wrap:nowrap; }
 
-/* 각각의 컨트롤은 동일한 높이와 스타일 */
-.control{
-  flex: 1 1 0;
-  min-width:120px;
-  background: linear-gradient(180deg, rgba(255,255,255,0.46), rgba(255,255,255,0.12));
-  border-radius:var(--radius-md);
-  padding:10px 12px;
-  border:1px solid rgba(255,255,255,0.48);
-  box-shadow: 0 10px 26px rgba(99,102,241,0.06);
-  display:flex;
-  flex-direction:column;
-  gap:6px;
-  position:relative;
-}
-.controls-inner .control:first-child{ flex: 0 0 180px; } /* 리포트종류는 고정 폭 */
-.controls-inner .control:nth-child(2){ flex: 0 0 120px; } /* 연도 */
-.controls-inner .control:nth-child(3){ flex: 0 0 120px; } /* 월 */
-.controls-inner .control:nth-child(4){ flex: 0 0 120px; } /* 일 */
-
+/* 컨트롤 카드 */
+.control{ flex: 1 1 0; min-width:120px; background: linear-gradient(180deg, rgba(255,255,255,0.46), rgba(255,255,255,0.12)); border-radius:var(--radius-md); padding:10px 12px; border:1px solid rgba(255,255,255,0.48); box-shadow: 0 10px 26px rgba(99,102,241,0.06); display:flex; flex-direction:column; gap:6px; position:relative; }
+.controls-inner .control:first-child{ flex: 0 0 180px; }
+.controls-inner .control:nth-child(2){ flex: 0 0 120px; }
+.controls-inner .control:nth-child(3){ flex: 0 0 120px; }
+.controls-inner .control:nth-child(4){ flex: 0 0 120px; }
 [data-theme="dark"] .control{ background: linear-gradient(180deg, rgba(255,255,255,0.02), rgba(0,0,0,0.12)); border:1px solid rgba(255,255,255,0.03); box-shadow: 0 12px 30px rgba(0,0,0,0.44); }
-
 .control label{ font-size:12px; color:var(--muted); }
 
-/* select 스타일 기본 */
-.control select{
-  -webkit-appearance:none;
-  appearance:none;
-  border:0;
-  outline:0;
-  padding:8px 10px;
-  background:transparent;
-  font-size:14px;
-  color:var(--text);
-  border-radius:8px;
-  width:100%;
-  cursor:default;
-}
+/* select 기본 */
+.control select{ -webkit-appearance:none; appearance:none; border:0; outline:0; padding:8px 10px; background:transparent; font-size:14px; color:var(--text); border-radius:8px; width:100%; cursor:default; }
+.control::after { content: ""; position: absolute; right: 14px; top: 50%; transform: translateY(-50%) rotate(45deg); width: 8px; height: 8px; border-right: 2px solid var(--muted); border-bottom: 2px solid var(--muted); pointer-events: none; opacity:0.9; }
+.control:focus-within { box-shadow: 0 14px 36px rgba(99,102,241,0.14); border: 1px solid rgba(110,120,255,0.22); }
 
-/* 화살표 아이콘 위치 보장 */
-.control::after {
-  content: "";
-  position: absolute;
-  right: 14px;
-  top: 50%;
-  transform: translateY(-50%) rotate(45deg);
-  width: 8px;
-  height: 8px;
-  border-right: 2px solid var(--muted);
-  border-bottom: 2px solid var(--muted);
-  pointer-events: none;
-  opacity:0.9;
-}
+/* option 기본 스타일 */
+.control select option{ background: var(--card); color: var(--text) !important; padding:6px 8px; }
 
-/* 포커스 강조 유지 */
-.control:focus-within {
-  box-shadow: 0 14px 36px rgba(99,102,241,0.14);
-  border: 1px solid rgba(110,120,255,0.22);
-}
-
-/* option 기본 (데스크탑에서 적용) */
-.control select option{
-  background: var(--card);
-  color: var(--text) !important;
-  padding:6px 8px;
-}
-
-/* 요청: 다크모드 포함 — 호버되는 옵션은 완전 검정(#000) 배경, 텍스트는 흰색 */
+/* 호버 항목 검정/흰색 (데스크탑) */
 .control select option:hover,
-.control select option:focus {
-  background: #000 !important;
-  color: #fff !important;
-}
+.control select option:focus { background: #000 !important; color: #fff !important; }
 
-/* 요청: 선택된 항목의 지속 하이라이트 제거(선택 후 배경 유지 안 되게) */
+/* 선택 항목 하이라이트 제거(항상 카드색) */
 .control select option:checked,
 .control select option:active,
-.control select option[selected] {
-  background: var(--card) !important;
-  color: var(--text) !important;
-}
-
-/* browsers 특수 처리 */
+.control select option[selected] { background: var(--card) !important; color: var(--text) !important; }
 .control select:-moz-focusring { color: transparent; text-shadow: 0 0 0 var(--text); }
 .control select { -webkit-text-fill-color: var(--text); }
-
-/* 만약 옵션 스타일 무시되는 환경 대비: select 자신에 hover 시 시각적 보조 */
 .control select:hover{ box-shadow: inset 0 -40px 50px rgba(0,0,0,0.05); }
 
-/* -------- 리포트 뷰어: 컨트롤과 같은 너비 맞춤 -------- */
+/* 뷰어(높이: vh 기반 반응형) */
 .report-view{ display:grid; grid-template-columns: 1fr; gap:12px; }
-/* viewer 너비는 .controls-inner와 동일하게 중앙 정렬되도록 내부에 맞춤 */
-.viewer{
-  width:100%;
-  max-width:calc(980px - 36px);
-  margin:0 auto;
-  height:720px; /* 원하는 높이, 필요시 더 조정 가능 */
-  border-radius:14px;
-  overflow:hidden;
-  border:1px solid rgba(255,255,255,0.45);
-  background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.04));
-  box-shadow: 0 20px 50px rgba(16,24,40,0.08), inset 0 6px 18px rgba(255,255,255,0.04);
-}
+.viewer{ width:100%; max-width:calc(980px - 36px); margin:0 auto; height:70vh; min-height:360px; border-radius:14px; overflow:hidden; border:1px solid rgba(255,255,255,0.45); background: linear-gradient(180deg, rgba(255,255,255,0.18), rgba(255,255,255,0.04)); box-shadow: 0 20px 50px rgba(16,24,40,0.08), inset 0 6px 18px rgba(255,255,255,0.04); }
 [data-theme="dark"] .viewer{ border:1px solid rgba(255,255,255,0.03); background: linear-gradient(180deg, rgba(30,34,42,0.48), rgba(16,20,28,0.12)); box-shadow: 0 24px 60px rgba(0,0,0,0.56), inset 0 6px 18px rgba(255,255,255,0.02); }
+.viewer iframe{ width:100%; height:100%; border:0; display:block; background:transparent; transition: filter .22s ease; }
 
-.viewer iframe{ width:100%; height:100%; border:0; display:block; background:transparent; }
-
-/* loading, spinner, footer */
+/* 로딩 */
 .loading{ display:flex; gap:12px; align-items:center; padding:10px; color:var(--muted); font-size:14px; }
 .spinner{ width:12px; height:12px; border-radius:50%; border:2px solid rgba(0,0,0,0.08); border-top-color:var(--accent); animation:spin 1s linear infinite; }
-@keyframes spin{ to{ transform: rotate(360deg); } }
+@keyframes spin{to{transform:rotate(360deg)}} 
 
+/* 다크모드에서 select 옵션 배경/스크롤 바 보강 (데스크탑에서 적용) */
+[data-theme="dark"] .control select { color: #fff; -webkit-text-fill-color: #fff; }
+[data-theme="dark"] .control select option { background: #000 !important; color: #fff !important; }
+
+/* 푸터, 반응형 */
 footer{ margin-top:12px; text-align:center; color:var(--muted); font-size:12px; }
-
-/* 반응형: 좁을 때 컨트롤 줄 바꿈 */
-@media (max-width:980px){
-  .controls-inner{ max-width:100%; gap:10px; padding:0 6px; }
-  .controls-inner .control{ flex: 1 1 0; min-width:120px; }
-  .controls-inner .control:first-child{ flex: 1 1 160px; }
-  .viewer{ max-width:100%; padding:0 6px; }
-}
-@media (max-width:760px){
-  body{ padding:12px; }
-  .controls-inner{ flex-wrap:wrap; gap:10px; }
-  .viewer{ height:480px; }
-}
-
-/* 다크 모드에서 select 확장창(옵션 목록) 배경을 완전 검정으로, 글자는 흰색으로 강제 */
-[data-theme="dark"] .control select {
-  color: #fff; /* 선택된 값 텍스트 (선택된 상태) */
-  -webkit-text-fill-color: #fff;
-}
-
-/* 옵션 항목 배경/텍스트 강제 (데스크탑 브라우저 대상) */
-[data-theme="dark"] .control select option {
-  background: #000 !important; /* 옵션 배경을 검정으로 */
-  color: #fff !important;      /* 옵션 텍스트를 흰색으로 */
-}
-
-/* hover 시에도 확실히 검정/흰색 유지 */
-[data-theme="dark"] .control select option:hover,
-[data-theme="dark"] .control select option:focus {
-  background: #000 !important;
-  color: #fff !important;
-}
-
-/* 선택(checked/active) 상태가 검정으로 남지 않게 기본 배경으로 덮어쓰기 (원하면 제거 가능) */
-[data-theme="dark"] .control select option:checked,
-[data-theme="dark"] .control select option:active,
-[data-theme="dark"] .control select option[selected] {
-  background: #000 !important;
-  color: #fff !important;
-}
-
-/* 웹킷 스크롤바 (드롭다운 내부 스크롤) 스타일 — 검정 배경에 대비되는 스크롤바 */
-[data-theme="dark"] .control select::-webkit-scrollbar,
-[data-theme="dark"] .control select option::-webkit-scrollbar {
-  width: 10px;
-  height: 10px;
-}
-[data-theme="dark"] .control select::-webkit-scrollbar-track,
-[data-theme="dark"] .control select option::-webkit-scrollbar-track {
-  background: #111; /* 트랙을 어둡게 */
-}
-[data-theme="dark"] .control select::-webkit-scrollbar-thumb,
-[data-theme="dark"] .control select option::-webkit-scrollbar-thumb {
-  background: #444; /* 스크롤 핸들 색 */
-  border-radius: 6px;
-  border: 2px solid #000;
-}
-
-/* 일부 브라우저에서 option 스타일 적용이 안 될 때 대비: 드롭다운 자체의 배경과 텍스트 대비 보강 */
-[data-theme="dark"] .control select {
-  background-color: rgba(0,0,0,0.0); /* 투명으로 유지하되 */
-  text-shadow: 0 0 0 #fff;
-}
-
-/* Firefox 특수 처리 */
-[data-theme="dark"] .control select:-moz-focusring {
-  color: transparent;
-  text-shadow: 0 0 0 #fff;
-}
+@media (max-width:980px){ .controls-inner{ max-width:100%; gap:10px; padding:0 6px; } .viewer{ max-width:100%; padding:0 6px; } }
+@media (max-width:760px){ body{ padding:12px; } .controls-inner{ flex-wrap:wrap; gap:10px; } .viewer{ height:60vh; min-height:320px; } }
