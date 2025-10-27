@@ -152,18 +152,21 @@ jobs:
         run: |    
           python -m scripts.generate_visuals --report-type monthly
 
-      - name: Generate Monthly Report
+    #  - name: Generate Monthly Report
+    #    shell: bash
+    #    env:
+    #      GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+    #      MONTHLY_RUN: "true"        
+    #    run: |    
+    #      python -m src.module_f.monthly_report
+
+      - name: Generate Monthly Detailed Commentary Report
         shell: bash
         env:
           GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
           MONTHLY_RUN: "true"        
-        run: |    
-           python -m src.module_f.monthly_report
-
-        #  # --- ▼▼▼ 이 부분을 추가해 주세요 ▼▼▼ ---
-        #  #echo -e "\n--- STEP 6: 월간 상세 해설 리포트 생성 ---"
-        #  #python -m src.module_f.monthly_commentary_report
-        #  # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+        run: |
+          python -m src.module_f.monthly_commentary_report
 
       - name: 📝 Log Monthly Results
         if: always()

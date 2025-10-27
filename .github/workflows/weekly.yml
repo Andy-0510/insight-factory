@@ -90,15 +90,15 @@ jobs:
         run: |       
           python -m scripts.generate_visuals --report-type weekly
           
-      - name: Generate Weekly Report
+    #  - name: Generate Weekly Report
+    #    shell: bash
+    #    run: |
+    #      python -m src.module_f.weekly_report
+
+      - name: Generate Weekly Detailed Commentary Report
         shell: bash
         run: |
-          python -m src.module_f.weekly_report
-
-        #  # --- ▼▼▼ 이 부분을 추가해 주세요 ▼▼▼ ---
-        #  echo -e "\n--- STEP 3: 주간 상세 해설 리포트 생성 ---"
-        #  python -m src.module_f.weekly_commentary_report
-        #  # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+          python -m src.module_f.weekly_commentary_report
       
       - name: 📝 Log Weekly Results
         if: always()
