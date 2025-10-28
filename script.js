@@ -286,6 +286,42 @@
           } else {
             s.innerHTML = injectedCss;
           }
+          // --- 여기부터 다크 텍스트 흰색 강제 주입 추가 ---
+          // 다크 테마일 때만 흰색 텍스트 강제 적용
+          if(document.documentElement.getAttribute('data-theme') === 'dark'){
+            const darkCss = `
+              html, body, p, div, span, li, a, td, th {
+                color: #ffffff !important;
+                background: transparent !important;
+              }
+              thead th, table thead th, .table-header, .thead-dark {
+                color: #ffffff !important;
+                background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
+                border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+              }
+              pre, code {
+                color: #f7fafc !important;
+                background: rgba(255,255,255,0.02) !important;
+              }
+              *[style] { color: #ffffff !important; background: transparent !important; }
+              a { color: #9cc2ff !important; }
+              img, svg { filter: none !important; }
+            `;
+            let s2 = doc.getElementById('injected-dark-style');
+            if(!s2){
+              s2 = doc.createElement('style');
+              s2.id = 'injected-dark-style';
+              s2.innerHTML = darkCss;
+              docHead.appendChild(s2);
+            } else {
+              s2.innerHTML = darkCss;
+            }
+          } else {
+            // 라이트 모드이면 혹시 이전에 주입한 다크 스타일이 남아있다면 제거
+            const prev = doc.getElementById('injected-dark-style');
+            if(prev) prev.remove();
+          }
+          // --- 추가된 주입 로직 끝 ---
         } catch(e) {
           // cross-origin이면 접근 불가
         }
