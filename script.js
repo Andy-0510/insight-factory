@@ -229,7 +229,7 @@
     loadReportFromPath_seamless(internalFileSelect.value);
   }
 
-   function createSeamlessSandboxIframe(htmlText) {
+  function createSeamlessSandboxIframe(htmlText) {
     while(reportContainer.firstChild) {
       const node = reportContainer.firstChild;
       if(node.dataset && node.dataset.blobUrl) {
@@ -272,42 +272,58 @@
           iframe.style.height = '600px';
         }
 
-        // 테마 기반 텍스트 색상 주입
+        // 동일 출처면 내부 스타일 보정: 글꼴 크기, 중앙 정렬
         try {
-          const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
-          const textColor = isDark ? 'white' : 'black';
-          
           const injectedCss = `
-            body { 
-              font-size: \${getComputedStyle(document.documentElement).getPropertyValue('--body-font-size') || '16px'} !important; 
-              text-align: center !important; 
-              line-height:1.6 !important;
-              color: \${textColor} !important;
-              background-color: \${isDark ? '#121212' : 'white'} !important;
-            }
-            h1,h2,h3 { 
-              text-align:center !important; 
-              color: \${textColor} !important;
-            }
-            table, pre, code, p, li, a, span, div { 
-              font-size: 15px !important; 
-              color: \${textColor} !important; 
-            }
-            a { color: \${isDark ? '#1976d2' : '#0000EE'} !important; }
+            body { font-size: ${getComputedStyle(document.documentElement).getPropertyValue('--body-font-size') || '16px'} !important; text-align: center !important; line-height:1.6 !important; }
+            h1,h2,h3 { text-align:center !important; }
+            table, pre, code { font-size: 15px !important; }
           `;
-          
           const docHead = doc.head || doc.getElementsByTagName('head')[0] || doc.documentElement;
           let s = doc.getElementById('injected-size-style');
           if(!s){
-            s = doc.createElement('style'); 
-            s.id = 'injected-size-style'; 
-            s.innerHTML = injectedCss; 
-            docHead.appendChild(s);
+            s = doc.createElement('style'); s.id = 'injected-size-style'; s.innerHTML = injectedCss; docHead.appendChild(s);
           } else {
             s.innerHTML = injectedCss;
           }
+          // --- 여기부터 다크 텍스트 흰색 강제 주입 추가 ---
+          // 다크 테마일 때만 흰색 텍스트 강제 적용
+          if(document.documentElement.getAttribute('data-theme') === 'dark'){
+            const darkCss = `
+              html, body, p, div, span, li, a, td, th {
+                color: #ffffff !important;
+                background: transparent !important;
+              }
+              thead th, table thead th, .table-header, .thead-dark {
+                color: #ffffff !important;
+                background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
+                border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+              }
+              pre, code {
+                color: #f7fafc !important;
+                background: rgba(255,255,255,0.02) !important;
+              }
+              *[style] { color: #ffffff !important; background: transparent !important; }
+              a { color: #9cc2ff !important; }
+              img, svg { filter: none !important; }
+            `;
+            let s2 = doc.getElementById('injected-dark-style');
+            if(!s2){
+              s2 = doc.createElement('style');
+              s2.id = 'injected-dark-style';
+              s2.innerHTML = darkCss;
+              docHead.appendChild(s2);
+            } else {
+              s2.innerHTML = darkCss;
+            }
+          } else {
+            // 라이트 모드이면 혹시 이전에 주입한 다크 스타일이 남아있다면 제거
+            const prev = doc.getElementById('injected-dark-style');
+            if(prev) prev.remove();
+          }
+          // --- 추가된 주입 로직 끝 ---
         } catch(e) {
-          // cross-origin일 경우 접근 불가
+          // cross-origin이면 접근 불가
         }
 
       } catch(e) {
@@ -326,7 +342,6 @@
     reportContainer.appendChild(iframe);
     return iframe;
   }
-
 
   async function loadReportFromPath_seamless(path){
     if(!reportContainer) return;
