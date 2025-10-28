@@ -11,9 +11,7 @@
   <div class="container" id="app">
     <header>
       <div class="title">
-        <div>
-          <h1>Intelligence Report Viewer</h1>
-        </div>
+        <h1>Intelligence Report Viewer</h1>
       </div>
 
       <div class="theme-switch-wrapper" aria-hidden="false">
@@ -24,7 +22,7 @@
 
     <nav class="controls-row" aria-label="report controls">
       <div class="controls-inner">
-        <div class="control" style="min-width:180px;">
+        <div class="control type-control">
           <label for="reportType">리포트 종류</label>
           <select id="reportType" aria-label="리포트 종류">
             <option value="daily">일간</option>
@@ -33,17 +31,17 @@
           </select>
         </div>
 
-        <div class="control">
+        <div class="control small">
           <label for="reportYear">연도</label>
           <select id="reportYear" aria-label="연도"></select>
         </div>
 
-        <div class="control">
+        <div class="control small">
           <label for="reportMonth">월</label>
           <select id="reportMonth" aria-label="월"></select>
         </div>
 
-        <div class="control">
+        <div class="control small">
           <label for="reportDay">일</label>
           <select id="reportDay" aria-label="일"></select>
         </div>
@@ -57,7 +55,7 @@
       </div>
 
       <div class="viewer" aria-live="polite">
-        <iframe id="reportFrame" src="about:blank" title="Report Content"></iframe>
+        <div id="reportContainer" class="report-container"></div>
       </div>
     </main>
 
