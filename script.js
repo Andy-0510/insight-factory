@@ -2,12 +2,11 @@
   // -----------------------
   // DOM 요소
   // -----------------------
-  const reportTypeSelect = document.getElementById('reportType');
+  const reportTypeSelect = document.getElementById('reportType'); // daily / weekly / monthly
   const reportYearSelect = document.getElementById('reportYear');
   const reportMonthSelect = document.getElementById('reportMonth');
   const reportDaySelect = document.getElementById('reportDay');
-
-  // internal hidden selects
+  // internal hidden selects for time/file handling
   let internalTimeSelect = document.getElementById('internalTimeSelect');
   if(!internalTimeSelect){
     internalTimeSelect = document.createElement('select');
@@ -23,7 +22,7 @@
     document.body.appendChild(internalFileSelect);
   }
 
-  const reportContainer = document.getElementById('reportContainer');
+  const reportFrame = document.getElementById('reportFrame');
   const loadingIndicator = document.getElementById('loadingIndicator');
   const themeToggle = document.getElementById('themeToggle');
   const themeText = document.getElementById('themeText');
@@ -31,12 +30,12 @@
   // -----------------------
   // 상태 및 설정
   // -----------------------
-  let reportIndexData = {};
-  let availableDatesByType = {};
-  const REPORT_INDEX_PATH = './report_index.json';
+  let reportIndexData = {};            // 원본 JSON 데이터
+  let availableDatesByType = {};       // { type: ['YYYY-MM-DD', ...], ... }
+  const REPORT_INDEX_PATH = './report_index.json'; // 필요시 경로 수정
 
   // -----------------------
-  // 유틸 함수
+  // 유틸리티 함수
   // -----------------------
   function normalizeDateKey(raw) {
     if(!raw) return null;
@@ -49,6 +48,7 @@
     if(!/^\d{4}$/.test(y) || !/^\d{2}$/.test(m) || !/^\d{2}$/.test(d)) return null;
     return `${y}-${m}-${d}`;
   }
+
   function parseDateKey(dateKey){
     const parts = String(dateKey).split('-');
     if(parts.length !== 3) return null;
@@ -56,7 +56,7 @@
   }
 
   // -----------------------
-  // 테마 초기화
+  // 테마 처리 (로컬 저장)
   // -----------------------
   const savedTheme = localStorage.getItem('ir_theme') || 'light';
   setTheme(savedTheme);
@@ -66,11 +66,13 @@
       themeToggle?.classList.add('active');
       themeToggle?.setAttribute('aria-checked','true');
       if(themeText) themeText.textContent = '다크';
+      applyIframeDarkMode(true);
     } else {
       document.documentElement.removeAttribute('data-theme');
       themeToggle?.classList.remove('active');
       themeToggle?.setAttribute('aria-checked','false');
       if(themeText) themeText.textContent = '라이트';
+      applyIframeDarkMode(false);
     }
     try{ localStorage.setItem('ir_theme', mode); }catch(e){}
   }
@@ -88,11 +90,11 @@
   // -----------------------
   function showLoading(){
     if(loadingIndicator) loadingIndicator.style.display = 'flex';
-    if(reportContainer) reportContainer.style.opacity = '0.6';
+    if(reportFrame) reportFrame.style.opacity = '0.6';
   }
   function hideLoading(){
     if(loadingIndicator) loadingIndicator.style.display = 'none';
-    if(reportContainer) reportContainer.style.opacity = '1';
+    if(reportFrame) reportFrame.style.opacity = '1';
   }
 
   // -----------------------
@@ -105,6 +107,7 @@
       const rawDates = Object.keys(reportIndexData[type] || {});
       const normalized = rawDates.map(d => normalizeDateKey(d)).filter(Boolean);
       const uniq = Array.from(new Set(normalized));
+      // 최신순(내림차순)
       uniq.sort((a,b) => b.localeCompare(a));
       availableDatesByType[type] = uniq;
     });
@@ -112,7 +115,7 @@
   }
 
   // -----------------------
-  // 드롭다운 채우기
+  // 인덱스 기반 드롭다운 채우기 (연/월/일)
   // -----------------------
   function populateYearsFromIndex(type){
     if(!reportYearSelect) return;
@@ -181,9 +184,13 @@
     });
     reportDaySelect.disabled = false;
     reportDaySelect.value = days[0];
+    // 시간 목록 채우기
     populateTimes();
   }
 
+  // -----------------------
+  // 시간/파일 채우기 (인덱스 기반)
+  // -----------------------
   function getSelectedDateString(){
     const y = reportYearSelect?.value;
     const m = reportMonthSelect?.value;
@@ -201,14 +208,14 @@
     if(!type || !dateStr){
       internalTimeSelect.innerHTML = '<option>--</option>';
       internalTimeSelect.disabled = true;
-      if(reportContainer) reportContainer.innerHTML = '';
+      reportFrame.src = 'about:blank';
       return;
     }
     const timeEntries = reportIndexData[type]?.[dateStr] || [];
     if(!Array.isArray(timeEntries) || timeEntries.length === 0){
       internalTimeSelect.innerHTML = '<option>선택 가능 시간 없음</option>';
       internalTimeSelect.disabled = true;
-      if(reportContainer) reportContainer.innerHTML = '';
+      reportFrame.src = 'about:blank';
       return;
     }
     timeEntries.forEach(entry => {
@@ -223,17 +230,14 @@
   function populateFilesFromEntry(type, dateStr, time){
     internalFileSelect.innerHTML = '';
     internalFileSelect.disabled = true;
-    if(!type || !dateStr || !time){
-      if(reportContainer) reportContainer.innerHTML = '';
-      return;
-    }
+    reportFrame.src = 'about:blank';
+    if(!type || !dateStr || !time) return;
     const timeEntries = reportIndexData[type]?.[dateStr] || [];
     const selectedEntry = timeEntries.find(e => e.time === time) || {};
     const reports = Array.isArray(selectedEntry.reports) ? selectedEntry.reports : [];
     if(reports.length === 0){
       internalFileSelect.innerHTML = '<option>선택 가능 리포트 없음</option>';
       internalFileSelect.disabled = true;
-      if(reportContainer) reportContainer.innerHTML = '';
       return;
     }
     let defaultReportPath = '';
@@ -245,244 +249,114 @@
     });
     internalFileSelect.disabled = false;
     internalFileSelect.value = defaultReportPath || (reports[0] && reports[0].path) || '';
-    loadReportFromPath_seamless(internalFileSelect.value);
+    loadReportFromPath(internalFileSelect.value);
   }
 
-  function createSeamlessSandboxIframe(htmlText) {
-    while(reportContainer.firstChild) {
-      const node = reportContainer.firstChild;
-      if(node.dataset && node.dataset.blobUrl) {
-        try{ URL.revokeObjectURL(node.dataset.blobUrl); }catch(e){}
-      }
-      reportContainer.removeChild(node);
-    }
-
-    const blob = new Blob([htmlText], { type: 'text/html' });
-    const blobUrl = URL.createObjectURL(blob);
-
-    const iframe = document.createElement('iframe');
-    iframe.setAttribute('sandbox', 'allow-scripts allow-forms allow-popups allow-same-origin');
-    iframe.src = blobUrl;
-    iframe.dataset.blobUrl = blobUrl;
-
-    iframe.style.width = '100%';
-    iframe.style.height = '400px';
-    iframe.style.border = '0';
-    iframe.style.boxShadow = 'none';
-    iframe.style.background = 'transparent';
-    iframe.style.display = 'block';
-    iframe.style.margin = '0';
-    iframe.style.padding = '0';
-    iframe.style.overflow = 'visible';
-    iframe.style.minHeight = '200px';
-
-    // helper: inject CSS string into doc head safely
-    function upsertStyle(doc, id, css){
-      try{
-        const head = doc.head || doc.getElementsByTagName('head')[0] || doc.documentElement;
-        let el = doc.getElementById(id);
-        if(!el){
-          el = doc.createElement('style'); el.id = id; el.type = 'text/css';
-          head.appendChild(el);
-        }
-        el.innerHTML = css;
-        return el;
-      }catch(e){
-        console.warn('upsertStyle failed', e);
-        return null;
-      }
-    }
-
-    // remove inline colors (best-effort)
-    function removeInlineColors(doc){
-      try{
-        const walker = doc.createTreeWalker(doc.documentElement, NodeFilter.SHOW_ELEMENT, null, false);
-        const root = doc.documentElement;
-        if(root && root.style){
-          root.style.color = '';
-          root.style.backgroundColor = '';
-        }
-        let node = walker.nextNode();
-        while(node){
-          try{
-            if(node.style){
-              if(node.style.color) node.style.color = '';
-              if(node.style.backgroundColor) node.style.backgroundColor = '';
-            }
-            if(node.hasAttribute){
-              if(node.getAttribute('color')) node.removeAttribute('color');
-              if(node.getAttribute('bgcolor')) node.removeAttribute('bgcolor');
-            }
-          }catch(e){}
-          node = walker.nextNode();
-        }
-      }catch(e){
-        console.warn('removeInlineColors failed', e);
-      }
-    }
-
-    // mark tables that don't have thead
-    function markTables(doc){
-      try{
-        const tables = doc.querySelectorAll('table');
-        tables.forEach(t => {
-          t.classList.remove('no-thead');
-          const hasThead = !!t.querySelector('thead');
-          if(!hasThead) t.classList.add('no-thead');
-        });
-      }catch(e){ console.warn('markTables failed', e); }
-    }
-
-    // main load handler
-    iframe.addEventListener('load', () => {
-      try {
-        const doc = iframe.contentDocument || iframe.contentWindow.document;
-        if(!doc) throw new Error('no doc');
-
-        // auto height
-        try{
-          const body = doc.body;
-          const htmlEl = doc.documentElement;
-          const newHeight = Math.max(
-            body ? body.scrollHeight : 0,
-            htmlEl ? htmlEl.scrollHeight : 0
-          );
-          if(newHeight && newHeight > 0) iframe.style.height = newHeight + 'px';
-          else iframe.style.height = '600px';
-        }catch(e){ iframe.style.height = '640px'; iframe.style.overflow='auto'; }
-
-        // now attempt style injection (same-origin required)
-        try{
-          const injectedBase = `
-            body { font-size: ${getComputedStyle(document.documentElement).getPropertyValue('--body-font-size') || '16px'} !important; line-height:1.6 !important; margin:0; padding:0; }
-            h1,h2,h3 { text-align:left !important; margin:0 0 .5em 0; }
-            body, p, div, li { text-align:left !important; background: transparent !important; }
-            table, pre, code { font-size:15px !important; text-align:left !important; }
-          `;
-          upsertStyle(doc, 'injected-size-style', injectedBase);
-
-          // light/dark styles
-          const lightCss = `
-            body, p, div, li, td, th, a { color: #0f172a !important; background: transparent !important; text-align:left !important; }
-            table thead th { background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02)) !important; color: #0f172a !important; }
-            table.no-thead > tbody > tr:first-child > th:first-child,
-            table.no-thead > tbody > tr:first-child > td:first-child {
-              background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02)) !important;
-              color: #0f172a !important;
-            }
-          `;
-          const darkCss = `
-            body, p, div, li, td, th, a { color: #e6eef9 !important; background: transparent !important; text-align:left !important; }
-            table thead th { background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)) !important; color: #e6eef9 !important; box-shadow: inset 0 -4px 10px rgba(0,0,0,0.12) !important; }
-            table.no-thead > tbody > tr:first-child > th:first-child,
-            table.no-thead > tbody > tr:first-child > td:first-child {
-              background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)) !important;
-              color: #e6eef9 !important;
-            }
-          `;
-
-          // remove inline colors to allow our rules to win
-          removeInlineColors(doc);
-          // mark tables
-          markTables(doc);
-
-          // ensure we re-run marking and inline cleanup after small delay (report scripts might re-render)
-          setTimeout(()=>{ try{ markTables(doc); removeInlineColors(doc); }catch(e){} }, 220);
-
-          // observe mutations to reapply table marking & inline cleanup if content changes
-          try{
-            const mo = new MutationObserver((mutList) => {
-              let touched = false;
-              for(const m of mutList){
-                if(m.type === 'childList' || m.type === 'attributes') { touched = true; break; }
-              }
-              if(touched){
-                try{ markTables(doc); removeInlineColors(doc); }catch(e){}
-                // and reapply theme styles if needed
-                const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
-                if(theme === 'dark') upsertStyle(doc, 'injected-dark-style', darkCss), (()=>{ const el=doc.getElementById('injected-light-style'); if(el) el.remove(); })();
-                else upsertStyle(doc, 'injected-light-style', lightCss), (()=>{ const el=doc.getElementById('injected-dark-style'); if(el) el.remove(); })();
-              }
-            });
-            mo.observe(doc.documentElement, { childList:true, subtree:true, attributes:true, attributeFilter:['style','class'] });
-            // disconnect after 60s to avoid long-term overhead
-            setTimeout(()=>{ try{ mo.disconnect(); }catch(e){} }, 60000);
-          }catch(e){ console.warn('MutationObserver failed', e); }
-
-          // apply theme styles now
-          if(document.documentElement.getAttribute('data-theme') === 'dark'){
-            upsertStyle(doc, 'injected-dark-style', darkCss);
-            const l = doc.getElementById('injected-light-style'); if(l) l.remove();
-          } else {
-            upsertStyle(doc, 'injected-light-style', lightCss);
-            const d = doc.getElementById('injected-dark-style'); if(d) d.remove();
-          }
-
-        }catch(e){
-          console.warn('style injection failed (likely cross-origin):', e);
-          // cross-origin fallback: parent-side filter
-          if(document.documentElement.getAttribute('data-theme') === 'dark'){
-            try{ iframe.style.filter = 'invert(1) hue-rotate(180deg) contrast(1.02) brightness(0.96)'; }catch(e){}
-          } else {
-            iframe.style.filter = '';
-          }
-        }
-
-      } catch(e){
-        console.warn('iframe load handler failed:', e);
-        iframe.style.height = '640px';
-        iframe.style.overflow = 'auto';
-      }
-      hideLoading();
-    });
-
-    iframe.addEventListener('error', () => {
-      hideLoading();
-      reportContainer.innerHTML = `<div style="color:#e00;padding:12px;">리포트를 불러오지 못했습니다.</div>`;
-    });
-
-    reportContainer.appendChild(iframe);
-    return iframe;
-  }
-
-  async function loadReportFromPath_seamless(path){
-    if(!reportContainer) return;
+  // -----------------------
+  // 실제 리포트 로드
+  // -----------------------
+  function loadReportFromPath(path){
+    if(!reportFrame) return;
     if(!path){
-      reportContainer.innerHTML = '';
+      reportFrame.src = 'about:blank';
       hideLoading();
       return;
     }
     showLoading();
-    try{
-      const res = await fetch(path, { cache: 'no-cache' });
-      if(!res.ok) throw new Error('Failed to fetch: ' + res.status);
-      let html = await res.text();
-
-      try{
-        const baseUrl = new URL(path, location.href).href.replace(/\/[^/]*$/, '/');
-        if(/<base[^>]*>/i.test(html)){
-          html = html.replace(/<base[^/]*>/i, `<base href="${baseUrl}">`);
-        } else if(/<head[^>]*>/i.test(html)){
-          html = html.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${baseUrl}">`);
-        } else {
-          html = `<base href="${baseUrl}">` + html;
-        }
-      }catch(e){ console.warn('base inject failed', e); }
-
-      createSeamlessSandboxIframe(html);
-    }catch(err){
-      console.error('report fetch/load error', err);
-      reportContainer.innerHTML = `<div style="color:#e00;padding:12px;">리포트를 불러오지 못했습니다. (${err.message})</div>`;
+    reportFrame.onload = () => {
       hideLoading();
+      if(document.documentElement.getAttribute('data-theme') === 'dark') applyIframeDarkMode(true);
+    };
+    reportFrame.onerror = () => {
+      hideLoading();
+      console.error('Failed to load report:', path);
+      reportFrame.src = 'about:blank';
+    };
+    console.log('Setting iframe.src =', path);
+    reportFrame.src = path;
+  }
+
+  // -----------------------
+  // iframe 다크모드 처리 (same-origin이면 스타일 주입, 아니면 filter)
+  // 여기서 표 헤더 음영(헤더 셀 배경/box-shadow) 강제 덮어쓰기 규칙 포함
+  // -----------------------
+  function applyIframeDarkMode(enable){
+    if(!reportFrame) return;
+    reportFrame.style.filter = '';
+    try {
+      const doc = reportFrame.contentDocument || reportFrame.contentWindow.document;
+      if(!doc) throw new Error('no doc');
+      const STYLE_ID = 'injected-dark-style';
+      let s = doc.getElementById(STYLE_ID);
+      const injectedCss = `
+        :root, body { background: #0b1220 !important; color: #e6eef9 !important; }
+        body, p, div, span, td, th, li, a { color: #e6eef9 !important; background: transparent !important; }
+        table, pre, code { color: #e6eef9 !important; }
+        a { color: #7ea2ff !important; }
+
+        /* ========== 표 헤더 보강 (다크모드에서 음영/배경 덮어쓰기) ========== */
+        thead, thead tr, thead th, table thead th {
+          background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
+          color: #e6eef9 !important;
+          border-bottom: 1px solid rgba(255,255,255,0.06) !important;
+        }
+        thead th, table thead th {
+          box-shadow: inset 0 -6px 12px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.02) !important;
+        }
+        /* 특정 테이블 라이브러리 클래스들도 덮어쓰기 */
+        .table-header, .thead-dark, .table .header-row, .tbl-header {
+          background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
+          color: #e6eef9 !important;
+        }
+        /* inline style로 들어간 경우에도 강제 적용(광범위, 주의) */
+        *[style] thead, *[style] thead th, *[style] .table-header {
+          background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
+          color: #e6eef9 !important;
+        }
+      `;
+      if(enable){
+        if(!s){
+          s = doc.createElement('style');
+          s.id = STYLE_ID;
+          s.innerHTML = injectedCss;
+          doc.head ? doc.head.appendChild(s) : doc.documentElement.appendChild(s);
+        } else {
+          s.innerHTML = injectedCss;
+        }
+      } else {
+        if(s) s.remove();
+      }
+      reportFrame.style.filter = '';
+      return;
+    } catch (e) {
+      // cross-origin -> fallback to filter
+      if(enable){
+        reportFrame.style.filter = 'invert(1) hue-rotate(180deg) contrast(1.02)';
+      } else {
+        reportFrame.style.filter = '';
+      }
+      return;
     }
   }
 
-  // 이벤트 연결
-  reportTypeSelect?.addEventListener('change', () => populateYearsFromIndex(reportTypeSelect.value));
-  reportYearSelect?.addEventListener('change', () => populateMonthsFromIndex(reportTypeSelect.value, reportYearSelect.value));
-  reportMonthSelect?.addEventListener('change', () => populateDaysFromIndex(reportTypeSelect.value, reportYearSelect.value, reportMonthSelect.value));
+  // -----------------------
+  // 이벤트 연결 (UI selects)
+  // -----------------------
+  reportTypeSelect?.addEventListener('change', () => {
+    const newType = reportTypeSelect.value;
+    populateYearsFromIndex(newType);
+  });
+  reportYearSelect?.addEventListener('change', () => {
+    populateMonthsFromIndex(reportTypeSelect.value, reportYearSelect.value);
+  });
+  reportMonthSelect?.addEventListener('change', () => {
+    populateDaysFromIndex(reportTypeSelect.value, reportYearSelect.value, reportMonthSelect.value);
+  });
   reportDaySelect?.addEventListener('change', populateTimes);
 
+  // -----------------------
+  // 뷰어 너비 맞춤
+  // -----------------------
   function fitViewerWidth(){
     const viewer = document.querySelector('.viewer');
     const inner = document.querySelector('.controls-inner');
@@ -494,7 +368,9 @@
   fitViewerWidth();
   window.addEventListener('resize', fitViewerWidth);
 
-  // fetch report_index
+  // -----------------------
+  // report_index.json 로드
+  // -----------------------
   async function fetchReportIndex(){
     if(reportYearSelect) reportYearSelect.disabled = true;
     if(reportMonthSelect) reportMonthSelect.disabled = true;
@@ -513,17 +389,16 @@
       console.error('Error loading report index:', err);
       reportIndexData = {};
       if(internalTimeSelect) internalTimeSelect.innerHTML = '<option>목록 로드 실패</option>';
-      reportContainer.innerHTML = '';
+      if(internalFileSelect) internalFileSelect.innerHTML = '<option>--</option>';
+      reportFrame.src = 'about:blank';
       hideLoading();
     }
   }
   fetchReportIndex();
 
-  // expose debug
+  // expose for debug
   window.IR = window.IR || {};
   window.IR.fetchReportIndex = fetchReportIndex;
   window.IR.reportIndexData = reportIndexData;
   window.IR.availableDatesByType = availableDatesByType;
-  window.IR.loadReportFromPath_seamless = loadReportFromPath_seamless;
-
 })();
