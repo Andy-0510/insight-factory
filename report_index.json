@@ -312,6 +312,17 @@
     ]
   },
   "monthly": {
+    "2025-10-29": [
+      {
+        "time": "0715-KST",
+        "reports": [
+          {
+            "name": "monthly_commentary_report.html",
+            "path": "outputs/monthly/2025-10-29/0715-KST/monthly_commentary_report.html"
+          }
+        ]
+      }
+    ],
     "2025-10-28": [
       {
         "time": "0711-KST",
