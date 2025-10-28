@@ -148,7 +148,6 @@ def build_daily_steps():
         ("f_cmt_daily",      [PY, "-m", "src.module_f.daily_commentary_report"]), # Keep commented out
         ("report_index",     [PY, "-m", "scripts.generate_report_index"]),
         ("html_report",     [PY, "-m", "scripts.generate_daily_html_report"]),
-        
     ]
 
 def build_weekly_steps():
