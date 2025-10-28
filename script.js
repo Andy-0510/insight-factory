@@ -77,6 +77,7 @@
   themeToggle?.addEventListener('click', ()=> {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     setTheme(isDark ? 'light' : 'dark');
+    // 뷰어 너비/스타일 재적용 여유 주기
     setTimeout(fitViewerWidth, 120);
   });
   themeToggle?.addEventListener('keydown', (e)=>{
@@ -295,10 +296,10 @@
         // 동일 출처면 내부 스타일 보정: 글꼴 크기, 왼쪽 정렬(본문)
         try {
           const injectedCss = `
-            body { font-size: ${getComputedStyle(document.documentElement).getPropertyValue('--body-font-size') || '16px'} !important; line-height:1.6 !important; }
-            /* 헤더은 가운데, 본문은 좌측 정렬 */
-            h1,h2,h3 { text-align:center !important; }
-            body, p, div, li { text-align:left !important; }
+            /* 기본: 본문 좌측 정렬, 헤더는 left로 표시 */
+            body { font-size: ${getComputedStyle(document.documentElement).getPropertyValue('--body-font-size') || '16px'} !important; line-height:1.6 !important; margin:0; padding:0; }
+            h1,h2,h3 { text-align:left !important; margin:0 0 0.5em 0; }
+            body, p, div, li { text-align:left !important; color: inherit !important; background: transparent !important; }
             table, pre, code { font-size: 15px !important; text-align:left !important; }
           `;
           const docHead = doc.head || doc.getElementsByTagName('head')[0] || doc.documentElement;
@@ -308,89 +309,42 @@
           } else {
             s.innerHTML = injectedCss;
           }
-          // --- 다크 텍스트 흰색 강제 주입 (정렬은 좌측 유지) ---
+
+          // 라이트 모드용 스타일 (본문 검정, 표 첫 행 약간 어둡게)
+          const lightCss = `
+            body, p, div, li, td, th, a { color: #0f172a !important; background: transparent !important; text-align:left !important; }
+            /* 표 첫 행(헤더 또는 첫 row) 음영: 라이트에서는 약간 어둡게 */
+            table thead th, table thead tr, table tr:first-child, table tr:first-child th, table tr:first-child td {
+              background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02)) !important;
+              color: #0f172a !important;
+            }
+          `;
+
+          // 다크 모드용 스타일 (본문 밝게, 표 첫 행 약간 밝게)
+          const darkCss = `
+            body, p, div, li, td, th, a { color: #e6eef9 !important; background: transparent !important; text-align:left !important; }
+            table thead th, table thead tr, table tr:first-child, table tr:first-child th, table tr:first-child td {
+              background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)) !important;
+              color: #e6eef9 !important;
+              box-shadow: inset 0 -6px 12px rgba(0,0,0,0.18) !important;
+            }
+          `;
+
+          // 적용: 현재 페이지 테마에 따라 넣기
           if(document.documentElement.getAttribute('data-theme') === 'dark'){
-            const darkCss = `
-              html, body, p, div, span, li, a, td, th {
-                color: #ffffff !important;
-                background: transparent !important;
-                text-align: left !important;
-              }
-              thead th, table thead th, .table-header, .thead-dark {
-                color: #ffffff !important;
-                background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
-                border-bottom: 1px solid rgba(255,255,255,0.06) !important;
-                text-align: left !important;
-              }
-              pre, code {
-                color: #f7fafc !important;
-                background: rgba(255,255,255,0.02) !important;
-                text-align: left !important;
-              }
-              *[style] { color: #ffffff !important; background: transparent !important; text-align: left !important; }
-              a { color: #9cc2ff !important; }
-              img, svg { filter: none !important; }
-            `;
-            let s2 = doc.getElementById('injected-dark-style');
-            if(!s2){
-              s2 = doc.createElement('style');
-              s2.id = 'injected-dark-style';
-              s2.innerHTML = darkCss;
-              docHead.appendChild(s2);
-            } else {
-              s2.innerHTML = darkCss;
-            }
-
-            // inline 스타일 제거 시도 (같은 출처일 때만 가능)
-            try {
-              const walker = doc.createTreeWalker(doc.documentElement, NodeFilter.SHOW_ELEMENT, null, false);
-              const root = doc.documentElement;
-              if(root && root.style){
-                root.style.color = '';
-                root.style.backgroundColor = '';
-              }
-              let node = walker.nextNode();
-              while(node){
-                try{
-                  if(node.style){
-                    if(node.style.color) node.style.color = '';
-                    if(node.style.backgroundColor) node.style.backgroundColor = '';
-                  }
-                  if(node.hasAttribute){
-                    if(node.getAttribute('color')) node.removeAttribute('color');
-                    if(node.getAttribute('bgcolor')) node.removeAttribute('bgcolor');
-                  }
-                }catch(e){
-                  // ignore node-level errors
-                }
-                node = walker.nextNode();
-              }
-            } catch(e){
-              console.warn('inline color removal failed:', e);
-            }
-
-            // 안전망: 모든 요소에 강제 스타일
-            try {
-              const FORCE_ID = 'injected-force-dark';
-              const forceCss = `* { color: #ffffff !important; background: transparent !important; text-align: left !important; }`;
-              let f = doc.getElementById(FORCE_ID);
-              if(!f){
-                f = doc.createElement('style');
-                f.id = FORCE_ID;
-                f.innerHTML = forceCss;
-                docHead.appendChild(f);
-              } else {
-                f.innerHTML = forceCss;
-              }
-            } catch(e){
-              console.warn('force style injection failed:', e);
-            }
-
+            // inject darkCss, remove light if exists
+            let sd = doc.getElementById('injected-dark-style');
+            if(!sd){ sd = doc.createElement('style'); sd.id = 'injected-dark-style'; docHead.appendChild(sd); }
+            sd.innerHTML = darkCss;
+            const sl = doc.getElementById('injected-light-style'); if(sl) sl.remove();
           } else {
-            // 라이트 모드면 이전에 주입한 다크 스타일 제거
-            const prev = doc.getElementById('injected-dark-style'); if(prev) prev.remove();
-            const prevForce = doc.getElementById('injected-force-dark'); if(prevForce) prevForce.remove();
+            // inject lightCss, remove dark if exists
+            let sl = doc.getElementById('injected-light-style');
+            if(!sl){ sl = doc.createElement('style'); sl.id = 'injected-light-style'; docHead.appendChild(sl); }
+            sl.innerHTML = lightCss;
+            const sd = doc.getElementById('injected-dark-style'); if(sd) sd.remove();
           }
+
         } catch(e) {
           console.warn('inner-doc styling failed (maybe cross-origin):', e);
         }
