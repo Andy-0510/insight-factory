@@ -258,7 +258,7 @@
     iframe.style.minHeight = '200px';
 
     iframe.addEventListener('load', () => {
-  		try {
+      try {
         const doc = iframe.contentDocument || iframe.contentWindow.document;
         const body = doc.body;
         const htmlEl = doc.documentElement;
