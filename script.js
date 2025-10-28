@@ -1,12 +1,10 @@
 (function(){
-  // -----------------------
   // DOM 요소
-  // -----------------------
-  const reportTypeSelect = document.getElementById('reportType'); // daily / weekly / monthly
+  const reportTypeSelect = document.getElementById('reportType');
   const reportYearSelect = document.getElementById('reportYear');
   const reportMonthSelect = document.getElementById('reportMonth');
   const reportDaySelect = document.getElementById('reportDay');
-  // internal hidden selects for time/file handling
+
   let internalTimeSelect = document.getElementById('internalTimeSelect');
   if(!internalTimeSelect){
     internalTimeSelect = document.createElement('select');
@@ -22,21 +20,15 @@
     document.body.appendChild(internalFileSelect);
   }
 
-  const reportFrame = document.getElementById('reportFrame');
+  const reportContainer = document.getElementById('reportContainer');
   const loadingIndicator = document.getElementById('loadingIndicator');
   const themeToggle = document.getElementById('themeToggle');
   const themeText = document.getElementById('themeText');
 
-  // -----------------------
-  // 상태 및 설정
-  // -----------------------
-  let reportIndexData = {};            // 원본 JSON 데이터
-  let availableDatesByType = {};       // { type: ['YYYY-MM-DD', ...], ... }
-  const REPORT_INDEX_PATH = './report_index.json'; // 필요시 경로 수정
+  let reportIndexData = {};
+  let availableDatesByType = {};
+  const REPORT_INDEX_PATH = './report_index.json';
 
-  // -----------------------
-  // 유틸리티 함수
-  // -----------------------
   function normalizeDateKey(raw) {
     if(!raw) return null;
     const s = String(raw).trim();
@@ -48,16 +40,13 @@
     if(!/^\d{4}$/.test(y) || !/^\d{2}$/.test(m) || !/^\d{2}$/.test(d)) return null;
     return `${y}-${m}-${d}`;
   }
-
   function parseDateKey(dateKey){
     const parts = String(dateKey).split('-');
     if(parts.length !== 3) return null;
     return { year: parts[0], month: parts[1].padStart(2,'0'), day: parts[2].padStart(2,'0') };
   }
 
-  // -----------------------
-  // 테마 처리 (로컬 저장)
-  // -----------------------
+  // 테마 초기화
   const savedTheme = localStorage.getItem('ir_theme') || 'light';
   setTheme(savedTheme);
   function setTheme(mode){
@@ -66,13 +55,11 @@
       themeToggle?.classList.add('active');
       themeToggle?.setAttribute('aria-checked','true');
       if(themeText) themeText.textContent = '다크';
-      applyIframeDarkMode(true);
     } else {
       document.documentElement.removeAttribute('data-theme');
       themeToggle?.classList.remove('active');
       themeToggle?.setAttribute('aria-checked','false');
       if(themeText) themeText.textContent = '라이트';
-      applyIframeDarkMode(false);
     }
     try{ localStorage.setItem('ir_theme', mode); }catch(e){}
   }
@@ -85,21 +72,17 @@
     if(e.key === 'Enter' || e.key === ' '){ e.preventDefault(); themeToggle.click(); }
   });
 
-  // -----------------------
-  // 로딩 인디케이터
-  // -----------------------
+  // 로딩 UI
   function showLoading(){
     if(loadingIndicator) loadingIndicator.style.display = 'flex';
-    if(reportFrame) reportFrame.style.opacity = '0.6';
+    if(reportContainer) reportContainer.style.opacity = '0.6';
   }
   function hideLoading(){
     if(loadingIndicator) loadingIndicator.style.display = 'none';
-    if(reportFrame) reportFrame.style.opacity = '1';
+    if(reportContainer) reportContainer.style.opacity = '1';
   }
 
-  // -----------------------
-  // availableDates 맵 구성
-  // -----------------------
+  // 날짜 맵
   function buildAvailableDatesMap(){
     availableDatesByType = {};
     if(!reportIndexData || typeof reportIndexData !== 'object') return;
@@ -107,16 +90,13 @@
       const rawDates = Object.keys(reportIndexData[type] || {});
       const normalized = rawDates.map(d => normalizeDateKey(d)).filter(Boolean);
       const uniq = Array.from(new Set(normalized));
-      // 최신순(내림차순)
       uniq.sort((a,b) => b.localeCompare(a));
       availableDatesByType[type] = uniq;
     });
     console.log('buildAvailableDatesMap ->', availableDatesByType);
   }
 
-  // -----------------------
-  // 인덱스 기반 드롭다운 채우기 (연/월/일)
-  // -----------------------
+  // 드롭다운 채우기 (생략: 이전과 동일한 로직 사용)
   function populateYearsFromIndex(type){
     if(!reportYearSelect) return;
     reportYearSelect.innerHTML = '';
@@ -137,7 +117,6 @@
     reportYearSelect.value = years[0];
     populateMonthsFromIndex(type, reportYearSelect.value);
   }
-
   function populateMonthsFromIndex(type, year){
     if(!reportMonthSelect) return;
     reportMonthSelect.innerHTML = '';
@@ -162,7 +141,6 @@
     reportMonthSelect.value = months[0];
     populateDaysFromIndex(type, year, reportMonthSelect.value);
   }
-
   function populateDaysFromIndex(type, year, month){
     if(!reportDaySelect) return;
     reportDaySelect.innerHTML = '';
@@ -184,13 +162,9 @@
     });
     reportDaySelect.disabled = false;
     reportDaySelect.value = days[0];
-    // 시간 목록 채우기
     populateTimes();
   }
 
-  // -----------------------
-  // 시간/파일 채우기 (인덱스 기반)
-  // -----------------------
   function getSelectedDateString(){
     const y = reportYearSelect?.value;
     const m = reportMonthSelect?.value;
@@ -208,14 +182,14 @@
     if(!type || !dateStr){
       internalTimeSelect.innerHTML = '<option>--</option>';
       internalTimeSelect.disabled = true;
-      reportFrame.src = 'about:blank';
+      if(reportContainer) reportContainer.innerHTML = '';
       return;
     }
     const timeEntries = reportIndexData[type]?.[dateStr] || [];
     if(!Array.isArray(timeEntries) || timeEntries.length === 0){
       internalTimeSelect.innerHTML = '<option>선택 가능 시간 없음</option>';
       internalTimeSelect.disabled = true;
-      reportFrame.src = 'about:blank';
+      if(reportContainer) reportContainer.innerHTML = '';
       return;
     }
     timeEntries.forEach(entry => {
@@ -230,14 +204,17 @@
   function populateFilesFromEntry(type, dateStr, time){
     internalFileSelect.innerHTML = '';
     internalFileSelect.disabled = true;
-    reportFrame.src = 'about:blank';
-    if(!type || !dateStr || !time) return;
+    if(!type || !dateStr || !time){
+      if(reportContainer) reportContainer.innerHTML = '';
+      return;
+    }
     const timeEntries = reportIndexData[type]?.[dateStr] || [];
     const selectedEntry = timeEntries.find(e => e.time === time) || {};
     const reports = Array.isArray(selectedEntry.reports) ? selectedEntry.reports : [];
     if(reports.length === 0){
       internalFileSelect.innerHTML = '<option>선택 가능 리포트 없음</option>';
       internalFileSelect.disabled = true;
+      if(reportContainer) reportContainer.innerHTML = '';
       return;
     }
     let defaultReportPath = '';
@@ -249,114 +226,125 @@
     });
     internalFileSelect.disabled = false;
     internalFileSelect.value = defaultReportPath || (reports[0] && reports[0].path) || '';
-    loadReportFromPath(internalFileSelect.value);
+    loadReportFromPath_seamless(internalFileSelect.value);
   }
 
-  // -----------------------
-  // 실제 리포트 로드
-  // -----------------------
-  function loadReportFromPath(path){
-    if(!reportFrame) return;
+  function createSeamlessSandboxIframe(htmlText) {
+    while(reportContainer.firstChild) {
+      const node = reportContainer.firstChild;
+      if(node.dataset && node.dataset.blobUrl) {
+        try{ URL.revokeObjectURL(node.dataset.blobUrl); }catch(e){}
+      }
+      reportContainer.removeChild(node);
+    }
+
+    const blob = new Blob([htmlText], { type: 'text/html' });
+    const blobUrl = URL.createObjectURL(blob);
+
+    const iframe = document.createElement('iframe');
+    iframe.setAttribute('sandbox', 'allow-scripts allow-forms allow-popups');
+    iframe.src = blobUrl;
+    iframe.dataset.blobUrl = blobUrl;
+
+    iframe.style.width = '100%';
+    iframe.style.height = '400px';
+    iframe.style.border = '0';
+    iframe.style.boxShadow = 'none';
+    iframe.style.background = 'transparent';
+    iframe.style.display = 'block';
+    iframe.style.margin = '0';
+    iframe.style.padding = '0';
+    iframe.style.overflow = 'visible';
+    iframe.style.minHeight = '200px';
+
+    iframe.addEventListener('load', () => {
+      try {
+        const doc = iframe.contentDocument || iframe.contentWindow.document;
+        const body = doc.body;
+        const htmlEl = doc.documentElement;
+        const newHeight = Math.max(
+          body ? body.scrollHeight : 0,
+          htmlEl ? htmlEl.scrollHeight : 0
+        );
+        if(newHeight && newHeight > 0) {
+          iframe.style.height = newHeight + 'px';
+        } else {
+          iframe.style.height = '600px';
+        }
+
+        // 동일 출처면 내부 스타일 보정: 글꼴 크기, 중앙 정렬
+        try {
+          const injectedCss = `
+            body { font-size: ${getComputedStyle(document.documentElement).getPropertyValue('--body-font-size') || '16px'} !important; text-align: center !important; line-height:1.6 !important; }
+            h1,h2,h3 { text-align:center !important; }
+            table, pre, code { font-size: 15px !important; }
+          `;
+          const docHead = doc.head || doc.getElementsByTagName('head')[0] || doc.documentElement;
+          let s = doc.getElementById('injected-size-style');
+          if(!s){
+            s = doc.createElement('style'); s.id = 'injected-size-style'; s.innerHTML = injectedCss; docHead.appendChild(s);
+          } else {
+            s.innerHTML = injectedCss;
+          }
+        } catch(e) {
+          // cross-origin이면 접근 불가
+        }
+
+      } catch(e) {
+        console.warn('자동 높이 실패(크로스오리진):', e);
+        iframe.style.height = '640px';
+        iframe.style.overflow = 'auto';
+      }
+      hideLoading();
+    });
+
+    iframe.addEventListener('error', () => {
+      hideLoading();
+      reportContainer.innerHTML = `<div style="color:#e00;padding:12px;">리포트를 불러오지 못했습니다.</div>`;
+    });
+
+    reportContainer.appendChild(iframe);
+    return iframe;
+  }
+
+  async function loadReportFromPath_seamless(path){
+    if(!reportContainer) return;
     if(!path){
-      reportFrame.src = 'about:blank';
+      reportContainer.innerHTML = '';
       hideLoading();
       return;
     }
     showLoading();
-    reportFrame.onload = () => {
-      hideLoading();
-      if(document.documentElement.getAttribute('data-theme') === 'dark') applyIframeDarkMode(true);
-    };
-    reportFrame.onerror = () => {
-      hideLoading();
-      console.error('Failed to load report:', path);
-      reportFrame.src = 'about:blank';
-    };
-    console.log('Setting iframe.src =', path);
-    reportFrame.src = path;
-  }
+    try{
+      const res = await fetch(path, { cache: 'no-cache' });
+      if(!res.ok) throw new Error('Failed to fetch: ' + res.status);
+      let html = await res.text();
 
-  // -----------------------
-  // iframe 다크모드 처리 (same-origin이면 스타일 주입, 아니면 filter)
-  // 여기서 표 헤더 음영(헤더 셀 배경/box-shadow) 강제 덮어쓰기 규칙 포함
-  // -----------------------
-  function applyIframeDarkMode(enable){
-    if(!reportFrame) return;
-    reportFrame.style.filter = '';
-    try {
-      const doc = reportFrame.contentDocument || reportFrame.contentWindow.document;
-      if(!doc) throw new Error('no doc');
-      const STYLE_ID = 'injected-dark-style';
-      let s = doc.getElementById(STYLE_ID);
-      const injectedCss = `
-        :root, body { background: #0b1220 !important; color: #e6eef9 !important; }
-        body, p, div, span, td, th, li, a { color: #e6eef9 !important; background: transparent !important; }
-        table, pre, code { color: #e6eef9 !important; }
-        a { color: #7ea2ff !important; }
-
-        /* ========== 표 헤더 보강 (다크모드에서 음영/배경 덮어쓰기) ========== */
-        thead, thead tr, thead th, table thead th {
-          background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
-          color: #e6eef9 !important;
-          border-bottom: 1px solid rgba(255,255,255,0.06) !important;
-        }
-        thead th, table thead th {
-          box-shadow: inset 0 -6px 12px rgba(0,0,0,0.35), inset 0 1px 0 rgba(255,255,255,0.02) !important;
-        }
-        /* 특정 테이블 라이브러리 클래스들도 덮어쓰기 */
-        .table-header, .thead-dark, .table .header-row, .tbl-header {
-          background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
-          color: #e6eef9 !important;
-        }
-        /* inline style로 들어간 경우에도 강제 적용(광범위, 주의) */
-        *[style] thead, *[style] thead th, *[style] .table-header {
-          background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
-          color: #e6eef9 !important;
-        }
-      `;
-      if(enable){
-        if(!s){
-          s = doc.createElement('style');
-          s.id = STYLE_ID;
-          s.innerHTML = injectedCss;
-          doc.head ? doc.head.appendChild(s) : doc.documentElement.appendChild(s);
+      try{
+        const baseUrl = new URL(path, location.href).href.replace(/\/[^/]*$/, '/');
+        if(/<base[^>]*>/i.test(html)){
+          html = html.replace(/<base[^>]*>/i, `<base href="${baseUrl}">`);
+        } else if(/<head[^>]*>/i.test(html)){
+          html = html.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${baseUrl}">`);
         } else {
-          s.innerHTML = injectedCss;
+          html = `<base href="${baseUrl}">` + html;
         }
-      } else {
-        if(s) s.remove();
-      }
-      reportFrame.style.filter = '';
-      return;
-    } catch (e) {
-      // cross-origin -> fallback to filter
-      if(enable){
-        reportFrame.style.filter = 'invert(1) hue-rotate(180deg) contrast(1.02)';
-      } else {
-        reportFrame.style.filter = '';
-      }
-      return;
+      }catch(e){ console.warn('base inject failed', e); }
+
+      createSeamlessSandboxIframe(html);
+    }catch(err){
+      console.error('report fetch/load error', err);
+      reportContainer.innerHTML = `<div style="color:#e00;padding:12px;">리포트를 불러오지 못했습니다. (${err.message})</div>`;
+      hideLoading();
     }
   }
 
-  // -----------------------
-  // 이벤트 연결 (UI selects)
-  // -----------------------
-  reportTypeSelect?.addEventListener('change', () => {
-    const newType = reportTypeSelect.value;
-    populateYearsFromIndex(newType);
-  });
-  reportYearSelect?.addEventListener('change', () => {
-    populateMonthsFromIndex(reportTypeSelect.value, reportYearSelect.value);
-  });
-  reportMonthSelect?.addEventListener('change', () => {
-    populateDaysFromIndex(reportTypeSelect.value, reportYearSelect.value, reportMonthSelect.value);
-  });
+  // 이벤트 연결
+  reportTypeSelect?.addEventListener('change', () => populateYearsFromIndex(reportTypeSelect.value));
+  reportYearSelect?.addEventListener('change', () => populateMonthsFromIndex(reportTypeSelect.value, reportYearSelect.value));
+  reportMonthSelect?.addEventListener('change', () => populateDaysFromIndex(reportTypeSelect.value, reportYearSelect.value, reportMonthSelect.value));
   reportDaySelect?.addEventListener('change', populateTimes);
 
-  // -----------------------
-  // 뷰어 너비 맞춤
-  // -----------------------
   function fitViewerWidth(){
     const viewer = document.querySelector('.viewer');
     const inner = document.querySelector('.controls-inner');
@@ -368,9 +356,7 @@
   fitViewerWidth();
   window.addEventListener('resize', fitViewerWidth);
 
-  // -----------------------
-  // report_index.json 로드
-  // -----------------------
+  // fetch report_index
   async function fetchReportIndex(){
     if(reportYearSelect) reportYearSelect.disabled = true;
     if(reportMonthSelect) reportMonthSelect.disabled = true;
@@ -389,16 +375,17 @@
       console.error('Error loading report index:', err);
       reportIndexData = {};
       if(internalTimeSelect) internalTimeSelect.innerHTML = '<option>목록 로드 실패</option>';
-      if(internalFileSelect) internalFileSelect.innerHTML = '<option>--</option>';
-      reportFrame.src = 'about:blank';
+      reportContainer.innerHTML = '';
       hideLoading();
     }
   }
   fetchReportIndex();
 
-  // expose for debug
+  // expose debug
   window.IR = window.IR || {};
   window.IR.fetchReportIndex = fetchReportIndex;
   window.IR.reportIndexData = reportIndexData;
   window.IR.availableDatesByType = availableDatesByType;
+  window.IR.loadReportFromPath_seamless = loadReportFromPath_seamless;
+
 })();
