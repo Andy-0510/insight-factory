@@ -261,7 +261,6 @@
     const blobUrl = URL.createObjectURL(blob);
 
     const iframe = document.createElement('iframe');
-    // allow-same-origin 추가: 동일 출처 접근이 필요할 때만 허용하세요 (보안 주의)
     iframe.setAttribute('sandbox', 'allow-scripts allow-forms allow-popups allow-same-origin');
     iframe.src = blobUrl;
     iframe.dataset.blobUrl = blobUrl;
@@ -277,96 +276,162 @@
     iframe.style.overflow = 'visible';
     iframe.style.minHeight = '200px';
 
+    // helper: inject CSS string into doc head safely
+    function upsertStyle(doc, id, css){
+      try{
+        const head = doc.head || doc.getElementsByTagName('head')[0] || doc.documentElement;
+        let el = doc.getElementById(id);
+        if(!el){
+          el = doc.createElement('style'); el.id = id; el.type = 'text/css';
+          head.appendChild(el);
+        }
+        el.innerHTML = css;
+        return el;
+      }catch(e){
+        console.warn('upsertStyle failed', e);
+        return null;
+      }
+    }
+
+    // remove inline colors (best-effort)
+    function removeInlineColors(doc){
+      try{
+        const walker = doc.createTreeWalker(doc.documentElement, NodeFilter.SHOW_ELEMENT, null, false);
+        const root = doc.documentElement;
+        if(root && root.style){
+          root.style.color = '';
+          root.style.backgroundColor = '';
+        }
+        let node = walker.nextNode();
+        while(node){
+          try{
+            if(node.style){
+              if(node.style.color) node.style.color = '';
+              if(node.style.backgroundColor) node.style.backgroundColor = '';
+            }
+            if(node.hasAttribute){
+              if(node.getAttribute('color')) node.removeAttribute('color');
+              if(node.getAttribute('bgcolor')) node.removeAttribute('bgcolor');
+            }
+          }catch(e){}
+          node = walker.nextNode();
+        }
+      }catch(e){
+        console.warn('removeInlineColors failed', e);
+      }
+    }
+
+    // mark tables that don't have thead
+    function markTables(doc){
+      try{
+        const tables = doc.querySelectorAll('table');
+        tables.forEach(t => {
+          t.classList.remove('no-thead');
+          const hasThead = !!t.querySelector('thead');
+          if(!hasThead) t.classList.add('no-thead');
+        });
+      }catch(e){ console.warn('markTables failed', e); }
+    }
+
+    // main load handler
     iframe.addEventListener('load', () => {
       try {
         const doc = iframe.contentDocument || iframe.contentWindow.document;
-        const body = doc.body;
-        const htmlEl = doc.documentElement;
-        const newHeight = Math.max(
-          body ? body.scrollHeight : 0,
-          htmlEl ? htmlEl.scrollHeight : 0
-        );
-        if(newHeight && newHeight > 0) {
-          iframe.style.height = newHeight + 'px';
-        } else {
-          iframe.style.height = '600px';
-        }
+        if(!doc) throw new Error('no doc');
 
-        // 동일 출처면 내부 스타일 보정: 정렬/텍스트 색/표 헤더 음영
-        try {
-          const injectedCss = `
-            /* 기본: 본문 좌측 정렬, 헤더도 좌측으로 */
+        // auto height
+        try{
+          const body = doc.body;
+          const htmlEl = doc.documentElement;
+          const newHeight = Math.max(
+            body ? body.scrollHeight : 0,
+            htmlEl ? htmlEl.scrollHeight : 0
+          );
+          if(newHeight && newHeight > 0) iframe.style.height = newHeight + 'px';
+          else iframe.style.height = '600px';
+        }catch(e){ iframe.style.height = '640px'; iframe.style.overflow='auto'; }
+
+        // now attempt style injection (same-origin required)
+        try{
+          const injectedBase = `
             body { font-size: ${getComputedStyle(document.documentElement).getPropertyValue('--body-font-size') || '16px'} !important; line-height:1.6 !important; margin:0; padding:0; }
-            h1,h2,h3 { text-align:left !important; margin:0 0 0.5em 0; }
-            body, p, div, li { text-align:left !important; color: inherit !important; background: transparent !important; }
-            table, pre, code { font-size: 15px !important; text-align:left !important; }
+            h1,h2,h3 { text-align:left !important; margin:0 0 .5em 0; }
+            body, p, div, li { text-align:left !important; background: transparent !important; }
+            table, pre, code { font-size:15px !important; text-align:left !important; }
           `;
-          const docHead = doc.head || doc.getElementsByTagName('head')[0] || doc.documentElement;
-          let s = doc.getElementById('injected-size-style');
-          if(!s){
-            s = doc.createElement('style'); s.id = 'injected-size-style'; s.innerHTML = injectedCss; docHead.appendChild(s);
-          } else {
-            s.innerHTML = injectedCss;
-          }
+          upsertStyle(doc, 'injected-size-style', injectedBase);
 
-          // 라이트 모드용 스타일 (본문 검정, 표 첫 칸 헤더만 음영)
+          // light/dark styles
           const lightCss = `
             body, p, div, li, td, th, a { color: #0f172a !important; background: transparent !important; text-align:left !important; }
-            /* 표 헤더(우선): thead가 있다면 thead th에만 적용 */
-            table thead th {
-              background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02)) !important;
-              color: #0f172a !important;
-            }
-            /* thead가 없고 첫 행이 헤더로 사용되는 경우(첫 행의 첫 셀) : tbody 첫 행의 셀 중 첫 셀에만 적용 */
-            table > tbody > tr:first-child > th:first-child,
-            table > tbody > tr:first-child > td:first-child {
+            table thead th { background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02)) !important; color: #0f172a !important; }
+            table.no-thead > tbody > tr:first-child > th:first-child,
+            table.no-thead > tbody > tr:first-child > td:first-child {
               background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02)) !important;
               color: #0f172a !important;
             }
           `;
-
-          // 다크 모드용 스타일 (본문 밝게, 표 첫 칸 헤더만 약간 밝게)
           const darkCss = `
             body, p, div, li, td, th, a { color: #e6eef9 !important; background: transparent !important; text-align:left !important; }
-            table thead th {
-              background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)) !important;
-              color: #e6eef9 !important;
-              box-shadow: inset 0 -4px 10px rgba(0,0,0,0.16) !important;
-            }
-            table > tbody > tr:first-child > th:first-child,
-            table > tbody > tr:first-child > td:first-child {
+            table thead th { background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)) !important; color: #e6eef9 !important; box-shadow: inset 0 -4px 10px rgba(0,0,0,0.12) !important; }
+            table.no-thead > tbody > tr:first-child > th:first-child,
+            table.no-thead > tbody > tr:first-child > td:first-child {
               background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)) !important;
               color: #e6eef9 !important;
             }
           `;
 
-          // 적용: 현재 페이지 테마에 따라 넣기
+          // remove inline colors to allow our rules to win
+          removeInlineColors(doc);
+          // mark tables
+          markTables(doc);
+
+          // ensure we re-run marking and inline cleanup after small delay (report scripts might re-render)
+          setTimeout(()=>{ try{ markTables(doc); removeInlineColors(doc); }catch(e){} }, 220);
+
+          // observe mutations to reapply table marking & inline cleanup if content changes
+          try{
+            const mo = new MutationObserver((mutList) => {
+              let touched = false;
+              for(const m of mutList){
+                if(m.type === 'childList' || m.type === 'attributes') { touched = true; break; }
+              }
+              if(touched){
+                try{ markTables(doc); removeInlineColors(doc); }catch(e){}
+                // and reapply theme styles if needed
+                const theme = document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light';
+                if(theme === 'dark') upsertStyle(doc, 'injected-dark-style', darkCss), (()=>{ const el=doc.getElementById('injected-light-style'); if(el) el.remove(); })();
+                else upsertStyle(doc, 'injected-light-style', lightCss), (()=>{ const el=doc.getElementById('injected-dark-style'); if(el) el.remove(); })();
+              }
+            });
+            mo.observe(doc.documentElement, { childList:true, subtree:true, attributes:true, attributeFilter:['style','class'] });
+            // disconnect after 60s to avoid long-term overhead
+            setTimeout(()=>{ try{ mo.disconnect(); }catch(e){} }, 60000);
+          }catch(e){ console.warn('MutationObserver failed', e); }
+
+          // apply theme styles now
           if(document.documentElement.getAttribute('data-theme') === 'dark'){
-            let sd = doc.getElementById('injected-dark-style');
-            if(!sd){ sd = doc.createElement('style'); sd.id = 'injected-dark-style'; docHead.appendChild(sd); }
-            sd.innerHTML = darkCss;
-            const sl = doc.getElementById('injected-light-style'); if(sl) sl.remove();
+            upsertStyle(doc, 'injected-dark-style', darkCss);
+            const l = doc.getElementById('injected-light-style'); if(l) l.remove();
           } else {
-            let sl = doc.getElementById('injected-light-style');
-            if(!sl){ sl = doc.createElement('style'); sl.id = 'injected-light-style'; docHead.appendChild(sl); }
-            sl.innerHTML = lightCss;
-            const sd = doc.getElementById('injected-dark-style'); if(sd) sd.remove();
+            upsertStyle(doc, 'injected-light-style', lightCss);
+            const d = doc.getElementById('injected-dark-style'); if(d) d.remove();
           }
 
-        } catch(e) {
-          console.warn('inner-doc styling failed (maybe cross-origin):', e);
+        }catch(e){
+          console.warn('style injection failed (likely cross-origin):', e);
+          // cross-origin fallback: parent-side filter
+          if(document.documentElement.getAttribute('data-theme') === 'dark'){
+            try{ iframe.style.filter = 'invert(1) hue-rotate(180deg) contrast(1.02) brightness(0.96)'; }catch(e){}
+          } else {
+            iframe.style.filter = '';
+          }
         }
 
-      } catch(e) {
-        console.warn('자동 높이 실패(크로스오리진):', e);
+      } catch(e){
+        console.warn('iframe load handler failed:', e);
         iframe.style.height = '640px';
         iframe.style.overflow = 'auto';
-        // 크로스오리진이면 폴백: 필터로 다크 보정
-        if(document.documentElement.getAttribute('data-theme') === 'dark'){
-          try{ iframe.style.filter = 'invert(1) hue-rotate(180deg) contrast(1.02) brightness(0.96)'; }catch(e){}
-        } else {
-          iframe.style.filter = '';
-        }
       }
       hideLoading();
     });
