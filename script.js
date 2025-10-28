@@ -357,16 +357,16 @@
   // -----------------------
   // 뷰어 너비 맞춤
   // -----------------------
-  function fitViewerWidth(){
-    const viewer = document.querySelector('.viewer');
-    const inner = document.querySelector('.controls-inner');
-    if(!viewer || !inner) return;
-    const w = Math.round(inner.getBoundingClientRect().width);
-    viewer.style.maxWidth = w + 'px';
-    viewer.style.margin = '0 auto';
-  }
-  fitViewerWidth();
-  window.addEventListener('resize', fitViewerWidth);
+//  function fitViewerWidth(){
+//    const viewer = document.querySelector('.viewer');
+//    const inner = document.querySelector('.controls-inner');
+//    if(!viewer || !inner) return;
+//    const w = Math.round(inner.getBoundingClientRect().width);
+//    viewer.style.maxWidth = w + 'px';
+//    viewer.style.margin = '0 auto';
+//  }
+//  fitViewerWidth();
+//  window.addEventListener('resize', fitViewerWidth);
 
   // -----------------------
   // report_index.json 로드
