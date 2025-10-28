@@ -7,7 +7,7 @@
   const reportMonthSelect = document.getElementById('reportMonth');
   const reportDaySelect = document.getElementById('reportDay');
 
-  // internal hidden selects for time/file handling
+  // internal hidden selects
   let internalTimeSelect = document.getElementById('internalTimeSelect');
   if(!internalTimeSelect){
     internalTimeSelect = document.createElement('select');
@@ -77,7 +77,6 @@
   themeToggle?.addEventListener('click', ()=> {
     const isDark = document.documentElement.getAttribute('data-theme') === 'dark';
     setTheme(isDark ? 'light' : 'dark');
-    // 뷰어 너비/스타일 재적용 여유 주기
     setTimeout(fitViewerWidth, 120);
   });
   themeToggle?.addEventListener('keydown', (e)=>{
@@ -293,10 +292,10 @@
           iframe.style.height = '600px';
         }
 
-        // 동일 출처면 내부 스타일 보정: 글꼴 크기, 왼쪽 정렬(본문)
+        // 동일 출처면 내부 스타일 보정: 정렬/텍스트 색/표 헤더 음영
         try {
           const injectedCss = `
-            /* 기본: 본문 좌측 정렬, 헤더는 left로 표시 */
+            /* 기본: 본문 좌측 정렬, 헤더도 좌측으로 */
             body { font-size: ${getComputedStyle(document.documentElement).getPropertyValue('--body-font-size') || '16px'} !important; line-height:1.6 !important; margin:0; padding:0; }
             h1,h2,h3 { text-align:left !important; margin:0 0 0.5em 0; }
             body, p, div, li { text-align:left !important; color: inherit !important; background: transparent !important; }
@@ -310,35 +309,44 @@
             s.innerHTML = injectedCss;
           }
 
-          // 라이트 모드용 스타일 (본문 검정, 표 첫 행 약간 어둡게)
+          // 라이트 모드용 스타일 (본문 검정, 표 첫 칸 헤더만 음영)
           const lightCss = `
             body, p, div, li, td, th, a { color: #0f172a !important; background: transparent !important; text-align:left !important; }
-            /* 표 첫 행(헤더 또는 첫 row) 음영: 라이트에서는 약간 어둡게 */
-            table thead th, table thead tr, table tr:first-child, table tr:first-child th, table tr:first-child td {
+            /* 표 헤더(우선): thead가 있다면 thead th에만 적용 */
+            table thead th {
+              background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02)) !important;
+              color: #0f172a !important;
+            }
+            /* thead가 없고 첫 행이 헤더로 사용되는 경우(첫 행의 첫 셀) : tbody 첫 행의 셀 중 첫 셀에만 적용 */
+            table > tbody > tr:first-child > th:first-child,
+            table > tbody > tr:first-child > td:first-child {
               background: linear-gradient(180deg, rgba(0,0,0,0.06), rgba(0,0,0,0.02)) !important;
               color: #0f172a !important;
             }
           `;
 
-          // 다크 모드용 스타일 (본문 밝게, 표 첫 행 약간 밝게)
+          // 다크 모드용 스타일 (본문 밝게, 표 첫 칸 헤더만 약간 밝게)
           const darkCss = `
             body, p, div, li, td, th, a { color: #e6eef9 !important; background: transparent !important; text-align:left !important; }
-            table thead th, table thead tr, table tr:first-child, table tr:first-child th, table tr:first-child td {
-              background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.01)) !important;
+            table thead th {
+              background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)) !important;
               color: #e6eef9 !important;
-              box-shadow: inset 0 -6px 12px rgba(0,0,0,0.18) !important;
+              box-shadow: inset 0 -4px 10px rgba(0,0,0,0.16) !important;
+            }
+            table > tbody > tr:first-child > th:first-child,
+            table > tbody > tr:first-child > td:first-child {
+              background: linear-gradient(180deg, rgba(255,255,255,0.06), rgba(255,255,255,0.02)) !important;
+              color: #e6eef9 !important;
             }
           `;
 
           // 적용: 현재 페이지 테마에 따라 넣기
           if(document.documentElement.getAttribute('data-theme') === 'dark'){
-            // inject darkCss, remove light if exists
             let sd = doc.getElementById('injected-dark-style');
             if(!sd){ sd = doc.createElement('style'); sd.id = 'injected-dark-style'; docHead.appendChild(sd); }
             sd.innerHTML = darkCss;
             const sl = doc.getElementById('injected-light-style'); if(sl) sl.remove();
           } else {
-            // inject lightCss, remove dark if exists
             let sl = doc.getElementById('injected-light-style');
             if(!sl){ sl = doc.createElement('style'); sl.id = 'injected-light-style'; docHead.appendChild(sl); }
             sl.innerHTML = lightCss;
