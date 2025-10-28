@@ -258,7 +258,7 @@
     iframe.style.minHeight = '200px';
 
     iframe.addEventListener('load', () => {
-      try {
+  		try {
         const doc = iframe.contentDocument || iframe.contentWindow.document;
         const body = doc.body;
         const htmlEl = doc.documentElement;
@@ -271,41 +271,38 @@
         } else {
           iframe.style.height = '600px';
         }
-
-        // 동일 출처면 내부 스타일 보정: 글꼴 크기, 중앙 정렬
+    
+        // --- 동일 출처 접근 시: 내부 스타일 주입 + inline 스타일 제거 등 ----
         try {
+          const docHead = doc.head || doc.getElementsByTagName('head')[0] || doc.documentElement;
+    
+          // 1) 기본 사이즈/정렬 보정(기존 너의 injected-size-style 유지)
           const injectedCss = `
             body { font-size: ${getComputedStyle(document.documentElement).getPropertyValue('--body-font-size') || '16px'} !important; text-align: center !important; line-height:1.6 !important; }
             h1,h2,h3 { text-align:center !important; }
             table, pre, code { font-size: 15px !important; }
           `;
-          const docHead = doc.head || doc.getElementsByTagName('head')[0] || doc.documentElement;
           let s = doc.getElementById('injected-size-style');
           if(!s){
             s = doc.createElement('style'); s.id = 'injected-size-style'; s.innerHTML = injectedCss; docHead.appendChild(s);
           } else {
             s.innerHTML = injectedCss;
           }
-          // --- 여기부터 다크 텍스트 흰색 강제 주입 추가 ---
-          // 다크 테마일 때만 흰색 텍스트 강제 적용
+    
+          // 2) 다크 모드일 경우: 텍스트 색 강제 + 헤더 보정
           if(document.documentElement.getAttribute('data-theme') === 'dark'){
             const darkCss = `
-              html, body, p, div, span, li, a, td, th {
-                color: #ffffff !important;
-                background: transparent !important;
-              }
+              html, body, p, div, span, li, a, td, th { color: #ffffff !important; background: transparent !important; }
               thead th, table thead th, .table-header, .thead-dark {
                 color: #ffffff !important;
                 background: linear-gradient(180deg, rgba(255,255,255,0.03), rgba(255,255,255,0.01)) !important;
                 border-bottom: 1px solid rgba(255,255,255,0.06) !important;
               }
-              pre, code {
-                color: #f7fafc !important;
-                background: rgba(255,255,255,0.02) !important;
-              }
-              *[style] { color: #ffffff !important; background: transparent !important; }
+              pre, code { color: #f7fafc !important; background: rgba(255,255,255,0.02) !important; }
               a { color: #9cc2ff !important; }
               img, svg { filter: none !important; }
+              /* 광범위 적용: inline 스타일이 있어도 우선 적용되도록 확보 */
+              *[style] { color: #ffffff !important; background: transparent !important; }
             `;
             let s2 = doc.getElementById('injected-dark-style');
             if(!s2){
@@ -316,18 +313,65 @@
             } else {
               s2.innerHTML = darkCss;
             }
+    
+            // 3) 추가 안전조치: inline style(color/backgroundColor) 제거(같은 출처일 때만 가능)
+            try {
+              const walker = doc.createTreeWalker(doc.documentElement, NodeFilter.SHOW_ELEMENT, null, false);
+              // root 먼저
+              const root = doc.documentElement;
+              if(root && root.style){
+                root.style.color = '';
+                root.style.backgroundColor = '';
+              }
+              let node = walker.nextNode();
+              while(node){
+                try{
+                  if(node.style){
+                    if(node.style.color) node.style.color = '';
+                    if(node.style.backgroundColor) node.style.backgroundColor = '';
+                  }
+                  if(node.hasAttribute){
+                    if(node.getAttribute('color')) node.removeAttribute('color');
+                    if(node.getAttribute('bgcolor')) node.removeAttribute('bgcolor');
+                  }
+                }catch(e){
+                  // 개별 노드 오류는 무시
+                }
+                node = walker.nextNode();
+              }
+            } catch(e){
+              console.warn('inline color removal failed:', e);
+            }
+    
+            // 4) 안전망: 그래도 남는 경우를 위해 모든 요소에 강제 적용하는 스타일 추가
+            try {
+              const FORCE_ID = 'injected-force-dark';
+              const forceCss = `* { color: #ffffff !important; background: transparent !important; }`;
+              let f = doc.getElementById(FORCE_ID);
+              if(!f){
+                f = doc.createElement('style');
+                f.id = FORCE_ID;
+                f.innerHTML = forceCss;
+                docHead.appendChild(f);
+              } else {
+                f.innerHTML = forceCss;
+              }
+            } catch(e){
+              console.warn('force style injection failed:', e);
+            }
+    
           } else {
-            // 라이트 모드이면 혹시 이전에 주입한 다크 스타일이 남아있다면 제거
-            const prev = doc.getElementById('injected-dark-style');
-            if(prev) prev.remove();
+            // 라이트 모드면 다크 스타일 제거
+            const prev = doc.getElementById('injected-dark-style'); if(prev) prev.remove();
+            const prevForce = doc.getElementById('injected-force-dark'); if(prevForce) prevForce.remove();
           }
-          // --- 추가된 주입 로직 끝 ---
-        } catch(e) {
-          // cross-origin이면 접근 불가
+        } catch(e){
+          // 접근 불가하면 크로스오리진 폴백으로 처리 (아래에서)
+          console.warn('iframe inner-doc styling failed (maybe cross-origin):', e);
         }
-
+    
       } catch(e) {
-        console.warn('자동 높이 실패(크로스오리진):', e);
+        console.warn('자동 높이 계산 실패(크로스오리진):', e);
         iframe.style.height = '640px';
         iframe.style.overflow = 'auto';
       }
