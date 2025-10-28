@@ -1,21 +1,19 @@
-<!doctype html>
+<!DOCTYPE html>
 <html lang="ko">
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width,initial-scale=1" />
   <title>Intelligence Report Viewer</title>
-
-  <!-- Google Fonts(Pretendard) 요청에서 400 에러 발생하므로 주석 처리함.
-       필요하면 Pretendard를 로컬에 호스팅하거나 공식 CDN으로 교체하세요. -->
-  <!-- <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;800&display=swap" rel="stylesheet"> -->
-
+  <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;600;800&display=swap" rel="stylesheet">
   <link rel="stylesheet" href="style.css">
 </head>
 <body>
   <div class="container" id="app">
     <header>
       <div class="title">
-        <h1>Intelligence Report Viewer</h1>
+        <div>
+          <h1>Intelligence Report Viewer</h1>
+        </div>
       </div>
 
       <div class="theme-switch-wrapper" aria-hidden="false">
@@ -26,7 +24,7 @@
 
     <nav class="controls-row" aria-label="report controls">
       <div class="controls-inner">
-        <div class="control type-control">
+        <div class="control" style="min-width:180px;">
           <label for="reportType">리포트 종류</label>
           <select id="reportType" aria-label="리포트 종류">
             <option value="daily">일간</option>
@@ -35,17 +33,17 @@
           </select>
         </div>
 
-        <div class="control small">
+        <div class="control">
           <label for="reportYear">연도</label>
           <select id="reportYear" aria-label="연도"></select>
         </div>
 
-        <div class="control small">
+        <div class="control">
           <label for="reportMonth">월</label>
           <select id="reportMonth" aria-label="월"></select>
         </div>
 
-        <div class="control small">
+        <div class="control">
           <label for="reportDay">일</label>
           <select id="reportDay" aria-label="일"></select>
         </div>
@@ -59,7 +57,7 @@
       </div>
 
       <div class="viewer" aria-live="polite">
-        <div id="reportContainer" class="report-container"></div>
+        <iframe id="reportFrame" src="about:blank" title="Report Content"></iframe>
       </div>
     </main>
 
