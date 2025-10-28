@@ -44,9 +44,10 @@ body{
 /* 컨테이너 */
 .container{
   width:100%;
-  max-width:980px;
+  max-width: 1180px;
   border-radius:var(--radius-lg);
-  padding:14px 18px;
+  /* padding: 14px 18px; */ /* 기존 라인 주석 처리 또는 삭제 */
+  padding: 14px 0; /* 상하 14px, 좌우 0px 로 수정 */ /* <--- 수정 */
   backdrop-filter: blur(14px) saturate(135%) contrast(102%);
   background: linear-gradient(180deg, rgba(255,255,255,0.70), rgba(255,255,255,0.18));
   box-shadow: 0 18px 50px rgba(16,24,40,0.06), inset 0 2px 0 rgba(255,255,255,0.7);
