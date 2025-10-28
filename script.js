@@ -7,6 +7,7 @@
   const reportMonthSelect = document.getElementById('reportMonth');
   const reportDaySelect = document.getElementById('reportDay');
 
+  // internal hidden selects for time/file handling
   let internalTimeSelect = document.getElementById('internalTimeSelect');
   if(!internalTimeSelect){
     internalTimeSelect = document.createElement('select');
@@ -104,7 +105,6 @@
       const rawDates = Object.keys(reportIndexData[type] || {});
       const normalized = rawDates.map(d => normalizeDateKey(d)).filter(Boolean);
       const uniq = Array.from(new Set(normalized));
-      // 최신순(내림차순)
       uniq.sort((a,b) => b.localeCompare(a));
       availableDatesByType[type] = uniq;
     });
@@ -134,6 +134,7 @@
     reportYearSelect.value = years[0];
     populateMonthsFromIndex(type, reportYearSelect.value);
   }
+
   function populateMonthsFromIndex(type, year){
     if(!reportMonthSelect) return;
     reportMonthSelect.innerHTML = '';
@@ -158,6 +159,7 @@
     reportMonthSelect.value = months[0];
     populateDaysFromIndex(type, year, reportMonthSelect.value);
   }
+
   function populateDaysFromIndex(type, year, month){
     if(!reportDaySelect) return;
     reportDaySelect.innerHTML = '';
@@ -346,4 +348,155 @@
               if(root && root.style){
                 root.style.color = '';
                 root.style.backgroundColor = '';
-                
+              }
+              let node = walker.nextNode();
+              while(node){
+                try{
+                  if(node.style){
+                    if(node.style.color) node.style.color = '';
+                    if(node.style.backgroundColor) node.style.backgroundColor = '';
+                  }
+                  if(node.hasAttribute){
+                    if(node.getAttribute('color')) node.removeAttribute('color');
+                    if(node.getAttribute('bgcolor')) node.removeAttribute('bgcolor');
+                  }
+                }catch(e){
+                  // ignore node-level errors
+                }
+                node = walker.nextNode();
+              }
+            } catch(e){
+              console.warn('inline color removal failed:', e);
+            }
+
+            // 안전망: 모든 요소에 강제 스타일
+            try {
+              const FORCE_ID = 'injected-force-dark';
+              const forceCss = `* { color: #ffffff !important; background: transparent !important; text-align: left !important; }`;
+              let f = doc.getElementById(FORCE_ID);
+              if(!f){
+                f = doc.createElement('style');
+                f.id = FORCE_ID;
+                f.innerHTML = forceCss;
+                docHead.appendChild(f);
+              } else {
+                f.innerHTML = forceCss;
+              }
+            } catch(e){
+              console.warn('force style injection failed:', e);
+            }
+
+          } else {
+            // 라이트 모드면 이전에 주입한 다크 스타일 제거
+            const prev = doc.getElementById('injected-dark-style'); if(prev) prev.remove();
+            const prevForce = doc.getElementById('injected-force-dark'); if(prevForce) prevForce.remove();
+          }
+        } catch(e) {
+          console.warn('inner-doc styling failed (maybe cross-origin):', e);
+        }
+
+      } catch(e) {
+        console.warn('자동 높이 실패(크로스오리진):', e);
+        iframe.style.height = '640px';
+        iframe.style.overflow = 'auto';
+        // 크로스오리진이면 폴백: 필터로 다크 보정
+        if(document.documentElement.getAttribute('data-theme') === 'dark'){
+          try{ iframe.style.filter = 'invert(1) hue-rotate(180deg) contrast(1.02) brightness(0.96)'; }catch(e){}
+        } else {
+          iframe.style.filter = '';
+        }
+      }
+      hideLoading();
+    });
+
+    iframe.addEventListener('error', () => {
+      hideLoading();
+      reportContainer.innerHTML = `<div style="color:#e00;padding:12px;">리포트를 불러오지 못했습니다.</div>`;
+    });
+
+    reportContainer.appendChild(iframe);
+    return iframe;
+  }
+
+  async function loadReportFromPath_seamless(path){
+    if(!reportContainer) return;
+    if(!path){
+      reportContainer.innerHTML = '';
+      hideLoading();
+      return;
+    }
+    showLoading();
+    try{
+      const res = await fetch(path, { cache: 'no-cache' });
+      if(!res.ok) throw new Error('Failed to fetch: ' + res.status);
+      let html = await res.text();
+
+      try{
+        const baseUrl = new URL(path, location.href).href.replace(/\/[^/]*$/, '/');
+        if(/<base[^>]*>/i.test(html)){
+          html = html.replace(/<base[^/]*>/i, `<base href="${baseUrl}">`);
+        } else if(/<head[^>]*>/i.test(html)){
+          html = html.replace(/<head([^>]*)>/i, `<head$1>\n<base href="${baseUrl}">`);
+        } else {
+          html = `<base href="${baseUrl}">` + html;
+        }
+      }catch(e){ console.warn('base inject failed', e); }
+
+      createSeamlessSandboxIframe(html);
+    }catch(err){
+      console.error('report fetch/load error', err);
+      reportContainer.innerHTML = `<div style="color:#e00;padding:12px;">리포트를 불러오지 못했습니다. (${err.message})</div>`;
+      hideLoading();
+    }
+  }
+
+  // 이벤트 연결
+  reportTypeSelect?.addEventListener('change', () => populateYearsFromIndex(reportTypeSelect.value));
+  reportYearSelect?.addEventListener('change', () => populateMonthsFromIndex(reportTypeSelect.value, reportYearSelect.value));
+  reportMonthSelect?.addEventListener('change', () => populateDaysFromIndex(reportTypeSelect.value, reportYearSelect.value, reportMonthSelect.value));
+  reportDaySelect?.addEventListener('change', populateTimes);
+
+  function fitViewerWidth(){
+    const viewer = document.querySelector('.viewer');
+    const inner = document.querySelector('.controls-inner');
+    if(!viewer || !inner) return;
+    const w = Math.round(inner.getBoundingClientRect().width);
+    viewer.style.maxWidth = w + 'px';
+    viewer.style.margin = '0 auto';
+  }
+  fitViewerWidth();
+  window.addEventListener('resize', fitViewerWidth);
+
+  // fetch report_index
+  async function fetchReportIndex(){
+    if(reportYearSelect) reportYearSelect.disabled = true;
+    if(reportMonthSelect) reportMonthSelect.disabled = true;
+    if(reportDaySelect) reportDaySelect.disabled = true;
+    if(internalTimeSelect) { internalTimeSelect.disabled = true; internalTimeSelect.innerHTML = '<option>로딩...</option>'; }
+    try{
+      const res = await fetch(REPORT_INDEX_PATH, { cache: 'no-cache' });
+      if(!res.ok) throw new Error(`Failed to fetch report index: ${res.status}`);
+      const data = await res.json();
+      reportIndexData = data || {};
+      buildAvailableDatesMap();
+      const selType = reportTypeSelect?.value || Object.keys(reportIndexData)[0];
+      if(selType) populateYearsFromIndex(selType);
+      console.log('reportIndexData loaded:', Object.keys(reportIndexData));
+    }catch(err){
+      console.error('Error loading report index:', err);
+      reportIndexData = {};
+      if(internalTimeSelect) internalTimeSelect.innerHTML = '<option>목록 로드 실패</option>';
+      reportContainer.innerHTML = '';
+      hideLoading();
+    }
+  }
+  fetchReportIndex();
+
+  // expose debug
+  window.IR = window.IR || {};
+  window.IR.fetchReportIndex = fetchReportIndex;
+  window.IR.reportIndexData = reportIndexData;
+  window.IR.availableDatesByType = availableDatesByType;
+  window.IR.loadReportFromPath_seamless = loadReportFromPath_seamless;
+
+})();
