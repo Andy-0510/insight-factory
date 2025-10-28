@@ -37,7 +37,8 @@ body{
   display:flex;
   align-items:flex-start;
   justify-content:center;
-  padding:18px;
+  /* padding:18px; */ /* 기존 라인 주석 처리 또는 삭제 */
+  padding: 18px 0; /* 상하 18px, 좌우 0px 로 수정 */ /* <--- 수정 */
   -webkit-font-smoothing:antialiased;
 }
 
