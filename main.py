@@ -147,7 +147,7 @@ def build_daily_steps():
         # ("f_daily",          [PY, "-m", "src.module_f.daily_report"]),
         ("f_cmt_daily",      [PY, "-m", "src.module_f.daily_commentary_report"]), # Keep commented out
         ("report_index",     [PY, "-m", "scripts.generate_report_index"]),
-        ("html_report",     [PY, "-m", "scripts.generate_daily_html_report"]),
+        ("html_daily_report",     [PY, "-m", "scripts.generate_daily_html_report"]),
     ]
 
 def build_weekly_steps():
@@ -159,6 +159,8 @@ def build_weekly_steps():
         ("gen_visual_weekly",[PY, "-m", "scripts.generate_visuals", "--report-type", "weekly"]), # Added arg
         # ("f_weekly",         [PY, "-m", "src.module_f.weekly_report"]),
         ("f_cmt_weekly",   [PY, "-m", "src.module_f.weekly_commentary_report"]), # Keep commented out
+        ("html_weekly_report",   [PY, "-m", "scripts.generate_weekly_html_report"]),
+        
     ]
 
 def build_monthly_steps():

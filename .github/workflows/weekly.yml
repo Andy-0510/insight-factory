@@ -95,10 +95,15 @@ jobs:
     #    run: |
     #      python -m src.module_f.weekly_report
 
-      - name: Generate Weekly Detailed Commentary Report
+    #  - name: Generate Weekly Detailed Commentary Report
+    #    shell: bash
+    #    run: |
+    #      python -m src.module_f.weekly_commentary_report
+
+      - name: Generate Weekly HTML Report
         shell: bash
         run: |
-          python -m src.module_f.weekly_commentary_report
+          python -m scripts.generate_weekly_html_report
       
       - name: 📝 Log Weekly Results
         if: always()

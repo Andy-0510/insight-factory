@@ -48,7 +48,13 @@
         .visualization { background: #f7fafc; border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 24px; }
         /* 이미지 스타일 */
         img.report-graph { max-width: 100%; height: auto; border: 1px solid #e0e0e0; border-radius: 8px; margin-top: 1em; display: block; margin-left: auto; margin-right: auto; }
-        .competitor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; } /* 반응형 그리드 */
+        /* .competitor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; } /* 반응형 그리드 */
+        .competitor-grid {
+            display: grid;
+            /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */ /* 기존 반응형 규칙 주석 처리 또는 삭제 */
+            grid-template-columns: repeat(2, 1fr); /* 항상 2열로 고정 */
+            gap: 20px;
+        }
         .competitor-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; }
         .competitor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
         .competitor-name { font-size: 18px; font-weight: 700; color: #1a2332; }
@@ -62,21 +68,32 @@
         .metric-value { font-size: 20px; font-weight: 700; color: #1a2332; }
         .competitor-insight { font-size: 13px; color: #4a5568; line-height: 1.6; padding: 12px; background: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 8px; } /* 스타일 변경 */
         .weak-signals { display: grid; gap: 20px; }
-        .signal-card { background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%); border: 2px solid #e2e8f0; border-left: 6px solid #00b8a9; border-radius: 12px; padding: 28px; }
+        /*.signal-card { background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%); border: 2px solid #e2e8f0; border-left: 6px solid #00b8a9; border-radius: 12px; padding: 28px; }*/
+        /*.signal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }*/
+        /*.signal-title { font-size: 18px; font-weight: 700; color: #1a2332; flex: 1; }*/
+        /*.signal-badges { display: flex; gap: 8px; }*/
+        /*.signal-badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; }*/
+        /*.badge-emerging { background: #e6f7ff; color: #0066ff; }*/
+        /*.badge-confidence { background: #fffbeb; color: #d97706; } /* 색상 변경 */
+        /* .signal-content { display: grid; grid-template-columns: 1fr; gap: 24px; } 1단 그리드 */
+        /*.signal-content { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; } /* 2:1 비율의 2단 그리드로 변경 */
+        /* .signal-description { font-size: 14px; color: #4a5568; line-height: 1.7; margin-bottom: 16px; }*/
+        .signal-card { background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%); border: 2px solid #e2e8f0; border-left: 6px solid #00b8a9; border-radius: 12px; padding: 28px; }        
         .signal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
         .signal-title { font-size: 18px; font-weight: 700; color: #1a2332; flex: 1; }
         .signal-badges { display: flex; gap: 8px; }
         .signal-badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
         .badge-emerging { background: #e6f7ff; color: #0066ff; }
-        .badge-confidence { background: #fffbeb; color: #d97706; } /* 색상 변경 */
-        .signal-content { display: grid; grid-template-columns: 1fr; gap: 24px; } /* 1단으로 변경 */
-        .signal-description { font-size: 14px; color: #4a5568; line-height: 1.7; margin-bottom: 16px; }
-        .signal-meta { background: white; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0; }
+        .badge-confidence { background: #fff5e6; color: #ff9500; }
+        .signal-content { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+        .signal-description { font-size: 14px; color: #4a5568; line-height: 1.7; }
+        .signal-meta { background: white; border-radius: 8px; padding: 16px; }
+        /*.signal-meta { background: white; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0; }*/
         .meta-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0; }
         .meta-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
         .meta-label { font-size: 11px; color: #718096; text-transform: uppercase; margin-bottom: 4px; }
         .meta-value { font-size: 14px; font-weight: 600; color: #1a2332; }
-        .action-section { background: #f7fafc; border-radius: 8px; padding: 20px; margin-top: 16px; }
+        /*.action-section { background: #f7fafc; border-radius: 8px; padding: 20px; margin-top: 16px; }*/
         .action-title { font-size: 13px; font-weight: 700; color: #0066ff; text-transform: uppercase; margin-bottom: 12px; }
         .action-items { display: grid; gap: 12px; }
         .action-item { display: flex; gap: 12px; align-items: baseline; }
@@ -85,13 +102,13 @@
         .momentum-table { width: 100%; border-collapse: collapse; margin-top: 1em; } /* 테이블 상단 여백 추가 */
         .momentum-table thead { background: #f7fafc; }
         .momentum-table th { padding: 16px; text-align: left; font-size: 12px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0; }
-        .momentum-table td { padding: 16px; font-size: 14px; color: #2d3748; border-bottom: 1px solid #e2e8f0; vertical-align: middle; } /* 수직 정렬 추가 */
+        .momentum-table td { padding: 16px; font-size: 13px; color: #2d3748; border-bottom: 1px solid #e2e8f0; vertical-align: middle; } /* 수직 정렬 추가 */
         .momentum-table tbody tr:hover { background: #f0f9ff; } /* 호버 색상 변경 */
         .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #0066ff; color: white; border-radius: 50%; font-weight: 700; font-size: 14px; }
-        .trend-indicator { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 12px; font-size: 13px; font-weight: 700; }
-        .trend-rising { background: #ecfdf5; color: #065f46; } /* 색상 변경 */
-        .trend-stable { background: #f8fafc; color: #64748b; } /* 색상 변경 */
-        .trend-falling { background: #fef2f2; color: #991b1b; } /* 색상 변경 */
+        .trend-indicator { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 12px; font-size: 13px; font-weight: 700; }        
+        .trend-up { background: #fff5e6; color: #ff9500; }        
+        .trend-stable { background: #f7fafc; color: #718096; }        
+        .trend-down { background: #e2e8f0; color: #4a5568; }
         .footer { background: white; border-top: 1px solid #e2e8f0; padding: 32px 40px; text-align: center; margin-top: 40px; }
         .footer-content { max-width: 1200px; margin: 0 auto; font-size: 13px; color: #718096; }
         .footer-links { margin-top: 16px; display: flex; justify-content: center; gap: 24px; }
@@ -218,6 +235,7 @@
                              {{ competitor.trend_icon }} {{ competitor.trend_percentage }}
                         </div>
                     </div>
+
                     <div class="competitor-metrics">
                         <div class="metric-item">
                             <div class="metric-label">주간 언급량</div>
@@ -226,6 +244,14 @@
                         <div class="metric-item">
                             <div class="metric-label">평균 모멘텀</div>
                             <div class="metric-value">{{ competitor.momentum_score }}</div>
+                        </div>
+                         <div class="metric-item">
+                            <div class="metric-label">30일 누적 언급량</div>
+                            <div class="metric-value">{{ competitor.total_30d_mentions | format_int }}</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">주간 최고 모멘텀</div>
+                            <div class="metric-value">{{ competitor.peak_momentum_score }}</div>
                         </div>
                         </div>
                     <div class="competitor-insight">
@@ -262,16 +288,31 @@
                 {% for signal in weak_signals %}
                 <div class="signal-card">
                     <div class="signal-header">
-                        <div class="signal-title"> {{ signal.icon | default('🔬') }} {{ signal.term }}</div>
+                        <div class="signal-title"> {{ signal.icon | default('💡') }} {{ signal.term }}</div>
                         <div class="signal-badges">
                             <span class="signal-badge {{ signal.type_badge_class | default('badge-emerging') }}">{{ signal.type_text | default('Emerging') }}</span>
                             <span class="signal-badge {{ signal.confidence_badge_class | default('badge-confidence') }}">{{ signal.confidence_text | default('Low Freq') }}</span>
                         </div>
-                    </div>
+                        </div>
                     <div class="signal-content">
-                        <div class="signal-description">
-                             {{ signal.description }} <br><br>
-                             {{ signal.implication }} </div>
+                        <div class="signal-main-content">
+                            <div class="signal-description">
+                                 {{ signal.description }}
+                                 <br><br>
+                                 {{ signal.implication }}
+                            </div>
+                                <br>
+                             {% if signal.next_step %}
+                            <div class="action-section"> <div class="action-title">검증 및 대응 계획</div>
+                                <div class="action-items">
+                                    <div class="action-item">
+                                        <div class="action-label">Next Step</div>
+                                        <div class="action-text">{{ signal.next_step }}</div>
+                                    </div>
+                                </div>
+                            </div>
+                             {% endif %}
+                        </div>
                         <div class="signal-meta">
                             <div class="meta-item">
                                 <div class="meta-label">관측 빈도 (주간)</div>
@@ -281,19 +322,12 @@
                                 <div class="meta-label">모멘텀 (z-like)</div>
                                 <div class="meta-value">{{ signal.z_like_score | default('N/A') }}</div>
                             </div>
+                            <div class="meta-item">
+                                <div class="meta-label">누적 언급량 (Total)</div>
+                                <div class="meta-value">{{ signal.total_mentions | format_int | default('N/A') }}</div>
                             </div>
-                    </div>
-                    {% if signal.next_step %}
-                    <div class="action-section">
-                        <div class="action-title">검증 및 대응 계획</div>
-                        <div class="action-items">
-                            <div class="action-item">
-                                <div class="action-label">Next Step</div>
-                                <div class="action-text">{{ signal.next_step }}</div>
                             </div>
                         </div>
-                    </div>
-                     {% endif %}
                 </div>
                 {% else %}
                  <p>금주에 포착된 유의미한 약한 신호가 없습니다.</p>
@@ -313,7 +347,7 @@
                     <tr>
                         <th>순위</th>
                         <th>토픽/신호</th>
-                        <th>모멘텀 점수 (z-like)</th>
+                        <th>모멘텀 점수 <br> (z-like)</th>
                         <th>주간 변화</th>
                         <th>추세</th>
                         <th>권고사항 (AI)</th>
