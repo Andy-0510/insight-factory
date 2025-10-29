@@ -179,6 +179,9 @@ def build_monthly_steps():
         ("gen_visual_monthly",[PY, "-m", "scripts.generate_visuals", "--report-type", "monthly"]), # Added arg
         # ("f_monthly",        [PY, "-m", "src.module_f.monthly_report"]),
         ("f_cmt_monthly",  [PY, "-m", "src.module_f.monthly_commentary_report"]), # Keep commented out
+        ("html_monthly_report",  [PY, "-m", "scripts.generate_monthly_html_report"]), # Keep commented out
+
+        
     ]
 # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 

@@ -168,6 +168,14 @@ jobs:
         run: |
           python -m src.module_f.monthly_commentary_report
 
+      - name: Generate Weekly HTML Report
+        shell: bash
+        env:
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
+          MONTHLY_RUN: "true"        
+        run: |
+          python -m scripts.generate_monthly_html_report
+
       - name: 📝 Log Monthly Results
         if: always()
         run: |

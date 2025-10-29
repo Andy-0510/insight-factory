@@ -102,6 +102,8 @@ jobs:
 
       - name: Generate Weekly HTML Report
         shell: bash
+        env:
+          WEEKLY_RUN: "true"
         run: |
           python -m scripts.generate_weekly_html_report
       
