@@ -95,27 +95,31 @@ def _section_daily_hot_signals(data):
 summarizer = None
 
 def summarize_text_with_hf(text: str) -> str:
-    """허깅페이스 모델을 사용해 기사 본문을 자연스러운 요약문으로 생성합니다 (num_beams 추가)."""
+    """허깅페이스 모델을 사용해 기사 본문을 자연스러운 요약문으로 생성합니다."""
     global summarizer
-
+    
     if summarizer is None:
-        print("[INFO] Initializing Hugging Face summarization model...")
-        try: # Add try-except for pipeline initialization
-            summarizer = pipeline('summarization', model='gogamza/kobart-summarization')
-            print("[INFO] Model initialized.")
-        except Exception as e:
-            print(f"[ERROR] Failed to initialize summarization model: {e}")
-            return "> 요약 모델 초기화 실패." # Return error message
-
+       print("[INFO] Initializing Hugging Face summarization model...")
+       summarizer = pipeline('summarization', model='gogamza/kobart-summarization')
+       print("[INFO] Model initialized.")
 
     if not text or len(text.split()) < 50:
         return "> 기사 본문이 짧아 요약할 수 없습니다."
-
+    
     try:
-        # --- ▼▼▼ [수정] num_beams=4 파라미터 추가 ▼▼▼ ---
-        summary_result = summarizer(text, max_length=170, min_length=90, do_sample=False, num_beams=4) # num_beams 추가
-        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+        # --- ▼▼▼ [수정] 수동으로 텍스트 길이 제한 (가장 확실한 방법) ▼▼▼ ---
+        # KoBART 모델의 최대 토큰(1024) 한계에 맞추기 위해
+        # 텍스트 입력을 물리적으로 1000자로 자릅니다. (약 1024 토큰 이내)
+        MAX_INPUT_CHARS = 1000 
+        if len(text) > MAX_INPUT_CHARS:
+            truncated_text = text[:MAX_INPUT_CHARS]
+        else:
+            truncated_text = text
+        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
+        # [수정] 원본 text 대신 truncated_text 사용
+        summary_result = summarizer(truncated_text, max_length=120, min_length=70, do_sample=False, truncation=True, num_beams=4) 
+        
         if summary_result and isinstance(summary_result, list) and 'summary_text' in summary_result[0]:
             summary = summary_result[0]['summary_text']
             if summary:
@@ -125,10 +129,9 @@ def summarize_text_with_hf(text: str) -> str:
         else:
             return "> 요약 생성에 실패했습니다 (모델이 결과를 반환하지 않음)."
     except Exception as e:
+        # 오류가 나도 리포트 생성은 중단되지 않도록 처리
         print(f"[WARN] Hugging Face summarization failed: {e}")
-        # Add more detail to the error message if possible
-        error_detail = str(e)
-        return f"> 로컬 요약 모델 실행 중 오류 발생: {error_detail[:100]}" # Show first 100 chars of error
+        return "> 로컬 요약 모델 실행 중 오류가 발생했습니다."
 
 # 리포트 섹션
 def _section_time_series(data):
