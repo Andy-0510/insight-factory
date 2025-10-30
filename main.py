@@ -144,7 +144,7 @@ def build_daily_steps():
         # ("future",         [PY, "-m", "scripts.future_insights"]), # future_insights not in daily.yml
         ("gen_visual_daily", [PY, "-m", "scripts.generate_visuals", "--report-type", "daily"]), # Added arg
         # ("preflight",      [PY, "-m", "scripts.preflight"]), # Not explicitly in daily.yml execution block
-        # ("f_daily",          [PY, "-m", "src.module_f.daily_report"]),
+        ("f_daily",          [PY, "-m", "src.module_f.daily_report"]),
         ("f_cmt_daily",      [PY, "-m", "src.module_f.daily_commentary_report"]), # Keep commented out
         ("report_index",     [PY, "-m", "scripts.generate_report_index"]),
         ("html_daily_report",     [PY, "-m", "scripts.generate_daily_html_report"]),
