@@ -168,13 +168,15 @@ jobs:
         run: |
           python -m src.module_f.monthly_commentary_report
 
-      - name: Generate Weekly HTML Report
+      # --- ▼▼▼ 월간 HTML 리포트 생성 단계 추가 ▼▼▼ ---
+      - name: Generate Monthly HTML Report
         shell: bash
         env:
-          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
-          MONTHLY_RUN: "true"        
+          GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }} # LLM 사용하므로 API 키 전달
+          MONTHLY_RUN: "true"
         run: |
-          python -m scripts.generate_monthly_html_report
+          python -m scripts.generate_monthly_html_report # 스크립트 실행
+      # --- ▲▲▲ 월간 HTML 리포트 생성 단계 추가 완료 ▲▲▲ ---
 
       - name: 📝 Log Monthly Results
         if: always()

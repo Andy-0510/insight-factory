@@ -34,22 +34,15 @@ def get_negative_sentences(topic_keywords, articles):
 def call_gemini_for_risk_analysis(topic_name, sentiment_drop, evidence):
     """LLM을 호출하여 리스크를 분석합니다."""
     try:
+        # ... (api 키 설정 등)
         import google.generativeai as genai
         api_key = os.getenv("GEMINI_API_KEY")
         if not api_key:
             raise RuntimeError("GEMINI_API_KEY가 설정되지 않았습니다.")
-        
         genai.configure(api_key=api_key)
-
-        # config.json에서 모델명을 동적으로 불러옵니다.
         cfg = load_config()
         model_name = cfg.get("llm", {}).get("model", "gemini-1.5-flash-001")
-
-        print(f"[INFO] Using Gemini model for risk analysis: {model_name}")
-
         model = genai.GenerativeModel(model_name)
-
-        # f-string 밖에서 evidence 문자열을 미리 생성합니다.
         if evidence:
             evidence_str = "- " + "\n- ".join(evidence)
         else:
@@ -65,9 +58,12 @@ def call_gemini_for_risk_analysis(topic_name, sentiment_drop, evidence):
         {evidence_str}
 
         ### 분석 요청:
-        1. **impact_range**: 이 리스크의 예상 영향 범위를 "단기/재무", "중기/PR", "장기/운영" 중에서 하나만 선택하세요.
-        2. **summary**: 이 리스크의 핵심 내용을 한글 2문장으로 요약하세요.
-        3. **mitigation**: 이 리스크에 대한 1차적인 완화 액션을 한글 2문장으로 제안하세요.
+        1. **impact_range**: 이 리스크의 예상 영향 범위를 "단기/재무", "중기/PR", "장기/운영" 중에서 하나만 선택하세요. 
+        2. **summary**: 이 리스크의 핵심 내용을 한글 2문장으로 요약하세요. 
+        
+        --- ▼▼▼ 수정된 부분 ▼▼▼ ---
+        3. **mitigation**: 이 리스크에 대한 1차적인 핵심 완화 액션 1가지를 **개조식(명사형)**으로 제안하고, 괄호 안에 예상 담당 조직을 명시해주세요. (예: 프리미엄 제품 차별화 전략 수립 (제품기획팀))
+        --- ▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
         ### 출력 형식 (JSON):
         ```json
@@ -79,7 +75,7 @@ def call_gemini_for_risk_analysis(topic_name, sentiment_drop, evidence):
         ```
         """
         response = model.generate_content(prompt)
-        # 마크다운 JSON 코드 블록을 안전하게 파싱
+        # ... (JSON 파싱 로직)
         match = re.search(r'```json\s*(\{.*?\})\s*```', response.text, re.DOTALL)
         if match:
             return json.loads(match.group(1))
@@ -87,6 +83,7 @@ def call_gemini_for_risk_analysis(topic_name, sentiment_drop, evidence):
             return json.loads(response.text)
 
     except Exception as e:
+        # ... (예외 처리)
         print(f"[ERROR] Gemini 리스크 분석 실패: {e}")
         return {
             "impact_range": "분석 실패",
