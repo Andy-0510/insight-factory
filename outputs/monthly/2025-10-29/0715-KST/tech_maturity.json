@@ -1,0 +1,78 @@
+{
+  "results": [
+    {
+      "technology": "스마트폰",
+      "metrics": {
+        "frequency": 49,
+        "sentiment": 0.0,
+        "events": {
+          "LAUNCH": 47,
+          "INVEST": 18,
+          "CERT": 5,
+          "ORDER": 3,
+          "REGUL": 3,
+          "PARTNERSHIP": 1
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "뉴스 언급 빈도가 낮고 시장 감성 점수가 매우 낮으며, 출시 이벤트 빈도가 투자 이벤트 빈도보다 높아 성장 동력이 둔화된 성숙 시장으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "양산",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.5038746297359467,
+        "events": {
+          "INVEST": 23,
+          "LAUNCH": 23,
+          "ORDER": 12,
+          "CERT": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "뉴스 언급은 없지만, 투자 및 출시 이벤트가 활발하고 수주도 발생하고 있어 시장 성장기에 있다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 185,
+        "sentiment": 0.0,
+        "events": {
+          "LAUNCH": 175,
+          "INVEST": 56,
+          "REGUL": 29,
+          "CERT": 22,
+          "ORDER": 13,
+          "PARTNERSHIP": 10
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "뉴스 언급 빈도가 높고, 출시 이벤트가 다수 발생한 반면, 시장 감성 점수가 낮아 성장세가 둔화된 성숙기에 접어들었다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "구글",
+      "metrics": {
+        "frequency": 31,
+        "sentiment": 0.505171537399292,
+        "events": {
+          "LAUNCH": 39,
+          "INVEST": 4,
+          "REGUL": 4,
+          "PARTNERSHIP": 3,
+          "CERT": 3,
+          "ORDER": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "활발한 출시 이벤트와 투자가 이루어지고 있는 반면, 뉴스 언급 빈도와 시장 감성 점수가 중간 수준인 것으로 보아 성장기에 해당한다고 판단됩니다."
+      }
+    }
+  ]
+}

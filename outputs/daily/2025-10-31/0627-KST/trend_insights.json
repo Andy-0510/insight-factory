@@ -1,0 +1,174 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "반도체",
+        "인텔",
+        "핵심",
+        "개발"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "연말",
+        "대형",
+        "다음",
+        "캐릭터",
+        "1일부터"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "브랜드",
+        "할인",
+        "동안",
+        "즐길",
+        "기간"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "붉은사막",
+        "광학",
+        "amd",
+        "게이밍",
+        "팝업스토어"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "반도체",
+        "ai",
+        "강원특별자치도",
+        "그랜드",
+        "원주"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "공동체",
+        "새마을금고재단",
+        "로컬공동체",
+        "필요한",
+        "물품을"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "지포스",
+        "젠슨",
+        "엔비디아",
+        "이재용",
+        "정의선"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "판매",
+        "매출",
+        "ai",
+        "분기",
+        "영업이익"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "ai",
+        "엔비디아",
+        "비전",
+        "무대에",
+        "gpu"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "전기가",
+        "나노와이어",
+        "투명",
+        "unist",
+        "한전"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "미국",
+        "ai",
+        "투자",
+        "2025년",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 11,
+      "topic_name": "Topic #11",
+      "summary": "",
+      "words": [
+        "ai",
+        "투자",
+        "첨단산업",
+        "공급망",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 12,
+      "topic_name": "Topic #12",
+      "summary": "",
+      "words": [
+        "copyright",
+        "프로",
+        "all rights",
+        "reserved",
+        "rights"
+      ]
+    },
+    {
+      "topic_id": 13,
+      "topic_name": "Topic #13",
+      "summary": "",
+      "words": [
+        "oled",
+        "사업",
+        "패널",
+        "매출",
+        "lg디스플레이는"
+      ]
+    }
+  ],
+  "evidence": {}
+}

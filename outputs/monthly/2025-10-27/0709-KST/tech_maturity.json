@@ -1,0 +1,97 @@
+{
+  "results": [
+    {
+      "technology": "스마트폰",
+      "metrics": {
+        "frequency": 45,
+        "sentiment": 0.0,
+        "events": {
+          "LAUNCH": 46,
+          "INVEST": 17,
+          "CERT": 5,
+          "ORDER": 3,
+          "REGUL": 3,
+          "PARTNERSHIP": 1
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "뉴스 언급 빈도가 비교적 낮고, 시장 감성 점수가 매우 낮으며, 출시 이벤트 비율이 높아 스마트폰 시장은 성숙기에 접어든 것으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "양산",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.0,
+        "events": {
+          "INVEST": 23,
+          "LAUNCH": 22,
+          "ORDER": 12,
+          "CERT": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "뉴스 언급은 없지만 투자 및 출시, 수주 활동이 활발한 것으로 보아 성장기에 진입한 기술로 판단됩니다."
+      }
+    },
+    {
+      "technology": "구글",
+      "metrics": {
+        "frequency": 28,
+        "sentiment": 0.0,
+        "events": {
+          "LAUNCH": 38,
+          "REGUL": 4,
+          "INVEST": 3,
+          "PARTNERSHIP": 3,
+          "ORDER": 2,
+          "CERT": 1
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "낮은 시장 감성에도 불구하고 잦은 출시 이벤트와 꾸준한 투자 유치를 통해 시장 확대 가능성이 높게 평가됩니다."
+      }
+    },
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 175,
+        "sentiment": 0.0,
+        "events": {
+          "LAUNCH": 169,
+          "INVEST": 55,
+          "REGUL": 29,
+          "CERT": 22,
+          "ORDER": 12,
+          "PARTNERSHIP": 9
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "높은 출시 빈도와 투자에 비해 낮은 시장 감성 점수는 애플 기술이 성숙기에 접어들어 혁신적인 성장보다는 안정적인 유지 및 관리에 집중하고 있음을 시사합니다."
+      }
+    },
+    {
+      "technology": "디스플레이",
+      "metrics": {
+        "frequency": 116,
+        "sentiment": 0.0,
+        "events": {
+          "INVEST": 289,
+          "LAUNCH": 282,
+          "ORDER": 48,
+          "PARTNERSHIP": 32,
+          "REGUL": 29,
+          "CERT": 27
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "높은 투자 및 출시 건수와 비교적 낮은 수주 건수는 디스플레이 기술 시장이 성장기에 있음을 시사합니다."
+      }
+    }
+  ]
+}
