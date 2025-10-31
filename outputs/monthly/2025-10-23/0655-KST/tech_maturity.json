@@ -1,0 +1,60 @@
+{
+  "results": [
+    {
+      "technology": "폴더블",
+      "metrics": {
+        "frequency": 43,
+        "sentiment": 0.5043131113052368,
+        "events": {
+          "LAUNCH": 48,
+          "INVEST": 19,
+          "CERT": 5,
+          "ORDER": 4,
+          "REGUL": 1
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "폴더블 기술 관련 출시 이벤트가 투자 및 수주 건수보다 압도적으로 많아 시장이 성장 단계에 있음을 시사합니다."
+      }
+    },
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 115,
+        "sentiment": 0.5056839287281036,
+        "events": {
+          "LAUNCH": 137,
+          "INVEST": 50,
+          "REGUL": 26,
+          "CERT": 21,
+          "ORDER": 11,
+          "PARTNERSHIP": 5
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "높은 출시 빈도와 적당한 투자, 낮은 수주 빈도로 보아 애플 기술은 이미 시장에 안정적으로 자리 잡은 성숙기에 있다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "삼성",
+      "metrics": {
+        "frequency": 457,
+        "sentiment": 0.5031707584857941,
+        "events": {
+          "LAUNCH": 734,
+          "INVEST": 337,
+          "CERT": 139,
+          "REGUL": 96,
+          "PARTNERSHIP": 90,
+          "ORDER": 81
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "높은 출시 빈도와 투자 건수는 삼성 기술이 시장에서 성장하고 있으며, 뉴스 언급 빈도와 시장 감성 점수가 보통 수준인 점을 고려했을 때, 성숙 단계로 넘어가기 전 성장 단계에 있다고 판단됩니다."
+      }
+    }
+  ]
+}

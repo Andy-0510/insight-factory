@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "oled",
+        "lg",
+        "삼성",
+        "삼성전자"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "led",
+        "디스플레이",
+        "차세대",
+        "ledos",
+        "ar"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "패널",
+        "스트레처블",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "lcd",
+        "전장",
+        "auo"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "sharp",
+        "디스플레이",
+        "미니",
+        "필옵틱스",
+        "파인텍"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "qled",
+        "tv",
+        "tcl",
+        "중국",
+        "사전"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "oled",
+        "디스플레이",
+        "ai",
+        "패널",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "삼성",
+        "아트",
+        "엔진",
+        "바젤",
+        "아트 바젤"
+      ]
+    }
+  ],
+  "evidence": {}
+}

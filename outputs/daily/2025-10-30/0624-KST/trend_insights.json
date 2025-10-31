@@ -1,0 +1,150 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "미국",
+        "투자",
+        "엔비디아",
+        "관세"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "그랜드십일절",
+        "인기",
+        "상품을",
+        "매일",
+        "상품"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "인텔",
+        "팝업",
+        "pc",
+        "ai pc"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "전기가",
+        "unist",
+        "나노와이어",
+        "투명",
+        "피복"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "연속",
+        "없다",
+        "삼성전자",
+        "국감",
+        "경기"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "뷰티",
+        "할인",
+        "기간",
+        "가을",
+        "led"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "xr",
+        "갤럭시",
+        "인공지능",
+        "인공지능 ai"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "반도체",
+        "배터리",
+        "핵심",
+        "전기차",
+        "생산"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "oled",
+        "중국",
+        "폴더블",
+        "tv",
+        "출시"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "ai",
+        "반도체",
+        "플랫폼",
+        "강원특별자치도",
+        "의료"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "ai",
+        "ceo",
+        "투명",
+        "투자",
+        "테크"
+      ]
+    },
+    {
+      "topic_id": 11,
+      "topic_name": "Topic #11",
+      "summary": "",
+      "words": [
+        "브랜드",
+        "게이밍",
+        "프리미엄",
+        "있어",
+        "기아"
+      ]
+    }
+  ],
+  "evidence": {}
+}

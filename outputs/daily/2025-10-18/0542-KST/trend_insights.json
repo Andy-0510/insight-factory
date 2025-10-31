@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "oled",
+        "실적",
+        "3분기",
+        "패널",
+        "tv"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "미국",
+        "중국",
+        "다만",
+        "소폭",
+        "트럼프"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "반도체",
+        "oled",
+        "장비",
+        "ai",
+        "투자"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "배터리",
+        "소재",
+        "반도체",
+        "부품",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "rgb",
+        "삼성전자의",
+        "으로",
+        "삼성전자",
+        "제품을"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "모두",
+        "에서",
+        "속에서",
+        "기간",
+        "경험을"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "기술",
+        "자동차",
+        "lcd"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "애플",
+        "2027년",
+        "모두",
+        "전년",
+        "2025년"
+      ]
+    }
+  ],
+  "evidence": {}
+}
