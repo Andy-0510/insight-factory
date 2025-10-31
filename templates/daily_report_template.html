@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Daily Briefing (2025-10-28)</title>
+    <title>Daily Briefing ({{ report_date_short }})</title>
     <style>
         /* CSS 스타일은 제공해주신 내용과 동일하게 유지합니다. */
         * {
@@ -18,7 +18,7 @@
             line-height: 1.6;
         }
         .email-container {
-            max-width: 680px;
+            max-width: 960px;
             margin: 0 auto;
             background: #ffffff;
             border-radius: 8px;
@@ -309,7 +309,7 @@
         <div class="header">
             <div class="header-top">
                 <div class="logo">⚡ INSIGHT FACTORY</div>
-                <div class="date">2025.10.28 (화)</div>
+                <div class="date">{{ report_date }}</div>
             </div>
             <div class="title">Daily Briefing</div>
             <div class="subtitle">오늘의 시장 맥박 · 전술적 조기경보</div>
@@ -322,41 +322,41 @@
                     <div class="section-title">시장 활동량 및 이상 징후</div>
                 </div>
 
-                <img src="fig/timeseries.png" alt="시장 활동량 시계열 그래프" class="report-graph">
+                <img src="{{ timeseries_image_path }}" alt="시장 활동량 시계열 그래프" class="report-graph">
 
                 <div class="metric-box">
                     <div class="metric-row">
                         <div class="metric-label">금일 기사량</div>
                         <div>
-                            <span class="metric-value">0</span>
-                            <span class="metric-change change-neutral">N/A WoW</span>
+                            <span class="metric-value">{{ article_count | format_int }}</span>
+                            <span class="metric-change {{ wow_change_class }}">{{ article_wow_change }} WoW</span>
                         </div>
                     </div>
                     <div class="metric-row">
                         <div class="metric-label">7일 이동평균 대비</div>
                         <div>
-                            <span class="metric-value">N/A</span>
+                            <span class="metric-value">{{ article_z_score }}</span>
                         </div>
                     </div>
                 </div>
 
-                
+                {% if spike_detected %}
                 <div class="spike-alert">
                     <div class="alert-icon">⚠️</div>
                     <div class="alert-text">
                         <strong>스파이크 감지</strong><br>
-                        신호 기사 비율에서 7일 평균 대비 2.1 표준편차 급등/급락(198.73%)
+                        {{ spike_message }}
                     </div>
                 </div>
-                
+                {% endif %}
 
                 <div class="action-block">
                      <div class="action-item">
                          <div class="action-label">Commentary (AI)</div>
-                         <div class="action-text">분석 근거가 되는 당일 기사가 없음.</div> </div>
+                         <div class="action-text">{{ activity_commentary }}</div> </div>
                      <div class="action-item">
                          <div class="action-label">Next Step</div>
-                         <div class="action-text">급등 원인이 된 토픽/이벤트 상세 분석 및 관련 부서 공유</div> </div>
+                         <div class="action-text">{{ activity_next_step }}</div> </div>
                 </div>
             </div>
 
@@ -366,66 +366,30 @@
                     <div class="section-title">오늘의 급등 신호 Top 3</div>
                 </div>
 
-                <img src="fig/weekly_strong_signals_barchart.png" alt="급등 신호 Top 3 바 차트" class="report-graph">
+                <img src="{{ hot_signals_image_path }}" alt="급등 신호 Top 3 바 차트" class="report-graph">
 
-                
+                {% for signal in hot_signals %}
                 <div class="topic-card">
                     <div class="topic-header">
-                        <div class="topic-rank">1</div>
-                        <div class="topic-name">LG디스플레이</div>
-                        <div class="topic-score">+2.9σ</div> </div>
+                        <div class="topic-rank">{{ loop.index }}</div>
+                        <div class="topic-name">{{ signal.term }}</div>
+                        <div class="topic-score">{{ signal.z_like_display }}</div> </div>
                     <div class="topic-description">
-                        관련 기사 없음. </div>
+                        {{ signal.commentary }} </div>
                     <div class="action-block">
                          <div class="action-item">
                              <div class="action-label">Related Metrics</div>
-                             <div class="action-text">금일 언급량: 77, 전일 대비: +21</div>
+                             <div class="action-text">금일 언급량: {{ signal.cur | format_int }}, 전일 대비: {{ signal.diff_display }}</div>
                          </div>
                          <div class="action-item">
                              <div class="action-label">Next Step</div>
-                             <div class="action-text">&#39;LG디스플레이&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
+                             <div class="action-text">{{ signal.next_step }}</div>
                          </div>
                     </div>
                 </div>
-                
-                <div class="topic-card">
-                    <div class="topic-header">
-                        <div class="topic-rank">2</div>
-                        <div class="topic-name">삼성전자</div>
-                        <div class="topic-score">+1.1σ</div> </div>
-                    <div class="topic-description">
-                        삼성전자가 호주에서 혁신, 신뢰성, 디자인을 인정받아 &#39;최고 가전 브랜드&#39;로 선정되며 관심이 급증했습니다. </div>
-                    <div class="action-block">
-                         <div class="action-item">
-                             <div class="action-label">Related Metrics</div>
-                             <div class="action-text">금일 언급량: 67, 전일 대비: +7</div>
-                         </div>
-                         <div class="action-item">
-                             <div class="action-label">Next Step</div>
-                             <div class="action-text">&#39;삼성전자&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
-                         </div>
-                    </div>
-                </div>
-                
-                <div class="topic-card">
-                    <div class="topic-header">
-                        <div class="topic-rank">3</div>
-                        <div class="topic-name">현대자동차</div>
-                        <div class="topic-score">-0.2σ</div> </div>
-                    <div class="topic-description">
-                        관련 기사 없음. </div>
-                    <div class="action-block">
-                         <div class="action-item">
-                             <div class="action-label">Related Metrics</div>
-                             <div class="action-text">금일 언급량: 12, 전일 대비: +5</div>
-                         </div>
-                         <div class="action-item">
-                             <div class="action-label">Next Step</div>
-                             <div class="action-text">&#39;현대자동차&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
-                         </div>
-                    </div>
-                </div>
-                
+                {% else %}
+                 <p>금일 유의미한 급등 신호는 포착되지 않았습니다.</p>
+                {% endfor %}
             </div>
 
             <div class="section">
@@ -434,67 +398,29 @@
                     <div class="section-title">경쟁사 주요 활동</div>
                 </div>
 
-                
-                <div class="event-item" style="border-left-color: #10b981;"> <div class="event-meta">
-                        <span class="event-type" style="background-color: #10b981;">INVEST</span>
-                        <span class="event-company">[더벨]장석준 이노테크 대표 &#34;글로벌 신뢰성 장비 선도기업 도약&#34;</span>
-                        <span> · 2025-10-28</span>
+                {% for event in competitor_events %}
+                <div class="event-item" style="border-left-color: {{ event.color_code | default('#00b8a9') }};"> <div class="event-meta">
+                        <span class="event-type" style="background-color: {{ event.color_code | default('#00b8a9') }};">{{ event.type }}</span>
+                        <span class="event-company">{{ event.company }}</span>
+                        <span> · {{ event.date }}</span>
                     </div>
                     <div class="event-title">
-                        [더벨]장석준 이노테크 대표 &#34;글로벌 신뢰성 장비 선도기업 도약&#34;
+                        {{ event.title }}
                     </div>
                     <div class="event-impact">
-                        영향 분석 실패 </div>
-                    
+                        {{ event.impact }} </div>
+                    {% if event.next_step %}
                     <div class="action-block">
                          <div class="action-item">
                              <div class="action-label">Next Step</div>
-                             <div class="action-text">대응 제안 실패</div>
+                             <div class="action-text">{{ event.next_step }}</div>
                          </div>
                     </div>
-                    
+                    {% endif %}
                 </div>
-                
-                <div class="event-item" style="border-left-color: #10b981;"> <div class="event-meta">
-                        <span class="event-type" style="background-color: #10b981;">INVEST</span>
-                        <span class="event-company">주식고수 매수 3위 &#39;조선 슈퍼사이클&#39; 한화오션</span>
-                        <span> · 2025-10-28</span>
-                    </div>
-                    <div class="event-title">
-                        주식고수 매수 3위 &#39;조선 슈퍼사이클&#39; 한화오션, 2위 두산에너빌리티 [...
-                    </div>
-                    <div class="event-impact">
-                        영향 분석 실패 </div>
-                    
-                    <div class="action-block">
-                         <div class="action-item">
-                             <div class="action-label">Next Step</div>
-                             <div class="action-text">대응 제안 실패</div>
-                         </div>
-                    </div>
-                    
-                </div>
-                
-                <div class="event-item" style="border-left-color: #10b981;"> <div class="event-meta">
-                        <span class="event-type" style="background-color: #10b981;">INVEST</span>
-                        <span class="event-company">덕산네오룩스</span>
-                        <span> · 2025-10-28</span>
-                    </div>
-                    <div class="event-title">
-                        덕산네오룩스, 실적 성장 스토리 고려 주가 반등 전망-신한
-                    </div>
-                    <div class="event-impact">
-                        영향 분석 실패 </div>
-                    
-                    <div class="action-block">
-                         <div class="action-item">
-                             <div class="action-label">Next Step</div>
-                             <div class="action-text">대응 제안 실패</div>
-                         </div>
-                    </div>
-                    
-                </div>
-                
+                {% else %}
+                 <p>금일 감지된 경쟁사의 주요 이벤트가 없습니다.</p>
+                {% endfor %}
             </div>
 
             <div class="section">
@@ -503,31 +429,17 @@
                     <div class="section-title">오늘의 주요 기사</div>
                 </div>
 
-                
-                <a href="https://www.dailian.co.kr/news/view/1560244/?sc=Naver" class="article-link" target="_blank"> <div class="article-title">
-                        90조 시장 XR…빅테크, 마이크로 OLED·AI 칩·경량화로 승부
+                {% for article in top_articles %}
+                <a href="{{ article.url }}" class="article-link" target="_blank"> <div class="article-title">
+                        {{ article.title }}
                     </div>
-                    <div class="article-meta"> · </div>
+                    <div class="article-meta">{{ article.source }} · {{ article.date }}</div>
                     <div class="article-summary">
-                        &gt; 기사 본문이 너무 짧아 요약할 수 없습니다. </div>
+                        {{ article.summary }} </div>
                 </a>
-                
-                <a href="https://www.news2day.co.kr/article/20251022500189" class="article-link" target="_blank"> <div class="article-title">
-                        [N2 뷰] &#39;보고, 말하고 손짓하니 새 세상&#39;...삼성 ‘갤럭시 XR’로 4년 내...
-                    </div>
-                    <div class="article-meta"> · </div>
-                    <div class="article-summary">
-                        &gt; 기사 본문이 너무 짧아 요약할 수 없습니다. </div>
-                </a>
-                
-                <a href="https://www.bloter.net/news/articleView.html?idxno=645985" class="article-link" target="_blank"> <div class="article-title">
-                        베일 벗은 &#39;갤럭시 XR&#39;…삼성, 구글·퀄컴 손잡고 &#39;AI 생태계&#39; 확장 본격...
-                    </div>
-                    <div class="article-meta"> · </div>
-                    <div class="article-summary">
-                        &gt; 기사 본문이 너무 짧아 요약할 수 없습니다. </div>
-                </a>
-                
+                {% else %}
+                 <p>선정된 주요 기사가 없습니다.</p>
+                {% endfor %}
             </div>
             
              <div class="section">
@@ -536,9 +448,29 @@
                     <div class="section-title">오늘의 리스크 신호 (감성 급락)</div>
                 </div>
                 
-                
+                {% if risk_signals %}
+                    {% for risk in risk_signals %}
+                    <div class="topic-card" style="border-left: 4px solid #e53e3e;"> <div class="topic-header">
+                            <div class="topic-rank" style="background-color: #e53e3e;">!</div> <div class="topic-name">{{ risk.topic }}</div>
+                            <div class="topic-score" style="color: #e53e3e;">하락폭: {{ risk.drop_display }}</div>
+                        </div>
+                        <div class="topic-description">
+                             {{ risk.commentary }} </div>
+                        <div class="action-block">
+                             <div class="action-item">
+                                 <div class="action-label">Current Status</div>
+                                 <div class="action-text">오늘 점수: {{ risk.score_today }}, 7일 평균: {{ risk.score_avg_7d }}</div>
+                             </div>
+                             <div class="action-item">
+                                 <div class="action-label">Next Step</div>
+                                 <div class="action-text">{{ risk.next_step }}</div>
+                             </div>
+                        </div>
+                    </div>
+                    {% endfor %}
+                {% else %}
                      <p>금일 감성 급락으로 인한 리스크 신호는 포착되지 않았습니다.</p>
-                
+                {% endif %}
             </div>
 
         </div>
@@ -546,12 +478,12 @@
         <div class="footer">
             <div>
                 이 리포트는 AI 기반 시장 분석 시스템 Insight Factory가 생성했습니다.<br>
-                문의: intelligence@company.com
+                문의: {{ contact_email | default('intelligence@company.com') }}
             </div>
             <div class="footer-links">
-                <a href="#" class="footer-link">대시보드 보기</a> |
-                <a href="#" class="footer-link">설정 변경</a> |
-                <a href="#" class="footer-link">수신거부</a>
+                <a href="{{ dashboard_link | default('#') }}" class="footer-link">대시보드 보기</a> |
+                <a href="{{ settings_link | default('#') }}" class="footer-link">설정 변경</a> |
+                <a href="{{ unsubscribe_link | default('#') }}" class="footer-link">수신거부</a>
             </div>
         </div>
     </div>

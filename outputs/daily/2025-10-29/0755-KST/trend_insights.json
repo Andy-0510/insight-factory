@@ -1,0 +1,174 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "반도체",
+        "핵심",
+        "중국",
+        "디스플레이",
+        "사업"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "차량용",
+        "플로",
+        "인포테인먼트",
+        "자동차",
+        "ivi"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "할인",
+        "가전절",
+        "가습기",
+        "롯데하이마트",
+        "plux"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "산나비",
+        "산나비 외전",
+        "외전",
+        "귀신",
+        "씌인"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "서비스",
+        "전년",
+        "회사는",
+        "삼성전자",
+        "투자"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "씽크스테이션",
+        "엔비디아",
+        "pgx",
+        "pgx는"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "삼성전자",
+        "ceo",
+        "스마트폰",
+        "접는"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "ceo",
+        "lg",
+        "투명",
+        "테크"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "ai",
+        "엔비디아",
+        "오른",
+        "미국",
+        "3대"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "oled",
+        "tv",
+        "패널",
+        "6세대",
+        "lg디스플레이"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "ai",
+        "최신",
+        "인프라",
+        "개발",
+        "통합"
+      ]
+    },
+    {
+      "topic_id": 11,
+      "topic_name": "Topic #11",
+      "summary": "",
+      "words": [
+        "미국",
+        "브랜드",
+        "공식",
+        "바이오",
+        "있어"
+      ]
+    },
+    {
+      "topic_id": 12,
+      "topic_name": "Topic #12",
+      "summary": "",
+      "words": [
+        "배터리",
+        "미국",
+        "ess",
+        "전기차",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 13,
+      "topic_name": "Topic #13",
+      "summary": "",
+      "words": [
+        "아트",
+        "시진핑",
+        "8k",
+        "중국",
+        "카카오톡"
+      ]
+    }
+  ],
+  "evidence": {}
+}

@@ -53,19 +53,15 @@ def _load_data():
     data = {
         "keywords": load_json(os.path.join(ROOT_OUTPUT_DIR, "keywords.json"), {"keywords": [], "stats": {}}),
         "topics": load_json(os.path.join(ROOT_OUTPUT_DIR, "topics.json"), {"topics": []}),
-        "ts": load_json(os.path.join(ROOT_OUTPUT_DIR, "trend_timeseries.json"), {"daily": []}),
+        # --- ▼▼▼ 수정: 'ts' 대신 'daily_ratios' 키로 로드 ▼▼▼ ---
+        "daily_ratios": _safe_read_csv(os.path.join(EXPORT_DIR, "daily_article_ratios.csv")),
+        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
         "insights": load_json(os.path.join(ROOT_OUTPUT_DIR, "trend_insights.json"), {"summary": "", "top_topics": [], "evidence": {}}),
-        "opps": load_json(os.path.join(ROOT_OUTPUT_DIR, "biz_opportunities.json"), {"ideas": []}),
-        "tech_maturity": load_json(os.path.join(ROOT_OUTPUT_DIR, "tech_maturity.json"), {"results": []}),
-        "weak_insights": load_json(os.path.join(ROOT_OUTPUT_DIR, "weak_signal_insights.json"), {"results": []}),
-        "meta_items": load_json(latest(os.path.join("data", "news_meta_*.json")), []) # 경로 수정
+        # ... (other data) ...
+        "meta_items": load_json(latest(os.path.join("data", "news_meta_*.json")), []),
+        "sentiment": _safe_read_csv(os.path.join(EXPORT_DIR, "daily_topic_sentiment.csv"))
     }
-    # --- ▼▼▼ [추가] 일간 감성 데이터 로드 ▼▼▼ ---
-    sentiment_path = os.path.join(EXPORT_DIR, "daily_topic_sentiment.csv")
-    data["sentiment"] = _safe_read_csv(sentiment_path)
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
     return data
-# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 def _section_header(title):
     # ... (기존과 동일)
@@ -99,27 +95,31 @@ def _section_daily_hot_signals(data):
 summarizer = None
 
 def summarize_text_with_hf(text: str) -> str:
-    """허깅페이스 모델을 사용해 기사 본문을 자연스러운 요약문으로 생성합니다 (num_beams 추가)."""
+    """허깅페이스 모델을 사용해 기사 본문을 자연스러운 요약문으로 생성합니다."""
     global summarizer
-
+    
     if summarizer is None:
-        print("[INFO] Initializing Hugging Face summarization model...")
-        try: # Add try-except for pipeline initialization
-            summarizer = pipeline('summarization', model='gogamza/kobart-summarization')
-            print("[INFO] Model initialized.")
-        except Exception as e:
-            print(f"[ERROR] Failed to initialize summarization model: {e}")
-            return "> 요약 모델 초기화 실패." # Return error message
-
+       print("[INFO] Initializing Hugging Face summarization model...")
+       summarizer = pipeline('summarization', model='gogamza/kobart-summarization')
+       print("[INFO] Model initialized.")
 
     if not text or len(text.split()) < 50:
         return "> 기사 본문이 짧아 요약할 수 없습니다."
-
+    
     try:
-        # --- ▼▼▼ [수정] num_beams=4 파라미터 추가 ▼▼▼ ---
-        summary_result = summarizer(text, max_length=150, min_length=40, do_sample=False, num_beams=4) # num_beams 추가
-        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+        # --- ▼▼▼ [수정] 수동으로 텍스트 길이 제한 (가장 확실한 방법) ▼▼▼ ---
+        # KoBART 모델의 최대 토큰(1024) 한계에 맞추기 위해
+        # 텍스트 입력을 물리적으로 1000자로 자릅니다. (약 1024 토큰 이내)
+        MAX_INPUT_CHARS = 1000 
+        if len(text) > MAX_INPUT_CHARS:
+            truncated_text = text[:MAX_INPUT_CHARS]
+        else:
+            truncated_text = text
+        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
+        # [수정] 원본 text 대신 truncated_text 사용
+        summary_result = summarizer(truncated_text, max_length=120, min_length=70, do_sample=False, truncation=True, num_beams=4) 
+        
         if summary_result and isinstance(summary_result, list) and 'summary_text' in summary_result[0]:
             summary = summary_result[0]['summary_text']
             if summary:
@@ -129,68 +129,63 @@ def summarize_text_with_hf(text: str) -> str:
         else:
             return "> 요약 생성에 실패했습니다 (모델이 결과를 반환하지 않음)."
     except Exception as e:
+        # 오류가 나도 리포트 생성은 중단되지 않도록 처리
         print(f"[WARN] Hugging Face summarization failed: {e}")
-        # Add more detail to the error message if possible
-        error_detail = str(e)
-        return f"> 로컬 요약 모델 실행 중 오류 발생: {error_detail[:100]}" # Show first 100 chars of error
+        return "> 로컬 요약 모델 실행 중 오류가 발생했습니다."
 
 # 리포트 섹션
 def _section_time_series(data):
     """일일 시장 활동량 및 이상 징후 (최근 30일 기준)"""
-    ts = data.get("ts", {})
-    daily = ts.get("daily", [])
-    df_ts_full = pd.DataFrame(daily)
-    
-    # --- ▼▼▼ [추가] 신호 기사 비율 계산 ▼▼▼ ---
-    df_signal = _safe_read_csv(os.path.join(EXPORT_DIR, "daily_signal_counts.csv"))
-    if not df_ts_full.empty and not df_signal.empty:
-        df_merged = pd.merge(df_ts_full, df_signal, on="date", how="left").fillna(0)
-        df_merged['signal_ratio'] = (df_merged['signal_article_count'] / df_merged['count']).where(df_merged['count'] > 0, 0)
-        avg_ratio_30days = df_merged.tail(30)['signal_ratio'].mean()
-    else:
-        avg_ratio_30days = 0
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+    # --- ▼▼▼ 수정: data["ts"] 대신 data["daily_ratios"] 사용 ▼▼▼ ---
+    df_ratios_full = data.get("daily_ratios", pd.DataFrame()) # 키 이름 변경
+    if df_ratios_full.empty: return "- (시계열 데이터 부족)\n"
 
-    df_ts_30days = df_ts_full.tail(30)
-    if df_ts_30days.empty: return "- (시계열 데이터 부족)\n"
-    
-    date_range = f"{df_ts_30days.iloc[0]['date']} ~ {df_ts_30days.iloc[-1]['date']}"
-    
+    try:
+        df_ratios_full['date'] = pd.to_datetime(df_ratios_full['date'])
+    except Exception as e:
+        print(f"[WARN] Could not parse dates in daily_ratios: {e}")
+        return "- (날짜 형식 오류)\n"
+
+    df_ratios_30days = df_ratios_full.sort_values('date').tail(30)
+    if df_ratios_30days.empty: return "- (최근 30일 시계열 데이터 부족)\n"
+
+    avg_ratio_30days = df_ratios_30days['signal_ratio'].mean() if 'signal_ratio' in df_ratios_30days.columns else 0
+
+    start_date_str = df_ratios_30days.iloc[0]['date'].strftime('%Y-%m-%d')
+    end_date_str = df_ratios_30days.iloc[-1]['date'].strftime('%Y-%m-%d')
+    date_range = f"{start_date_str} ~ {end_date_str}"
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
     lines = [
         f"- **분석 기간:** {date_range} (최근 30일)",
-        f"- **최근 30일 평균 신호 기사 비율:** {avg_ratio_30days:.2%}" # <-- 비율 텍스트 추가
+        f"- **최근 30일 평균 신호 기사 비율:** {avg_ratio_30days:.2%}" # (계산 로직 동일)
     ]
-    
-    # 이미지는 이제 강화된 버전으로 자동 교체됨
+
+    # 이미지 경로 (기존과 동일)
     lines.append(_insert_images(os.path.join(FIG_DIR, "timeseries.png"), OUT_MD, captions=["일일 기사량, 신호 기사 비율 및 스파이크 추이"]))
-    
-    # --- ▼▼▼▼▼ [수정] 스파이크 테이블을 두 개로 분리하여 표시 ▼▼▼▼▼ ---
+
+    # 스파이크 테이블 표시 (기존 로직과 동일)
     df_spikes = _safe_read_csv(os.path.join(EXPORT_DIR, "timeseries_spikes_enhanced.csv"))
     if not df_spikes.empty:
-        start_date_30days = pd.to_datetime(df_ts_30days.iloc[0]['date'])
-        df_spikes['date'] = pd.to_datetime(df_spikes['date'])
-        df_spikes_recent = df_spikes[df_spikes['date'] >= start_date_30days].copy()
-        
-        if not df_spikes_recent.empty:
-            df_spikes_recent['date'] = df_spikes_recent['date'].dt.strftime('%Y-%m-%d')
-            
-            # 1. 전체 기사량 스파이크 테이블
-            df_count_spikes = df_spikes_recent[df_spikes_recent['metric'] == '전체 기사량'].copy()
-            if not df_count_spikes.empty:
-                lines.append("### 📈 전체 기사량 스파이크")
-                lines.append(_to_markdown_table(df_count_spikes[['date', 'value', 'z_score']].rename(columns={
-                    'date': '날짜', 'value': '기사량', 'z_score': 'Z-Score'
-                })))
+        start_date_30days_dt = df_ratios_30days.iloc[0]['date']
+        try:
+            df_spikes['date'] = pd.to_datetime(df_spikes['date'])
+            df_spikes_recent = df_spikes[df_spikes['date'] >= start_date_30days_dt].copy()
+            if not df_spikes_recent.empty:
+                df_spikes_recent['date'] = df_spikes_recent['date'].dt.strftime('%Y-%m-%d')
+                
+                df_count_spikes = df_spikes_recent[df_spikes_recent['metric'] == '전체 기사량']
+                if not df_count_spikes.empty:
+                     lines.append("### 📈 전체 기사량 스파이크")
+                     lines.append(_to_markdown_table(df_count_spikes[['date', 'value', 'z_score']].rename(columns={'date': '날짜', 'value': '기사량', 'z_score': 'Z-Score'})))
+                     
+                df_ratio_spikes = df_spikes_recent[df_spikes_recent['metric'] == '신호 기사 비율']
+                if not df_ratio_spikes.empty:
+                    lines.append("### 🚩 신호 기사 비율 스파이크")
+                    lines.append(_to_markdown_table(df_ratio_spikes[['date', 'value', 'z_score']].rename(columns={'date': '날짜', 'value': '비율', 'z_score': 'Z-Score'})))
+        except Exception as e:
+             print(f"[WARN] Error processing spike table data: {e}")
 
-            # 2. 신호 기사 비율 스파이크 테이블
-            df_ratio_spikes = df_spikes_recent[df_spikes_recent['metric'] == '신호 기사 비율'].copy()
-            if not df_ratio_spikes.empty:
-                lines.append("### 신호 기사 비율 스파이크")
-                lines.append(_to_markdown_table(df_ratio_spikes[['date', 'value', 'z_score']].rename(columns={
-                    'date': '날짜', 'value': '비율', 'z_score': 'Z-Score'
-                })))
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-        
     return "\n".join(lines)
 
 def _section_historical_strong_signals(data):
@@ -342,4 +337,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-

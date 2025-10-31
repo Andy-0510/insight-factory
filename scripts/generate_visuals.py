@@ -130,26 +130,24 @@ def load_all_data():
 def plot_enhanced_timeseries(df_display, spike_threshold=2.0):
     """
     주어진 데이터프레임을 사용하여 '전체 기사량'과 '신호 기사 비율'을 시각화합니다.
-    (데이터 로딩 로직 제거, 0으로 나누기 오류 방지 추가)
+    (범례, 막대 색상, 마커 수정됨)
     """
-    print("[INFO] Generating enhanced timeseries chart...")
+    print("[INFO] Generating enhanced timeseries chart (updated)...")
     
-    # --- ▼▼▼ [수정] 함수는 데이터 시각화에만 집중하도록 구조 변경 ▼▼▼ ---
     df = df_display.copy()
     df['date'] = pd.to_datetime(df['date'])
 
-    # 스파이크 탐지
+    # 스파이크 탐지 (기존과 동일)
     all_spikes_dfs = []
     for metric, name in [('count', '전체 기사량'), ('signal_ratio', '신호 기사 비율')]:
         if metric not in df.columns:
-            print(f"[WARN] Metric '{metric}' not found in DataFrame. Skipping spike detection.")
-            continue
+             print(f"[WARN] Metric '{metric}' not found in DataFrame. Skipping spike detection.")
+             continue
 
         rolling = df[metric].rolling(window=7, min_periods=7)
         df[f'{metric}_ma'] = rolling.mean()
         df[f'{metric}_std'] = rolling.std()
         
-        # [안정성 수정] 0으로 나누는 것을 방지하기 위해 분모에 작은 값(epsilon)을 더함
         epsilon = 1e-9
         df[f'{metric}_z'] = (df[metric] - df[f'{metric}_ma']) / (df[f'{metric}_std'] + epsilon)
         
@@ -160,7 +158,7 @@ def plot_enhanced_timeseries(df_display, spike_threshold=2.0):
             spikes['z_score'] = spikes[f'{metric}_z']
             all_spikes_dfs.append(spikes[['date', 'metric', 'value', 'z_score']])
     
-    # 스파이크 결과 CSV 저장
+    # 스파이크 결과 CSV 저장 (기존과 동일)
     out_spike_csv = os.path.join(EXPORT_DIR, "timeseries_spikes_enhanced.csv")
     if all_spikes_dfs:
         df_all_spikes = pd.concat(all_spikes_dfs).sort_values('date')
@@ -170,7 +168,7 @@ def plot_enhanced_timeseries(df_display, spike_threshold=2.0):
         df_all_spikes.to_csv(out_spike_csv, index=False, encoding="utf-8-sig", float_format='%.2f')
         print(f"[INFO] Detected {len(df_all_spikes)} spikes. Saved to {out_spike_csv}")
 
-    # 차트 생성 로직 (기존과 거의 동일)
+    # --- 차트 생성 (수정됨) ---
     fig, ax1 = plt.subplots(figsize=(12, 6))
     ax1.plot(df['date'], df['count'], color='#3b82f6', linestyle='-', linewidth=2, label='전체 기사량')
     ax1.plot(df['date'], df.get('count_ma'), color='#343a40', linestyle=':', linewidth=1, label='기사량 7일 이동평균')
@@ -178,7 +176,8 @@ def plot_enhanced_timeseries(df_display, spike_threshold=2.0):
     ax1.tick_params(axis='y', labelcolor='#343a40'); ax1.set_ylim(bottom=0)
 
     ax2 = ax1.twinx()
-    ax2.bar(df['date'], df['signal_ratio'], color='#e9ecef', label='신호 기사 비율', zorder=1)
+    # [수정] color를 '#e9ecef'에서 '#ced4da' (더 진한 회색)로 변경
+    ax2.bar(df['date'], df['signal_ratio'], color='#ced4da', label='신호 기사 비율', zorder=1)
     ax2.set_ylabel('신호 기사 비율 (%)', color='#6c757d')
     ax2.tick_params(axis='y', labelcolor='#6c757d')
     ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{y:.0%}')); ax2.set_ylim(bottom=0)
@@ -187,18 +186,23 @@ def plot_enhanced_timeseries(df_display, spike_threshold=2.0):
         spikes_count = df[df.get('count_z', 0) >= spike_threshold]
         spikes_ratio = df[df.get('signal_ratio_z', 0) >= spike_threshold]
         if not spikes_count.empty:
-            ax1.scatter(spikes_count['date'], spikes_count['count'], color='#0b5ed7', s=100, zorder=6, label='기사량 스파이크')
+            # [수정] marker='^' (위쪽 삼각형) 추가
+            ax1.scatter(spikes_count['date'], spikes_count['count'], color='#0b5ed7', s=100, marker='P', zorder=4, label='기사량 스파이크')
         if not spikes_ratio.empty:
-            ax2.scatter(spikes_ratio['date'], spikes_ratio['signal_ratio'], color='#dc3545', s=100, zorder=6, label='비율 스파이크')
+            # [수정] marker='*' (별), s=150 (크기 증가) 추가
+            ax2.scatter(spikes_ratio['date'], spikes_ratio['signal_ratio'], color='#dc3545', s=150, marker='X', zorder=4, label='비율 스파이크')
 
     ax1.set_zorder(2); ax1.patch.set_visible(False)
     plt.title('일일 기사량 및 신호 기사 비율 추이 (스파이크 탐지)', fontsize=16)
     ax1.set_xlabel('날짜'); ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
-    handles1, labels1 = ax1.get_legend_handles_labels(); handles2, labels2 = ax2.get_legend_handles_labels()
-    fig.legend(handles1 + handles2, labels1 + labels2, loc="upper left", bbox_to_anchor=(0.74, 0.87))
+    
+    # [수정] fig.legend 대신 ax1.legend를 사용하여 그래프 내부에 범례 배치
+    handles1, labels1 = ax1.get_legend_handles_labels()
+    handles2, labels2 = ax2.get_legend_handles_labels()
+    ax1.legend(handles1 + handles2, labels1 + labels2, loc="upper left", fontsize='small')
     
     _savefig(fig, os.path.join(FIG_DIR, "timeseries.png"))
-    print(f"[INFO] Enhanced timeseries chart saved.")
+    print(f"[INFO] Enhanced timeseries chart saved (legend, color, markers updated).")
 
 def plot_wordcloud(freqs, output_path):
     if not freqs:
@@ -1221,70 +1225,63 @@ def plot_risk_keyword_network(meta_items, output_path, min_weight=1):
 # --- 4. 주기별 시각화 실행 함수 ---
 
 def run_daily_visuals():
-    """일간 리포트에 필요한 시각화만 실행합니다."""
+    """
+    일간 리포트에 필요한 시각화를 실행합니다.
+    [수정] 'daily_article_ratios.csv'에서 비율을 로드하고,
+           'trend_timeseries.json'에서 총 기사량을 로드하여 차트를 생성합니다.
+    """
     print("\n--- Generating Daily Visuals ---")
 
-    ts_json_path = os.path.join(ROOT_OUTPUT_DIR, "trend_timeseries.json")
-    signal_csv_path = os.path.join(EXPORT_DIR, "daily_signal_counts.csv")
+    # --- ▼▼▼ 수정: 로드 파일 및 로직 변경 ▼▼▼ ---
+    
+    # 1. 비율 데이터 로드 (select_top_articles.py가 생성)
+    ratio_csv_path = os.path.join(EXPORT_DIR, "daily_article_ratios.csv")
+    print(f"Loading pre-calculated ratios from: '{ratio_csv_path}'")
+    df_ratios = _safe_read_csv(ratio_csv_path)
 
-    print(f"Loading daily data: '{ts_json_path}', '{signal_csv_path}'")
+    if df_ratios.empty or 'signal_ratio' not in df_ratios.columns:
+        print(f"[WARN] '{os.path.basename(ratio_csv_path)}' is empty or missing 'signal_ratio' column.")
+        print("[WARN] Skipping daily chart generation.")
+        return # 비율 파일 없으면 시각화 불가
+        
+    print(f"  -> Loaded {len(df_ratios)} ratio records.")
+
+    # 2. 총 기사량 데이터 로드 (module_c가 생성)
+    ts_json_path = os.path.join(ROOT_OUTPUT_DIR, "trend_timeseries.json")
+    print(f"Loading total article counts from: '{ts_json_path}'")
     ts_data = load_json(ts_json_path, {"daily": []})
     df_total = pd.DataFrame(ts_data.get("daily", []))
-    df_signal = _safe_read_csv(signal_csv_path)
-    print(f"  -> Loaded {len(df_total)} timeseries records, {len(df_signal)} signal records.")
 
-    if df_total.empty:
-        print("[WARN] Timeseries data is empty. Skipping daily chart generation.")
-        # --- ▼▼▼ 추가: 빈 데이터프레임이라도 빈 CSV 파일 생성 ▼▼▼ ---
-        empty_df_path = os.path.join(EXPORT_DIR, "daily_article_ratios.csv")
-        os.makedirs(EXPORT_DIR, exist_ok=True)
-        pd.DataFrame(columns=['date', 'total_articles', 'signal_articles', 'signal_ratio']).to_csv(
-            empty_df_path, index=False, encoding="utf-8-sig"
-        )
-        print(f"[INFO] Empty daily_article_ratios.csv created due to empty timeseries data.")
-        # --- ▲▲▲ 추가 완료 ▲▲▲ ---
-        return
+    if df_total.empty or 'count' not in df_total.columns:
+         print("[WARN] trend_timeseries.json is empty or missing 'count' column.")
+         print("[WARN] Skipping daily chart generation.")
+         return # 총 기사량 없으면 시각화 불가
 
-    # 데이터 병합 및 비율 계산 (기존 로직)
-    df_merged = pd.merge(df_total, df_signal, on="date", how="left").fillna(0)
+    print(f"  -> Loaded {len(df_total)} total count records.")
 
-    if 'signal_article_count' in df_merged.columns and 'count' in df_merged.columns:
-        df_merged['signal_ratio'] = (df_merged['signal_article_count'] / df_merged['count']).where(df_merged['count'] > 0, 0)
-    else:
-        df_merged['signal_ratio'] = 0
-
-    # --- ▼▼▼ CSV 파일 저장 로직 추가 ▼▼▼ ---
-    output_ratio_csv = os.path.join(EXPORT_DIR, "daily_article_ratios.csv")
+    # 3. 데이터 병합 (차트 생성을 위해)
     try:
-        # 필요한 컬럼 선택 및 이름 변경
-        df_ratios = df_merged[['date', 'count', 'signal_article_count', 'signal_ratio']].copy()
-        df_ratios.rename(columns={
-            'count': 'total_articles',
-            'signal_article_count': 'signal_articles'
-        }, inplace=True)
+        df_plot_data = pd.merge(
+            df_total[['date', 'count']],       # trend_timeseries의 'count'
+            df_ratios[['date', 'signal_ratio']], # daily_article_ratios의 'signal_ratio'
+            on="date",
+            how="left" # 왼쪽(df_total) 기준 병합
+        ).fillna({'count': 0, 'signal_ratio': 0}) # 비율 없는 날짜는 0으로 채움
+        
+        if df_plot_data.empty:
+            print("[WARN] Merged data for plotting is empty. Skipping chart.")
+            return
 
-        # 날짜 오름차순 정렬
-        df_ratios.sort_values(by='date', inplace=True)
-
-        # CSV 파일로 저장
-        os.makedirs(EXPORT_DIR, exist_ok=True) # Ensure export directory exists
-        df_ratios.to_csv(output_ratio_csv, index=False, encoding="utf-8-sig", float_format='%.4f') # 소수점 4자리까지 저장
-        print(f"[INFO] Daily article ratios saved to: {output_ratio_csv} ({len(df_ratios)} rows)")
+        # 4. 시계열 차트 생성 (최근 30일)
+        # plot_enhanced_timeseries는 'count'와 'signal_ratio' 컬럼을 기대함
+        plot_enhanced_timeseries(df_plot_data.tail(30))
+        print("[INFO] Daily timeseries chart generation complete.")
 
     except Exception as e:
-        print(f"[WARN] Failed to save daily article ratios CSV: {e}")
-        # --- 추가: 에러 발생 시 빈 파일 생성 ---
-        if not os.path.exists(output_ratio_csv):
-             pd.DataFrame(columns=['date', 'total_articles', 'signal_articles', 'signal_ratio']).to_csv(
-                 output_ratio_csv, index=False, encoding="utf-8-sig"
-             )
-             print(f"[INFO] Empty daily_article_ratios.csv created due to error.")
-
-    # 시계열 차트 생성 (기존 로직)
-    try:
-        plot_enhanced_timeseries(df_merged.tail(30)) # Use df_merged directly
-    except Exception as e:
-        print(f"[WARN] Failed to generate daily visuals: {e}")
+        print(f"[ERROR] Failed to merge data or generate daily visuals: {e}")
+        import traceback
+        traceback.print_exc()
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 def run_weekly_visuals():
     """
@@ -1397,23 +1394,20 @@ def run_monthly_visuals():
     # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 # --- 5. Main 함수 ---
-def main():
+if __name__ == '__main__':
+    # ... (argparse 및 main 함수 호출 로직) ...
     parser = argparse.ArgumentParser(description="Generate visualizations for different report types.")
     parser.add_argument("--report-type", required=True, choices=['daily', 'weekly', 'monthly'])
     args = parser.parse_args()
 
-    ensure_fonts() # 그래프 생성 전에 폰트 설정 실행
-    _ensure_dirs() # Ensure directories exist
+    ensure_fonts()
+    _ensure_dirs() 
 
     if args.report_type == 'daily':
         run_daily_visuals()
     elif args.report_type == 'weekly':
-        run_weekly_visuals() #
+        run_weekly_visuals()
     elif args.report_type == 'monthly':
         run_monthly_visuals()
 
-    print("\n[SUCCESS] Visualizations generation attempt complete.") # Changed message slightly
-
-
-if __name__ == '__main__':
-    main()
+    print("\n[SUCCESS] Visualizations generation attempt complete.")

@@ -1,114 +1,221 @@
+# 파일 경로: scripts/select_top_articles.py
 import pandas as pd
 from src.utils import load_json, latest
 import os
-from datetime import datetime
-import glob  # [수정] glob 모듈 추가
+from datetime import datetime, timedelta
+import glob
+from src.config import load_config
+from src.timeutil import now_kst, to_date
+from collections import Counter # <--- 1. Counter 임포트
 
-TOP_N = 3 # 최종 선정할 기사 수
+TOP_N = 3
 OUTPUT_CSV = "outputs/export/today_article_list.csv"
-CUMULATIVE_OUTPUT_CSV = "outputs/export/daily_signal_counts.csv"
-SCORE_THRESHOLD = 0.0 # 점수가 0.0 이상인 기사를 '관심 기사'로 간주하고 저장 (토픽 ∩ Event)
+CUMULATIVE_SIGNAL_COUNTS_CSV = "outputs/export/daily_signal_counts.csv" # 이름 변경
+# --- ▼▼▼ [신규] 비율 CSV 경로 추가 ▼▼▼ ---
+CUMULATIVE_RATIOS_CSV = "outputs/export/daily_article_ratios.csv"
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+SCORE_THRESHOLD = 7.5
+
+CFG = load_config()
+DOMAIN_HINTS = set(hint.lower() for hint in CFG.get("domain_hints", []))
+TODAY_DT = now_kst().date()
+TODAY_STR = TODAY_DT.strftime("%Y-%m-%d")
+TWO_DAYS_AGO_STR = (TODAY_DT - timedelta(days=2)).strftime("%Y-%m-%d")
 
 def select_articles():
     """
-    그날의 핵심 토픽 및 이벤트와 가장 관련성 높은 기사를 선정하고,
-    관심 기사 수를 집계하여 '가장 최신 아카이브'의 기록에 이어 누적 저장합니다.
-    월간 실행 시에는 이 작업을 건너뜁니다.
+    기사 점수를 계산하고, 총 기사 수/관심 기사 수를 집계하여 daily_signal_counts.csv에 저장한 뒤,
+    비율을 계산하여 daily_article_ratios.csv에 저장합니다.
     """
-    # --- ▼▼▼▼▼ [추가] 월간 실행 시 함수를 즉시 종료 ▼▼▼▼▼ ---
     is_monthly_run = os.getenv("MONTHLY_RUN", "false").lower() == "true"
     if is_monthly_run:
         print("[INFO] Monthly Run: Skipping daily top article selection.")
+        # ... (월간 실행 시 빈 파일 생성 로직, CUMULATIVE_RATIOS_CSV도 포함) ...
+        if not os.path.exists(CUMULATIVE_SIGNAL_COUNTS_CSV):
+             os.makedirs(os.path.dirname(CUMULATIVE_SIGNAL_COUNTS_CSV), exist_ok=True)
+             pd.DataFrame(columns=["date", "signal_article_count", "meta_article_count"]).to_csv(
+                 CUMULATIVE_SIGNAL_COUNTS_CSV, index=False, encoding="utf-8-sig"
+             )
+        if not os.path.exists(CUMULATIVE_RATIOS_CSV): # [신규] 비율 파일도 생성
+             os.makedirs(os.path.dirname(CUMULATIVE_RATIOS_CSV), exist_ok=True)
+             pd.DataFrame(columns=['date', 'signal_articles', 'meta_articles', 'signal_ratio']).to_csv(
+                 CUMULATIVE_RATIOS_CSV, index=False, encoding="utf-8-sig"
+             )
         return
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
     meta_path = latest("data/news_meta_*.json")
+    if not meta_path or not os.path.exists(meta_path):
+        print(f"[ERROR] Meta file not found: {meta_path}. Skipping article selection.")
+        # ... (메타 파일 없을 시 빈 파일 생성 로직, CUMULATIVE_RATIOS_CSV도 포함) ...
+        if not os.path.exists(CUMULATIVE_SIGNAL_COUNTS_CSV):
+             os.makedirs(os.path.dirname(CUMULATIVE_SIGNAL_COUNTS_CSV), exist_ok=True)
+             pd.DataFrame(columns=["date", "signal_article_count", "meta_article_count"]).to_csv(
+                 CUMULATIVE_SIGNAL_COUNTS_CSV, index=False, encoding="utf-8-sig"
+             )
+        if not os.path.exists(CUMULATIVE_RATIOS_CSV): # [신규] 비율 파일도 생성
+             os.makedirs(os.path.dirname(CUMULATIVE_RATIOS_CSV), exist_ok=True)
+             pd.DataFrame(columns=['date', 'signal_articles', 'meta_articles', 'signal_ratio']).to_csv(
+                 CUMULATIVE_RATIOS_CSV, index=False, encoding="utf-8-sig"
+             )
+        return
+
     meta_items = load_json(meta_path, [])
-    
+    meta_article_count = len(meta_items)
+    print(f"[INFO] Loaded {meta_article_count} articles from {meta_path} for scoring.")
+
     try:
         df_strength = pd.read_csv("outputs/export/trend_strength.csv")
         top_keywords = set(df_strength.head(5)['term'])
     except FileNotFoundError:
+        print("[WARN] trend_strength.csv not found. Using empty set for top keywords.")
         top_keywords = set()
 
     try:
         df_events = pd.read_csv("outputs/export/events.csv")
-        event_titles = set(df_events['title'])
+        event_titles = set(df_events['title']) if 'title' in df_events.columns else set()
     except FileNotFoundError:
+        print("[WARN] events.csv not found. Using empty set for event titles.")
         event_titles = set()
 
-    # 2. 각 기사별로 점수 계산
+    # --- ▼▼▼ 2. Counter 초기화 ▼▼▼ ---
+    score_distribution = Counter()
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+    
+    # 기사 스코어링 (기존 로직과 동일)
     scored_articles = []
+    signal_article_count = 0
+    print(f"[INFO] Scoring articles based on Today={TODAY_STR}, D-2={TWO_DAYS_AGO_STR}")
     for item in meta_items:
+        if not isinstance(item, dict):
+             print(f"[WARN] Skipping non-dictionary item in meta file: {item}")
+             continue
+        
         score = 0
         title = item.get("title", "")
-        body = item.get("body", "")
-        content = f"{title} {body}".lower()
+        body = item.get("body") or item.get("description", "")
+        content = f"{title} {body}".lower() if title or body else ""
+        
+        if content:
+            # 1. Domain Hints Buff (+7)
+            for hint in DOMAIN_HINTS:
+                if hint and hint in content:
+                    score += 20
+                    break
+            # 2. Top Keyword Buff (+3)
+            for keyword in top_keywords:
+                if keyword and keyword.lower() in content:
+                     score += 5
+            # 3. Event Buff (+2)
+            if title and title in event_titles:
+                 score += 2
 
-        # 점수 로직: 핵심 토픽이 포함되면 +2점
-        for keyword in top_keywords:
-            if keyword.lower() in content:
-                score += 2
-        
-        # 점수 로직: 주요 이벤트 기사면 +3점
-        if title in event_titles:
-            score += 3
-        
-        # --- ▼▼▼ 점수가 임계값을 넘는 모든 기사를 리스트에 추가 ▼▼▼ ---
+        # 4. Date Buff/Debuff (+5 / -5)
+        pub_date_raw = item.get("published_time") or item.get("pubDate_raw") or ""
+        article_date_str = to_date(pub_date_raw)
+        if article_date_str == TODAY_STR:
+            score += 5
+        elif article_date_str == TWO_DAYS_AGO_STR:
+            score -= 5
+
+        score_distribution[score] += 1
+
         if score >= SCORE_THRESHOLD:
-            scored_articles.append({
-                "title": title,
-                "url": item.get("url"),
-                "score": score
-            })
-        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---    
+            signal_article_count += 1
+            scored_articles.append({ "title": title, "url": item.get("url"), "score": score })
 
+    # --- ▼▼▼ 3. 분포 결과 출력 ▼▼▼ ---
+    print("\n[DEBUG] --- Article Score Distribution (All Articles) ---")
+    if not score_distribution:
+        print("  No articles were scored.")
+    else:
+        # 점수(key)가 높은 순으로 정렬하여 출력
+        print("  Score | Count")
+        print("  -----------------")
+        for score_val, count in sorted(score_distribution.items(), key=lambda item: item[0], reverse=True):
+            print(f"  {score_val:5d} | {count:5d} articles")
+    print("  --------------------------------------------------\n")
+
+    # Top N 기사 저장 (기존 로직)
     if not scored_articles:
         df_top_articles = pd.DataFrame(columns=["title", "url"])
     else:
-        # 점수 높은 순으로 정렬하여 리포트에는 TOP_N 개까지만 표시
         df_top_articles = pd.DataFrame(scored_articles).sort_values(by="score", ascending=False).drop_duplicates(subset=['title']).head(TOP_N)
         df_top_articles = df_top_articles[['title', 'url']]
-    
     os.makedirs(os.path.dirname(OUTPUT_CSV), exist_ok=True)
     df_top_articles.to_csv(OUTPUT_CSV, index=False, encoding="utf-8-sig")
-    print(f"[INFO] Top articles for report (max 5) saved to {OUTPUT_CSV}")
+    print(f"[INFO] Top {len(df_top_articles)} articles for report saved to {OUTPUT_CSV}")
 
-        # --- ▼▼▼▼▼ [수정] 과거 데이터 로딩 로직 변경 ▼▼▼▼▼ ---
-    
-    today_date = datetime.now().strftime("%Y-%m-%d")
-    signal_count = len(scored_articles)
-    new_data = {"date": today_date, "signal_article_count": signal_count}
+    # --- ▼▼▼ 수정: 'daily_signal_counts.csv' 저장 로직 ▼▼▼ ---
+    new_data = {"date": TODAY_STR, "signal_article_count": signal_article_count, "meta_article_count": meta_article_count}
 
     df_existing = pd.DataFrame()
-    # 1. 모든 날짜/시간 아카이브 폴더 경로를 찾습니다.
     archive_paths = sorted(glob.glob("outputs/daily/*/*"))
     if archive_paths:
-        # 2. 가장 마지막 경로가 가장 최신 아카이브입니다.
         latest_archive_path = archive_paths[-1]
         latest_cumulative_file = os.path.join(latest_archive_path, "export", "daily_signal_counts.csv")
         
         print(f"[INFO] Loading existing signal counts from latest archive: {latest_cumulative_file}")
         if os.path.exists(latest_cumulative_file):
-            df_existing = pd.read_csv(latest_cumulative_file)
-            print(f"  -> Found {len(df_existing)} existing records.")
+            try:
+                 df_existing = pd.read_csv(latest_cumulative_file)
+                 if 'signal_article_count' not in df_existing.columns: df_existing['signal_article_count'] = 0
+                 if 'meta_article_count' not in df_existing.columns: df_existing['meta_article_count'] = 0
+                 print(f"  -> Found {len(df_existing)} existing records.")
+            except Exception as e:
+                 print(f"[WARN] Failed to load or process existing CSV {latest_cumulative_file}: {e}. Starting fresh.")
+                 df_existing = pd.DataFrame()
         else:
             print("  -> No signal count file found in the latest archive. Starting fresh.")
     else:
         print("[INFO] No daily archives found. Starting fresh.")
 
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-
-    # 데이터 병합 및 저장 (기존 로직과 동일)
+    # 데이터 병합
+    df_new = pd.DataFrame([new_data])
     if not df_existing.empty:
-        df_existing = df_existing[df_existing["date"] != today_date]
-        df_final = pd.concat([df_existing, pd.DataFrame([new_data])], ignore_index=True)
+        df_existing = df_existing[df_existing["date"] != TODAY_STR]
+        if 'meta_article_count' not in df_existing.columns: df_existing['meta_article_count'] = 0
+        df_final_counts = pd.concat([df_existing, df_new], ignore_index=True)
     else:
-        df_final = pd.DataFrame([new_data])
+        df_final_counts = df_new
+
+    # 'daily_signal_counts.csv' 저장
+    df_final_counts = df_final_counts[["date", "signal_article_count", "meta_article_count"]]
+    df_final_counts.sort_values(by="date", inplace=True)
+    os.makedirs(os.path.dirname(CUMULATIVE_SIGNAL_COUNTS_CSV), exist_ok=True)
+    df_final_counts.to_csv(CUMULATIVE_SIGNAL_COUNTS_CSV, index=False, encoding="utf-8-sig")
+    print(f"[INFO] Daily signal counts ({signal_article_count} / {meta_article_count}) saved to {CUMULATIVE_SIGNAL_COUNTS_CSV}")
+    
+    # --- ▼▼▼ [신규] 'daily_article_ratios.csv' 계산 및 저장 로직 ▼▼▼ ---
+    try:
+        df_ratios = df_final_counts.copy()
+        # 컬럼명 변경 (시각화 파일과 일치)
+        df_ratios.rename(columns={
+            'signal_article_count': 'signal_articles',
+            'meta_article_count': 'meta_articles'
+        }, inplace=True)
         
-    df_final.sort_values(by="date", inplace=True)
-    df_final.to_csv(CUMULATIVE_OUTPUT_CSV, index=False, encoding="utf-8-sig")
-    print(f"[INFO] Daily signal count ({signal_count}) saved to {CUMULATIVE_OUTPUT_CSV}")
+        # 비율 계산 (분모: meta_articles)
+        df_ratios['signal_ratio'] = (df_ratios['signal_articles'] / df_ratios['meta_articles']).where(df_ratios['meta_articles'] > 0, 0)
+        
+        # 날짜 정렬 (이미 되어있지만 확인)
+        df_ratios['date'] = pd.to_datetime(df_ratios['date'])
+        df_ratios.sort_values(by='date', inplace=True)
+        df_ratios['date'] = df_ratios['date'].dt.strftime('%Y-%m-%d')
+        
+        # 필요한 컬럼만 저장
+        cols_to_save = ['date', 'signal_articles', 'meta_articles', 'signal_ratio']
+        df_ratios[cols_to_save].to_csv(CUMULATIVE_RATIOS_CSV, index=False, encoding="utf-8-sig", float_format='%.4f')
+        print(f"[INFO] Daily article ratios (using meta count) calculated and saved to: {CUMULATIVE_RATIOS_CSV}")
+
+    except Exception as e:
+        print(f"[ERROR] Failed to calculate or save daily_article_ratios.csv: {e}")
+        # 오류 발생 시 빈 파일 생성
+        if not os.path.exists(CUMULATIVE_RATIOS_CSV):
+             os.makedirs(os.path.dirname(CUMULATIVE_RATIOS_CSV), exist_ok=True)
+             pd.DataFrame(columns=['date', 'signal_articles', 'meta_articles', 'signal_ratio']).to_csv(
+                 CUMULATIVE_RATIOS_CSV, index=False, encoding="utf-8-sig"
+             )
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 if __name__ == "__main__":
     select_articles()
