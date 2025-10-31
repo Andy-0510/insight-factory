@@ -261,7 +261,7 @@ def prepare_report_data():
     if not df_ratios.empty:
         today_ratio = df_ratios[df_ratios['date'] == today_str]
         if not today_ratio.empty:
-            article_count = today_ratio.iloc[0]['total_articles']
+            article_count = today_ratio.iloc[0]['meta_articles']
             seven_days_ago_str = (today_dt - pd.Timedelta(days=7)).strftime("%Y-%m-%d")
             past_ratio = df_ratios[df_ratios['date'] == seven_days_ago_str]
             if not past_ratio.empty:
