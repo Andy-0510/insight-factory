@@ -102,6 +102,72 @@
         }
         /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
 
+        /* ▼▼▼ [수정] 테이블 스타일 (레퍼런스 디자인 적용) ▼▼▼ */
+        table.dataframe-table {
+            width: 100%;
+            border-collapse: collapse; /* 테두리 병합 */
+            margin: 1.5em 0;
+            font-size: 13px;
+            border: none; /* 테이블 전체 테두리 제거 */
+        }
+        
+        table.dataframe-table thead {
+             background: #1a2332; /* 어두운 헤더 배경 */
+             color: white; /* 헤더 글자색 */
+        }
+
+        table.dataframe-table th {
+             color: white; /* 헤더 글자색 */
+             background: #1a2332;
+             font-size: 13px; /* 헤더 폰트 크기 */
+             padding: 16px; /* 헤더 패딩 */
+             text-align: left;
+             font-weight: 700;
+             text-transform: uppercase; /* 대문자 */
+             letter-spacing: 0.5px;
+             border: none; /* 헤더 테두리 제거 */
+             border-bottom: 2px solid #1a2332; /* 헤더 하단 선 (헤더색과 동일하게) */
+        }
+
+        table.dataframe-table td {
+             padding: 16px; /* 셀 패딩 */
+             font-size: 13px; /* 셀 폰트 크기 */
+             color: #2d3748;
+             border: none; /* 셀 테두리 제거 */
+             border-bottom: 1px solid #e2e8f0; /* 행(row) 구분선만 유지 */
+             vertical-align: top;
+             word-break: break-word;
+             white-space: pre-wrap; /* 완화 액션 등 줄바꿈 적용 */
+        }
+        
+        /* 테이블 짝수 행 배경색 제거 (이미지처럼 모두 흰색) */
+        /*
+        table.dataframe-table tbody tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+        */
+        
+
+        table.dataframe-table tbody tr:hover {
+            background-color: #f0f9ff; /* 호버 효과 */
+        }
+
+        /* 기존 .risk-table th, .risk-table td 등 개별 테이블 스타일은
+           위 .dataframe-table th, .dataframe-table td 에 통합되었으므로
+           삭제해도 됩니다.
+        */
+
+        /* ▼▼▼ 리스크 레벨 배지 (이미지 참고) ▼▼▼ */
+        .risk-level { 
+             display: inline-block; padding: 3px 9px; border-radius: 12px; 
+             font-size: 11px; font-weight: 700; white-space: nowrap; 
+        }
+        .risk-high { background: #ffe6e6; color: #c41e3a; } /* Pink/Red */
+        .risk-medium { background: #fffbeb; color: #b45309; } /* Yellow/Orange */
+        .risk-low { background: #eff6ff; color: #1d4ed8; } /* Blue */
+        /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+        
+
         /* 콘텐츠 영역 스타일 */
         .content-padding { padding: 24px 40px; }
         .section { margin-bottom: 40px; }
@@ -312,19 +378,20 @@
             </div>
 
             <div class="section" id="positioning">
+
                 <div class="section-header">
                     <div class="section-number">1</div>
                     <div class="section-title" id="section-positioning">전략적 시장 포지셔닝 맵</div>
                     <div class="section-subtitle">시장 거시 환경 분석</div>
                 </div>
-                <div class="viz-container">
-                    <div class="viz-title">토픽 버블 맵 (관심도 × 긍정성 × 활동성)</div>
-                    <img src="{{ topic_bubble_map_path | default('fig/placeholder.png') }}" alt="토픽 버블 맵" class="report-graph">
+
+                <div class="exec-summary-box">
+                    <div class="exec-summary-title">📊 Section 1 Summary (AI)</div>
+                    <div class="exec-summary-text">{{ positioning_exec_summary | safe }}</div>
                 </div>
-                <div class="viz-container">
-                    <div class="viz-title">주요 토픽별 주간 트렌드 (최근 4주)</div>
-                    <img src="{{ topic_mini_trends_path | default('fig/placeholder.png') }}" alt="토픽 미니 트렌드" class="report-graph">
-                </div>
+
+                <img src="{{ topic_bubble_map_path | default('fig/placeholder.png') }}" alt="토픽 버블 맵" class="report-graph">
+
                 <div class="mb-4">
                     <h3>전략적 인사이트 및 실행과제 제안 (AI)</h3>
                     <div>{{ positioning_insight | safe }}</div>
@@ -353,8 +420,12 @@
                              <p><strong>권고 전략:</strong> {{ quadrant4_strategy | default('AI 권고 생성 예정') }}</p>
                          </div>
                      </div>
-                 </div>
-                 <div class="implication-box">
+                </div>
+
+                <h4>토픽 상세 정보</h4>
+                 <div>{{ topic_details_table | safe }}</div>
+
+                <div class="implication-box">
                      <h4>💡 전략적 시사점 (AI Analysis)</h4>
                      <ul>
                          {% for imp in strategic_implications %}
@@ -363,11 +434,13 @@
                          <li>AI 시사점 분석 예정...</li>
                          {% endfor %}
                      </ul>
-                 </div>
-                 <h3>토픽 상세 정보</h3>
-                 <div>{{ topic_details_table | safe }}</div>
-                 <h3>토픽 성장/하락 추세</h3>
+                </div>
+
+                <img src="{{ topic_mini_trends_path | default('fig/placeholder.png') }}" alt="토픽 미니 트렌드" class="report-graph">
+
+                <h4>토픽 성장/하락 추세</h4>
                  <div>{{ topic_growth_table | safe }}</div>
+
             </div>
 
             <div class="section" id="lifecycle">
@@ -376,12 +449,16 @@
                      <div class="section-title" id="section-lifecycle">기술 수명 주기 분석</div>
                      <div class="section-subtitle">R&D 투자 타이밍</div>
                 </div>
-                 <div class="viz-container">
-                     <div class="viz-title">기술 성숙도 맵 (Technology Maturity Map)</div>
-                     <img src="{{ tech_maturity_map_path | default('fig/placeholder.png') }}" alt="기술 성숙도 맵" class="report-graph">
-                 </div>
-                 <h3>기술 단계별 상세 분석 및 권고</h3>
-                 <div class="maturity-grid">
+
+                <div class="exec-summary-box">
+                    <div class="exec-summary-title">🔬 Section 2 Summary (AI)</div>
+                    <div class="exec-summary-text">{{ lifecycle_exec_summary | safe }}</div>
+                </div>
+
+                <img src="{{ tech_maturity_map_path | default('fig/placeholder.png') }}" alt="기술 성숙도 맵" class="report-graph">
+ 
+                <h4>기술 단계별 상세 분석 및 권고</h4>
+                <div class="maturity-grid">
                      {% for tech in tech_maturity_details %}
                      <div class="maturity-card">
                          <div class="maturity-stage {{ tech.stage_class }}">{{ tech.stage_text }}</div>
@@ -396,11 +473,13 @@
                      {% else %}
                      <p>기술 성숙도 상세 분석 데이터 없음.</p>
                      {% endfor %}
-                 </div>
-                 <div class="exec-summary-box mt-2">
+                </div>
+
+                <div class="exec-summary-box mt-2">
                       <div class="exec-summary-title">🎯 R&D 자원 배분 권고 (AI Suggestion)</div>
                       <div class="exec-summary-text">{{ rd_recommendation | safe }}</div>
-                  </div>
+                </div>
+                
             </div>
 
             <div class="section" id="competitors">
@@ -409,19 +488,14 @@
                      <div class="section-title" id="section-competitors">경쟁사 전략적 의도 분석</div>
                      <div class="section-subtitle">경쟁 구도 심층 분석</div>
                  </div>
-                 <div class="viz-container">
-                     <div class="viz-title">기업-토픽 집중도 히트맵</div>
-                     <img src="{{ matrix_heatmap_path | default('fig/placeholder.png') }}" alt="기업-토픽 히트맵" class="report-graph">
-                 </div>
-                 <div class="viz-container">
-                     <div class="viz-title">기업 경쟁/협력 관계망</div>
-                     <img src="{{ company_network_path | default('fig/placeholder.png') }}" alt="기업 관계망" class="report-graph">
-                 </div>
-                 <div class="viz-container">
-                     <div class="viz-title">월간 키워드 네트워크</div>
-                     <img src="{{ keyword_network_path | default('fig/placeholder.png') }}" alt="키워드 네트워크" class="report-graph">
-                 </div>
-                 <h3>기업-토픽 포지셔닝 맵</h3>
+
+                <div class="exec-summary-box">
+                    <div class="exec-summary-title">🎯 Section 3 Summary (AI)</div>
+                    <div class="exec-summary-text">{{ competitors_exec_summary | safe }}</div>
+                </div> 
+
+                <h3>기업별 전략 방향성 분석: 기업X토픽 분석</h3>
+                 <img src="{{ matrix_heatmap_path | default('fig/placeholder.png') }}" alt="기업-토픽 히트맵" class="report-graph">
                  <div class="competitor-positioning-grid">
                      {% for comp in competitor_positioning %}
                      <div class="competitor-positioning-card">
@@ -438,17 +512,30 @@
                          </div>
                      </div>
                      {% else %}<p>경쟁사 포지셔닝 분석 데이터 없음.</p>{% endfor %}
-                 </div>
+                </div>
+
+                <h3>경쟁/협력 관계: 키워드 네트워크 분석</h3>
+                 <img src="{{ company_network_path | default('fig/placeholder.png') }}" alt="기업 관계망" class="report-graph">
+
+                 <h4>주요 기업 관계 Top 5</h4>
+                 <div>{{ competitor_actions_table | safe }}</div>
+
+                 <h4>경쟁/협력 관계: 키워드 네트워크 분석</h4>
+                 <div>{{ competitor_strategy_table | safe }}</div>
+
                  <div class="alert-box">
                      <h4>⚠️ 경쟁 강도 변화 경보 (AI Analysis)</h4>
                      {% for alert in competition_alerts %}
                      <p>{{ alert }}</p>
                      {% else %}<p>이번 달 특이 경쟁 강도 변화 없음.</p>{% endfor %}
                  </div>
-                 <h3>Top 경쟁사 전략 방향성 해석 (AI)</h3>
-                 <div>{{ competitor_strategy_table | safe }}</div>
-                 <h3>주요 기업 관계 Top 5 및 액션 제안 (AI)</h3>
-                 <div>{{ competitor_actions_table | safe }}</div>
+
+                 <!--
+                 <div class="viz-container">
+                     <div class="viz-title">월간 키워드 네트워크</div>
+                     <img src="{{ keyword_network_path | default('fig/placeholder.png') }}" alt="키워드 네트워크" class="report-graph">
+                 </div>
+                 -->
             </div>
 
             <div class="section" id="risk">
@@ -457,14 +544,20 @@
                      <div class="section-title" id="section-risk">전략적 리스크 관리</div>
                      <div class="section-subtitle">리스크/이슈 관측소</div>
                  </div>
-                 <div class="viz-container">
-                     <div class="viz-title">리스크 관련 시그널 시각화</div>
-                     <img src="{{ risk_spikes_path | default('fig/placeholder.png') }}" alt="부정 감성 급등 토픽" class="report-graph mb-2">
-                     <img src="{{ risk_network_path | default('fig/placeholder.png') }}" alt="리스크 키워드 네트워크" class="report-graph">
-                 </div>
-                 <h3>탐지된 주요 리스크 목록</h3>
-                 <div>{{ risk_list_table | safe }}</div>
-                 <div class="mb-4">
+
+                <div class="exec-summary-box">
+                    <div class="exec-summary-title">⚠️ Section 4 Summary (AI)</div>
+                    <div class="exec-summary-text">{{ risk_exec_summary | safe }}</div>
+                </div> 
+
+                <h3>탐지된 주요 리스크 목록</h3>
+                <div>{{ risk_list_table | safe }}</div>
+                <img src="{{ risk_spikes_path | default('fig/placeholder.png') }}" alt="부정 감성 급등 토픽" class="report-graph mb-2">
+
+                <h3>리스크 네트워크</h3>                
+                <img src="{{ risk_network_path | default('fig/placeholder.png') }}" alt="리스크 키워드 네트워크" class="report-graph">
+
+                <div class="mb-4">
                      <h3>리스크 대응 매트릭스</h3>
                      <div class="risk-matrix-grid">
                          <div class="risk-matrix-card avoid">
@@ -488,8 +581,9 @@
                              <p><strong>전략:</strong> {{ risk_matrix.accept.strategy | default('AI 권고 생성 예정') }}</p>
                          </div>
                      </div>
-                 </div>
-                 <div class="immediate-action-box">
+                </div>
+
+                <div class="immediate-action-box">
                      <h4>🚨 즉시 대응 필요 항목 (AI Priority)</h4>
                      <ol>
                          {% for item in immediate_actions %}
@@ -498,11 +592,14 @@
                          <li>이번 달 즉시 대응 필요 항목 없음.</li>
                          {% endfor %}
                      </ol>
-                 </div>
-                 <div class="mb-4">
+                </div>
+
+                <!--
+                <div class="mb-4">
                       <h3>리스크 종합 평가 및 대응 제안 (AI)</h3>
                       <div>{{ risk_assessment | safe }}</div>
-                  </div>
+                </div>
+                -->
             </div>
 
             <div class="section" id="opportunities">
@@ -511,14 +608,19 @@
                      <div class="section-title" id="section-opportunities">신사업 기회 발굴</div>
                      <div class="section-subtitle">데이터 기반 신사업 아이디어 Top 5</div>
                  </div>
-                 <div class="viz-container">
-                     <div class="viz-title">신사업 아이디어 점수 분포</div>
-                     <img src="{{ idea_score_dist_path | default('fig/placeholder.png') }}" alt="아이디어 점수 분포" class="report-graph">
-                 </div>
-                 <h3>Top 5 신사업 아이디어</h3>
-                 <div>{{ opportunity_list_table | safe }}</div>
-                 <h3 style="margin-top: 32px;">Top 1 아이디어 검증: 2주 Action Plan</h3>
-                 <div>{{ action_plan_table | safe }}</div>
+
+                <div class="exec-summary-box">
+                    <div class="exec-summary-title">💡 Section 5 Summary (AI)</div>
+                    <div class="exec-summary-text">{{ opportunities_exec_summary | safe }}</div>
+                </div>
+
+                <h3>Top 5 신사업 아이디어</h3>
+                <div>{{ opportunity_list_table | safe }}</div>
+  
+                <img src="{{ idea_score_dist_path | default('fig/placeholder.png') }}" alt="아이디어 점수 분포" class="report-graph">
+  
+                <h3 style="margin-top: 32px;">아이디어 검증: 2주 Action Plan (Top 1)</h3>
+                <div>{{ action_plan_table | safe }}</div>
             </div>
 
             <div class="section" id="actionplan">
@@ -533,7 +635,7 @@
             </div>
 
         </div> </div> <div class="footer">
-       <div class="footer-content"> ... </div>
+       <div class="footer-content"> Business Development Team </div>
        <div class="footer-links"> ... </div>
     </div>
 

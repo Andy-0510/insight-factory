@@ -6,6 +6,7 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 import re
 import markdown # 테이블 HTML 변환용
 import time # LLM 호출 지연용
+from collections import Counter, defaultdict # 섹션 3에서 사용
 
 # --- 설정 (경로는 실제 프로젝트 구조에 맞게 조정 필요) ---
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
@@ -47,6 +48,11 @@ def dataframe_to_html_table(df, max_rows=50):
     # 테이블 스타일 클래스 추가
     return df.head(max_rows).to_html(index=False, escape=False, border=0, classes=["dataframe-table"])
 
+def dataframe_to_html_table(df, max_rows=50, classes="dataframe-table"): # <-- 1. classes 인자 추가 (기본값 설정)
+    if df is None or df.empty:
+        return "<p>(데이터 없음)</p>"
+    return df.head(max_rows).to_html(index=False, escape=False, border=0, classes=classes) # <-- 2. 인자로 받은 classes 사용
+
 # --- ▼▼▼ LLM 호출 함수들 (월간용) ▼▼▼ ---
 def _call_gemini_safe(prompt: str, default_resp: str = "AI 분석 실패") -> str:
     """Gemini 호출을 안전하게 감싸는 내부 함수 (지연 시간 추가)"""
@@ -84,6 +90,31 @@ def _call_gemini_safe(prompt: str, default_resp: str = "AI 분석 실패") -> st
         elif "API key not valid" in str(e): return "AI 분석 실패 (API 키 오류)"
         elif "429" in str(e): return "AI 분석 실패 (API 요청 한도 초과)"
         return f"AI 분석 실패 ({e.__class__.__name__})"
+
+# --- ▼▼▼ [추가] 섹션 요약 함수 ▼▼▼ ---
+def call_gemini_for_section_summary(section_title, context_summary):
+    """LLM 호출: 각 섹션별 Executive Summary 생성 (간결하게)"""
+    if isinstance(context_summary, (list, dict)):
+        # 컨텍스트가 너무 길어지는 것을 방지하기 위해 요약 (예: 상위 5개)
+        if isinstance(context_summary, list) and len(context_summary) > 5:
+             context_str = json.dumps(context_summary[:5], ensure_ascii=False, indent=2) + "\n... (이하 생략)"
+        else:
+             context_str = json.dumps(context_summary, ensure_ascii=False, indent=2)
+    else:
+        context_str = str(context_summary)
+
+    prompt = f"""
+    당신은 수석 애널리스트입니다. '{section_title}' 섹션의 핵심 데이터를 요약했습니다.
+    이 데이터를 바탕으로 해당 섹션의 **핵심 결론(Executive Summary)**을 **1~2 문장**으로 작성해주세요. (Markdown 형식)
+    
+    ### '{section_title}' 섹션 핵심 데이터:
+    {context_str}
+
+    ### Section Summary (1~2 문장, Markdown):
+    """
+    md_response = _call_gemini_safe(prompt, default_resp="섹션 요약 생성 실패.")
+    return markdown.markdown(md_response) # HTML로 변환하여 반환
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 def call_gemini_for_monthly_summary(context):
     """LLM 호출: 월간 Executive Summary 생성"""
@@ -411,10 +442,7 @@ def prepare_monthly_report_data():
     risk_issues_df = safe_read_csv(os.path.join(EXPORT_DIR, "risk_issues.csv"))
     action_plan_df = safe_read_csv(os.path.join(EXPORT_DIR, "two_week_plan.csv"))
     monthly_meta = load_json_safe(os.path.join(DEBUG_DIR, "monthly_meta_agg.json"), [])
-    # --- ▼▼▼ 월간 약한 신호 데이터 로드 추가 ▼▼▼ ---
     weak_signals_df = safe_read_csv(os.path.join(EXPORT_DIR, "weak_signals.csv"))
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-
 
     # 2. 목차 데이터 생성 (부제목 추가)
     data['toc_items'] = [
@@ -426,263 +454,144 @@ def prepare_monthly_report_data():
         {'number': '5', 'id': 'opportunities', 'title': '신사업 기회 발굴', 'subtitle': '데이터 기반 신사업 아이디어 · Top 5 Opportunities'},
         {'number': '6', 'id': 'actionplan', 'title': '종합 전략 방향 및 실행 방안', 'subtitle': '중장기 전략 제안 · Resource Allocation'},
     ]
-    # --- ▼▼▼ Section 0: Executive Summary & KPI (데이터 채우기) ▼▼▼ ---
     
-    # LLM 요약용 컨텍스트 준비
+    # --- ▼▼▼ Section 0: Executive Summary & KPI ▼▼▼ ---
     summary_context = {
         "period": data['report_period'],
         "top_biz_idea": (biz_opps_data.get("ideas", [{}]))[0].get("idea", "N/A"),
-        "top_risk": risk_issues_df.iloc[0]['Topic'] if not risk_issues_df.empty else "N/A",
+        "top_risk": risk_issues_df.iloc[0]['Topic'] if not risk_issues_df.empty and 'Topic' in risk_issues_df.columns else "N/A",
         "emerging_tech": next((t['technology'] for t in tech_maturity_data.get("results", []) if t.get("analysis", {}).get("stage") == "Emerging"), "N/A"),
-        "top_rising_topic": growth_df.iloc[0]['topic_name'] if not growth_df.empty else "N/A"
+        "top_rising_topic": growth_df.iloc[0]['topic_name'] if not growth_df.empty and 'topic_name' in growth_df.columns else "N/A"
     }
     data['executive_summary'] = call_gemini_for_monthly_summary(summary_context)
-    
-    # KPI 계산 (MoM은 Placeholder, 전월 데이터 필요)
     data['kpi_total_articles'] = len(monthly_meta)
-    data['kpi_article_change_mom'] = "+0%" # Placeholder
-    data['kpi_article_change_class'] = "change-neutral"
-
+    data['kpi_article_change_mom'] = "+0%"; data['kpi_article_change_class'] = "change-neutral" # Placeholder
     data['kpi_key_topics_count'] = len(topics_data.get("topics", []))
-    data['kpi_topic_change_mom'] = "+0" # Placeholder
-    data['kpi_topic_change_class'] = "change-neutral"
-
-    # 소스 다양성 (예시: meta 파일에서 site_name 집합 크기)
+    data['kpi_topic_change_mom'] = "+0"; data['kpi_topic_change_class'] = "change-neutral" # Placeholder
     source_diversity_count = len(set(item.get('site_name') for item in monthly_meta if item.get('site_name')))
     data['kpi_source_diversity'] = source_diversity_count
-    data['kpi_source_change_mom'] = "+0" # Placeholder
-    data['kpi_source_change_class'] = "change-neutral"
-
-    # 약한 신호 발견 건수
+    data['kpi_source_change_mom'] = "+0"; data['kpi_source_change_class'] = "change-neutral" # Placeholder
     weak_signals_count = len(weak_signals_df) if not weak_signals_df.empty else 0
     data['kpi_weak_signals_count'] = weak_signals_count
-    data['kpi_weak_signal_change_mom'] = "+0" # Placeholder
-    data['kpi_weak_signal_change_class'] = "change-neutral"
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+    data['kpi_weak_signal_change_mom'] = "+0"; data['kpi_weak_signal_change_class'] = "change-neutral" # Placeholder
 
-
-    # --- ▼▼▼ Section 1: Market Positioning (Placeholder 부분 채우기) ▼▼▼ ---
+    # --- ▼▼▼ Section 1: Market Positioning ▼▼▼ ---
     data['topic_bubble_map_path'] = get_relative_image_path("topics_bubble.png")
     data['topic_mini_trends_path'] = get_relative_image_path("topics_mini_trends.png")
-
-    # LLM 컨텍스트 준비 (토픽 데이터 + 성장률)
     df_topic_details = pd.DataFrame(topics_data.get("topics", []))
+    topics_context = []
+    topic_id_name_map = {}
     if not df_topic_details.empty and 'topic_id' in df_topic_details.columns:
-        # topic_growth.csv (growth_df) 로드 확인
         if not growth_df.empty and 'topic_id' in growth_df.columns:
-             # topic_id를 기준으로 모멘텀 점수 병합
              df_topic_details = pd.merge(df_topic_details, growth_df[['topic_id', 'momentum_score']], on='topic_id', how='left')
              df_topic_details['momentum_score'] = df_topic_details['momentum_score'].fillna(0.0)
-        else:
-             df_topic_details['momentum_score'] = 0.0 # 성장률 파일 없으면 0으로
-
-        # 'topic_name'이 없으면 대체 이름 사용
-        df_topic_details['Topic Identifier'] = df_topic_details.apply(
-            lambda row: row.get('topic_name', f"Topic #{row.get('topic_id')}"), axis=1
-        )
-        # 'topic_summary'가 없으면 빈 값
-        if 'topic_summary' not in df_topic_details.columns:
-            df_topic_details['topic_summary'] = ""
+        else: df_topic_details['momentum_score'] = 0.0
+        df_topic_details['Topic Identifier'] = df_topic_details.apply(lambda row: row.get('topic_name', f"Topic #{row.get('topic_id')}"), axis=1)
+        if 'topic_summary' not in df_topic_details.columns: df_topic_details['topic_summary'] = ""
         
-        # LLM에 전달할 컨텍스트 생성 (상위 10개 토픽)
+        topic_id_name_map = df_topic_details.set_index('topic_id')['Topic Identifier'].to_dict()
+
         topics_context = df_topic_details.head(10).apply(
-            lambda row: {
-                "토픽명": row['Topic Identifier'],
-                "요약": row['topic_summary'],
-                "관심도 (예시)": row.get('interest_score', 'N/A'), # 'interest_score'가 있다면 사용, 없으면 N/A
-                "긍정성 (예시)": row.get('sentiment_score', 'N/A'), # 'sentiment_score'가 있다면 사용, 없으면 N/A
-                "모멘텀 (z-like)": row.get('momentum_score', 0.0)
-            }, axis=1
+            lambda row: { "토픽명": row['Topic Identifier'], "요약": row['topic_summary'], "모멘텀 (z-like)": row.get('momentum_score', 0.0) }, axis=1
         ).tolist()
+    positioning_insights = call_gemini_for_positioning_analysis(topics_context)
+    data.update(positioning_insights)
+    data['positioning_exec_summary'] = call_gemini_for_section_summary("전략적 시장 포지셔닝 맵", topics_context)
+    if not df_topic_details.empty:
+        df_topic_details['top_words_str'] = df_topic_details.get('top_words', pd.Series(dtype='object')).apply(lambda words: ", ".join([w.get('word', '') for w in words[:3]]) if isinstance(words, list) else "")
+        df_topic_details_final = df_topic_details[['Topic Identifier', 'topic_summary', 'top_words_str']].rename(columns={'Topic Identifier': '토픽', 'topic_summary': '요약', 'top_words_str': '핵심 키워드'})
+        data['topic_details_table'] = dataframe_to_html_table(df_topic_details_final, max_rows=20, classes="dataframe-table topics-table")
+    else: data['topic_details_table'] = "<p>(토픽 데이터 없음)</p>"
+    if not growth_df.empty and 'topic_id' in growth_df.columns and topic_id_name_map:
+         growth_df['토픽'] = growth_df['topic_id'].map(topic_id_name_map).fillna(growth_df['topic_id'].apply(lambda x: f"Topic #{x}"))
+         if 'topic_name' not in growth_df.columns: growth_df['topic_name'] = ""
+         growth_table_df = growth_df[['토픽', 'topic_name', 'momentum_score']].rename(columns={'topic_name': 'LLM 이름 (참고)', 'momentum_score': '모멘텀 점수'})
+         data['topic_growth_table'] = dataframe_to_html_table(growth_table_df, max_rows=15, classes="dataframe-table growth-table")
+    else: data['topic_growth_table'] = "<p>(토픽 성장률 데이터 없음)</p>"
 
-        # LLM 호출
-        positioning_insights = call_gemini_for_positioning_analysis(topics_context)
-        data.update(positioning_insights) # 딕셔너리 값들(positioning_insight, quadrant1_topics 등)을 data에 추가
-
-        # 테이블 데이터 준비 (DataFrame -> HTML)
-        df_topic_details['top_words_str'] = df_topic_details.get('top_words', pd.Series(dtype='object')).apply(
-            lambda words: ", ".join([w.get('word', '') for w in words[:3]]) if isinstance(words, list) else ""
-        )
-        df_topic_details_final = df_topic_details[['Topic Identifier', 'topic_summary', 'top_words_str']].rename(columns={
-            'Topic Identifier': '토픽', 'topic_summary': '요약', 'top_words_str': '핵심 키워드'
-        })
-        data['topic_details_table'] = dataframe_to_html_table(df_topic_details_final, max_rows=20)
-        
-        if not growth_df.empty:
-             topic_id_name_map = df_topic_details.set_index('topic_id')['Topic Identifier'].to_dict()
-             growth_df['토픽'] = growth_df['topic_id'].map(topic_id_name_map).fillna(growth_df['topic_id'].apply(lambda x: f"Topic #{x}"))
-             if 'topic_name' not in growth_df.columns: growth_df['topic_name'] = ""
-             growth_table_df = growth_df[['토픽', 'topic_name', 'momentum_score']].rename(columns={'topic_name': 'LLM 이름 (참고)', 'momentum_score': '모멘텀 점수'})
-             data['topic_growth_table'] = dataframe_to_html_table(growth_table_df, max_rows=15)
-        else:
-             data['topic_growth_table'] = "<p>(토픽 성장률 데이터 없음)</p>"
-    else:
-        # topics.json 파일 자체가 비어있는 경우
-        data['positioning_insight'] = "토픽 데이터가 없어 분석을 생략합니다."
-        data['quadrant1_topics'] = "N/A"; data['quadrant1_strategy'] = "N/A"
-        data['quadrant2_topics'] = "N/A"; data['quadrant2_strategy'] = "N/A"
-        data['quadrant3_topics'] = "N/A"; data['quadrant3_strategy'] = "N/A"
-        data['quadrant4_topics'] = "N/A"; data['quadrant4_strategy'] = "N/A"
-        data['strategic_implications'] = []
-        data['topic_details_table'] = "<p>(토픽 데이터 없음)</p>"
-        data['topic_growth_table'] = "<p>(토픽 성장률 데이터 없음)</p>"
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-
-    # --- ▼▼▼ Section 2: Tech Maturity (Placeholder 부분 채우기) ▼▼▼ ---
+    # --- ▼▼▼ Section 2: Tech Maturity ▼▼▼ ---
     data['tech_maturity_map_path'] = get_relative_image_path("tech_maturity_map.png")
-    
     tech_details_list = []
-    llm_context_for_rd_rec = [] # R&D 종합 권고 LLM에 전달할 요약 정보
+    llm_context_for_rd_rec = []
     tech_results = tech_maturity_data.get("results", [])
-    
     print(f"[INFO] Processing {len(tech_results)} tech maturity items...")
     for tech in tech_results:
-        tech_name = tech.get("technology", "N/A")
-        stage = tech.get("analysis", {}).get("stage", "N/A")
-        reason = tech.get("analysis", {}).get("reason", "분석 데이터 없음")
-        
-        stage_class_map = {
-            "Emerging": "stage-emerging", 
-            "Growth": "stage-growth", 
-            "Maturity": "stage-maturity",
-            "N/A": ""
-        }
-        
-        # LLM 호출하여 개별 투자 권고 생성
+        tech_name = tech.get("technology", "N/A"); stage = tech.get("analysis", {}).get("stage", "N/A"); reason = tech.get("analysis", {}).get("reason", "분석 데이터 없음")
+        stage_class_map = {"Emerging": "stage-emerging", "Growth": "stage-growth", "Maturity": "stage-maturity"}
         recommendation = call_gemini_for_tech_recommendation(tech_name, stage, reason)
-        
-        tech_details_list.append({
-            "stage_class": stage_class_map.get(stage, ""),
-            "stage_text": stage,
-            "name": tech_name,
-            "description": reason, # LLM이 생성한 판단 근거
-            "recommendation": recommendation # LLM이 생성한 투자 권고
-        })
-        
-        # R&D 종합 권고 LLM에 전달할 컨텍스트 추가 (간략하게)
+        tech_details_list.append({ "stage_class": stage_class_map.get(stage, ""), "stage_text": stage, "name": tech_name, "description": reason, "recommendation": recommendation })
         llm_context_for_rd_rec.append(f"{tech_name}: {stage} 단계 (권고: {recommendation})")
-        
     data['tech_maturity_details'] = tech_details_list
-    
-    # R&D 종합 권고 LLM 호출
     data['rd_recommendation'] = call_gemini_for_rd_recommendation(llm_context_for_rd_rec)
-    
-    # 테이블 데이터 (레퍼런스에는 없었지만, 필요시 생성)
+    data['lifecycle_exec_summary'] = call_gemini_for_section_summary("기술 수명 주기 분석", llm_context_for_rd_rec)
     df_tech_maturity = pd.DataFrame(tech_details_list)
-    data['tech_maturity_table'] = dataframe_to_html_table(df_tech_maturity[['name', 'stage_text', 'description', 'recommendation']].head(10))
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+    data['tech_maturity_table'] = dataframe_to_html_table(df_tech_maturity[['name', 'stage_text', 'description', 'recommendation']].head(10), classes="dataframe-table tech-maturity-table")
 
-
-    # --- ▼▼▼ Section 3: Competitor Analysis (Placeholder 부분 채우기) ▼▼▼ ---
+    # --- ▼▼▼ Section 3: Competitor Analysis ▼▼▼ ---
     data['matrix_heatmap_path'] = get_relative_image_path("matrix_heatmap.png")
     data['company_network_path'] = get_relative_image_path("company_network.png")
     data['keyword_network_path'] = get_relative_image_path("keyword_network.png")
-    
     comp_pos_list = []
-    matrix_summary_for_llm = [] # 경쟁 강도 경보 LLM용 요약
-    
-    # 토픽 ID -> 이름 매핑 (Section 1에서 이미 생성된 df_topic_details 사용)
-    topic_id_name_map = {}
-    if 'df_topic_details' in locals() and not df_topic_details.empty:
-         topic_id_name_map = df_topic_details.set_index('topic_id')['Topic Identifier'].to_dict()
-
+    matrix_summary_for_llm = []
     if not matrix_df_long.empty and topic_id_name_map:
-        # 1. 기업별 총점 기준 상위 4개 기업 선정
         top_orgs = matrix_df_long.groupby('org')['hybrid_score'].sum().nlargest(4).index
-        
-        # 2. 기업별 'Focus Level' 계산 (예시: 총점 기준 4분위)
-        # (더 정확한 로직은 module_d.py 참고 필요, 여기서는 예시)
         try:
              focus_quantiles = matrix_df_long.groupby('org')['hybrid_score'].sum().quantile([0.25, 0.5, 0.75]).to_dict()
              def get_focus_level(score):
                  if score > focus_quantiles[0.75]: return "Very High"
-                 if score > focus_quantiles[0.5]: return "High"
-                 if score > focus_quantiles[0.25]: return "Medium"
+                 elif score > focus_quantiles[0.5]: return "High"
+                 elif score > focus_quantiles[0.25]: return "Medium"
                  return "Low"
         except Exception:
-             def get_focus_level(score): return "N/A" # 계산 실패 시
-
+             print("[WARN] Failed to calculate focus quantiles. Using default 'N/A'.")
+             def get_focus_level(score):
+                 return "N/A"
+        total_market_score = matrix_df_long['hybrid_score'].sum()
         print(f"[INFO] Processing {len(top_orgs)} top competitors for positioning map...")
         for comp in top_orgs:
             comp_data = matrix_df_long[matrix_df_long['org'] == comp]
             total_score = comp_data['hybrid_score'].sum()
             focus_level = get_focus_level(total_score)
-            
-            # 3. 기업별 'Topic Share' 계산 (전체 점수 대비)
-            total_market_score = matrix_df_long['hybrid_score'].sum()
             topic_share_pct = (total_score / total_market_score * 100) if total_market_score > 0 else 0.0
-            
-            # 4. 상위 토픽 및 LLM 전략 분석
             top_topics = comp_data.nlargest(3, 'hybrid_score')
             top_topics_str = ", ".join([topic_id_name_map.get(int(t_id), f"Topic {t_id}") for t_id in top_topics['topic'] if str(t_id).isdigit()])
-            
             strategy_insight = call_gemini_for_strategy_insight(comp, top_topics_str)
-            
-            comp_pos_list.append({
-                "name": comp,
-                "badge_text": f"{focus_level} Focus", # 배지 텍스트
-                "topic_share": f"{topic_share_pct:.1f}%",
-                "focus_level": focus_level,
-                "strategy_insight": strategy_insight # LLM 결과
-            })
+            comp_pos_list.append({ "name": comp, "badge_text": f"{focus_level} Focus", "topic_share": f"{topic_share_pct:.1f}%", "focus_level": focus_level, "strategy_insight": strategy_insight })
             matrix_summary_for_llm.append(f"- {comp}: {focus_level} Focus, Top Topic: {top_topics_str.split(',')[0]}")
-
     data['competitor_positioning'] = comp_pos_list
-
-    # 5. 경쟁 강도 경보 LLM 호출
     network_summary_for_llm = [f"- {p['source']} <-> {p['target']} ({p['rel_type']})" for p in company_network_data.get("top_pairs", [])[:3]]
-    data['competition_alerts'] = call_gemini_for_competition_alerts(
-        "\n".join(matrix_summary_for_llm),
-        "\n".join(network_summary_for_llm)
-    )
-
-    # 6. Top 경쟁사 전략 방향성 (경쟁사 포지셔닝과 중복 -> 여기서는 요약 테이블로 대체)
-    # competitor_strategy_table 은 competitor_positioning_grid 로 대체되었으므로,
-    # 여기서는 company_network의 중심성(Centrality) 테이블을 제공
+    data['competition_alerts'] = call_gemini_for_competition_alerts("\n".join(matrix_summary_for_llm), "\n".join(network_summary_for_llm))
     df_centrality = pd.DataFrame(company_network_data.get("centrality", []))
     if not df_centrality.empty:
-         data['competitor_strategy_table'] = dataframe_to_html_table(
-             df_centrality[['org', 'degree_centrality']].rename(columns={'org': '기업 (허브)', 'degree_centrality': '연결 중심성'}),
-             max_rows=5
-         )
-    else:
-         data['competitor_strategy_table'] = "<p>(네트워크 중심성 데이터 없음)</p>"
-
-
-    # 7. 주요 기업 관계 및 액션 테이블
+         data['competitor_strategy_table'] = dataframe_to_html_table(df_centrality[['org', 'degree_centrality']].rename(columns={'org': '기업 (허브)', 'degree_centrality': '연결 중심성'}), max_rows=5, classes="dataframe-table centrality-table")
+    else: data['competitor_strategy_table'] = "<p>(네트워크 중심성 데이터 없음)</p>"
     top_pairs = company_network_data.get("top_pairs", [])
     pair_actions_list = []
     if top_pairs:
         print(f"[INFO] Analyzing {len(top_pairs[:5])} top company pairs...")
-        for pair in top_pairs[:5]: # 상위 5개 관계
+        for pair in top_pairs[:5]:
             pair_info_str = f"기업1: {pair['source']}, 기업2: {pair['target']}, 관계 유형: {pair['rel_type']}, 강도: {pair['weight']}"
             action_item = call_gemini_for_network_action_item(pair_info_str)
-            pair_actions_list.append({
-                "관계": f"{pair['source']} ↔ {pair['target']}",
-                "유형": pair['rel_type'],
-                "강도(언급빈도)": pair['weight'],
-                "액션 아이템 (AI)": action_item
-            })
-    data['competitor_actions_table'] = dataframe_to_html_table(pd.DataFrame(pair_actions_list))
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-
+            pair_actions_list.append({ "관계": f"{pair['source']} ↔ {pair['target']}", "유형": pair['rel_type'], "강도(언급빈도)": pair['weight'], "액션 아이템 (AI)": action_item })
+    data['competitor_actions_table'] = dataframe_to_html_table(pd.DataFrame(pair_actions_list), classes="dataframe-table actions-table")
+    data['competitors_exec_summary'] = call_gemini_for_section_summary("경쟁사 전략적 의도 분석", matrix_summary_for_llm + network_summary_for_llm)
 
     # --- ▼▼▼ Section 4: Risk Management (테이블 가공 로직 수정) ▼▼▼ ---
     data['risk_spikes_path'] = get_relative_image_path("risk_negative_spikes.png")
     data['risk_network_path'] = get_relative_image_path("risk_keyword_network.png")
     
     if not risk_issues_df.empty:
-        # 1. sentiment_drop 레벨 정의 함수
+        # --- ▼▼▼ [수정] get_risk_level_display 함수 ▼▼▼ ---
         def get_risk_level_display(score_str):
+            """sentiment_drop 점수에 따라 레벨 배지와 괄호 안 점수를 반환"""
             try:
                 score = float(score_str)
                 level = "Low"
-                css_class = "risk-low" # 기본값
-                # (임계값은 예시이며, 실제 데이터 분포를 보고 조정해야 합니다)
-                if score > 0.15:
+                css_class = "risk-low" 
+                if score > 0.15: # (임계값은 예시, 필요시 조정)
                     level = "High"
                     css_class = "risk-high"
-                elif score > 0.05:
+                elif score > 0.05: # (임계값은 예시, 필요시 조정)
                     level = "Medium"
                     css_class = "risk-medium"
                 
@@ -690,85 +599,70 @@ def prepare_monthly_report_data():
                 return f'<span class="risk-level {css_class}">{level}</span><br>({score:.3f})'
             except (ValueError, TypeError):
                 return "N/A"
+        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
-        # 2. DataFrame 가공
-        # (head()로 상위 10개만 선택)
+        # 2. '완화 액션' 내용에 볼드 처리
+        def format_mitigation(text):
+             if not text or pd.isna(text): return "N/A"
+             text_html = str(text)
+             text_html = re.sub(r'^(30일|60일|90일):', r'<strong>\1:</strong>', text_html, flags=re.MULTILINE)
+             return text_html
+
+        # 3. DataFrame 가공
         df_risk_processed = risk_issues_df.head(10).copy()
         
-        # '리스크 수준' 컬럼 생성 (Action 2)
-        df_risk_processed['리스크 수준'] = df_risk_processed['sentiment_drop'].apply(get_risk_level_display)
+        # 4. '심각도' (리스크 수준) 컬럼 생성
+        df_risk_processed['심각도'] = df_risk_processed['sentiment_drop'].apply(get_risk_level_display)
         
-        # 3. 컬럼 선택 및 이름 변경 (Actions 1, 3, 4, 5)
-        # 'Date' 컬럼 제외
+        # 5. '완화 액션' 포맷팅
+        df_risk_processed['완화 액션'] = df_risk_processed['mitigation'].apply(format_mitigation)
+
+        # 6. 컬럼 선택 및 이름 변경 (내용 유지: '요약' 컬럼 포함)
         df_risk_processed = df_risk_processed[
-            ['Topic', 'summary', 'impact_range', 'mitigation', '리스크 수준']
+            ['Topic', 'summary', '심각도', 'impact_range', '완화 액션'] 
         ].rename(columns={
-            'Topic': '토픽',
+            'Topic': '토픽/분야',
             'summary': '요약',
-            'impact_range': '영향 범위',
-            'mitigation': '완화 액션'
+            'impact_range': '영향 범위'
         })
         
-        # 4. HTML 테이블로 변환 (순서 재배치)
+        # 7. HTML 테이블로 변환 (순서 재배치)
         data['risk_list_table'] = dataframe_to_html_table(
-            df_risk_processed[['토픽', '요약', '리스크 수준', '영향 범위', '완화 액션']],
-            max_rows=10
+            df_risk_processed[['토픽/분야', '요약', '심각도', '영향 범위', '완화 액션']], # 순서 유지
+            max_rows=10,
+            classes="dataframe-table risk-table" # 'risk-table' 클래스 전달
         )
     else:
         data['risk_list_table'] = "<p>(탐지된 주요 리스크 없음)</p>"
     
-    # LLM 분석용 컨텍스트 준비 (상위 5개 리스크 정보)
-    risk_context = []
-    if not risk_issues_df.empty:
-        risk_context = risk_issues_df.head(5).to_dict('records')
+    risk_context = risk_issues_df.head(5).to_dict('records') if not risk_issues_df.empty else []
     risk_analysis_results = call_gemini_for_risk_analysis(risk_context)
-    data['risk_matrix'] = risk_analysis_results.get('risk_matrix', { ... })
-    data['immediate_actions'] = risk_analysis_results.get('immediate_actions', [])
-    data['risk_assessment'] = risk_analysis_results.get('risk_assessment', "...")
+    data.update(risk_analysis_results)
+    data['risk_exec_summary'] = call_gemini_for_section_summary("전략적 리스크 관리", risk_context)
     # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
-
-    # --- ▼▼▼ Section 5: Biz Opps & Action Plan (데이터 로드 확인) ▼▼▼ ---
+    # --- ▼▼▼ Section 5: Biz Opps & Action Plan ▼▼▼ ---
     data['idea_score_dist_path'] = get_relative_image_path("idea_score_distribution.png")
-    
     df_opps = pd.DataFrame(biz_opps_data.get("ideas", []))
     if not df_opps.empty:
-         # score 기준으로 정렬하여 상위 5개 표시
          df_opps_sorted = df_opps.sort_values(by="score", ascending=False)
-         data['opportunity_list_table'] = dataframe_to_html_table(
-             df_opps_sorted[['idea', 'value_prop', 'score', 'target_customer']].head(5),
-             max_rows=5
-         )
-    else:
-         data['opportunity_list_table'] = "<p>(신사업 아이디어 데이터 없음)</p>"
-         
-    # 'action_plan_table'은 Section 5의 마지막으로 이동되었음
-    data['action_plan_table'] = dataframe_to_html_table(action_plan_df, max_rows=10)
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+         data['opportunity_list_table'] = dataframe_to_html_table(df_opps_sorted[['idea', 'value_prop', 'score', 'target_customer']].head(5), max_rows=5, classes="dataframe-table opps-table")
+    else: data['opportunity_list_table'] = "<p>(신사업 아이디어 데이터 없음)</p>"
+    data['action_plan_table'] = dataframe_to_html_table(action_plan_df, max_rows=10, classes="dataframe-table action-plan-table")
+    data['opportunities_exec_summary'] = call_gemini_for_section_summary("신사업 기회 발굴", (biz_opps_data.get("ideas", [{}]))[0])
 
-
-    # --- ▼▼▼ Section 6: Final Recommendation (Placeholder 채우기) ▼▼▼ ---
-    
-    # 최종 권고 LLM에 전달할 컨텍스트 구성
-    # (이미 data 딕셔너리에 저장된 AI 분석 결과들을 활용)
+    # --- ▼▼▼ Section 6: Final Recommendation ▼▼▼ ---
     final_context = {
-        "Executive Summary": data.get('executive_summary', 'N/A'),
-        "Positioning Insight": data.get('positioning_insight', 'N/A'),
-        "R&D Recommendation": data.get('rd_recommendation', 'N/A'),
-        "Competition Alerts": data.get('competition_alerts', []),
-        "Risk Assessment": data.get('risk_assessment', 'N/A'),
-        "Top Opportunity": (biz_opps_data.get("ideas", [{}]))[0].get("idea", "N/A"),
-        "Top Action Plan": action_plan_df.iloc[0].to_dict() if not action_plan_df.empty else {}
+        "Positioning": data.get('positioning_insight', 'N/A'),
+        "R&D": data.get('rd_recommendation', 'N/A'),
+        "Competition": data.get('competition_alerts', []),
+        "Risk": data.get('risk_assessment', 'N/A'),
+        "Opportunity": (biz_opps_data.get("ideas", [{}]))[0].get("idea", "N/A"),
     }
-
-    # LLM 호출
     data['final_recommendation'] = call_gemini_for_final_recommendation(final_context)
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
     # Footer 정보
-    data['dashboard_link'] = '#'
-    data['data_source_link'] = '#'
-    data['contact_link'] = '#'
+    data['dashboard_link'] = '#'; data['data_source_link'] = '#'; data['contact_link'] = '#'
 
     print("[INFO] Monthly data preparation complete.")
     return data
