@@ -5,7 +5,8 @@ permissions:
 
 on:
   schedule:
-    - cron: "0 21 21-30 * 3" # 매월 21~30일 사이의 21:00 UTC = 다음날 06:00 KST (월말에 실행)
+    - cron: "0 21 * * 3L" # 매월 마지막 수요일 21:00 UTC (한국 시간 다음날 오전 6시)
+    # - cron: "0 21 21-30 * 3" # 매월 21~30일 사이의 21:00 UTC = 다음날 06:00 KST (월말에 실행)
   workflow_dispatch:
 
 jobs:
