@@ -129,7 +129,7 @@ def load_all_data():
 # --- 3. 개별 시각화 함수들 ---
 def plot_enhanced_timeseries(df_display, spike_threshold=2.0):
     """
-    주어진 데이터프레임을 사용하여 '전체 기사량'과 '신호 기사 비율'을 시각화합니다.
+    주어진 데이터프레임을 사용하여 '전체 기사량'과 '관심 기사 비율'을 시각화합니다.
     (범례, 막대 색상, 마커 수정됨)
     """
     print("[INFO] Generating enhanced timeseries chart (updated)...")
@@ -139,7 +139,7 @@ def plot_enhanced_timeseries(df_display, spike_threshold=2.0):
 
     # 스파이크 탐지 (기존과 동일)
     all_spikes_dfs = []
-    for metric, name in [('count', '전체 기사량'), ('signal_ratio', '신호 기사 비율')]:
+    for metric, name in [('count', '전체 기사량'), ('signal_ratio', '관심 기사 비율')]:
         if metric not in df.columns:
              print(f"[WARN] Metric '{metric}' not found in DataFrame. Skipping spike detection.")
              continue
@@ -177,8 +177,8 @@ def plot_enhanced_timeseries(df_display, spike_threshold=2.0):
 
     ax2 = ax1.twinx()
     # [수정] color를 '#e9ecef'에서 '#ced4da' (더 진한 회색)로 변경
-    ax2.bar(df['date'], df['signal_ratio'], color='#ced4da', label='신호 기사 비율', zorder=1)
-    ax2.set_ylabel('신호 기사 비율 (%)', color='#6c757d')
+    ax2.bar(df['date'], df['signal_ratio'], color='#ced4da', label='관심 기사 비율', zorder=1)
+    ax2.set_ylabel('관심 기사 비율 (%)', color='#6c757d')
     ax2.tick_params(axis='y', labelcolor='#6c757d')
     ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{y:.0%}')); ax2.set_ylim(bottom=0)
 
@@ -193,7 +193,7 @@ def plot_enhanced_timeseries(df_display, spike_threshold=2.0):
             ax2.scatter(spikes_ratio['date'], spikes_ratio['signal_ratio'], color='#dc3545', s=150, marker='X', zorder=4, label='비율 스파이크')
 
     ax1.set_zorder(2); ax1.patch.set_visible(False)
-    plt.title('일일 기사량 및 신호 기사 비율 추이 (스파이크 탐지)', fontsize=16)
+    plt.title('일일 전체 기사량(좌) 및 관심 기사 비율(우) 추이', fontsize=16)
     ax1.set_xlabel('날짜'); ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
     
     # [수정] fig.legend 대신 ax1.legend를 사용하여 그래프 내부에 범례 배치
