@@ -65,13 +65,13 @@
       document.documentElement.setAttribute('data-theme','dark');
       themeToggle?.classList.add('active');
       themeToggle?.setAttribute('aria-checked','true');
-      if(themeText) themeText.textContent = '다크';
+      if(themeText) themeText.textContent = '🌜(Dark Mode)';
       applyIframeDarkMode(true);
     } else {
       document.documentElement.removeAttribute('data-theme');
       themeToggle?.classList.remove('active');
       themeToggle?.setAttribute('aria-checked','false');
-      if(themeText) themeText.textContent = '라이트';
+      if(themeText) themeText.textContent = '🌞(Light Mode)';
       applyIframeDarkMode(false);
     }
     try{ localStorage.setItem('ir_theme', mode); }catch(e){}
