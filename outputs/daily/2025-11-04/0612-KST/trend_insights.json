@@ -1,0 +1,150 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "오디세이",
+        "게이밍",
+        "메이플",
+        "아지트",
+        "메이플 아지트"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "미국",
+        "투자",
+        "ai",
+        "반도체",
+        "oled"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "경기",
+        "시즌",
+        "많이",
+        "경영",
+        "박무빈은"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "gpu",
+        "서비스",
+        "클라우드",
+        "인공지능"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "브랜드",
+        "스마트폰",
+        "샤오미",
+        "시리즈"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "tv",
+        "반도체",
+        "중국",
+        "삼성전자",
+        "lg전자"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "반도체",
+        "핵심",
+        "디스플레이",
+        "배터리",
+        "생산"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "일월오봉도",
+        "부스터",
+        "프로",
+        "부스터 프로",
+        "에디션"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "oled",
+        "금융",
+        "특허",
+        "삼성전자가",
+        "미국"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "인기",
+        "로켓직구",
+        "브랜드",
+        "상품을",
+        "겨울"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "드론",
+        "도시",
+        "행사는",
+        "서비스",
+        "xr"
+      ]
+    },
+    {
+      "topic_id": 11,
+      "topic_name": "Topic #11",
+      "summary": "",
+      "words": [
+        "그래서",
+        "그런데",
+        "이제",
+        "어떻게",
+        "한중"
+      ]
+    }
+  ],
+  "evidence": {}
+}
