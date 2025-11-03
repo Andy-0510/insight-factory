@@ -304,11 +304,11 @@
     <div class="container">
         <div class="header">
             <div class="header-top">
-                <div class="logo">⚡ INSIGHT FACTORY</div>
+                <div class="logo">INSIGHT FACTORY</div>
                 <div class="date">{{ report_period }}</div>
             </div>
             <div class="title">Monthly Strategic Review</div>
-            <div class="subtitle">중장기 전략 방향 재설정 및 신사업 기회 발굴</div>
+            <div class="subtitle">전략 방향성 점검과 신사업 기회 탐색</div>
         </div>
 
         <div class="toc-container">
@@ -337,6 +337,8 @@
                 {% endfor %}
             </ul>
         </div>
+        <br><br>
+
         <div class="content-padding">
 
 
@@ -376,9 +378,9 @@
                     </div>
                 </div>
             </div>
+            <br><br>
 
             <div class="section" id="positioning">
-
                 <div class="section-header">
                     <div class="section-number">1</div>
                     <div class="section-title" id="section-positioning">전략적 시장 포지셔닝 맵</div>
@@ -390,12 +392,29 @@
                     <div class="exec-summary-text">{{ positioning_exec_summary | safe }}</div>
                 </div>
 
+                <img src="{{ topic_mini_trends_path | default('fig/placeholder.png') }}" alt="토픽 미니 트렌드" class="report-graph">
+
+                <h4>토픽 상세 정보</h4>
+                 <div>{{ topic_details_table | safe }}</div>
+                
+                 <!--
+                <h4>토픽 성장/하락 추세</h4>
+                 <div>{{ topic_growth_table | safe }}</div>
+                -->
+
+                <div class="implication-box">
+                     <h4>💡 전략적 시사점 (AI Analysis)</h4>
+                     <ul>
+                         {% for imp in strategic_implications %}
+                         <li>{{ imp }}</li>
+                         {% else %}
+                         <li>AI 시사점 분석 예정...</li>
+                         {% endfor %}
+                     </ul>
+                </div>
+
                 <img src="{{ topic_bubble_map_path | default('fig/placeholder.png') }}" alt="토픽 버블 맵" class="report-graph">
 
-                <div class="mb-4">
-                    <h3>전략적 인사이트 및 실행과제 제안 (AI)</h3>
-                    <div>{{ positioning_insight | safe }}</div>
-                </div>
                 <div class="mb-4">
                      <h3>사분면별 전략 권고</h3>
                      <div class="quadrant-grid">
@@ -421,70 +440,19 @@
                          </div>
                      </div>
                 </div>
-
-                <h4>토픽 상세 정보</h4>
-                 <div>{{ topic_details_table | safe }}</div>
-
-                <div class="implication-box">
-                     <h4>💡 전략적 시사점 (AI Analysis)</h4>
-                     <ul>
-                         {% for imp in strategic_implications %}
-                         <li>{{ imp }}</li>
-                         {% else %}
-                         <li>AI 시사점 분석 예정...</li>
-                         {% endfor %}
-                     </ul>
+                <!--
+                <div class="mb-4">
+                    <h3>전략적 인사이트 및 실행과제 제안 (AI)</h3>
+                    <div>{{ positioning_insight | safe }}</div>
                 </div>
-
-                <img src="{{ topic_mini_trends_path | default('fig/placeholder.png') }}" alt="토픽 미니 트렌드" class="report-graph">
-
-                <h4>토픽 성장/하락 추세</h4>
-                 <div>{{ topic_growth_table | safe }}</div>
-
+                -->
             </div>
+            <br><br>
 
-            <div class="section" id="lifecycle">
-                <div class="section-header">
-                     <div class="section-number">2</div>
-                     <div class="section-title" id="section-lifecycle">기술 수명 주기 분석</div>
-                     <div class="section-subtitle">R&D 투자 타이밍</div>
-                </div>
-
-                <div class="exec-summary-box">
-                    <div class="exec-summary-title">🔬 Section 2 Summary (AI)</div>
-                    <div class="exec-summary-text">{{ lifecycle_exec_summary | safe }}</div>
-                </div>
-
-                <img src="{{ tech_maturity_map_path | default('fig/placeholder.png') }}" alt="기술 성숙도 맵" class="report-graph">
- 
-                <h4>기술 단계별 상세 분석 및 권고</h4>
-                <div class="maturity-grid">
-                     {% for tech in tech_maturity_details %}
-                     <div class="maturity-card">
-                         <div class="maturity-stage {{ tech.stage_class }}">{{ tech.stage_text }}</div>
-                         <div class="maturity-tech">{{ tech.name }}</div>
-                         <div class="maturity-description">
-                             {{ tech.description }}
-                         </div>
-                         <div class="maturity-recommendation">
-                             <strong>투자 권고:</strong> {{ tech.recommendation }}
-                         </div>
-                     </div>
-                     {% else %}
-                     <p>기술 성숙도 상세 분석 데이터 없음.</p>
-                     {% endfor %}
-                </div>
-
-                <div class="exec-summary-box mt-2">
-                      <div class="exec-summary-title">🎯 R&D 자원 배분 권고 (AI Suggestion)</div>
-                      <div class="exec-summary-text">{{ rd_recommendation | safe }}</div>
-                </div>
-                
-            </div>
 
             <div class="section" id="competitors">
                 <div class="section-header">
-                     <div class="section-number">3</div>
+                     <div class="section-number">2</div>
                      <div class="section-title" id="section-competitors">경쟁사 전략적 의도 분석</div>
                      <div class="section-subtitle">경쟁 구도 심층 분석</div>
                  </div>
@@ -537,6 +505,48 @@
                  </div>
                  -->
             </div>
+            <br><br>
+
+
+            <div class="section" id="lifecycle">
+                <div class="section-header">
+                     <div class="section-number">3</div>
+                     <div class="section-title" id="section-lifecycle">기술 수명 주기 분석</div>
+                     <div class="section-subtitle">R&D 투자 타이밍</div>
+                </div>
+
+                <div class="exec-summary-box">
+                    <div class="exec-summary-title">🔬 Section 2 Summary (AI)</div>
+                    <div class="exec-summary-text">{{ lifecycle_exec_summary | safe }}</div>
+                </div>
+
+                <img src="{{ tech_maturity_map_path | default('fig/placeholder.png') }}" alt="기술 성숙도 맵" class="report-graph">
+ 
+                <h4>기술 단계별 상세 분석 및 권고</h4>
+                <div class="maturity-grid">
+                     {% for tech in tech_maturity_details %}
+                     <div class="maturity-card">
+                         <div class="maturity-stage {{ tech.stage_class }}">{{ tech.stage_text }}</div>
+                         <div class="maturity-tech">{{ tech.name }}</div>
+                         <div class="maturity-description">
+                             {{ tech.description }}
+                         </div>
+                         <div class="maturity-recommendation">
+                             <strong>투자 권고:</strong> {{ tech.recommendation }}
+                         </div>
+                     </div>
+                     {% else %}
+                     <p>기술 성숙도 상세 분석 데이터 없음.</p>
+                     {% endfor %}
+                </div>
+
+                <div class="exec-summary-box mt-2">
+                      <div class="exec-summary-title">🎯 R&D 자원 배분 권고 (AI Suggestion)</div>
+                      <div class="exec-summary-text">{{ rd_recommendation | safe }}</div>
+                </div>
+            </div>
+            <br><br>
+
 
             <div class="section" id="risk">
                  <div class="section-header">
@@ -593,6 +603,7 @@
                          {% endfor %}
                      </ol>
                 </div>
+                <br><br>
 
                 <!--
                 <div class="mb-4">
@@ -601,7 +612,8 @@
                 </div>
                 -->
             </div>
-
+            
+            
             <div class="section" id="opportunities">
                  <div class="section-header">
                      <div class="section-number">5</div>
@@ -622,6 +634,8 @@
                 <h3 style="margin-top: 32px;">아이디어 검증: 2주 Action Plan (Top 1)</h3>
                 <div>{{ action_plan_table | safe }}</div>
             </div>
+            <br><br>
+
 
             <div class="section" id="actionplan">
                  <div class="section-header">
@@ -635,8 +649,11 @@
             </div>
 
         </div> </div> <div class="footer">
-       <div class="footer-content"> Business Development Team </div>
-       <div class="footer-links"> ... </div>
+       <div>
+                이 리포트는 AI 기반 트렌드 분석 시스템으로 생성했습니다.<br>
+                문의:  thecki85@gmail.com | 010.5353.1145 <br>
+                - Business Development Team -
+       </div> 
     </div>
 
 </body>
