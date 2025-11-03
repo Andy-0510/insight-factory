@@ -217,13 +217,13 @@ jobs:
             rsync -a --exclude='monthly_meta_agg.json' outputs/debug/ "${OUTDIR}/debug/" || true
           fi
 
-          # monthly_meta_agg.json > 100 MB
-          # if [ -d outputs/debug ]; then
-          #  cp -r outputs/debug/* "${OUTDIR}/debug/" || true
-          # fi
-          
           echo "OUTDIR=${OUTDIR}" >> $GITHUB_ENV
 
+        #  monthly_meta_agg.json > 100 MB
+        #  if [ -d outputs/debug ]; then
+        #   cp -r outputs/debug/* "${OUTDIR}/debug/" || true
+        #  fi
+          
       # outputs 커밋/푸시
       - name: Archive and Commit Monthly Report
         shell: bash
