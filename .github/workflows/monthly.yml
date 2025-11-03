@@ -213,9 +213,14 @@ jobs:
           if [ -d outputs/fig ]; then
             cp -r outputs/fig/* "${OUTDIR}/fig/" || true
           fi
-          if [ -d outputs/debug ]; then
-            cp -r outputs/debug/* "${OUTDIR}/debug/" || true
+          if [ -d "outputs/debug" ]; then
+            rsync -a --exclude='monthly_meta_agg.json' outputs/debug/ "${OUTDIR}/debug/" || true
           fi
+
+          # monthly_meta_agg.json > 100 MB
+          # if [ -d outputs/debug ]; then
+          #  cp -r outputs/debug/* "${OUTDIR}/debug/" || true
+          # fi
           
           echo "OUTDIR=${OUTDIR}" >> $GITHUB_ENV
 
