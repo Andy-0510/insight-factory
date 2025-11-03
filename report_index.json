@@ -378,6 +378,21 @@
     ]
   },
   "monthly": {
+    "2025-11-03": [
+      {
+        "time": "1823-KST",
+        "reports": [
+          {
+            "name": "monthly_commentary_report.html",
+            "path": "outputs/monthly/2025-11-03/1823-KST/monthly_commentary_report.html"
+          },
+          {
+            "name": "monthly_report.html",
+            "path": "outputs/monthly/2025-11-03/1823-KST/monthly_report.html"
+          }
+        ]
+      }
+    ],
     "2025-10-29": [
       {
         "time": "0715-KST",
