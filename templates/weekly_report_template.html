@@ -94,7 +94,7 @@
         .meta-label { font-size: 11px; color: #718096; text-transform: uppercase; margin-bottom: 4px; }
         .meta-value { font-size: 14px; font-weight: 600; color: #1a2332; }
         /*.action-section { background: #f7fafc; border-radius: 8px; padding: 20px; margin-top: 16px; }*/
-        .action-title { font-size: 13px; font-weight: 700; color: #0066ff; text-transform: uppercase; margin-bottom: 12px; }
+        .action-title { font-size: 14px; font-weight: 700; color: #0066ff; text-transform: uppercase; margin-bottom: 12px; }
         .action-items { display: grid; gap: 12px; }
         .action-item { display: flex; gap: 12px; align-items: baseline; }
         .action-label { font-size: 11px; font-weight: 700; color: white; background: #0066ff; padding: 4px 8px; border-radius: 4px; min-width: 60px; text-align: center; } /* 너비 조정 */
@@ -120,17 +120,17 @@
 
         <div class="header">
             <div class="header-top">
-                <div class="logo">⚡ INSIGHT FACTORY</div>
+                <div class="logo">INSIGHT FACTORY</div>
                 <div class="date">{{ date_range_display }}</div>
             </div>
-            <div class="title">Weekly Intelligence</div>
-            <div class="subtitle">분석적 나침반 · 운영 계획 지원</div>
+            <div class="title">Weekly Report</div>
+            <div class="subtitle">주간 분석과 실행 계획 수립 지원</div>
         </div>
     
         <div class="section">
             <div class="section-header">
                 <div class="section-number">1</div>
-                <div class="section-title">주간 경영 요약</div>
+                <div class="section-title">주간 트렌드 요약</div>
                 <div class="section-subtitle">금주의 인텔리전스 요약</div>
             </div>
 
@@ -185,9 +185,13 @@
                 <div class="section-title">주간 시장 테마</div>
                 <div class="section-subtitle">주간 핵심 토픽 및 모멘텀</div>
             </div>
+            
+            <div class="visualization">
+                <img src="{{ wordcloud_image_path }}" alt="주간 키워드 워드클라우드" class="report-graph">
+            </div>
 
             <div class="visualization">
-                 <img src="{{ wordcloud_image_path }}" alt="주간 키워드 워드클라우드" class="report-graph">
+                <img src="{{ weekly_topic_barchart_path }}" alt="주간 토픽 막대 바 그래프" class="report-graph">
             </div>
 
             <div class="theme-grid">
@@ -209,19 +213,75 @@
                  <p>주요 시장 테마를 분석 중입니다.</p>
                 {% endfor %}
             </div>
-            
+
+            <!--            
              <div class="visualization">
                  <img src="{{ keyword_network_image_path }}" alt="주간 키워드 네트워크" class="report-graph">
              </div>
-
-            <div class="visualization">
-                 <img src="{{ strong_signals_bar_image_path }}" alt="주간 강한 신호 바차트" class="report-graph">
-            </div>
+            -->
         </div>
+
 
         <div class="section">
             <div class="section-header">
                 <div class="section-number">3</div>
+                <div class="section-title">트렌드 모멘텀 변화</div>
+                <div class="section-subtitle">주요 신호 변화 추이</div>
+            </div>
+
+            <div class="visualization">
+                 <img src="{{ strong_signals_bar_image_path }}" alt="주간 강한 신호 바차트" class="report-graph">
+            </div>
+            <!--
+            <div class="visualization" style="margin-top: 32px;">
+                 <img src="{{ momentum_bar_image_path }}" alt="주간 상승/하강 모멘텀 차트" class="report-graph">
+            </div>
+            -->
+            <table class="momentum-table">
+                <thead>
+                    <tr>
+                        <th>순위</th>
+                        <th>토픽/신호</th>
+                        <th>모멘텀 점수 <br> (z-like)</th>
+                        <th>주간 변화</th>
+                        <th>추세</th>
+                        <th>권고사항 (AI)</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    {% for item in momentum_items %}
+                    <tr>
+                        <td><span class="rank-badge">{{ loop.index }}</span></td>
+                        <td><strong>{{ item.term }}</strong></td>
+                        <td>{{ item.z_like_score }}</td>
+                        <td>{{ item.change_display }}</td>
+                        <td><span class="trend-indicator {{ item.trend_class }}">{{ item.trend_icon }} {{ item.trend_text }}</span></td>
+                        <td>{{ item.recommendation }}</td> </tr>
+                    {% else %}
+                    <tr><td colspan="6" style="text-align:center;">모멘텀 분석 데이터가 없습니다.</td></tr>
+                    {% endfor %}
+                </tbody>
+            </table>
+
+            {% if portfolio_actions %}
+            <div class="action-section">
+                <div class="action-title">주요 시그널 추세에 따른 권고</div>
+                <div class="action-items">
+                     {% for action in portfolio_actions %}
+                     <div class="action-item">
+                         <div class="action-label">Action {{ loop.index }}</div>
+                         <div class="action-text">{{ action }}</div>
+                     </div>
+                     {% endfor %}
+                </div>
+            </div>
+            {% endif %}
+        </div>
+
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">4</div>
                 <div class="section-title">경쟁사 활동 강도</div>
                 <div class="section-subtitle">주간 경쟁 동향 분석</div>
             </div>
@@ -279,7 +339,7 @@
 
         <div class="section">
             <div class="section-header">
-                <div class="section-number">4</div>
+                <div class="section-number">5</div>
                 <div class="section-title">미래 신호 발견</div>
                 <div class="section-subtitle">금주의 Weak Signal 분석</div>
             </div>
@@ -335,71 +395,24 @@
             </div>
         </div>
 
-        <div class="section">
-            <div class="section-header">
-                <div class="section-number">5</div>
-                <div class="section-title">트렌드 모멘텀 변화</div>
-                <div class="section-subtitle">주요 신호 변화 추이</div>
-            </div>
-
-            <table class="momentum-table">
-                <thead>
-                    <tr>
-                        <th>순위</th>
-                        <th>토픽/신호</th>
-                        <th>모멘텀 점수 <br> (z-like)</th>
-                        <th>주간 변화</th>
-                        <th>추세</th>
-                        <th>권고사항 (AI)</th>
-                    </tr>
-                </thead>
-                <tbody>
-                    {% for item in momentum_items %}
-                    <tr>
-                        <td><span class="rank-badge">{{ loop.index }}</span></td>
-                        <td><strong>{{ item.term }}</strong></td>
-                        <td>{{ item.z_like_score }}</td>
-                        <td>{{ item.change_display }}</td>
-                        <td><span class="trend-indicator {{ item.trend_class }}">{{ item.trend_icon }} {{ item.trend_text }}</span></td>
-                        <td>{{ item.recommendation }}</td> </tr>
-                    {% else %}
-                    <tr><td colspan="6" style="text-align:center;">모멘텀 분석 데이터가 없습니다.</td></tr>
-                    {% endfor %}
-                </tbody>
-            </table>
-
-            <div class="visualization" style="margin-top: 32px;">
-                 <img src="{{ momentum_bar_image_path }}" alt="주간 상승/하강 모멘텀 차트" class="report-graph">
-            </div>
-
-            {% if portfolio_actions %}
-            <div class="action-section">
-                <div class="action-title">포트폴리오 영향 분석 및 권고 (AI)</div>
-                <div class="action-items">
-                     {% for action in portfolio_actions %}
-                     <div class="action-item">
-                         <div class="action-label">Action {{ loop.index }}</div>
-                         <div class="action-text">{{ action }}</div>
-                     </div>
-                     {% endfor %}
-                </div>
-            </div>
-            {% endif %}
-        </div>
+        
     </div>
 
     <div class="footer">
         <div class="footer-content">
             <div>
-                이 리포트는 AI 기반 시장 분석 시스템 'Insight Factory'가 생성한 주간 인텔리전스입니다.<br>
-                데이터 기반 의사결정을 위한 인텔리전스 참모 시스템
+                “이 보고서는 AI 기반 트렌드 분석 시스템을 통해 작성되었습니다.”<br>
+                문의:  thecki85@gmail.com | 010.5353.1145 <br>
+                - Business Development Team -
             </div>
+            <!--
             <div class="footer-links">
                 <a href="{{ dashboard_link | default('#') }}" class="footer-link">월간 전략 대시보드</a>
                 <a href="{{ data_source_link | default('#') }}" class="footer-link">데이터 소스</a>
                 <a href="{{ methodology_link | default('#') }}" class="footer-link">분석 방법론</a>
                 <a href="{{ contact_link | default('#') }}" class="footer-link">문의하기</a>
             </div>
+            -->
         </div>
     </div>
 </body>

@@ -1220,6 +1220,72 @@ def plot_risk_keyword_network(meta_items, output_path, min_weight=1):
 
 # --- End of plot_risk_keyword_network function ---
 
+def plot_topics(topics, out_path="outputs/fig/topics.png", topn_words=6):
+    """
+    topics.json 데이터를 받아 각 토픽별 상위 키워드 막대 그래프를 생성합니다.
+    (내림차순 정렬, topic_name 사용, 최대 6개 토픽 제한)
+    """
+    print(f"[INFO] Generating topics bar charts to {out_path} (Max 6 topics)...")
+    import os, math
+    import matplotlib.pyplot as plt
+    import seaborn as sns
+    # ensure_fonts() 와 apply_plot_style()은 main() 또는 _setup_fonts()에서 호출됨
+    os.makedirs(os.path.dirname(out_path), exist_ok=True)
+
+    tps_all = topics.get("topics", [])
+    
+    # --- ▼▼▼ [신규 수정] 토픽 수를 최대 6개로 제한 ▼▼▼ ---
+    tps = tps_all[:6]
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    if not tps:
+        print("[WARN] No topics data for bar chart.")
+        fig, ax = plt.subplots(figsize=(8,5))
+        ax.text(0.5,0.5,"토픽 데이터 없음", ha="center", fontsize=14, color='gray')
+        ax.axis("off")
+        _savefig(fig, out_path) # 정의된 헬퍼 함수 사용
+        plt.close(fig)
+        return
+
+    k = len(tps); cols = 2; rows = math.ceil(k / cols)
+    # figsize을 960px 너비에 맞게 조정 (예: 12)
+    fig, axes = plt.subplots(rows, cols, figsize=(12, 4 * rows))
+    axes = axes.flatten() if k > 1 else [axes]
+
+    for i, t in enumerate(tps):
+        ax = axes[i]
+        words = (t.get("top_words") or [])[:topn_words]
+        
+        # [수정 1] 내림차순 정렬 (top_words가 이미 내림차순이라 가정, [::-1] 제거)
+        labels = [str((w.get("word") or "")) for w in words]
+        probs = []
+        for w in words:
+            pw = w.get("prob", 1.0)
+            try:
+                p = float(pw)
+                if p <= 0: p = 1.0
+            except Exception:
+                p = 1.0
+            probs.append(p)
+        
+        sns.barplot(x=probs, y=labels, ax=ax, color="#10b981")
+        
+        # [수정 2] topic_name을 우선 사용
+        title = t.get('topic_name', f"Topic #{t.get('topic_id')}")
+        ax.set_title(title, fontsize=14, weight='bold') # 제목 굵게
+        
+        ax.set_xlabel("Weight", fontsize=10)
+        ax.set_ylabel("")
+        ax.tick_params(axis='x', labelsize=9)
+        ax.tick_params(axis='y', labelsize=10) # 키워드 폰트 크기
+
+    # 나머지 빈 subplot 숨기기
+    for j in range(i + 1, len(axes)):
+        axes[j].axis("off")
+        
+    plt.tight_layout()
+    _savefig(fig, out_path) # 정의된 헬퍼 함수 사용
+    plt.close(fig)
 
 
 # --- 4. 주기별 시각화 실행 함수 ---
@@ -1293,24 +1359,22 @@ def run_weekly_visuals():
     keywords_data = load_json(os.path.join(ROOT_OUTPUT_DIR, "keywords.json"), {"keywords": []})
     all_keywords = keywords_data.get("keywords", [])
     all_trends = _safe_read_csv(os.path.join(EXPORT_DIR, "trend_strength.csv"))
-    # --- ▼▼▼ [추가] 주간 메타 데이터 로드 ▼▼▼ ---
-    meta_items_weekly = load_json(os.path.join(ROOT_OUTPUT_DIR, "debug", "weekly_meta_agg.json"), [])
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-    print(f"  -> Loaded {len(all_keywords)} aggregated keywords and {len(all_trends)} trend entries.")
     
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-
-    # 2. 주간 워드클라우드 생성 (기존 로직과 동일)
+    # --- ▼▼▼ [추가] 주간 topics.json 로드 ▼▼▼ ---
+    topics_data = load_json(os.path.join(ROOT_OUTPUT_DIR, "topics.json"), {"topics": []})
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+    
+    meta_items_weekly = load_json(os.path.join(ROOT_OUTPUT_DIR, "debug", "weekly_meta_agg.json"), [])
+    
+    print(f"  -> Loaded {len(all_keywords)} aggregated keywords, {len(all_trends)} trend entries, {len(topics_data.get('topics',[]))} topics.")
+    
+    # 2. 주간 워드클라우드 생성
     if all_keywords:
-        # all_keywords는 이미 keyword와 score를 모두 포함하므로, 바로 사용 가능
-        # (aggregate_weekly_data.py가 score를 합산하여 정렬된 keywords.json을 생성함)
         weekly_scores = {k['keyword']: k.get('score', 0.0) for k in all_keywords}
         plot_wordcloud(weekly_scores, os.path.join(FIG_DIR, "weekly_wordcloud.png"))
 
-    # 3. 주간 상승/하강 신호 바차트 생성 (기존 로직과 동일)
+    # 3. 주간 상승/하강 신호 바차트 생성
     if not all_trends.empty:
-        # all_trends는 일별 데이터가 모두 포함된 long-format 데이터프레임입니다.
-        # 따라서 term 별로 z_like의 주간 평균을 계산할 수 있습니다.
         weekly_trends_df = all_trends.groupby('term')['z_like'].mean().reset_index().rename(columns={'z_like': 'weekly_avg_z_like'})
         
         rising = weekly_trends_df[weekly_trends_df['weekly_avg_z_like'] > 0].nlargest(5, 'weekly_avg_z_like')
@@ -1320,19 +1384,27 @@ def run_weekly_visuals():
         if not combined.empty:
             fig = plt.figure(figsize=(12, 8))
             sns.barplot(data=combined, y="term", x="weekly_avg_z_like",
-                        palette=["#3b82f6" if x > 0 else "#ef4444" for x in combined['weekly_avg_z_like']])
+                     palette=["#3b82f6" if x > 0 else "#ef4444" for x in combined['weekly_avg_z_like']])
             plt.title('주간 핵심 신호 모멘텀 (상위 상승/하강 term)', fontsize=16)
             plt.xlabel('주간 평균 모멘텀 (z_like)', fontsize=12)
             plt.ylabel('')
             _savefig(fig, os.path.join(FIG_DIR, "weekly_strong_signals_barchart.png"))
             print("[INFO] Weekly strong signals barchart saved.")
     
-    # --- ▼▼▼ [추가] 주간 키워드 네트워크 생성 호출 ▼▼▼ ---
+    # 4. 주간 키워드 네트워크 생성
     try:
-        plot_keyword_network(keywords_data, meta_items_weekly, os.path.join(FIG_DIR, "keyword_network.png"), top_n=20, min_weight=1) # 주간은 min_weight 낮춤 고려
+        plot_keyword_network(keywords_data, meta_items_weekly, os.path.join(FIG_DIR, "keyword_network.png"), top_n=20, min_weight=1)
     except Exception as e:
         print(f"[WARN] plot_keyword_network (weekly) failed: {e}")
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    # --- ▼▼▼ 주간 토픽 막대 그래프 생성 호출 ▼▼▼ ---
+    try:
+        # topics_data를 전달하고, 파일 이름을 weekly_topics_barchart.png 등으로 지정
+        plot_topics(topics_data, out_path=os.path.join(FIG_DIR, "weekly_topics_barchart.png"), topn_words=6)
+        print(f"[INFO] Weekly topics barchart saved.")
+    except Exception as e:
+        print(f"[WARN] plot_topics (weekly) failed: {e}")
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 def run_monthly_visuals():
     """월간 리포트에 필요한 시각화를 실행합니다."""

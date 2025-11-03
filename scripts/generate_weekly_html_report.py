@@ -324,6 +324,7 @@ def prepare_weekly_report_data():
         market_themes_list.append({ "name": theme_name, "badge_text": badge_text, "badge_color": badge_color, "tags": top_words, "description": llm_description })
     data['market_themes'] = market_themes_list
     data['wordcloud_image_path'] = get_relative_image_path("weekly_wordcloud.png")
+    data['weekly_topic_barchart_path'] = get_relative_image_path("weekly_topics_barchart.png") # <-- 이 줄 추가
     data['keyword_network_image_path'] = get_relative_image_path("keyword_network.png")
     data['strong_signals_bar_image_path'] = get_relative_image_path("weekly_strong_signals_barchart.png")
 
