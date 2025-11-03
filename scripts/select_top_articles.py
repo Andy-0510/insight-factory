@@ -8,6 +8,16 @@ from src.config import load_config
 from src.timeutil import now_kst, to_date
 from collections import Counter # <--- 1. Counter 임포트
 
+# --- ▼▼▼ sklearn 임포트 추가 ▼▼▼ ---
+try:
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    SKLEARN_AVAILABLE = False
+    print("[WARN] sklearn 라이브러리를 찾을 수 없습니다. 코사인 유사도 중복 제거를 건너뜁니다.")
+# --- ▲▲▲ 임포트 완료 ▲▲▲ ---
+
 TOP_N = 3
 OUTPUT_CSV = "outputs/export/today_article_list.csv"
 CUMULATIVE_SIGNAL_COUNTS_CSV = "outputs/export/daily_signal_counts.csv" # 이름 변경
@@ -21,6 +31,56 @@ DOMAIN_HINTS = set(hint.lower() for hint in CFG.get("domain_hints", []))
 TODAY_DT = now_kst().date()
 TODAY_STR = TODAY_DT.strftime("%Y-%m-%d")
 TWO_DAYS_AGO_STR = (TODAY_DT - timedelta(days=2)).strftime("%Y-%m-%d")
+
+# --- ▼▼▼ 코사인 유사도 중복 제거 함수 (신규 추가) ▼▼▼ ---
+def deduplicate_by_content(articles: list, threshold=0.9) -> list:
+    """
+    기사 본문(body)의 코사인 유사도를 기반으로 중복 기사를 제거합니다.
+    (articles 리스트는 'score' 기준 내림차순으로 정렬되어 있어야 합니다.)
+    """
+    if not SKLEARN_AVAILABLE or len(articles) < 2:
+        return articles # 라이브러리가 없거나 기사가 1개 이하면 통과
+
+    # 1. 기사 본문만 추출
+    docs = [item.get("body", "") for item in articles]
+
+    # 2. 모든 본문이 비어있으면 건너뛰기
+    if not any(docs):
+        print("[WARN] 기사 본문이 모두 비어있어, 내용 기반 중복 제거를 건너뜁니다.")
+        return articles
+
+    try:
+        # 3. TF-IDF 벡터화
+        vectorizer = TfidfVectorizer(min_df=1) # 적은 문서도 처리
+        X = vectorizer.fit_transform(docs)
+
+        # 4. 코사인 유사도 계산
+        sim_matrix = cosine_similarity(X)
+
+        keep_indices = []
+        removed_indices = set()
+
+        for i in range(len(articles)):
+            if i in removed_indices:
+                continue
+
+            # (i)번째 기사는 보관 (가장 점수가 높은 원본)
+            keep_indices.append(i) 
+
+            # (i)와 유사한 (j)번째 기사들을 제거
+            for j in range(i + 1, len(articles)):
+                if j in removed_indices:
+                    continue
+                if sim_matrix[i, j] >= threshold:
+                    removed_indices.add(j) # (i)와 유사하므로 제거
+
+        print(f"[INFO] 내용 기반 중복 제거 완료. (유효 {len(articles)}개 -> {len(keep_indices)}개)")
+        return [articles[i] for i in keep_indices]
+
+    except Exception as e:
+        print(f"[WARN] 코사인 유사도 중복 제거 중 오류 발생: {e}. 중복 제거를 건너뜁니다.")
+        return articles
+# --- ▲▲▲ 함수 추가 완료 ▲▲▲ ---
 
 def select_articles():
     """
@@ -121,8 +181,8 @@ def select_articles():
 
         if score >= SCORE_THRESHOLD:
             signal_article_count += 1
-            scored_articles.append({ "title": title, "url": item.get("url"), "score": score })
-
+            scored_articles.append({ "title": title, "url": item.get("url"), "score": score, "body": body }) # <-- "body": body 추가
+            
     # --- ▼▼▼ 3. 분포 결과 출력 ▼▼▼ ---
     print("\n[DEBUG] --- Article Score Distribution (All Articles) ---")
     if not score_distribution:
@@ -139,8 +199,18 @@ def select_articles():
     if not scored_articles:
         df_top_articles = pd.DataFrame(columns=["title", "url"])
     else:
-        df_top_articles = pd.DataFrame(scored_articles).sort_values(by="score", ascending=False).drop_duplicates(subset=['title']).head(TOP_N)
-        df_top_articles = df_top_articles[['title', 'url']]
+        # 1. 점수(score) 기준으로 내림차순 정렬 (필수!)
+        scored_articles.sort(key=lambda x: x.get('score', 0), reverse=True)
+
+        # 2. 내용 기반(코사인 유사도)으로 중복 제거
+        deduped_articles = deduplicate_by_content(scored_articles, threshold=0.9)
+
+        # 3. 상위 N개 선택
+        top_articles = deduped_articles[:TOP_N]
+
+        # 4. CSV 저장을 위해 DataFrame으로 변환
+        df_top_articles = pd.DataFrame(top_articles)[['title', 'url']]
+
     os.makedirs(os.path.dirname(OUTPUT_CSV), exist_ok=True)
     df_top_articles.to_csv(OUTPUT_CSV, index=False, encoding="utf-8-sig")
     print(f"[INFO] Top {len(df_top_articles)} articles for report saved to {OUTPUT_CSV}")
