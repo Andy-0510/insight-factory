@@ -14,7 +14,7 @@ CUMULATIVE_SIGNAL_COUNTS_CSV = "outputs/export/daily_signal_counts.csv" # 이름
 # --- ▼▼▼ [신규] 비율 CSV 경로 추가 ▼▼▼ ---
 CUMULATIVE_RATIOS_CSV = "outputs/export/daily_article_ratios.csv"
 # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-SCORE_THRESHOLD = 7.5
+SCORE_THRESHOLD = 10.0
 
 CFG = load_config()
 DOMAIN_HINTS = set(hint.lower() for hint in CFG.get("domain_hints", []))
