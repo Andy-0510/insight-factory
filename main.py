@@ -171,6 +171,7 @@ def build_monthly_steps():
         ("c",                [PY, "-m", "src.module_c"]), # Uses aggregated data
         ("export",           [PY, "-m", "scripts.signal_export"]), # Uses aggregated data
         ("topic_growth",     [PY, "-m", "scripts.calculate_topic_growth"]),
+        ("enrich_topics",    [PY, "-m", "scripts.enrich_monthly_topics"]),
         ("d",                [PY, "-m", "src.module_d"]),
         ("e",                [PY, "-m", "src.module_e"]),
         ("future",           [PY, "-m", "scripts.future_insights"]), # Uses aggregated data
@@ -178,7 +179,7 @@ def build_monthly_steps():
         ("h_planning",       [PY, "-m", "src.module_h_planning"]),
         ("gen_visual_monthly",[PY, "-m", "scripts.generate_visuals", "--report-type", "monthly"]), # Added arg
         # ("f_monthly",        [PY, "-m", "src.module_f.monthly_report"]),
-        ("f_cmt_monthly",  [PY, "-m", "src.module_f.monthly_commentary_report"]), # Keep commented out
+        # ("f_cmt_monthly",  [PY, "-m", "src.module_f.monthly_commentary_report"]), # Keep commented out
         ("html_monthly_report",  [PY, "-m", "scripts.generate_monthly_html_report"]), # Keep commented out
 
         

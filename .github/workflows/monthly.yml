@@ -104,6 +104,15 @@ jobs:
         run: |    
           python -m scripts.calculate_topic_growth
 
+      # --- ▼▼▼ 이 단계를 여기에 추가 ▼▼▼ ---
+      - name: Enrich Topics (Interest + Positivity + Activity)
+        shell: bash
+        env:
+          MONTHLY_RUN: "true"
+        run: |
+          python -m scripts.enrich_monthly_topics
+      # --- ▲▲▲ 추가 완료 ▲▲▲ ---
+
       - name: Company Analysis (Topic Matrix, Relationship, Competition Network)
         shell: bash
         env:

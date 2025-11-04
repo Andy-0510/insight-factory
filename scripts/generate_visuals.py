@@ -220,51 +220,136 @@ def plot_wordcloud(freqs, output_path):
     except Exception as e:
         print(f"[ERROR] Failed to generate wordcloud for {output_path}: {e}")
 
-def plot_topics_bubble(topics_data, output_path, min_bubble=50, jitter=0.015):
+def plot_topics_bubble(topics_data, output_path, min_bubble=100, max_bubble=8000, jitter=0.015):
     """
     (월간용) 토픽 데이터를 받아 버블 차트를 생성합니다.
+    [수정됨]
+    - X축: Interest (Log Scale)
+    - Y축: Activity (Z-Score)
+    - 크기: Positivity (Sentiment) (정규화 스케일링 적용)
+    - 색상: 단색 (중복 정보 제거)
+    - 축 마진 추가로 원 잘림 방지
+    - X, Y축 평균선(mean) 및 라벨 추가 (순서 수정됨)
     """
-    print("[INFO] Generating topics bubble chart...")
+    print("[INFO] Generating topics bubble chart (Revised)...")
     tlist = topics_data.get("topics", [])
     if not tlist:
         print("[WARN] No topics data for bubble chart.")
         return
 
-    # 1. 데이터 추출 및 변환
-    xs, ys, ss, labels = [], [], [], []
+    # 1. 데이터 추출 (X=Interest, Y=Activity, Size=Positivity)
+    xs_raw, ys_raw = [], [] # Jitter가 적용되지 않은 원본값 (평균 계산용)
+    xs, ys, positivity_scores, labels = [], [], [], [] # Jitter가 적용된 값 (플로팅용)
+    
     for t in tlist:
-        # .get()을 사용하여 안전하게 값 추출 및 float으로 변환
-        x = float(t.get("interest", t.get("score", 0)) or 0)
-        y = float(t.get("positive", t.get("sentiment", 0.5)) or 0.5)
-        s = float(t.get("activity", len(t.get("top_words", [])) * 5) or 1) * 15
+        x_val = float(t.get("interest", 0) or 0) + 1.0 # Log scale을 위해 1.0 더하기
+        y_val = float(t.get("activity", 0) or 0)
+        s_val = float(t.get("positivity", 0.5) or 0.5)
+        
+        xs_raw.append(x_val)
+        ys_raw.append(y_val)
+        
+        # Jitter (겹침 방지)
+        x_jittered = x_val * (1 + np.random.uniform(-jitter, jitter)) # Log 스케일용 Jitter
+        y_jittered = y_val + np.random.uniform(-jitter, jitter)
 
-        # 최소 버블 크기 보장 및 겹침 방지
-        s = max(min_bubble, s)
-        x += np.random.uniform(-jitter, jitter)
-        y += np.random.uniform(-jitter, jitter)
-
-        xs.append(x)
-        ys.append(y)
-        ss.append(s)
+        xs.append(x_jittered)
+        ys.append(y_jittered)
+        positivity_scores.append(s_val)
         labels.append(t.get("topic_name") or f"Topic #{t.get('topic_id')}")
 
-    # 2. 시각화
-    fig, ax = plt.subplots(figsize=(12, 7))
-    sc = ax.scatter(xs, ys, s=ss, c=ys, cmap="coolwarm", alpha=0.6, edgecolors="#343a40", linewidths=0.5)
+    # 2. 원 크기 정규화 (스케일링)
+    s_arr = np.array(positivity_scores)
+    if s_arr.max() - s_arr.min() > 1e-6:
+        s_norm = (s_arr - s_arr.min()) / (s_arr.max() - s_arr.min())
+        ss = (s_norm * (max_bubble - min_bubble)) + min_bubble
+    else:
+        ss = [min_bubble] * len(s_arr)
 
-    # 라벨 추가 (adjustText로 겹침 최소화)
+    # 3. 시각화
+    fig, ax = plt.subplots(figsize=(12, 7))
+    
+    # 4. [수정] 스캐터 플롯 (단색)
+    sc = ax.scatter(xs, ys, s=ss, color="#3b82f6", alpha=0.6, edgecolors="#343a40", linewidths=0.5)
+
+    # --- ▼▼▼ 5. [수정] 축 스케일 및 평균선 (순서 변경) ▼▼▼ ---
+    # 축 스케일을 먼저 설정합니다.
+    ax.set_xscale('log')
+    
+    x_mean_val, y_mean_val = None, None
+    if xs_raw and ys_raw:
+        try:
+            x_mean_val = np.mean(xs_raw) # Jitter가 없는 원본 데이터로 평균 계산
+            y_mean_val = np.mean(ys_raw)
+
+            # 점선 그리기
+            ax.axvline(x=x_mean_val, color='grey', linestyle='--', linewidth=1, alpha=0.7)
+            ax.axhline(y=y_mean_val, color='grey', linestyle='--', linewidth=1, alpha=0.7)
+        except Exception as e:
+            print(f"[WARN] Failed to calculate or plot mean lines: {e}")
+    # --- ▲▲▲ 축 설정 완료 ▲▲▲ ---
+
+    # --- ▼▼▼ 6. [수정] 축 마진 (순서 변경) ▼▼▼ ---
+    if xs and ys:
+        try:
+            min_y, max_y = np.min(ys), np.max(ys)
+            y_range = max_y - min_y
+            if y_range < 1e-6: y_range = 1.0 
+            y_margin = y_range * 0.15
+            ax.set_ylim(min_y - y_margin, max_y + y_margin)
+
+            min_x, max_x = np.min(xs), np.max(xs)
+            log_min_x = np.log10(min_x)
+            log_max_x = np.log10(max_x)
+            log_range = log_max_x - log_min_x
+            if log_range < 1e-6: log_range = 1.0 
+            log_margin = log_range * 0.15 
+            ax.set_xlim(10**(log_min_x - log_margin), 10**(log_max_x + log_margin))
+        except Exception as e:
+            print(f"[WARN] Failed to apply axis margins: {e}")
+    # --- ▲▲▲ 마진 설정 완료 ▲▲▲ ---
+
+    # --- ▼▼▼ 7. [수정] 텍스트 추가 (가장 마지막에 실행) ▼▼▼ ---
+    
+    # 7a. 버블 이름 (겹침 방지)
     texts = [ax.text(xs[i], ys[i], lab, fontsize=9) for i, lab in enumerate(labels)]
     adjust_text(texts, arrowprops=dict(arrowstyle="-", color='gray', lw=0.5))
-    
-    fig.colorbar(sc, ax=ax, label="긍정성 (Positivity)")
-    ax.set_xlabel("관심도/관련도 (Interest / Relevance)")
-    ax.set_ylabel("긍정성 (Positivity / Sentiment)")
+
+    # 7b. Y축 평균선 라벨 (축 범위가 설정된 후)
+    if y_mean_val is not None:
+        current_xlim = ax.get_xlim() # 최종 X축 범위 가져오기
+        ax.text(current_xlim[0], y_mean_val, f' 활동성 평균\n ({y_mean_val:.2f})', 
+                ha='left', va='center', color='grey', fontsize=9,
+                bbox=dict(boxstyle='square,pad=0.1', fc='white', alpha=0.7, ec='none'))
+
+    # --- ▼▼▼ 7c. [신규] X축 평균선 라벨 추가 ▼▼▼ ---
+    if x_mean_val is not None:
+        current_ylim = ax.get_ylim() # 최종 Y축 범위 가져오기
+        ax.text(x_mean_val, current_ylim[0], f'관심도 평균 ({x_mean_val:.1f})', 
+                ha='center', va='bottom', color='grey', fontsize=9,
+                bbox=dict(boxstyle='square,pad=0.1', fc='white', alpha=0.7, ec='none'))
+    # --- ▲▲▲ X축 라벨 추가 완료 ▲▲▲ ---
+
+    # 7d. 원 크기 설명 (축 범위와 무관)
+    legend_text = "[원의 크기]\n긍정성/positivity (해당 토픽의 월간 평균 감성 점수)"
+    ax.text(0.01, 0.03, legend_text,
+            transform=ax.transAxes, # (0,0)을 축의 왼쪽 하단으로 설정
+            ha='left',
+            va='bottom',
+            fontsize=10,
+            color='#333333',
+            style='italic',
+            bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7, ec='none'))
+    # --- ▲▲▲ 텍스트 추가 완료 ▲▲▲ ---
+
+    # 8. 최종 라벨 및 저장
+    ax.set_xlabel("관심도 (Interest / Log Scale)")
+    ax.set_ylabel("활동성 (Activity / Z-Score)")
     ax.set_title("전략적 토픽 맵 (Strategic Topic Map)", fontsize=16)
     ax.grid(True, linestyle='--', alpha=0.6)
-    
-    # 3. 그래프 저장 (수정된 _savefig 호출)
+
     _savefig(fig, output_path)
-    print(f"[INFO] Topics bubble chart saved to {output_path}")
+    print(f"[INFO] Revised topics bubble chart saved to {output_path} (with axis margins and mean lines)")
 
 def plot_tech_maturity_map(maturity_data):
     """(월간용) 기술 성숙도 맵을 생성합니다."""
