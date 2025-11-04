@@ -7,20 +7,27 @@ from datetime import datetime, timedelta
 import pandas as pd
 from collections import defaultdict
 from pathlib import Path
-# --- ▼▼▼ [수정] load_json import 추가 ▼▼▼ ---
-from src.utils import load_json # src.utils에서 load_json 함수 가져오기
-# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+from src.utils import load_json
 
-# --- ▼▼▼ [수정] 클러스터링 관련 라이브러리 import ▼▼▼ ---
 try:
     from sentence_transformers import SentenceTransformer
     from sklearn.cluster import KMeans
-    import numpy as np # NumPy 추가
+    import numpy as np
+    # --- ▼▼▼ [신규 추가] 코사인 유사도 임포트 ▼▼▼ ---
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
+    SKLEARN_AVAILABLE = True
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 except ImportError:
     SentenceTransformer = None
     KMeans = None
     np = None
-# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+    # --- ▼▼▼ [신규 추가] 코사인 유사도 임포트 (Fallback) ▼▼▼ ---
+    TfidfVectorizer = None
+    cosine_similarity = None
+    SKLEARN_AVAILABLE = False
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
 
 ROOT_OUTPUT_DIR = "outputs"
 DAILY_ARCHIVE_DIR = os.path.join(ROOT_OUTPUT_DIR, "daily")
@@ -96,6 +103,76 @@ def generate_keyword_clusters(final_keywords: list[dict[str, any]], model_name: 
              pd.DataFrame(columns=['cluster_id', 'keywords']).to_csv(out_path, index=False, encoding='utf-8-sig') #
 # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
+# --- ▼▼▼ [신규 추가] 이벤트 중복제거 헬퍼 함수 ▼▼▼ ---
+def deduplicate_events_by_content(df_events: pd.DataFrame, meta_articles: list, threshold=0.2) -> pd.DataFrame:
+    """
+    이벤트 목록(df_events)을 메타 기사(meta_articles)의 본문 내용과 병합한 후,
+    코사인 유사도(threshold=0.2)를 기준으로 중복을 제거합니다.
+    """
+    if not SKLEARN_AVAILABLE or df_events.empty or not meta_articles:
+        print("[INFO] Skipping event content deduplication (sklearn unavailable or data empty).")
+        return df_events
+
+    # 1. URL-본문 맵(dict) 생성 (빠른 조회를 위해)
+    url_to_body = {}
+    for item in meta_articles:
+        if isinstance(item, dict) and item.get("url"):
+            body = item.get("body") or item.get("description") or item.get("title", "")
+            url_to_body[item["url"]] = body
+
+    # 2. 이벤트 DataFrame에 'body' 컬럼 추가
+    df_events['body'] = df_events['url'].map(url_to_body).fillna("")
+
+    # 3. 본문이 있는 기사 / 없는 기사 분리
+    df_with_body = df_events[df_events['body'] != ""].copy()
+    df_no_body = df_events[df_events['body'] == ""]
+
+    if df_with_body.empty:
+        print("[INFO] No event bodies found for content deduplication.")
+        return df_events # 원본 반환
+
+    print(f"[INFO] Running content deduplication on {len(df_with_body)} events...")
+
+    try:
+        # 4. URL/Title 기준 1차 중복 제거 (다른 날짜에 동일 기사 집계 방지)
+        df_with_body = df_with_body.drop_duplicates(subset=['url'])
+        df_with_body = df_with_body.drop_duplicates(subset=['title'])
+        df_with_body = df_with_body.reset_index(drop=True)
+
+        if len(df_with_body) < 2:
+            return df_events.drop(columns=['body'], errors='ignore')
+
+        # 5. TF-IDF 벡터화 (n-gram 사용)
+        vectorizer = TfidfVectorizer(min_df=1, analyzer='char_wb', ngram_range=(4, 7))
+        X = vectorizer.fit_transform(df_with_body['body'])
+
+        # 6. 코사인 유사도 계산
+        sim_matrix = cosine_similarity(X)
+
+        keep_indices = []
+        removed_indices = set()
+
+        for i in range(len(df_with_body)):
+            if i in removed_indices:
+                continue
+            keep_indices.append(i) # (i)번째 기사는 보관
+            for j in range(i + 1, len(df_with_body)):
+                if j in removed_indices:
+                    continue
+                if sim_matrix[i, j] >= threshold:
+                    removed_indices.add(j) # (i)와 유사하므로 제거
+
+        df_deduped_body = df_with_body.iloc[keep_indices]
+        print(f"[INFO] Content deduplication complete: {len(df_with_body)} -> {len(df_deduped_body)} events.")
+
+        # 7. 본문 없는 기사와 다시 합치고, 'body' 컬럼 제거
+        final_df = pd.concat([df_deduped_body, df_no_body], ignore_index=True)
+        return final_df.drop(columns=['body'])
+
+    except Exception as e:
+        print(f"[WARN] Content deduplication failed: {e}. Returning original events.")
+        return df_events.drop(columns=['body'], errors='ignore')
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 def aggregate_data():
     """지난 7일간의 모든 주요 데이터를 집계하여 메인 outputs 폴더에 저장합니다."""
@@ -207,12 +284,20 @@ def aggregate_data():
 
     # 2. 주간 events.csv, weak_signals.csv, trend_strength.csv 생성
     # ... (기존 CSV 저장 로직) ...
-    if not all_events.empty: #
-        try: # Add try-except for CSV saving #
-             all_events.to_csv(os.path.join(EXPORT_DIR, "events.csv"), index=False, encoding='utf-8-sig') # Use EXPORT_DIR #
-             print("[INFO] Weekly events.csv created.") #
-        except Exception as e: #
-            print(f"[ERROR] Failed to save weekly events.csv: {e}") #
+    if not all_events.empty: 
+            try: 
+                # --- ▼▼▼ [신규 추가] 저장 전, 본문 기반 중복 제거 ▼▼▼ ---
+                print(f"[INFO] Aggregated {len(all_events)} events. Starting content deduplication...")
+                # (all_meta_articles은 224줄에서 이미 집계 완료됨)
+                all_events_deduped = deduplicate_events_by_content(all_events, all_meta_articles) 
+                print(f"[INFO] Final events count after deduplication: {len(all_events_deduped)}")
+                # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+                # [수정] 원본(all_events) 대신 중복 제거된(all_events_deduped) DataFrame 저장
+                all_events_deduped.to_csv(os.path.join(EXPORT_DIR, "events.csv"), index=False, encoding='utf-8-sig')
+                print("[INFO] Weekly events.csv created (deduplicated).") # 로그 메시지 수정
+            except Exception as e: 
+                print(f"[ERROR] Failed to save weekly events.csv: {e}")
 
     if not all_weak_signals.empty: #
         try: # Add try-except #

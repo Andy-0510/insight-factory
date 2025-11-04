@@ -262,7 +262,9 @@ def build_topics_lite(docs: List[str],
     best_topics = None; best_score = -1.0
     for k in k_candidates:
         lda = LatentDirichletAllocation(n_components=k, learning_method="batch", random_state=42, max_iter=15)
-        _ = lda.fit_transform(X)
+        X_topics = lda.fit_transform(X) # 결과를 X_topics 변수에 저장
+        doc_topic_assignments = X_topics.argmax(axis=1) # 각 문서가 속한 토픽 ID
+        topic_doc_counts = Counter(doc_topic_assignments) # 토픽 ID별 문서 수 카운트
         ts = topic_pairs(lda, n_top=topn)
         good = sum(1 for _, pairs in ts if bad_ratio_from_pairs(pairs) < 0.20)
         score = good / float(k)
@@ -297,7 +299,12 @@ def build_topics_lite(docs: List[str],
                 prob = max(0.2, decay**rank)
                 payload.append({"word": w, "prob": prob})
 
-        topics_obj["topics"].append({"topic_id": int(tid), "top_words": payload})
+        topics_obj["topics"].append({
+            "topic_id": int(tid), 
+            "top_words": payload,
+            "interest": int(topic_doc_counts.get(tid, 0)) # <-- 이 줄 추가
+        })
+
     print(f"[DEBUG][C] LITE 생성 완료 | topics={len(topics_obj.get('topics', []))}")
     return topics_obj
 
@@ -377,10 +384,10 @@ def pro_build_topics_bertopic(docs, topn=10):
         verbose=False
     )
     topics, probs = model.fit_transform(filtered_docs)
-    
+    topic_doc_counts = Counter(topics) # <-- 이 줄 추가
+
     try:
-        # 아래 docs를 filtered_docs로 수정
-        model.reduce_outliers(filtered_docs, topics, probabilities=probs, strategy="c-tf-idf", threshold=0.08)
+         model.reduce_outliers(filtered_docs, topics, probabilities=probs, strategy="c-tf-idf", threshold=0.08)
     except Exception:
         pass
     try:
@@ -422,7 +429,11 @@ def pro_build_topics_bertopic(docs, topn=10):
                     prob = max(0.2, decay**rank)
                     payload.append({"word": w, "prob": prob})
 
-            topics_obj["topics"].append({"topic_id": int(tid), "top_words": payload[:topn]})
+            topics_obj["topics"].append({
+                "topic_id": int(tid), 
+                "top_words": payload[:topn],
+                "interest": int(topic_doc_counts.get(tid, 0)) # <-- 이 줄 추가
+            })
         print(f"[DEBUG][C] PRO 생성 완료 | topics={len(topics_obj.get('topics', []))}")
         return topics_obj
 
@@ -453,7 +464,12 @@ def pro_build_topics_bertopic(docs, topn=10):
                 for rank, (w, _s) in enumerate(kept[:topn], start=0):
                     prob = max(0.2, decay**rank)
                     payload.append({"word": w, "prob": prob})
-            topics_obj["topics"].append({"topic_id": int(tid), "top_words": payload[:topn]})
+            
+            topics_obj["topics"].append({
+                "topic_id": int(tid), 
+                "top_words": payload[:topn],
+                "interest": int(topic_doc_counts.get(tid, 0)) # <-- 이 줄 추가
+            })
         print(f"[DEBUG][C] PRO 생성 완료(폴백) | topics={len(topics_obj.get('topics', []))}")
         return topics_obj
 

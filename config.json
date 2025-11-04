@@ -173,9 +173,9 @@
 
   "topic_min_df": 12,
   "topic_max_df": 0.9,
-  "topic_k_candidates": [8, 10, 12, 14],
+  "topic_k_candidates": [6, 8, 10, 12],
 
-  "pro_nr_topics": null,
+  "pro_nr_topics": 12,
   "pro_topic_min_size": 10,
   "min_cluster_size": 10,
   "umap_neighbors": 11,
