@@ -51,7 +51,7 @@ def deduplicate_by_content(articles: list, threshold=0.9) -> list:
 
     try:
         # 3. TF-IDF 벡터화
-        vectorizer = TfidfVectorizer(min_df=1) # 적은 문서도 처리
+        vectorizer = TfidfVectorizer(min_df=1, analyzer='char_wb', ngram_range=(4, 7))
         X = vectorizer.fit_transform(docs)
 
         # 4. 코사인 유사도 계산
@@ -203,7 +203,7 @@ def select_articles():
         scored_articles.sort(key=lambda x: x.get('score', 0), reverse=True)
 
         # 2. 내용 기반(코사인 유사도)으로 중복 제거
-        deduped_articles = deduplicate_by_content(scored_articles, threshold=0.9)
+        deduped_articles = deduplicate_by_content(scored_articles, threshold=0.2)
 
         # 3. 상위 N개 선택
         top_articles = deduped_articles[:TOP_N]

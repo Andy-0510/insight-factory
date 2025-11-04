@@ -8,10 +8,25 @@ import datetime
 import unicodedata
 from collections import defaultdict, Counter
 from src.timeutil import to_date, kst_date_str, kst_run_suffix
-from src.utils import latest
+from src.utils import latest, load_json
+from typing import List, Dict, Any, Tuple, Optional
+
+# --- ▼▼▼ 1. 라이브러리 임포트 추가 ▼▼▼ ---
+from src.config import load_config
+try:
+    from sklearn.feature_extraction.text import TfidfVectorizer
+    from sklearn.metrics.pairwise import cosine_similarity
+    SKLEARN_AVAILABLE = True
+except ImportError:
+    SKLEARN_AVAILABLE = False
+    print("[WARN] sklearn 라이브러리를 찾을 수 없습니다. 이벤트 중복 제거(코사인 유사도)를 건너뜁니다.")
+# --- ▲▲▲ 1. 추가 완료 ▲▲▲ ---
 
 # =================== 설정 ===================
 DICT_DIR = "data/dictionaries"
+
+# --- ▼▼▼ 2. config 로드 및 스코어링 어휘집 전역 변수 추가 ▼▼▼ ---
+CFG = load_config()
 
 def _load_lines(p):
     try:
@@ -33,6 +48,19 @@ def tokenize(t):
     toks = re.findall(r"[가-힣A-Za-z0-9]{2,}", t or "")
     toks = [norm_tok(x) for x in toks if x and x not in STOP_EXT]
     return toks
+
+def _load_scoring_vocab():
+    """제안 1: Relevance 스코어링을 위한 어휘집 로드"""
+    print("[INFO] [signal_export] Loading scoring vocabulary (domain_hints, brands, entities_org)...")
+    vocab = set(CFG.get("domain_hints", [])) # [cite: 4-10]
+    vocab.update(_load_lines(os.path.join(DICT_DIR, "brands.txt")))
+    vocab.update(_load_lines(os.path.join(DICT_DIR, "entities_org.txt")))
+    # 검색을 위해 소문자로 정규화
+    return {norm_tok(v) for v in vocab if v and len(v) > 1}
+
+# 스크립트 로드 시 한 번만 실행
+SCORING_VOCAB = _load_scoring_vocab()
+# --- ▲▲▲ 2. 추가 완료 ▲▲▲ ---
 
 # =================== 어휘집 로드/정제 ===================
 def load_signal_vocabulary():
@@ -162,6 +190,95 @@ def to_rows(dc):
         })
     return rows
 
+# --- ▼▼▼ 3. 신규 헬퍼 함수 3개 추가 ▼▼▼ ---
+
+def _score_article_relevance(item: dict) -> int:
+    """제안 1: 기사별 Relevance 스코어 계산"""
+    text = (item.get("title", "") + " " + (item.get("body") or item.get("description") or "")).lower()
+    if not text:
+        return 0
+    
+    # 미리 로드된 SCORING_VOCAB (소문자 셋)을 사용해 점수 계산
+    score = 0
+    for keyword in SCORING_VOCAB:
+        if keyword in text:
+            score += 1
+    return score
+
+def _deduplicate_by_content(articles: list, threshold=0.9) -> list:
+    """제안 2: 코사인 유사도 기반 중복 기사 필터링"""
+    if not SKLEARN_AVAILABLE or len(articles) < 2:
+        return articles
+
+    docs = []
+    for item in articles:
+        # 본문(body) > 요약(description) > 제목(title) 순으로 텍스트 확보
+        body = item.get("body")
+        if not body or len(body) < 100: # 본문이 너무 짧으면
+            body = item.get("description")
+        if not body or len(body) < 100:
+            body = item.get("title", "")
+        docs.append(body or "")
+
+    if not any(docs): # 모든 문서가 비어있으면
+        return articles
+
+    try:
+        vectorizer = TfidfVectorizer(min_df=1, analyzer='char_wb', ngram_range=(4, 7))
+        X = vectorizer.fit_transform(docs)
+        sim_matrix = cosine_similarity(X)
+        
+        keep_indices = []
+        removed_indices = set()
+        
+        # 점수(score)가 이미 매겨져 있다고 가정하고,
+        # 점수가 높은 기사를 원본으로 삼기 위해 정렬 (select_top_articles와 동일 로직)
+        # (여기서는 score가 없으므로 index 순서대로 진행)
+        for i in range(len(articles)):
+            if i in removed_indices:
+                continue
+            keep_indices.append(i)
+            for j in range(i + 1, len(articles)):
+                if j in removed_indices:
+                    continue
+                if sim_matrix[i, j] >= threshold:
+                    removed_indices.add(j)
+        
+        print(f"[INFO] [signal_export] Content deduplication: {len(articles)} -> {len(keep_indices)} articles.")
+        return [articles[i] for i in keep_indices]
+    except Exception as e:
+        print(f"[WARN] [signal_export] Content deduplication failed: {e}. Skipping.")
+        return articles
+
+def _extract_org_from_text(text: str, whitelist: set, alias_map: Dict, brand_to_company: Dict) -> str:
+    """[보너스] 텍스트에서 'org'를 추출하는 로직 (일간 리포트 호환용)"""
+    raw_toks = re.findall(r"[가-힣A-Za-z0-9\-\+\.]{2,}", text)
+    mentioned_orgs = set()
+    for t in raw_toks:
+        norm_t = alias_map.get(t.lower(), t.lower())
+        mapped_org = brand_to_company.get(norm_t, norm_t)
+        if mapped_org in whitelist:
+            mentioned_orgs.add(mapped_org)
+    
+    # whitelist에 "lg디스플레이"가 있고, mapped_org도 "lg디스플레이"여야 함
+    
+    # 대소문자 보정: 소문자 셋(whitelist)에 있다면, 원본(ent_org)에서 대소문자 맞는 이름 찾기
+    final_orgs = set()
+    ent_org_list = _load_lines(os.path.join(DICT_DIR, "entities_org.txt"))
+    for org_lower in mentioned_orgs:
+        found = False
+        for org_proper in ent_org_list:
+            if org_proper.lower() == org_lower:
+                final_orgs.add(org_proper)
+                found = True
+                break
+        if not found:
+             final_orgs.add(org_lower) # 원본 리스트에 없으면 그냥 소문자 이름 사용
+
+    return ", ".join(sorted(final_orgs)) if final_orgs else "Unknown"
+
+# --- ▲▲▲ 3. 추가 완료 ▲▲▲ ---
+
 # =================== 이벤트 규칙 ===================
 EVENT_MAP = {
     "LAUNCH":      [r"출시", r"론칭", r"발표", r"선보이", r"공개"],
@@ -197,7 +314,7 @@ def _pick_meta_path():
         return p1
     return latest("data/news_meta_*.json")
 
-def _detect_events_from_items(items: list) -> list:
+def _detect_events_from_items(items: list, whitelist: set, alias_map: Dict, brand_to_company: Dict) -> list:
     rows = []
     for it in items:
         title = (it.get("title") or it.get("title_og") or "").strip()
@@ -213,12 +330,17 @@ def _detect_events_from_items(items: list) -> list:
                 if re.search(pat, text, flags=re.IGNORECASE):
                     detected_types.append(etype)
                     break
+
         if detected_types:
+            # [신규] Org 추출 로직 호출
+            org_str = _extract_org_from_text(text, whitelist, alias_map, brand_to_company)
+
             rows.append({
                 "date": date or "",
                 "types": ",".join(sorted(detected_types)),
                 "title": title[:300],
-                "url": url
+                "url": url,
+                "org": org_str # [신규] Org 컬럼 추가
             })
     return rows
 
@@ -317,6 +439,8 @@ def export_events(out_path="outputs/export/events.csv"):
     meta_path = _pick_meta_path()
     if not meta_path:
         print("[INFO] events.csv skipped (no meta)")
+        # 3단계를 위해 빈 파일 생성
+        pd.DataFrame(columns=["date", "types", "title", "url", "org"]).to_csv(out_path, index=False, encoding="utf-8-sig")
         return
     try:
         with open(meta_path, "r", encoding="utf-8") as f:
@@ -325,15 +449,52 @@ def export_events(out_path="outputs/export/events.csv"):
         print(f"[WARN] events: meta load failed: {repr(e)}")
         items = []
 
-    rows = _detect_events_from_items(items)
-    rows = _dedup_events(rows)
+    if not items:
+        print("[WARN] events: No items to process.")
+        pd.DataFrame(columns=["date", "types", "title", "url", "org"]).to_csv(out_path, index=False, encoding="utf-8-sig")
+        return
+
+    # --- ▼▼▼ 4. 제안 로직 실행 ▼▼▼ ---
+    
+    # 4-1. [신규] Org 추출에 필요한 자원 로드
+    alias_map = CFG.get("alias", {})
+    brand_to_company = load_json("data/dictionaries/brand_to_company.json", {})
+    topic_like_entities = _load_lines(os.path.join(DICT_DIR, "topic_like_entities.txt"))
+    ent_org = _load_lines(os.path.join(DICT_DIR, "entities_org.txt"))
+    # (중요) whitelist는 소문자로 정규화
+    whitelist_base = {w.lower() for w in ent_org} - {t.lower() for t in topic_like_entities}
+    whitelist = {norm_tok(alias_map.get(w, w)) for w in whitelist_base}
+
+    # 4-2. [제안 1] Relevance 스코어링 및 필터링
+    RELEVANCE_THRESHOLD = 17
+    relevant_items = []
+    for item in items:
+        score = _score_article_relevance(item)
+        if score >= RELEVANCE_THRESHOLD:
+            relevant_items.append(item)
+    
+    print(f"[INFO] [signal_export] Relevance filtering: {len(items)} -> {len(relevant_items)} articles (score >= {RELEVANCE_THRESHOLD})")
+
+    # 4-3. [제안 2] 코사인 유사도 중복 필터링
+    filtered_items = _deduplicate_by_content(relevant_items, threshold=0.1)
+
+    # 4-4. [수정됨] 최종 필터링된 기사로 이벤트 감지 (Org 추출 포함)
+    rows = _detect_events_from_items(filtered_items, whitelist, alias_map, brand_to_company)
+    
+    # 4-5. [삭제됨] 기존의 _dedup_events(rows)는 더 이상 필요 없음
+    # rows = _dedup_events(rows) 
+
+    # --- ▲▲▲ 4. 로직 적용 완료 ▲▲▲ ---
 
     tmp_path = out_path + ".tmp"
+    
+    # [수정] fieldnames에 'org' 추가
     with open(tmp_path, "w", encoding="utf-8", newline="") as f:
-        w = csv.DictWriter(f, fieldnames=["date", "types", "title", "url"])
+        w = csv.DictWriter(f, fieldnames=["date", "types", "title", "url", "org"])
         w.writeheader()
         for r in rows:
             w.writerow(r)
+    
     os.replace(tmp_path, out_path)
     print(f"[INFO] [signal_export] -> events.csv 생성 완료 ({len(rows)}개 이벤트)")
 
