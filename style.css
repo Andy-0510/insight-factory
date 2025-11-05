@@ -122,3 +122,163 @@ header{ display:flex; align-items:center; justify-content:space-between; gap:12p
 footer{ margin-top:12px; text-align:center; color:var(--muted); font-size:12px; }
 @media (max-width:980px){ .controls-inner{ max-width:100%; gap:10px; padding:0 6px; } .viewer{ max-width:100%; padding:0 6px; } }
 @media (max-width:760px){ body{ padding:12px; } .controls-inner{ flex-wrap:wrap; gap:10px; } .viewer{ height:60vh; min-height:320px; } }
+
+/* ===== 챗봇 UI 스타일 시작 ===== */
+
+/* 1. 챗봇을 열고 닫는 동그란 '초인종' 버튼 */
+.chatbot-toggle-button {
+    position: fixed; /* 화면 스크롤과 상관없이 항상 그 자리에 고정 */
+    bottom: 20px;    /* 화면 아래에서 20px 떨어짐 */
+    right: 20px;     /* 화면 오른쪽에서 20px 떨어짐 */
+    width: 60px;
+    height: 60px;
+    background-color: #0066ff; /* 버튼 배경색 (파란색) */
+    color: white;             /* 아이콘/글자색 (흰색) */
+    border: none;             /* 테두리 없음 */
+    border-radius: 50%;       /* 50%로 설정해 완벽한 원으로 만듦 */
+    font-size: 24px;          /* 이모지 아이콘 크기 */
+    cursor: pointer;          /* 마우스를 올리면 손가락 모양으로 변경 */
+    box-shadow: 0 4px 12px rgba(0,0,0,0.2); /* 입체감을 주는 그림자 */
+    z-index: 1000;            /* 다른 요소들보다 항상 위에 보이도록 설정 */
+    transition: transform 0.2s ease; /* 부드러운 효과 */
+}
+
+.chatbot-toggle-button:hover {
+    transform: scale(1.1); /* 버튼에 마우스 올리면 살짝 커짐 */
+}
+
+/* 2. 챗봇 '집' (채팅창 본체) */
+.chatbot-container {
+    position: fixed; /* 화면에 고정 */
+    bottom: 90px;    /* 챗봇 버튼 바로 위에 위치 (버튼 60px + 여백 10px) */
+    right: 20px;
+    width: 370px;
+    height: 600px;
+    background: #ffffff;
+    border-radius: 8px;
+    box-shadow: 0 5px 15px rgba(0,0,0,0.25); /* 그림자 더 진하게 */
+    display: flex; /* 내부 요소들을 세로로 정렬하기 위함 */
+    flex-direction: column;
+    z-index: 1000;
+
+    /* ▼▼▼ 중요 ▼▼▼ */
+    opacity: 0; /* (기본값) 처음에는 투명하게 */
+    visibility: hidden; /* (기본값) 처음에는 숨김 */
+    transform: translateY(20px); /* (기본값) 살짝 아래에 위치 */
+    transition: all 0.3s ease; /* 부드럽게 나타나는 효과 */
+}
+
+/* 3. 챗봇 창이 보여질 때의 스타일 (JavaScript가 이 'visible' 클래스를 붙여줌) */
+.chatbot-container.visible {
+    opacity: 1; /* 투명도 100% (보이게) */
+    visibility: visible; /* 보이게 */
+    transform: translateY(0); /* 원래 위치로 이동 */
+}
+
+/* 4. 챗봇 창 제목 */
+.chatbot-header {
+    background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);; /* 헤더 배경 */
+    color: white;
+    padding: 12px 15px;
+    font-weight: 600;
+    border-top-left-radius: 8px;
+    border-top-right-radius: 8px;
+    display: flex;
+    justify-content: space-between; /* 제목과 닫기 버튼 양쪽 정렬 */
+    align-items: center;
+}
+
+.chatbot-close-btn {
+    background: none;
+    border: none;
+    color: #a0aec0;
+    font-size: 16px;
+    cursor: pointer;
+}
+
+/* 5. 채팅 메시지가 표시될 영역 */
+.chat-messages {
+    flex-grow: 1; /* 남는 공간을 모두 차지 (채팅창의 대부분) */
+    padding: 15px;
+    overflow-y: auto; /* 메시지가 많아지면 스크롤바 생성 */
+    background-color: #f7fafc; /* 채팅창 배경색 */
+}
+
+/* 6. 질문 입력창 영역 */
+.chat-input-area {
+    display: flex;
+    padding: 10px;
+    border-top: 1px solid #e2e8f0; /* 채팅창과 입력창 구분선 */
+}
+
+.chat-input-area input {
+    flex-grow: 1; /* 입력창이 남는 공간을 다 차지 */
+    border: 1px solid #cbd5e0;
+    border-radius: 4px;
+    padding: 8px 10px;
+    font-size: 14px;
+}
+
+.chat-input-area button {
+    border: none;
+    background-color: #0066ff;
+    color: white;
+    border-radius: 4px;
+    padding: 0 12px;
+    margin-left: 8px;
+    cursor: pointer;
+    font-weight: 600;
+}
+
+/* ===== 챗봇 말풍선 스타일 시작 (신규 추가) ===== */
+
+/* 5. 채팅 메시지가 표시될 영역 (수정) */
+.chat-messages {
+    flex-grow: 1; 
+    padding: 15px;
+    overflow-y: auto; 
+    background-color: #ffffff; /* (수정) 배경을 흰색으로 변경 */
+    display: flex; /* (추가) 말풍선 정렬을 위해 flex 사용 */
+    flex-direction: column; /* (추가) 메시지를 세로로 쌓음 */
+}
+
+/* 모든 말풍선의 공통 스타일 */
+.message {
+    padding: 10px 15px;
+    border-radius: 18px; /* 둥근 모서리 */
+    margin-bottom: 10px;
+    max-width: 90%; /* 말풍선 최대 너비 */
+    line-height: 1.5;
+    font-size: 14px;
+    /* 부드럽게 등장하는 효과 */
+    animation: fadeIn 0.3s ease;
+}
+
+/* 1. AI 챗봇 (봇) 답변 스타일 - 왼쪽 */
+.message.bot {
+    background-color: #f1f3f4; /* 연한 회색 배경 */
+    color: #202124;
+    align-self: flex-start; /* 왼쪽 정렬 */
+    border-bottom-left-radius: 4px; /* 왼쪽 아래 모서리 뾰족하게 */
+}
+
+/* 2. 사용자 질문 스타일 - 오른쪽 (Gemini 스타일) */
+.message.user {
+    background-color: #e6f0ff; /* 연한 파란색 배경 (구분되는 색) */
+    color: #001e3c;
+    align-self: flex-end; /* 오른쪽 정렬 */
+
+    /* (중요) Gemini처럼 가로로 길게 늘어지도록 */
+    width: 100%; /* 너비를 100%로 설정 */
+    max-width: 100%; /* 최대 너비도 100%로 설정 */
+    border-radius: 4px; /* Gemini처럼 네모난 모서리 */
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+/* ===== 챗봇 말풍선 스타일 끝 ===== */
+
+/* ===== 챗봇 UI 스타일 끝 ===== */
+

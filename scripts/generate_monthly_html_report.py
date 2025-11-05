@@ -402,16 +402,23 @@ def call_gemini_for_risk_analysis(risk_context):
 def call_gemini_for_final_recommendation(summary_context):
     """LLM 호출: 모든 섹션의 요약을 바탕으로 최종 종합 전략 권고 생성"""
     prompt = f"""
-    당신은 최고 전략 책임자(CSO)입니다. 아래는 이번 달 시장 분석의 모든 핵심 요약본입니다.
+    당신은 시장 전략 컨설턴트입니다. 아래는 이번 달 시장 분석의 모든 핵심 요약본입니다.
     
     ### 월간 핵심 데이터 요약:
     {json.dumps(summary_context, ensure_ascii=False, indent=2)}
 
-    ### 분석 요청:
-    모든 데이터를 종합하여, 우리 회사가 다음 분기에 즉시 집중해야 할 **최우선 전략 방향**과 **구체적인 실행 방안**을 2~3 문단의 '종합 전략 권고'로 작성해주세요.
-    (예: "IT OLED 시장 선점을 위한 ...", "경쟁사 OOO의 움직임에 대응하기 위한 ...", "신사업 기회 OOO의 조기 검증을 위한 ...")
+    ### 분석 요청 (Markdown 형식):
+        1. **종합 해석**: 토픽 포지셔닝 맵(버블 차트), 미니 트렌드 차트, 모멘텀 점수 데이터를 종합적으로 해석하여, 현재 시장의 **주요 동력(Driving Force)**과 **새롭게 부상하는 기회(Emerging Opportunity)** 영역이 무엇인지 설명해주세요. # 이름 변경
+        2. **전략적 제언**: 분석 결과를 바탕으로, 우리 회사가 다음 분기에 **자원을 집중해야 할 토픽 영역**과 **주의 깊게 모니터링해야 할 토픽 영역**을 각각 제안해주세요.
 
-    ### 종합 전략 권고 (Markdown 형식):
+    ### 분석 결과 (Markdown):
+        #### 종합 시장 동향 해석
+            - **주요 동력**: (설명)
+            - **부상하는 기회**: (설명)
+
+        #### 전략적 제언
+            - **집중 영역**: (제안)
+            - **모니터링 영역**: (제안)
     """
     response = _call_gemini_safe(prompt, default_resp="최종 AI 종합 권고 생성 실패.")
     # Markdown을 HTML로 변환하여 반환 (템플릿에서 |safe 필터 사용)
@@ -434,7 +441,7 @@ def prepare_monthly_report_data():
 
     # 1. 월간 집계 데이터 로드
     topics_data = load_json_safe(os.path.join(OUTPUT_BASE_DIR, "topics.json"), {"topics": []})
-    tech_maturity_data = load_json_safe(os.path.join(OUTPUT_BASE_DIR, "tech_maturity.json"), {"results": []})
+    # tech_maturity_data = load_json_safe(os.path.join(OUTPUT_BASE_DIR, "tech_maturity.json"), {"results": []})
     company_network_data = load_json_safe(os.path.join(OUTPUT_BASE_DIR, "company_network.json"), {})
     biz_opps_data = load_json_safe(os.path.join(OUTPUT_BASE_DIR, "biz_opportunities.json"), {"ideas": []})
     growth_df = safe_read_csv(os.path.join(EXPORT_DIR, "topic_growth.csv"))
@@ -448,11 +455,11 @@ def prepare_monthly_report_data():
     data['toc_items'] = [
         {'number': '📄', 'id': 'summary', 'title': 'Executive Summary', 'subtitle': '월간 전략 요약 및 핵심 KPI'},
         {'number': '1', 'id': 'positioning', 'title': '전략적 시장 포지셔닝 맵', 'subtitle': '시장 거시 환경 분석 · Topic Bubble Map'},
-        {'number': '2', 'id': 'lifecycle', 'title': '기술 수명 주기 분석', 'subtitle': 'R&D 투자 타이밍 · Technology Maturity Map'},
-        {'number': '3', 'id': 'competitors', 'title': '경쟁사 전략적 의도 분석', 'subtitle': '경쟁 구도 심층 분석 · Company Network'},
-        {'number': '4', 'id': 'risk', 'title': '전략적 리스크 관리', 'subtitle': '리스크/이슈 관측소 · Mitigation Plan'},
-        {'number': '5', 'id': 'opportunities', 'title': '신사업 기회 발굴', 'subtitle': '데이터 기반 신사업 아이디어 · Top 5 Opportunities'},
-        {'number': '6', 'id': 'actionplan', 'title': '종합 전략 방향 및 실행 방안', 'subtitle': '중장기 전략 제안 · Resource Allocation'},
+        # {'number': '2', 'id': 'lifecycle', 'title': '기술 수명 주기 분석', 'subtitle': 'R&D 투자 타이밍 · Technology Maturity Map'},
+        {'number': '2', 'id': 'competitors', 'title': '주요 기업의 전략적 의도 분석', 'subtitle': '경쟁 구도 분석 · Company Network'},
+        {'number': '3', 'id': 'risk', 'title': 'Market Risk Management', 'subtitle': '리스크/이슈 탐지 · Mitigation Plan'},
+        {'number': '4', 'id': 'actionplan', 'title': '전략 방향성 및 실행 방안 제안', 'subtitle': '중장기 전략 제안 · Resource Allocation'},
+        {'number': '🍳', 'id': 'opportunities', 'title': '신사업 기회 발굴', 'subtitle': '데이터 기반 신사업 아이디어 · Top 5 Opportunities'},
     ]
     
     # --- ▼▼▼ Section 0: Executive Summary & KPI ▼▼▼ ---
@@ -460,7 +467,7 @@ def prepare_monthly_report_data():
         "period": data['report_period'],
         "top_biz_idea": (biz_opps_data.get("ideas", [{}]))[0].get("idea", "N/A"),
         "top_risk": risk_issues_df.iloc[0]['Topic'] if not risk_issues_df.empty and 'Topic' in risk_issues_df.columns else "N/A",
-        "emerging_tech": next((t['technology'] for t in tech_maturity_data.get("results", []) if t.get("analysis", {}).get("stage") == "Emerging"), "N/A"),
+        # "emerging_tech": next((t['technology'] for t in tech_maturity_data.get("results", []) if t.get("analysis", {}).get("stage") == "Emerging"), "N/A"),
         "top_rising_topic": growth_df.iloc[0]['topic_name'] if not growth_df.empty and 'topic_name' in growth_df.columns else "N/A"
     }
     data['executive_summary'] = call_gemini_for_monthly_summary(summary_context)
@@ -510,6 +517,7 @@ def prepare_monthly_report_data():
     else: data['topic_growth_table'] = "<p>(토픽 성장률 데이터 없음)</p>"
 
     # --- ▼▼▼ Section 2: Tech Maturity ▼▼▼ ---
+    '''
     data['tech_maturity_map_path'] = get_relative_image_path("tech_maturity_map.png")
     tech_details_list = []
     llm_context_for_rd_rec = []
@@ -526,7 +534,8 @@ def prepare_monthly_report_data():
     data['lifecycle_exec_summary'] = call_gemini_for_section_summary("기술 수명 주기 분석", llm_context_for_rd_rec)
     df_tech_maturity = pd.DataFrame(tech_details_list)
     data['tech_maturity_table'] = dataframe_to_html_table(df_tech_maturity[['name', 'stage_text', 'description', 'recommendation']].head(10), classes="dataframe-table tech-maturity-table")
-
+    '''
+    
     # --- ▼▼▼ Section 3: Competitor Analysis ▼▼▼ ---
     data['matrix_heatmap_path'] = get_relative_image_path("matrix_heatmap.png")
     data['company_network_path'] = get_relative_image_path("company_network.png")
@@ -654,7 +663,7 @@ def prepare_monthly_report_data():
     # --- ▼▼▼ Section 6: Final Recommendation ▼▼▼ ---
     final_context = {
         "Positioning": data.get('positioning_insight', 'N/A'),
-        "R&D": data.get('rd_recommendation', 'N/A'),
+        # "R&D": data.get('rd_recommendation', 'N/A'),
         "Competition": data.get('competition_alerts', []),
         "Risk": data.get('risk_assessment', 'N/A'),
         "Opportunity": (biz_opps_data.get("ideas", [{}]))[0].get("idea", "N/A"),

@@ -32,10 +32,29 @@ except Exception:
     _SPACY_OK = False
 
 CFG = load_config()
+DICT_DIR = "data/dictionaries"
+
+# --- ▼▼▼ [신규 추가] 관계 규칙 파일 로드 ▼▼▼ ---
+def _load_relationship_rules():
+    rules_path = os.path.join(DICT_DIR, "relationship_rules.json")
+    print(f"[INFO] [module_d] Loading relationship rules from {rules_path}...")
+    rules = load_json(rules_path, {})
+    # 키를 정규화 (알파벳순 정렬 + 소문자)
+    normalized_rules = {}
+    for key, rel_type in rules.items():
+        parts = sorted([part.strip().lower() for part in key.split('|')])
+        if len(parts) == 2:
+            normalized_key = f"{parts[0]}|{parts[1]}"
+            normalized_rules[normalized_key] = rel_type
+    print(f"[INFO] [module_d] {len(normalized_rules)} relationship rules loaded and normalized.")
+    return normalized_rules
+
+RELATIONSHIP_RULES = _load_relationship_rules()
+# --- ▲▲▲ 추가 완료 ▲▲▲ ---
 
 # ====== 키워드(관계 분류) ======
-COMPETITIVE_KEYWORDS = [k.lower() for k in ["경쟁", "대응", "추격", "점유율", "앞서", "뒤처져", "시장 1위", "소송", "분쟁", "입찰"]]
-COOPERATIVE_KEYWORDS = [k.lower() for k in ["협력", "파트너십", "공급", "mou", "제휴", "협약", "공동 개발", "agreement", "contract"]]
+COMPETITIVE_KEYWORDS = [k.lower() for k in ["경쟁", "추격", "점유율", "앞서", "뒤처져", "시장 1위", "소송", "분쟁", "입찰", "견제", "제치고", "따돌리고", "맞서"]]
+COOPERATIVE_KEYWORDS = [k.lower() for k in ["협력", "파트너십", "공급", "mou", "제휴", "협약", "공동 개발", "agreement", "contract", "납품", "수주", "공동 투자", "공동투자", "컨소시엄", "체결", "구매", "채택"]]
 
 # ====== ORG 토큰 필터 ======
 ORG_BAD_PATTERNS = [
@@ -360,7 +379,20 @@ def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[st
     for (a, b), w in pair_counter.items():
         if w < edge_min_weight:
             continue
-        rel = classify_relationship(pair_ctx[(a, b)])
+
+        # --- ▼▼▼ [신규 추가] 규칙 기반 관계 분류 (Override) ▼▼▼ ---
+        # (a, b는 이미 build_cooccurrence_edges 함수 내부에서 소문자로 정규화됨)
+        key_a = a
+        key_b = b
+        rule_key = f"{key_a}|{key_b}" if key_a < key_b else f"{key_b}|{key_a}"
+
+        if rule_key in RELATIONSHIP_RULES:
+            rel = RELATIONSHIP_RULES[rule_key] # 1. 규칙 파일에서 관계 (예: "partnership")
+        else:
+            # 2. 규칙이 없으면, 기존 키워드 분석으로 Fallback
+            rel = classify_relationship(pair_ctx[(a, b)])
+        # --- ▲▲▲ 추가 완료 ▲▲▲ ---
+
         edges.append((a, b, int(w), rel))
 
     return edges, sorted(nodes)
