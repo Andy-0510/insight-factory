@@ -1,9 +1,84 @@
 {
-  "OLED_Topic": ["oled", "qd-oled", "woled", "패널", "삼성디스플레이", "lg디스플레이"],
-  "MicroLED_Topic": ["microled", "마이크로led", "사이니지", "the wall"],
-  "Automotive_Topic": ["차량용", "자동차", "전장", "hud", "cid", "hyperscreen"],
-  "Foldable_Topic": ["폴더블", "플렉서블", "롤러블", "z폴드", "z플립"],
-  "XR_Device_Topic": ["ar", "vr", "xr", "메타버스", "비전프로", "헤드셋", "안경"],
-  "Apple_Topic": ["애플", "아이폰", "아이패드", "비전프로", "apple"],
-  "IT_OLED_Topic": ["it oled", "노트북 oled", "8.6세대", "ltpo", "탠덤"]
+  "OLED_Topic": [
+    "oled", "OLED", "Oled", "유기발광다이오드", "유기 발광 다이오드", "유기발광 다이오드",
+    "qd-oled", "QD-OLED", "QD OLED", "QD 오엘이디", "큐디 오엘이디", "woled", "WOLED", "WOLED",
+    "패널", "삼성디스플레이", "Samsung Display", "LG디스플레이", "LG Display", "BOE", "CSOT", "JOLED",
+    "RGB OLED", "RGB오엘이디", "증착", "FMM", "마스크", "gen10", "8.5세대", "8.5 세대", "M10 라인", "QD-OLCD", "청색 OLED", "탠덤 구조"
+  ],
+  "MicroLED_Topic": [
+    "microled", "MicroLED", "마이크로LED", "마이크로 엘이디", "마이크로 엘 이 디", "미니LED", "미니 엘이디",
+    "InGaN", "Micosized LED", "대형 디스플레이", "사이니지", "The Wall", "the wall", "마이크로 전사", "Mass Transfer",
+    "풀컬러 구현", "픽셀 피치", "삼성 MicroLED", "LG 마그네트", "플레이스테이션", "애플", "애플 TV", "소니", "파나소닉"
+  ],
+  "Automotive_Display_Topic": [
+    "차량용 디스플레이", "자동차 HMI", "HUD", "헤드업 디스플레이", "계기판", "CID", "중앙정보디스플레이",
+    "차량용 OLED", "전기차 디스플레이", "차량용 터치", "Hyperscreen", "MBUX", "차량용 마이크로LED", "차량용 플렉시블",
+    "보쉬", "Bosch", "덴소", "Denso", "컨티넨탈", "Continental", "하만", "Harman", "파나소닉 오토모티브", "Panasonic Automotive"
+  ],
+  "Foldable_Display_Topic": [
+    "폴더블 디스플레이", "플렉서블 패널", "롤러블 TV", "UTG", "울트라씬 글라스", "힌지 기술",
+    "갤럭시 Z 폴드", "갤럭시Z폴드", "OPPO Find N", "화웨이 메이트 X", "접이식 구조", "내구성 테스트", "플렉서블 배터리",
+    "삼성전자", "Samsung Electronics", "OPPO", "화웨이", "Huawei", "샤오미", "Xiaomi"
+  ],
+  "XR_Device_Topic": [
+    "AR", "VR", "XR", "증강현실", "가상현실", "혼합현실", "메타버스", "비전프로", "Vision Pro", "메타 퀘스트",
+    "PICO", "홀로렌즈", "광학 모듈", "파이버 스캔", "foveated rendering", "eye tracking", "디스플레이 해상도", "Pancake 렌즈",
+    "메타", "Meta", "애플", "Apple", "소니", "Sony", "HTC", "파이브이알"
+  ],
+  "Apple_Display_Topic": [
+    "애플 디스플레이", "프로모션 디스플레이", "슈퍼 레티나 XDR", "LTPO", "ltpo", "120Hz 주사율",
+    "아이폰 디스플레이", "아이패드 프로", "비전 프로", "Vision Pro", "맥북 프로 리티나", "애플 워치 울트라", "OLED 아이폰", "MicroLED 애플 TV",
+    "폭스콘", "Foxconn", "TSMC", "삼성전자", "LG디스플레이"
+  ],
+  "IT_OLED_Topic": [
+    "IT OLED", "노트북 OLED", "태블릿 OLED", "8.6세대", "8.6 세대", "LTPO 백플레인", "ltpo 백플레인", "저전력 구동",
+    "고주사율", "색 정확도", "Delta E", "HDR10+", "Adobe RGB", "sRGB 커버리지", "노트북 패널", "2in1 디바이스", "크롬북 OLED",
+    "레노버", "Lenovo", "델", "Dell", "HP", "애플", "Apple"
+  ],
+  "Quantum_Dot_Topic": [
+    "양자점", "QLED", "qled", "Cd-Free", "인광 양자점", "컬러 필터", "광변환 필름", "QD-OLED", "QD 오엘이디",
+    "색 순도", "광효율", "삼성 QD", "QD-CF", "QDEF", "퀀텀닷 TV", "Nanosys", "3M", "머크", "Merck"
+  ],
+  "Flexible_Display_Topic": [
+    "플렉서블 OLED", "커브드 디스플레이", "벤더블", "스트레처블", "웨어러블 디스플레이", "스마트 의류", "롤러블 스마트폰",
+    "폴더블 노트북", "커브드 모니터", "유연 기판", "삼성디스플레이", "LG디스플레이", "보쉬", "파나소닉"
+  ],
+  "Transparent_Display_Topic": [
+    "투명 디스플레이", "스마트 윈도우", "AR 광고판", "차량용 투명 HUD", "투명 OLED", "투과율", "반투명 패널",
+    "건축용 디스플레이", "리테일 디스플레이", "삼성SDI", "LG화학", "코오롱인더스트리"
+  ],
+  "Smartphone_Display_Topic": [
+    "폰 디스플레이", "펀치홀", "노치 디자인", "언더디스플레이 카메라", "고주파수 샘플링", "터치 감도", "방수 디스플레이",
+    "언더디스플레이 지문", "AMOLED 스마트폰", "LTPO 스마트폰", "120Hz 스마트폰", "삼성전자", "애플", "샤오미", "OPPO"
+  ],
+  "TV_Display_Topic": [
+    "8K TV", "QLED TV", "OLED TV", "마이크로LED TV", "Neo QLED", "미니LED 백라이트", "HDR TV", "양자점 강화필름",
+    "TV 패널", "대형 디스플레이", "곡면 TV", "83인치 TV", "QD-OLED TV", "삼성전자", "LG전자", "소니", "TCL"
+  ],
+  "Gaming_Monitor_Topic": [
+    "게이밍 모니터", "240Hz", "1ms 응답속도", "G-Sync", "FreeSync", "OLED 모니터", "QHD", "울트라와이드", "HDR 게이밍",
+    "로우 인풋렉", "크로마 서브샘플링", "RGB 조명", "게이밍 노트북", "에이수스", "ASUS", "MSI", "LG전자", "삼성전자"
+  ],
+  "Display_Materials_Topic": [
+    "ITO 대체", "은 나노와이어", "그래핀", "유기 반도체", "유리기판", "폴리이미드", "커버 윈도우", "광학 접착제",
+    "발광 재료", "전자 주입층", "정공 수송층", "봉지 기술", "유연성 재료", "내열성 재료", "도레이", "Toray", "스미토모화학"
+  ],
+  "Panel_Manufacturer": [
+    "삼성디스플레이", "Samsung Display", "LG디스플레이", "LG Display", "BOE", "CSOT", "JOLED", "AUO", "Sharp", "인천디스플레이", "한솔디스플레이",
+    "파나소닉 디스플레이", "파나소닉 ID", "소니 디스플레이", "칸보 전자", "Truly", "티엘아이", "Tianma"
+  ],
+  "Set_Manufacturer": [
+    "삼성전자", "Samsung Electronics", "LG전자", "LG Electronics", "애플", "Apple", "소니", "Sony", "TCL", "Hisense", "샤오미", "Xiaomi", "OPPO", "화웨이", "Huawei",
+    "구글", "Google", "마이크로소프트", "Microsoft", "아마존", "Amazon", "메타", "Meta", "파이브이알", "PICO", "레노버", "Lenovo", "델", "Dell", "HP"
+  ],
+  "Platform_Company": [
+    "넷플릭스", "Netflix", "유튜브", "YouTube", "디즈니+", "Disney+", "애플 TV+", "Apple TV+", "아마존 프라임", "Amazon Prime", "메타버스", "Metaverse", "로블록스", "Roblox",
+    "에픽게임즈", "Epic Games", "유니티", "Unity", "언리얼 엔진", "Unreal Engine"
+  ],
+  "Material_Supplier": [
+    "도레이", "Toray", "스미토모화학", "Sumitomo Chemical", "3M", "머크", "Merck", "Nanosys", "듀폰", "DuPont", "바스프", "BASF", "솔베이", "Solvay", "신에츠화학", "Shin-Etsu Chemical"
+  ],
+  "Equipment_Maker": [
+    "ASML", "니콘", "Nikon", "캐논", "Canon", "어플라이드 머티리얼즈", "Applied Materials", "램 리서치", "Lam Research", "도쿄 일렉트론", "Tokyo Electron", "세메스", "SES", "유진테크", "유진로봇"
+  ]
 }
