@@ -396,6 +396,137 @@
   }
   fetchReportIndex();
 
+  // ===== 챗봇 JS 시작 =====
+  
+  // 2단계에서 만든 HTML 요소들을 JS 변수로 가져옵니다.
+  const chatbotWindow = document.getElementById('chatbot-window');
+  const chatbotToggleButton = document.getElementById('chatbot-toggle-btn');
+  const chatbotCloseButton = document.getElementById('chatbot-close-btn');
+  const chatMessages = document.getElementById('chat-messages');
+  const chatInput = document.getElementById('chat-input');
+  const chatSendButton = document.getElementById('chat-send-btn');
+  
+  // 1단계에서 만든 '비밀 통로' 주소입니다. (※※※ 실제 주소로 변경 필요 ※※※)
+  const CHATBOT_API_URL = 'https://chatbot-api.thecki003.workers.dev/'; 
+  
+  // '초인종(💬)' 버튼을 클릭했을 때
+  chatbotToggleButton.addEventListener('click', () => {
+      // 3단계 CSS에서 만든 'visible' 클래스를 붙여서 창을 '짠!' 하고 보이게 함
+      chatbotWindow.classList.toggle('visible'); 
+  });
+  
+  // 챗봇 창의 'X' 닫기 버튼을 클릭했을 때
+  chatbotCloseButton.addEventListener('click', () => {
+      // 'visible' 클래스를 제거해서 창을 숨김
+      chatbotWindow.classList.remove('visible');
+  });
+  
+  /**
+   * 현재 iframe에 로드된 리포트의 텍스트를 읽어옵니다.
+   * [span_0](start_span)(다크 모드 로직 [cite: 91-95]과 동일한 원리로 iframe에 접근합니다.)
+   */
+  /**
+ * (수정된 버전)
+ * 현재 iframe에 로드된 리포트의 텍스트를 읽어옵니다.
+ */
+function getCurrentReportText() {
+    // 1. index.html에 있는 <iframe id="reportFrame">을 찾습니다.
+    const reportFrame = document.getElementById('reportFrame');
+
+    if (!reportFrame) {
+        console.error("챗봇 오류: reportFrame 요소를 찾을 수 없습니다.");
+        return "오류: 리포트 프레임을 찾을 수 없습니다.";
+    }
+
+    try {
+        // 2. iframe 내부의 내용물(document)에 접근합니다.
+        const iframeDoc = reportFrame.contentDocument || reportFrame.contentWindow.document;
+
+        // 3. (안전 장치) iframe의 body가 완전히 로드되었는지 확인합니다.
+        if (!iframeDoc || !iframeDoc.body) {
+            console.warn("챗봇 경고: 리포트가 아직 로드되지 않았거나, 내용에 접근할 수 없습니다.");
+            return "리포트 내용이 아직 로드되지 않았습니다. 잠시 후 다시 시도해주세요.";
+        }
+
+        // 4. 스타일 대신, 화면에 보이는 '모든 텍스트'를 복사합니다.
+        const reportText = iframeDoc.body.innerText;
+
+        // 5. 텍스트가 너무 길면 AI가 힘들어하므로, 앞부분 5000자 정도만 잘라서 줍니다.
+        return reportText.substring(0, 5000); 
+
+    } catch (e) {
+        console.error("챗봇이 리포트 내용을 읽는 데 실패했습니다:", e);
+        // 5단계(CORS) 문제일 가능성이 높습니다.
+        return "오류: 현재 리포트 내용에 접근할 수 없습니다. (보안 정책[CORS] 문제일 수 있습니다.)";
+    }
+}
+  
+  // '전송' 버튼 클릭 이벤트
+  chatSendButton.addEventListener('click', handleSendMessage);
+  
+  // '입력창'에서 Enter 키 누름 이벤트
+  chatInput.addEventListener('keydown', (event) => {
+      if (event.key === 'Enter') {
+          handleSendMessage();
+      }
+  });
+  
+  /**
+   * 메시지를 전송하는 핵심 함수
+   */
+  async function handleSendMessage() {
+      const userQuestion = chatInput.value.trim(); // 사용자가 입력한 질문
+      if (!userQuestion) return; // 질문이 없으면 무시
+  
+      // 1. 내 질문을 채팅창에 먼저 표시
+      addMessageToChat('user', userQuestion);
+      chatInput.value = ''; // 입력창 비우기
+  
+      // 2. (핵심) 현재 리포트 텍스트 읽어오기 (4-3 함수 호출)
+      const reportContext = getCurrentReportText();
+  
+      // 3. '비밀 통로'로 "질문"과 "리포트 텍스트"를 함께 전송
+      try {
+          const response = await fetch(CHATBOT_API_URL, {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/json' },
+              body: JSON.stringify({
+                  question: userQuestion,  // 사용자의 질문
+                  context: reportContext // 리포트 텍스트
+              })
+          });
+  
+          if (!response.ok) {
+              throw new Error(`API 서버 오류: ${response.statusText}`);
+          }
+  
+          const data = await response.json();
+          const aiAnswer = data.answer || "답변을 받는 데 실패했습니다.";
+  
+          // 4. AI 답변을 채팅창에 표시
+          addMessageToChat('bot', aiAnswer);
+  
+      } catch (error) {
+          console.error('챗봇 API 통신 오류:', error);
+          addMessageToChat('bot', `오류가 발생했습니다: ${error.message}`);
+      }
+  }
+  
+  /**
+   * 채팅창에 말풍선을 추가하는 도우미 함수
+   */
+  function addMessageToChat(sender, text) {
+      const messageElement = document.createElement('div');
+      messageElement.classList.add('message', sender); // 'message'와 'user' 또는 'bot' 스타일 적용
+      messageElement.innerText = text;
+      
+      chatMessages.appendChild(messageElement); // 채팅창에 추가
+      
+      // 새 메시지가 오면 항상 스크롤을 맨 아래로 내림
+      chatMessages.scrollTop = chatMessages.scrollHeight; 
+  }
+  
+  
   // expose for debug
   window.IR = window.IR || {};
   window.IR.fetchReportIndex = fetchReportIndex;
