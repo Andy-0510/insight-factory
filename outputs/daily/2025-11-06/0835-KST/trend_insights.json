@@ -1,0 +1,126 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "tv",
+        "oled",
+        "lg",
+        "프리미엄",
+        "미국"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "브랜드",
+        "할인",
+        "미디어",
+        "온라인",
+        "상품을"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "중국",
+        "oled",
+        "가격",
+        "핵심",
+        "역시"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "사업",
+        "ceo",
+        "인공지능",
+        "인프라"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "ai",
+        "건설",
+        "안전",
+        "선보였다"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "2025년",
+        "2024년",
+        "미국",
+        "2023년",
+        "대표이사"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "경주의",
+        "경북",
+        "지사는",
+        "문화",
+        "이철우"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "반도체",
+        "디스플레이",
+        "핵심",
+        "소재",
+        "배터리"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "맥북",
+        "브랜드",
+        "빅데이터",
+        "엔터테인먼트",
+        "저가형"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "무빙스타일",
+        "삼성전자",
+        "매장",
+        "사례를",
+        "소상공인"
+      ]
+    }
+  ],
+  "evidence": {}
+}
