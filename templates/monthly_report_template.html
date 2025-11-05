@@ -175,8 +175,8 @@
         .section-number { width: 40px; height: 40px; background: linear-gradient(135deg, #0066ff, #00b8a9); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; margin-right: 16px; }
         .section-title { font-size: 24px; font-weight: 800; color: #1a2332; }
         .section-subtitle { font-size: 14px; color: #718096; margin-left: auto; }
-        .exec-summary-box { background: #f0f9ff; border-left: 5px solid #0066ff; padding: 24px; border-radius: 8px; margin-bottom: 32px; font-size: 14px; line-height: 1.7; }
-        .exec-summary-title { font-size: 16px; font-weight: 700; color: #0066ff; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .exec-summary-box { background: #eff2f5; border-left: 5px solid #e5e8eb; padding: 24px; border-radius: 8px; margin-bottom: 32px; font-size: 14px; line-height: 1.7; }
+        .exec-summary-title { font-size: 16px; font-weight: 700; color: #000000; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
         .exec-summary-text { color: #2d3748; margin-bottom: 10px; }
         .exec-summary-text strong { color: #1a2332; font-weight: 600; }
         .viz-container { background: #f8fafc; border-radius: 12px; padding: 24px; margin-bottom: 32px; border: 1px solid #e2e8f0; }
@@ -348,7 +348,7 @@
                     <div class="section-title" id="section-summary">Executive Summary</div>
                 </div>
                 <div class="exec-summary-box">
-                    <div class="exec-summary-title">월간 전략 요약 (AI Summary)</div>
+                    <div class="exec-summary-title">월간 전략 요약 (AI)</div>
                     <div class="exec-summary-text">{{ executive_summary | safe }}</div>
                 </div>
                 <div class="kpi-grid">
@@ -388,67 +388,57 @@
                 </div>
 
                 <div class="exec-summary-box">
-                    <div class="exec-summary-title">📊 Section 1 Summary (AI)</div>
+                    <div class="exec-summary-title">Summary</div>
                     <div class="exec-summary-text">{{ positioning_exec_summary | safe }}</div>
                 </div>
 
-                <img src="{{ topic_mini_trends_path | default('fig/placeholder.png') }}" alt="토픽 미니 트렌드" class="report-graph">
+                <h3>월간 주요 토픽</h3>
+                    <img src="{{ topic_mini_trends_path | default('fig/placeholder.png') }}" alt="토픽 미니 트렌드" class="report-graph">
 
-                <h4>토픽 상세 정보</h4>
-                 <div>{{ topic_details_table | safe }}</div>
-                
-                 <!--
-                <h4>토픽 성장/하락 추세</h4>
-                 <div>{{ topic_growth_table | safe }}</div>
-                -->
+                    <h4>토픽 상세 정보</h4>
+                    <div>{{ topic_details_table | safe }}</div>
 
-                <div class="implication-box">
-                     <h4>💡 전략적 시사점 (AI Analysis)</h4>
-                     <ul>
-                         {% for imp in strategic_implications %}
-                         <li>{{ imp }}</li>
-                         {% else %}
-                         <li>AI 시사점 분석 예정...</li>
-                         {% endfor %}
-                     </ul>
-                </div>
+                    <div class="implication-box">
+                        <h4>💡 전략적 시사점 (AI)</h4>
+                        <ul>
+                            {% for imp in strategic_implications %}
+                            <li>{{ imp }}</li>
+                            {% else %}
+                            <li>AI 시사점 분석 예정...</li>
+                            {% endfor %}
+                        </ul>
+                    </div>
 
-                <img src="{{ topic_bubble_map_path | default('fig/placeholder.png') }}" alt="토픽 버블 맵" class="report-graph">
+                <h3>핵심 토픽 포지셔닝: 버블 맵 분석</h3>
+                    <img src="{{ topic_bubble_map_path | default('fig/placeholder.png') }}" alt="토픽 버블 맵" class="report-graph">
 
-                <div class="mb-4">
-                     <h3>사분면별 전략 권고</h3>
-                     <div class="quadrant-grid">
-                         <div class="quadrant-card q1">
-                             <h4>🎯 고관심 · 고활동 (Short-term Win)</h4>
-                             <p><strong>해당 토픽:</strong> {{ quadrant1_topics | default('분석 필요') }}</p>
-                             <p><strong>권고 전략:</strong> {{ quadrant1_strategy | default('AI 권고 생성 예정') }}</p>
-                         </div>
-                         <div class="quadrant-card q2">
-                             <h4>💡 고관심 · 저활동 (Market Building)</h4>
-                             <p><strong>해당 토픽:</strong> {{ quadrant2_topics | default('분석 필요') }}</p>
-                             <p><strong>권고 전략:</strong> {{ quadrant2_strategy | default('AI 권고 생성 예정') }}</p>
-                         </div>
-                         <div class="quadrant-card q3">
-                             <h4>🔬 고긍정 · 저활동 (Long-term R&D)</h4>
-                             <p><strong>해당 토픽:</strong> {{ quadrant3_topics | default('분석 필요') }}</p>
-                             <p><strong>권고 전략:</strong> {{ quadrant3_strategy | default('AI 권고 생성 예정') }}</p>
-                         </div>
-                         <div class="quadrant-card q4">
-                             <h4>⏸️ 저관심 · 저활동 (Watch & Wait)</h4>
-                             <p><strong>해당 토픽:</strong> {{ quadrant4_topics | default('분석 필요') }}</p>
-                             <p><strong>권고 전략:</strong> {{ quadrant4_strategy | default('AI 권고 생성 예정') }}</p>
-                         </div>
-                     </div>
-                </div>
-                <!--
-                <div class="mb-4">
-                    <h3>전략적 인사이트 및 실행과제 제안 (AI)</h3>
-                    <div>{{ positioning_insight | safe }}</div>
-                </div>
-                -->
+                    <div class="mb-4">
+                        <h4>사분면별 전략 권고</h4>
+                        <div class="quadrant-grid">
+                            <div class="quadrant-card q1">
+                                <h4>🎯 고관심 · 고활동 (Short-term Win)</h4>
+                                <p><strong>해당 토픽:</strong> {{ quadrant1_topics | default('분석 필요') }}</p>
+                                <p><strong>권고 전략:</strong> {{ quadrant1_strategy | default('AI 권고 생성 예정') }}</p>
+                            </div>
+                            <div class="quadrant-card q2">
+                                <h4>💡 고관심 · 저활동 (Market Building)</h4>
+                                <p><strong>해당 토픽:</strong> {{ quadrant2_topics | default('분석 필요') }}</p>
+                                <p><strong>권고 전략:</strong> {{ quadrant2_strategy | default('AI 권고 생성 예정') }}</p>
+                            </div>
+                            <div class="quadrant-card q3">
+                                <h4>🔬 고긍정 · 저활동 (Long-term R&D)</h4>
+                                <p><strong>해당 토픽:</strong> {{ quadrant3_topics | default('분석 필요') }}</p>
+                                <p><strong>권고 전략:</strong> {{ quadrant3_strategy | default('AI 권고 생성 예정') }}</p>
+                            </div>
+                            <div class="quadrant-card q4">
+                                <h4>⏸️ 저관심 · 저활동 (Watch & Wait)</h4>
+                                <p><strong>해당 토픽:</strong> {{ quadrant4_topics | default('분석 필요') }}</p>
+                                <p><strong>권고 전략:</strong> {{ quadrant4_strategy | default('AI 권고 생성 예정') }}</p>
+                            </div>
+                        </div>
+                    </div>
             </div>
             <br><br>
-
 
             <div class="section" id="competitors">
                 <div class="section-header">
@@ -458,114 +448,67 @@
                  </div>
 
                 <div class="exec-summary-box">
-                    <div class="exec-summary-title">🎯 Section 3 Summary (AI)</div>
+                    <div class="exec-summary-title">Summary</div>
                     <div class="exec-summary-text">{{ competitors_exec_summary | safe }}</div>
                 </div> 
 
                 <h3>기업별 전략 방향성 분석: 기업X토픽 분석</h3>
-                 <img src="{{ matrix_heatmap_path | default('fig/placeholder.png') }}" alt="기업-토픽 히트맵" class="report-graph">
-                 <div class="competitor-positioning-grid">
-                     {% for comp in competitor_positioning %}
-                     <div class="competitor-positioning-card">
-                         <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
-                             <h4>{{ comp.name }}</h4>
-                             <span class="competitor-positioning-badge">{{ comp.badge_text }}</span>
-                         </div>
-                         <div class="competitor-metrics-grid">
-                             <div><div class="competitor-metric-label">Topic Share</div><div class="competitor-metric-value">{{ comp.topic_share }}</div></div>
-                             <div><div class="competitor-metric-label">Company Focus</div><div class="competitor-metric-value">{{ comp.focus_level }}</div></div>
-                         </div>
-                         <div class="competitor-positioning-insight">
-                             <strong>전략적 의도 (AI):</strong> {{ comp.strategy_insight }}
-                         </div>
-                     </div>
-                     {% else %}<p>경쟁사 포지셔닝 분석 데이터 없음.</p>{% endfor %}
-                </div>
+                    <img src="{{ matrix_heatmap_path | default('fig/placeholder.png') }}" alt="기업-토픽 히트맵" class="report-graph">
+                    <div class="competitor-positioning-grid">
+                        {% for comp in competitor_positioning %}
+                        <div class="competitor-positioning-card">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                                <h4>{{ comp.name }}</h4>
+                                <span class="competitor-positioning-badge">{{ comp.badge_text }}</span>
+                            </div>
+                            <div class="competitor-metrics-grid">
+                                <div><div class="competitor-metric-label">Topic Share</div><div class="competitor-metric-value">{{ comp.topic_share }}</div></div>
+                                <div><div class="competitor-metric-label">Company Focus</div><div class="competitor-metric-value">{{ comp.focus_level }}</div></div>
+                            </div>
+                            <div class="competitor-positioning-insight">
+                                <strong>전략적 의도 (AI):</strong> {{ comp.strategy_insight }}
+                            </div>
+                        </div>
+                        {% else %}<p>경쟁사 포지셔닝 분석 데이터 없음.</p>{% endfor %}
+                    </div>
 
                 <h3>경쟁/협력 관계: 키워드 네트워크 분석</h3>
-                 <img src="{{ company_network_path | default('fig/placeholder.png') }}" alt="기업 관계망" class="report-graph">
+                    <img src="{{ company_network_path | default('fig/placeholder.png') }}" alt="기업 관계망" class="report-graph">
 
-                 <h4>주요 기업 관계 Top 5</h4>
-                 <div>{{ competitor_actions_table | safe }}</div>
+                    <h4>주요 기업 관계 Top 5</h4>
+                    <div>{{ competitor_actions_table | safe }}</div>
 
-                 <h4>산업 내 관계 중심도</h4>
-                 <div>{{ competitor_strategy_table | safe }}</div>
+                    <h4>산업 내 관계 중심도</h4>
+                    <div>{{ competitor_strategy_table | safe }}</div>
 
-                 <div class="alert-box">
-                     <h4>⚠️ 경쟁 강도 변화 경보 (AI Analysis)</h4>
-                     {% for alert in competition_alerts %}
-                     <p>{{ alert }}</p>
-                     {% else %}<p>이번 달 특이 경쟁 강도 변화 없음.</p>{% endfor %}
-                 </div>
-
-                 <!--
-                 <div class="viz-container">
-                     <div class="viz-title">월간 키워드 네트워크</div>
-                     <img src="{{ keyword_network_path | default('fig/placeholder.png') }}" alt="키워드 네트워크" class="report-graph">
-                 </div>
-                 -->
+                    <div class="alert-box">
+                        <h4>⚠️ 경쟁 강도 변화 경보 (AI)</h4>
+                        {% for alert in competition_alerts %}
+                        <p>{{ alert }}</p>
+                        {% else %}<p>이번 달 특이 경쟁 강도 변화 없음.</p>{% endfor %}
+                    </div>
+                    
             </div>
             <br><br>
-
-
-            <div class="section" id="lifecycle">
-                <div class="section-header">
-                     <div class="section-number">3</div>
-                     <div class="section-title" id="section-lifecycle">기술 수명 주기 분석</div>
-                     <div class="section-subtitle">R&D 투자 타이밍</div>
-                </div>
-
-                <div class="exec-summary-box">
-                    <div class="exec-summary-title">🔬 Section 2 Summary (AI)</div>
-                    <div class="exec-summary-text">{{ lifecycle_exec_summary | safe }}</div>
-                </div>
-
-                <img src="{{ tech_maturity_map_path | default('fig/placeholder.png') }}" alt="기술 성숙도 맵" class="report-graph">
- 
-                <h4>기술 단계별 상세 분석 및 권고</h4>
-                <div class="maturity-grid">
-                     {% for tech in tech_maturity_details %}
-                     <div class="maturity-card">
-                         <div class="maturity-stage {{ tech.stage_class }}">{{ tech.stage_text }}</div>
-                         <div class="maturity-tech">{{ tech.name }}</div>
-                         <div class="maturity-description">
-                             {{ tech.description }}
-                         </div>
-                         <div class="maturity-recommendation">
-                             <strong>투자 권고:</strong> {{ tech.recommendation }}
-                         </div>
-                     </div>
-                     {% else %}
-                     <p>기술 성숙도 상세 분석 데이터 없음.</p>
-                     {% endfor %}
-                </div>
-
-                <div class="exec-summary-box mt-2">
-                      <div class="exec-summary-title">🎯 R&D 자원 배분 권고 (AI Suggestion)</div>
-                      <div class="exec-summary-text">{{ rd_recommendation | safe }}</div>
-                </div>
-            </div>
-            <br><br>
-
 
             <div class="section" id="risk">
                  <div class="section-header">
-                     <div class="section-number">4</div>
-                     <div class="section-title" id="section-risk">전략적 리스크 관리</div>
-                     <div class="section-subtitle">리스크/이슈 관측소</div>
+                     <div class="section-number">3</div>
+                     <div class="section-title" id="section-risk">Market Risk Management</div>
+                     <div class="section-subtitle">리스크/이슈 탐지</div>
                  </div>
 
                 <div class="exec-summary-box">
-                    <div class="exec-summary-title">⚠️ Section 4 Summary (AI)</div>
+                    <div class="exec-summary-title">Summary</div>
                     <div class="exec-summary-text">{{ risk_exec_summary | safe }}</div>
                 </div> 
 
-                <h3>탐지된 주요 리스크 목록</h3>
-                <div>{{ risk_list_table | safe }}</div>
-                <img src="{{ risk_spikes_path | default('fig/placeholder.png') }}" alt="부정 감성 급등 토픽" class="report-graph mb-2">
+                <h3>시장 내 주요 리스크 탐지</h3>
+                    <div>{{ risk_list_table | safe }}</div>
+                    <img src="{{ risk_spikes_path | default('fig/placeholder.png') }}" alt="부정 감성 급등 토픽" class="report-graph mb-2">
 
-                <h3>리스크 네트워크</h3>                
-                <img src="{{ risk_network_path | default('fig/placeholder.png') }}" alt="리스크 키워드 네트워크" class="report-graph">
+                <h3>리스크 분석: 리스크 네트워크</h3>                
+                    <img src="{{ risk_network_path | default('fig/placeholder.png') }}" alt="리스크 키워드 네트워크" class="report-graph">
 
                 <div class="mb-4">
                      <h3>리스크 대응 매트릭스</h3>
@@ -594,7 +537,7 @@
                 </div>
 
                 <div class="immediate-action-box">
-                     <h4>🚨 즉시 대응 필요 항목 (AI Priority)</h4>
+                     <h4>🚨 즉시 대응 필요 항목 (AI)</h4>
                      <ol>
                          {% for item in immediate_actions %}
                          <li><strong>{{ item.risk_id }}:</strong> {{ item.action }} (담당: {{ item.owner }}, 기한: {{ item.due_date }})</li>
@@ -603,58 +546,50 @@
                          {% endfor %}
                      </ol>
                 </div>
-                <br><br>
-
-                <!--
-                <div class="mb-4">
-                      <h3>리스크 종합 평가 및 대응 제안 (AI)</h3>
-                      <div>{{ risk_assessment | safe }}</div>
-                </div>
-                -->
             </div>
+            <br><br>
             
-            
+            <div class="section" id="actionplan">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <div class="section-title" id="section-actionplan">[제언] 전략 방향성 및 실행 방안</div>
+                </div>
+                <div class="exec-summary-box mt-2">
+                    <div class="exec-summary-text">{{ final_recommendation | safe }}</div>
+                </div>
+            </div>
+            <br><br>
+
             <div class="section" id="opportunities">
                  <div class="section-header">
-                     <div class="section-number">5</div>
+                     <div class="section-number">NEW</div>
                      <div class="section-title" id="section-opportunities">신사업 기회 발굴</div>
                      <div class="section-subtitle">데이터 기반 신사업 아이디어 Top 5</div>
                  </div>
 
                 <div class="exec-summary-box">
-                    <div class="exec-summary-title">💡 Section 5 Summary (AI)</div>
+                    <div class="exec-summary-title">Summary</div>
                     <div class="exec-summary-text">{{ opportunities_exec_summary | safe }}</div>
                 </div>
 
                 <h3>Top 5 신사업 아이디어</h3>
-                <div>{{ opportunity_list_table | safe }}</div>
-  
-                <img src="{{ idea_score_dist_path | default('fig/placeholder.png') }}" alt="아이디어 점수 분포" class="report-graph">
-  
-                <h3 style="margin-top: 32px;">아이디어 검증: 2주 Action Plan (Top 1)</h3>
-                <div>{{ action_plan_table | safe }}</div>
+                    <div>{{ opportunity_list_table | safe }}</div>
+                    <img src="{{ idea_score_dist_path | default('fig/placeholder.png') }}" alt="아이디어 점수 분포" class="report-graph">
+    
+                    <h3 style="margin-top: 32px;">아이디어 검증 (2주 Action Plan)</h3>
+                    <div>{{ action_plan_table | safe }}</div>
             </div>
-            <br><br>
+            <br>
 
+        </div>
+    </div>
 
-            <div class="section" id="actionplan">
-                 <div class="section-header">
-                     <div class="section-number">6</div>
-                     <div class="section-title" id="section-actionplan">종합 전략 방향 및 실행 방안</div>
-                     </div>
-                  <div class="exec-summary-box mt-2">
-                       <div class="exec-summary-title">종합 전략 권고 (AI Summary)</div>
-                       <div class="exec-summary-text">{{ final_recommendation | safe }}</div>
-                   </div>
-            </div>
-
-        </div> </div> <div class="footer">
+        <div class="footer">
             <div>
                 “이 보고서는 AI 기반 트렌드 분석 시스템을 통해 작성되었습니다.”<br>
                 문의:  thecki85@gmail.com | 010.5353.1145 <br>
                 - Business Development Team -
-          </div> 
-    </div>
-
-</body>
+            </div> 
+        </div>
+    </body>
 </html>
