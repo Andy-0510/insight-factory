@@ -443,7 +443,7 @@
             <div class="section" id="competitors">
                 <div class="section-header">
                      <div class="section-number">2</div>
-                     <div class="section-title" id="section-competitors">경쟁사 전략적 의도 분석</div>
+                     <div class="section-title" id="section-competitors">주요 기업의 전략적 의도 분석</div>
                      <div class="section-subtitle">경쟁 구도 심층 분석</div>
                  </div>
 
@@ -469,7 +469,7 @@
                                 <strong>전략적 의도 (AI):</strong> {{ comp.strategy_insight }}
                             </div>
                         </div>
-                        {% else %}<p>경쟁사 포지셔닝 분석 데이터 없음.</p>{% endfor %}
+                        {% else %}<p>주요 기업의 포지셔닝 분석 데이터 없음.</p>{% endfor %}
                     </div>
 
                 <h3>경쟁/협력 관계: 키워드 네트워크 분석</h3>
@@ -478,7 +478,7 @@
                     <h4>주요 기업 관계 Top 5</h4>
                     <div>{{ competitor_actions_table | safe }}</div>
 
-                    <h4>산업 내 관계 중심도</h4>
+                    <h4>산업 내 관계 영향력</h4>
                     <div>{{ competitor_strategy_table | safe }}</div>
 
                     <div class="alert-box">
@@ -552,7 +552,7 @@
             <div class="section" id="actionplan">
                 <div class="section-header">
                     <div class="section-number">4</div>
-                    <div class="section-title" id="section-actionplan">[제언] 전략 방향성 및 실행 방안</div>
+                    <div class="section-title" id="section-actionplan">전략 방향성 및 실행 방안</div>
                 </div>
                 <div class="exec-summary-box mt-2">
                     <div class="exec-summary-text">{{ final_recommendation | safe }}</div>
