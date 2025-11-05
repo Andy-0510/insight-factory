@@ -1,0 +1,26 @@
+{
+  "samsung display|samsung electronics": "partnership",
+  "lg display|lg electronics": "partnership",
+  "nvidia|samsung electronics": "partnership",
+  "apple|samsung display": "partnership",
+  "apple|lg display": "partnership",
+  
+  "lg디스플레이|lg전자": "partnership",
+  "엔비디아|삼성전자": "partnership",
+  "애플|삼성디스플레이": "partnership",
+  "애플|lg디스플레이": "partnership",
+
+  "apple|google": "rivalry",
+  "애플|구글": "rivalry",
+  "apple|meta": "rivalry",
+  "google|meta": "rivalry",
+  "amd|nvidia": "rivalry",
+  "intel|nvidia": "rivalry",
+  "intel|amd": "rivalry",
+
+  "boe|csot": "rivalry",
+  "boe|samsung display": "rivalry",
+  "boe|lg디스플레이": "rivalry",
+  "csot|samsung display": "rivalry",
+  "csot|lg디스플레이": "rivalry"
+}

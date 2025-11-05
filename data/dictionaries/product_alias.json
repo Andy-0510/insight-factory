@@ -32,7 +32,7 @@
   "구글": ["구글", "Google", "google"],
   "마이크로소프트": ["마이크로소프트", "Microsoft", "microsoft"],
   "삼성전자": ["삼성전자", "Samsung Electronics", "Samsung electronics", "Samsung Electronic", "Samsung electronic", "삼성 전자"],
-  "엘지전자": ["엘지전자", "LG Electronics", "LG electronics", "LG Electronic", "LG electronic", "엘지 전자"],
+  "LG전자": ["엘지전자", "LG Electronics", "LG electronics", "LG Electronic", "LG electronic", "엘지 전자"],
   "색영역": ["색영역", "color gamut", "Color Gamut", "color Gamut"],
   "주사율": ["주사율", "구동주파수", "refresh rate", "Refresh Rate", "refresh Rate", "리프레시 레이트", "리프레시레이트", "Refresh rate"],
   "해상도": ["해상도", "resolution", "Resolution", "resolution"],
