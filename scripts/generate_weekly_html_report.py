@@ -8,9 +8,11 @@ from jinja2 import Environment, FileSystemLoader, select_autoescape
 import re
 from collections import defaultdict, Counter # Counter 추가
 import time # time 모듈 추가
+import glob # <-- 1. glob 임포트 추가
 
 # --- 설정 (경로는 실제 프로젝트 구조에 맞게 조정 필요) ---
 # ... (기존 설정 유지) ...
+# ROOT_OUTPUT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 ROOT_DIR = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 TEMPLATE_DIR = os.path.join(ROOT_DIR, 'templates')
 TEMPLATE_NAME = 'weekly_report_template.html'
@@ -18,7 +20,8 @@ OUTPUT_BASE_DIR = os.path.join(ROOT_DIR, 'outputs')
 EXPORT_DIR = os.path.join(OUTPUT_BASE_DIR, 'export')
 FIG_DIR = os.path.join(OUTPUT_BASE_DIR, 'fig')
 DEBUG_DIR = os.path.join(OUTPUT_BASE_DIR, 'debug')
-TARGET_COMPETITORS = ["삼성디스플레이", "LG디스플레이", "BOE", "CSOT", "Visionox", "Tianma"] # 경쟁사 목록 예시
+DAILY_ARCHIVE_DIR = os.path.join(OUTPUT_BASE_DIR, "daily")
+TARGET_COMPETITORS = ["LG디스플레이", "삼성디스플레이", "BOE", "CSOT", "AUO", "Innolux", "Visionox", "Tianma", "JDI", "Sharp"] # 경쟁사 목록
 
 # --- 필요한 헬퍼 함수 ---
 from src.utils import load_json, latest
@@ -148,62 +151,73 @@ def call_gemini_for_competitor_insight(competitor_name, mentions, momentum):
 # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 # --- ▼▼▼ LLM 호출 함수 (주간 약한 신호 분석 - 신규 추가) ▼▼▼ ---
-def call_gemini_for_weekly_insight(weak_signals):
-    """LLM을 호출하여 주간 약한 신호의 의미를 분석합니다."""
-    if not weak_signals:
-        return "금주에 주목할 만한 신규 약한 신호가 포착되지 않았습니다."
-
-    # LLM 프롬프트에 전달할 데이터 형식 변경 (dict 리스트)
-    signals_context = [{"signal": s.get('term'), "momentum": s.get('z_like'), "mentions": s.get('total')} for s in weak_signals]
-
-    prompt = f"""
-    당신은 미래 기술 트렌드 분석가입니다. 아래는 지난 한 주간 포착된 초기 신호(Weak Signals) 목록입니다.
-    ### 주간 초기 신호 목록 (상위):
-    {json.dumps(signals_context, ensure_ascii=False, indent=2)}
-
-    ### 분석 요청:
-    1. 목록에서 가장 중요하고 잠재력 있는 신호 **2~3개**를 선별해주세요.
-    2. 각 신호가 **무엇을 의미**하는지, 그리고 **왜 지금 주목**해야 하는지에 대한 **해석**을 한 문장으로 요약해주세요.
-    3. 각 신호의 **잠재적 영향**(기회 또는 위협)을 한 문장으로 설명해주세요.
-    4. 각 신호에 대한 **초기 검증 액션**을 한 문장으로 제안해주세요.
-    5. 분석 결과를 아래 **마크다운 형식**으로만 답변해주세요. 다른 설명은 필요 없습니다.
-    ### 출력 형식 (Markdown):
-    - **[신호명 1]:**
-        - **해석:** (분석 및 해석 요약)
-        - **잠재 영향:** (기회/위협 설명)
-        - **검증 액션:** (실행 제안)
-    - **[신호명 2]:**
-        - **해석:** (분석 및 해석 요약)
-        - **잠재 영향:** (기회/위협 설명)
-        - **검증 액션:** (실행 제안)
+# --- ▼▼▼▼▼▼ 주간 약한 신호 분석을 위한 LLM 호출 함수 (수정) ▼▼▼▼▼▼ ---
+def call_gemini_for_weekly_insight(weak_signals: list) -> dict:
     """
-    # _call_gemini_safe 함수는 이미 정의되어 있다고 가정
-    llm_response = _call_gemini_safe(prompt, default_resp="약한 신호 AI 분석 실패.")
+    LLM을 호출하여 주간 약한 신호의 의미를 (JSON 형식으로) 분석합니다.
+    (weekly_commentary_report.py의 로직을 적용)
+    """
+    if not weak_signals:
+        return {}
 
-    # LLM 응답 파싱 (Markdown 리스트 형식 가정)
-    parsed_insights = {}
     try:
-        # 각 신호별 블록 분리 (신호명을 키로 사용)
-        signal_blocks = re.split(r'-\s+\*\*(.*?):\*\*', llm_response)
-        if len(signal_blocks) > 1:
-            for i in range(1, len(signal_blocks), 2):
-                signal_name = signal_blocks[i].strip()
-                details_text = signal_blocks[i+1].strip()
-                details = {}
-                # 각 항목 (해석, 잠재 영향, 검증 액션) 추출
-                desc_match = re.search(r'-\s+\*\*해석:\*\*\s+(.*)', details_text)
-                imp_match = re.search(r'-\s+\*\*잠재 영향:\*\*\s+(.*)', details_text)
-                act_match = re.search(r'-\s+\*\*검증 액션:\*\*\s+(.*)', details_text)
-                if desc_match: details['description'] = desc_match.group(1).strip()
-                if imp_match: details['implication'] = imp_match.group(1).strip()
-                if act_match: details['next_step'] = act_match.group(1).strip()
-                parsed_insights[signal_name] = details
+        import google.generativeai as genai
+        api_key = os.getenv("GEMINI_API_KEY")
+        if not api_key: raise RuntimeError("GEMINI_API_KEY가 설정되지 않았습니다.")
+        
+        genai.configure(api_key=api_key)
+        cfg = load_config()
+        model_name = cfg.get("llm", {}).get("model", "gemini-1.5-flash-001")
+        model = genai.GenerativeModel(model_name)
+        print(f"[INFO] Using Gemini model for weekly weak signal insight: {model_name}")
+
+        # LLM 프롬프트에 전달할 데이터 형식 변경 (dict 리스트)
+        signals_context = [{"signal": s.get('term'), "momentum": s.get('z_like'), "mentions": s.get('total')} for s in weak_signals]
+
+        prompt = f"""
+        당신은 미래 기술 트렌드 분석가입니다. 아래는 지난 한 주간 포착된 초기 신호(Weak Signals) 목록입니다.
+
+        ### 주간 초기 신호 목록 (상위):
+        {json.dumps(signals_context, ensure_ascii=False, indent=2)}
+
+        ### 분석 요청:
+        목록에 있는 각 '신호'에 대해, 아래 3가지 항목을 분석하여 JSON 형식으로만 답변해주세요.
+        1. **description**: 이 신호가 **무엇을 의미**하는지, **왜 지금 주목**해야 하는지 (1~2 문장 요약)
+        2. **implication**: 이 신호의 **잠재적 영향**(기회 또는 위협) (1 문장)
+        3. **next_step**: 이 신호를 검증하기 위한 **초기 액션** (1 문장, 명사형 어구)
+        
+        ### 출력 형식 (JSON 객체 - Key: 신호명, Value: 분석 내용):
+        ```json
+        {{
+          "{signals_context[0]['signal']}": {{
+            "description": "...",
+            "implication": "...",
+            "next_step": "..."
+          }},
+          "{signals_context[1]['signal']}": {{
+            "description": "...",
+            "implication": "...",
+            "next_step": "..."
+          }}
+        }}
+        ```
+        """
+        response = model.generate_content(prompt)
+        
+        # LLM 응답에서 JSON만 파싱
+        json_match = re.search(r'\{.*\}', response.text, re.DOTALL)
+        if json_match:
+            parsed_json = json.loads(json_match.group(0))
+        else:
+            parsed_json = json.loads(response.text) # JSON만 반환했을 경우
+        
+        return parsed_json
+
     except Exception as e:
-        print(f"[WARN] Failed to parse LLM response for weak signals: {e}")
-
-    return parsed_insights # 파싱된 결과를 딕셔너리로 반환
-
-# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+        print(f"[ERROR] Gemini 주간 약한 신호 분석 실패: {e}")
+        # 오류 발생 시 빈 딕셔너리 반환
+        return {s.get('term'): {"description": "LLM 분석 실패", "implication": "...", "next_step": "..."} for s in weak_signals}
+# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 
 # --- ▼▼▼ LLM 호출 함수 (모멘텀 분석 권고 - 프롬프트 수정) ▼▼▼ ---
@@ -265,6 +279,29 @@ def call_gemini_for_portfolio_actions(momentum_summary):
 def prepare_weekly_report_data():
     """주간 HTML 템플릿에 필요한 데이터를 로드하고 가공하는 함수"""
     # ... (기존 데이터 로딩 및 Section 1-4, 5, 6 처리 로직 유지) ...
+    def find_latest_cumulative_ratios():
+        # 누적본인 daily_article_ratios.csv의 가장 최신 버전을 찾습니다.
+        archive_paths = sorted(glob.glob(os.path.join(DAILY_ARCHIVE_DIR, "*", "*", "export", "daily_article_ratios.csv")))
+        
+        selected_path = None # 1. 선택된 경로를 저장할 변수
+
+        if archive_paths:
+            selected_path = archive_paths[-1] # 2. 아카이브에서 최신 파일 선택
+        else:
+            # 아카이브에 없으면 루트 export 폴더 확인
+            root_path = os.path.join(EXPORT_DIR, "daily_article_ratios.csv")
+            if os.path.exists(root_path):
+                selected_path = root_path # 3. 루트 폴더 파일 선택
+        
+        # --- ▼▼▼ 4. 디버그 코드 추가 ▼▼▼ ---
+        if selected_path:
+            print(f"DEBUG [find_latest_cumulative_ratios]: 'daily_article_ratios.csv' 파일을 다음 경로에서 읽어옵니다:\n{selected_path}")
+        else:
+            print("DEBUG [find_latest_cumulative_ratios]: 'daily_article_ratios.csv' 파일을 찾지 못했습니다. (경로 확인 필요)")
+        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+        return selected_path # 5. 최종 선택된 경로 반환
+
     print("[INFO] Loading and preparing data for Weekly HTML report...")
     data = {}
     end_dt = now_kst(); start_dt = end_dt - timedelta(days=6)
@@ -296,15 +333,65 @@ def prepare_weekly_report_data():
     }
     llm_summary_markdown = call_gemini_for_weekly_summary(summary_context)
     data['executive_summary'] = llm_summary_markdown
-    data['total_articles'] = len(weekly_meta); data['article_change_info'] = "..."
+    
+    data['total_articles'] = len(weekly_meta) # 이번 주 총 기사량 (메타 기준)
+    
+    # --- ▼▼▼ 3. article_change_info 계산 로직 (수정) ▼▼▼ ---
+    article_change_info_str = "전주 대비 기사량 데이터 부족."
+    latest_ratios_path = find_latest_cumulative_ratios()
+    all_ratios_df = safe_read_csv(latest_ratios_path)
+    
+    if all_ratios_df is not None and not all_ratios_df.empty:
+        all_ratios_df['date'] = pd.to_datetime(all_ratios_df['date'])
+        all_ratios_df = all_ratios_df.sort_values('date')
+        
+        # (D-1 기준) 최근 14일 데이터 확보
+        recent_14_days = all_ratios_df.tail(14)
+        if len(recent_14_days) >= 14:
+            current_week_df = recent_14_days.tail(7)
+            previous_week_df = recent_14_days.head(7)
+            
+            # 'meta_articles' 컬럼 (총 기사량) 합계
+            current_week_count = current_week_df['meta_articles'].sum()
+            previous_week_count = previous_week_df['meta_articles'].sum()
+            
+            change_pct = 0
+            if previous_week_count > 0:
+                change_pct = ((current_week_count - previous_week_count) / previous_week_count) * 100
+            
+            # 'signal_ratio' (관심 기사 비중) 평균
+            avg_signal_ratio = current_week_df['signal_ratio'].mean()
+            
+            article_change_info_str = f"전주 대비 {change_pct:+.0f}% ({current_week_count:,.0f}건). 금주 관심 기사 비중 평균 {avg_signal_ratio:.1%}."
+        else:
+            article_change_info_str = "지난 2주간의 누적 데이터가 부족합니다."
+    
+    data['article_change_info'] = article_change_info_str
     data['top_keywords_count'] = len(keywords_data.get('keywords', [])); data['top_keywords_preview'] = ", ".join(top_keywords_list) + " 등" if top_keywords_list else "..."
     unique_events = events_df.drop_duplicates(subset=['title']) if not events_df.empty else pd.DataFrame()
     data['total_events'] = len(unique_events)
     event_type_counts = unique_events['types'].str.split(',').explode().str.strip().value_counts() if not unique_events.empty else pd.Series()
     data['event_type_summary'] = ", ".join([f"{idx}: {val}건" for idx, val in event_type_counts.items()]) if not event_type_counts.empty else "..."
-    # ... (Action Items 추출 로직) ...
-    recommended_actions_list = [] # Placeholder 수정 필요
+
+    # --- ▼▼▼ LLM 요약에서 Action Items 파싱 (수정) ▼▼▼ ---
+    recommended_actions_list = []
+    try:
+        # llm_summary_markdown 변수는 약 701줄에서 이미 생성되었음
+        action_items_match = re.search(r"#### 추천 Action Items\s*(.*)", llm_summary_markdown, re.DOTALL)
+        if action_items_match:
+            action_items_text = action_items_match.group(1).strip()
+            # Markdown 불릿(-)으로 시작하는 항목 추출
+            actions = re.findall(r"-\s+(.*)", action_items_text)
+            if actions:
+                recommended_actions_list = [action.strip() for action in actions]
+    except Exception as e:
+        print(f"[WARN] Failed to parse action items from LLM summary: {e}")
+
+    if not recommended_actions_list: # 파싱 실패 시 대체 텍스트
+         recommended_actions_list = ["AI 요약에서 액션 아이템을 추출하지 못했습니다."]
+
     data['recommended_actions'] = recommended_actions_list
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
     # 4. 시장 테마 데이터 (기존 처리)
     market_themes_list = []
@@ -383,48 +470,53 @@ def prepare_weekly_report_data():
     data['competitor_actions'] = []
     # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
-    # --- ▼▼▼ 6. 미래 신호 (Weak Signals) 데이터 (Placeholder 채우기) ▼▼▼ ---
+    # --- ▼▼▼ 6. 미래 신호 (Weak Signals) 데이터 (수정) ▼▼▼ ---
     weak_signals_list = []
     if not weak_signals_df.empty:
-        top_weak = weak_signals_df.sort_values(by="z_like", ascending=False).drop_duplicates(subset=['term']).head(5)
-        weak_signals_for_llm = top_weak[['term', 'z_like', 'total']].to_dict('records')
-        llm_insights_map = call_gemini_for_weekly_insight(weak_signals_for_llm)
+        # 상위 3개 선정 (요청하신 대로 3개로 수정)
+        top_weak = weak_signals_df.sort_values(by="z_like", ascending=False).drop_duplicates(subset=['term']).head(3)
 
-        print(f"[INFO] Processing {len(top_weak)} weak signals...")
-        for index, row in top_weak.iterrows():
-            term = row.get('term')
-            if not term: continue
-            llm_analysis = llm_insights_map.get(term, {})
-            # ... (description, implication, next_step 가져오기) ...
-            description = llm_analysis.get('description', "...")
-            implication = llm_analysis.get('implication', "...")
-            next_step = llm_analysis.get('next_step', "...")
-            z_like = row.get('z_like', 0.0)
-            total_mentions = row.get('total', 0) # total 값 가져오기
-            cur_mentions = row.get('cur', 0) # cur 값 가져오기 (주간 빈도 계산용)
+        if not top_weak.empty:
+            weak_signals_for_llm = top_weak[['term', 'z_like', 'total']].to_dict('records')
+            # LLM 호출 (이제 dict를 반환)
+            llm_insights_map = call_gemini_for_weekly_insight(weak_signals_for_llm)
 
-            # ... (배지 로직) ...
-            type_text = "Emerging"; type_badge_class="badge-emerging"
-            confidence_text = "Low Freq"; confidence_badge_class="badge-confidence"
-            if total_mentions > 20: confidence_text = "Medium Freq"
-            elif total_mentions > 50: confidence_text = "High Freq"
+            print(f"[INFO] Processing {len(top_weak)} weak signals...")
+            for index, row in top_weak.iterrows():
+                term = row.get('term')
+                if not term: continue
 
+                # LLM 결과(딕셔너리)에서 상세 내용 추출
+                llm_analysis = llm_insights_map.get(term, {})
+                description = llm_analysis.get('description', "AI 해설 생성 실패.")
+                implication = llm_analysis.get('implication', "AI 잠재 영향 분석 실패.")
+                next_step = llm_analysis.get('next_step', "AI 검증 액션 생성 실패.")
 
-            weak_signals_list.append({
-                "term": term,
-                "icon": "💡",
-                "type_badge_class": type_badge_class,
-                "type_text": type_text,
-                "confidence_badge_class": confidence_badge_class,
-                "confidence_text": confidence_text,
-                "description": description,
-                "implication": implication,
-                # "frequency": f"주 {total_mentions}회", # total 을 사용하므로 주간 빈도는 cur 로 변경
-                "frequency": f"최근 {cur_mentions}회",
-                "z_like_score": f"{z_like:.1f}σ",
-                "total_mentions": total_mentions, # 누적 언급량 추가
-                "next_step": next_step
-            })
+                z_like = row.get('z_like', 0.0)
+                total_mentions = row.get('total', 0) 
+                cur_mentions = row.get('cur', 0)
+
+                # 배지 로직
+                type_text = "Emerging"; type_badge_class="badge-emerging"
+                confidence_text = "Low Freq"; confidence_badge_class="badge-confidence"
+                if total_mentions > 50: confidence_text = "High Freq" # 기준값 상향
+                elif total_mentions > 20: confidence_text = "Medium Freq"
+
+                weak_signals_list.append({
+                    "term": term,
+                    "icon": "💡",
+                    "type_badge_class": type_badge_class,
+                    "type_text": type_text,
+                    "confidence_badge_class": confidence_badge_class,
+                    "confidence_text": confidence_text,
+                    "description": description, # <-- 채워진 값
+                    "implication": implication, # <-- 채워진 값
+                    "frequency": f"최근 {cur_mentions}회",
+                    "z_like_score": f"{z_like:.1f}σ",
+                    "total_mentions": total_mentions,
+                    "next_step": next_step # <-- 채워진 값
+                })
+
     data['weak_signals'] = weak_signals_list
     # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
