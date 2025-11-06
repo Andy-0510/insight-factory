@@ -16,6 +16,7 @@ from collections import defaultdict, Counter
 
 import pandas as pd
 import numpy as np
+import unicodedata # <-- 이 줄을 추가하세요
 
 from src.config import load_config, llm_config
 import networkx as nx
@@ -56,14 +57,7 @@ RELATIONSHIP_RULES = _load_relationship_rules()
 COMPETITIVE_KEYWORDS = [k.lower() for k in ["경쟁", "추격", "점유율", "앞서", "뒤처져", "시장 1위", "소송", "분쟁", "입찰", "견제", "제치고", "따돌리고", "맞서"]]
 COOPERATIVE_KEYWORDS = [k.lower() for k in ["협력", "파트너십", "공급", "mou", "제휴", "협약", "공동 개발", "agreement", "contract", "납품", "수주", "공동 투자", "공동투자", "컨소시엄", "체결", "구매", "채택"]]
 
-# ====== ORG 토큰 필터 ======
-ORG_BAD_PATTERNS = [
-    r"^\d{1,4}(년|월|분기|일)$",
-    r"^\d+(hz|w|mah|nm|mm|cm|kg|g|인치|형|세대|위|종|개국|명|가지)$",
-    r"^\d+-\w+-\d+",
-    r"^\d{1,3}(천|만|억|조)?(원|달러|위안|엔)$",
-    r"^\d+$",
-]
+
 
 # ====== 유틸 ======
 def today_utc_iso() -> str:
@@ -75,6 +69,23 @@ def _load_lines(p: str) -> set:
             return {x.strip() for x in f if x.strip()}
     except Exception:
         return set()
+    
+# --- ▼▼▼ [신규] norm_tok 함수 정의 추가 ▼▼▼ ---
+def norm_tok(s):
+    s = unicodedata.normalize("NFKC", s or "")
+    s = s.lower().strip()
+    s = re.sub(r"\s+", " ", s)
+    return s
+# --- ▲▲▲ 추가 완료 ▲▲▲ ---
+
+# ====== ORG 토큰 필터 ======
+ORG_BAD_PATTERNS = [
+    r"^\d{1,4}(년|월|분기|일)$",
+    r"^\d+(hz|w|mah|nm|mm|cm|kg|g|인치|형|세대|위|종|개국|명|가지)$",
+    r"^\d+-\w+-\d+",
+    r"^\d{1,3}(천|만|억|조)?(원|달러|위안|엔)$",
+    r"^\d+$",
+]
 
 # ====== ORG 정규화/검증 ======
 def norm_org_token(t: str) -> str:
@@ -294,7 +305,8 @@ def classify_relationship(context_texts: List[str]) -> str:
     return "neutral"
 
 # ===== Optimized co-occurrence builder (config-driven) =====
-def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[str, str, int, str]], List[str]]:
+# ===== Optimized co-occurrence builder (config-driven) =====
+def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[str, str, int, str, str]], List[str]]: # 반환 타입에 str 추가
     # 0) config + dictionaries
     net_cfg = CFG.get("network", {})
     whitelist_only = bool(net_cfg.get("whitelist_only", True))
@@ -307,7 +319,10 @@ def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[st
     brand_to_company = load_json("data/dictionaries/brand_to_company.json", {})
     topic_like_entities = _load_lines("data/dictionaries/topic_like_entities.txt")
     ent_org = _load_lines("data/dictionaries/entities_org.txt")
-    whitelist = {alias_map.get(w.lower(), w) for w in ent_org} - set(topic_like_entities)
+    
+    # [수정] whitelist를 소문자로 정규화
+    whitelist_base = {w.lower() for w in ent_org} - {t.lower() for t in topic_like_entities}
+    whitelist = {norm_tok(alias_map.get(w, w)) for w in whitelist_base}
     org_stop_words = set()
 
     pair_counter: Counter = Counter()
@@ -326,26 +341,26 @@ def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[st
             if not any(h in content_low for h in domain_hints):
                 continue
 
-        # 2) ORG 추출: spaCy 우선, 필요시 정규식 폴백
+        # 2) ORG 추출 (소문자로 정규화됨)
         if use_regex_fallback:
             orgs_raw = extract_orgs(text, alias_map, whitelist, org_stop_words)
         else:
-            orgs_raw = extract_orgs_with_spacy(text)
-            orgs_raw = [alias_map.get(o.lower(), o.lower()) for o in orgs_raw]
+            orgs_raw_spacy = extract_orgs_with_spacy(text)
+            orgs_raw = [alias_map.get(o.lower(), o.lower()) for o in orgs_raw_spacy]
             orgs_raw = [norm_org_token(o) for o in orgs_raw if o]
 
         # 3) 화이트리스트 제한
         if whitelist_only:
             orgs_raw = [o for o in orgs_raw if o in whitelist]
 
-        # 4) 브랜드→회사 표준화
+        # 4) 브랜드→회사 표준화 (소문자 유지)
         orgs_norm = sorted(set(brand_to_company.get(o, o) for o in orgs_raw if o))
         if len(orgs_norm) == 0:
             continue
 
         # 5) 동시출현 계산
         if cooccur_level == "sentence":
-            sentences = re.split(r"(?<=[\.!?])[ \t\n\r]+", text)
+            sentences = re.split(r"(?<=[.!?])[ \t\n\r]+", text)
             for sent in sentences:
                 s_low = sent.lower()
                 s_orgs = [o for o in orgs_norm if o.lower() in s_low]
@@ -379,21 +394,26 @@ def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[st
     for (a, b), w in pair_counter.items():
         if w < edge_min_weight:
             continue
-
-        # --- ▼▼▼ [신규 추가] 규칙 기반 관계 분류 (Override) ▼▼▼ ---
-        # (a, b는 이미 build_cooccurrence_edges 함수 내부에서 소문자로 정규화됨)
+        
+        # --- ▼▼▼ [수정] 규칙 기반 관계 분류 (Override) ▼▼▼ ---
         key_a = a
         key_b = b
         rule_key = f"{key_a}|{key_b}" if key_a < key_b else f"{key_b}|{key_a}"
 
         if rule_key in RELATIONSHIP_RULES:
-            rel = RELATIONSHIP_RULES[rule_key] # 1. 규칙 파일에서 관계 (예: "partnership")
+            rel = RELATIONSHIP_RULES[rule_key] # 1. 규칙 파일에서 관계
         else:
-            # 2. 규칙이 없으면, 기존 키워드 분석으로 Fallback
-            rel = classify_relationship(pair_ctx[(a, b)])
-        # --- ▲▲▲ 추가 완료 ▲▲▲ ---
+            rel = classify_relationship(pair_ctx[(a, b)]) # 2. 규칙 없으면 텍스트 분석
+        # --- ▲▲▲ 수정 완료 ▲▲▲ ---
 
-        edges.append((a, b, int(w), rel))
+        # --- ▼▼▼ [수정] 근거 문장 1개 추출 ▼▼▼ ---
+        context_snippets = pair_ctx.get((a, b), [""])
+        first_snippet = context_snippets[0].split(" | ")[-1].strip() # 기사 제목 제외
+        key_evidence = first_snippet[:150] + "..." if len(first_snippet) > 150 else first_snippet
+        if not key_evidence: key_evidence = "N/A" # 빈 스니펫 방지
+        # --- ▲▲▲ 수정 완료 ▲▲▲ ---
+
+        edges.append((a, b, int(w), rel, key_evidence)) # 5번째 요소로 evidence 추가
 
     return edges, sorted(nodes)
 
@@ -405,11 +425,17 @@ def compute_company_network(items): # items 인자 추가
     G = nx.Graph()
     for n in nodes:
         G.add_node(n)
-    for a, b, w, rel in edges:
-        G.add_edge(a, b, weight=w, rel_type=rel)
+    
+    # --- ▼▼▼ [수정] evidence 포함하여 엣지 추가 ▼▼▼ ---
+    for a, b, w, rel, evidence in edges:
+       G.add_edge(a, b, weight=w, rel_type=rel, evidence=evidence)
+    # --- ▲▲▲ 수정 완료 ▲▲▲ ---
+
     print(f"[DEBUG] Network created: {G.number_of_nodes()} nodes, {G.number_of_edges()} edges")
     return G
 
+
+# ====== 네트워크 분석 ======
 # ====== 네트워크 분석 ======
 def analyze_network(G: nx.Graph, top_n: int = 10) -> Dict[str, Any]:
     if not G or G.number_of_nodes() == 0:
@@ -424,13 +450,21 @@ def analyze_network(G: nx.Graph, top_n: int = 10) -> Dict[str, Any]:
         }
 
     nodes = [{"org": n, "degree": int(G.degree(n))} for n in G.nodes()]
-    edges = [{"source": u, "target": v, "weight": int(d.get("weight", 1)), "rel_type": d.get("rel_type", "neutral")}
+    
+    # --- ▼▼▼ [수정] 최종 JSON에 evidence 포함 ▼▼▼ ---
+    edges = [{"source": u, "target": v, 
+              "weight": int(d.get("weight", 1)), 
+              "rel_type": d.get("rel_type", "neutral"),
+              "evidence": d.get("evidence", "") # <-- evidence 필드 추가
+             }
              for u, v, d in G.edges(data=True)]
+    # --- ▲▲▲ 수정 완료 ▲▲▲ ---
 
     # 상위 엣지
     top_pairs = sorted(edges, key=lambda x: (x["weight"], x["source"], x["target"]), reverse=True)[:top_n]
 
-    # 중심성
+    # (이하 중심성, 커뮤니티 분석 등은 기존과 동일)
+    # ...
     degc = nx.degree_centrality(G)
     cent = sorted(
         [{"org": n, "degree_centrality": round(float(degc.get(n, 0.0)), 4)} for n in G.nodes()],
@@ -444,8 +478,7 @@ def analyze_network(G: nx.Graph, top_n: int = 10) -> Dict[str, Any]:
         key=lambda x: x["betweenness"],
         reverse=True
     )[:top_n]
-
-    # 커뮤니티
+    
     comms = []
     try:
         gm = community.greedy_modularity_communities(G, weight="weight")
