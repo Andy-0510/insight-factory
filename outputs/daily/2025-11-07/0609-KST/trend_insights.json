@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "무빙스타일",
+        "삼성전자",
+        "벤츠",
+        "배터리",
+        "차량용"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ai",
+        "gpu",
+        "엔비디아",
+        "추가",
+        "비스포크"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "인프라",
+        "amd",
+        "레노버",
+        "차세대"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "반도체",
+        "미국",
+        "디스플레이",
+        "중이다",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "tv",
+        "oled",
+        "중국",
+        "매출",
+        "프리미엄"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "혁신상을",
+        "ces",
+        "혁신상",
+        "lg",
+        "tv"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "애플",
+        "맥북",
+        "노트북",
+        "저가형",
+        "출시"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "핵심",
+        "자동차",
+        "배터리",
+        "개발"
+      ]
+    }
+  ],
+  "evidence": {}
+}
