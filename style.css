@@ -178,7 +178,7 @@ footer{ margin-top:12px; text-align:center; color:var(--muted); font-size:12px; 
 /* 4. 챗봇 창 제목 */
 .chatbot-header {
     background: linear-gradient(120deg, #84fab0 0%, #8fd3f4 100%);; /* 헤더 배경 */
-    color: white;
+    color: rgb(64, 64, 64);
     padding: 12px 15px;
     font-weight: 600;
     border-top-left-radius: 8px;
