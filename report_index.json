@@ -354,6 +354,17 @@
     ]
   },
   "weekly": {
+    "2025-11-07": [
+      {
+        "time": "0749-KST",
+        "reports": [
+          {
+            "name": "weekly_report.html",
+            "path": "outputs/weekly/2025-11-07/0749-KST/weekly_report.html"
+          }
+        ]
+      }
+    ],
     "2025-11-05": [
       {
         "time": "1500-KST",
