@@ -1,0 +1,103 @@
+{
+  "results": [
+    {
+      "technology": "모니터",
+      "metrics": {
+        "frequency": 378,
+        "sentiment": 0.5114436984062195,
+        "events": {
+          "LAUNCH": 7,
+          "CERT": 2,
+          "INVEST": 2,
+          "PARTNERSHIP": 1
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "비교적 높은 뉴스 언급 빈도와 7회의 출시 이벤트는 시장이 성장기에 있음을 시사합니다."
+      }
+    },
+    {
+      "technology": "디스플레이",
+      "metrics": {
+        "frequency": 617,
+        "sentiment": 0.5109399386814663,
+        "events": {
+          "LAUNCH": 11,
+          "INVEST": 7,
+          "CERT": 4,
+          "ORDER": 3,
+          "PARTNERSHIP": 2,
+          "REGUL": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "뉴스 언급 빈도가 높고, 투자 및 출시 이벤트가 꾸준히 발생하며, 시장 감성 점수가 중간 수준으로 성장기에 해당한다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "노트북",
+      "metrics": {
+        "frequency": 275,
+        "sentiment": 0.5028495490550995,
+        "events": {
+          "INVEST": 3,
+          "CERT": 3,
+          "LAUNCH": 2,
+          "REGUL": 1,
+          "ORDER": 1
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "뉴스 언급 빈도가 높고 시장 감성 점수가 중간 수준이며 투자, 출시, 수주 이벤트가 비교적 적게 발생하여 성숙기에 접어든 시장으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "스마트폰",
+      "metrics": {
+        "frequency": 227,
+        "sentiment": 0.5149679183959961,
+        "events": {
+          "LAUNCH": 2,
+          "INVEST": 1
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "뉴스 언급 빈도가 높고 시장 감성 점수가 중간 수준이며 투자 및 출시 이벤트가 적어 성숙기에 접어든 것으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "양산",
+      "metrics": {
+        "frequency": 16,
+        "sentiment": 0.5058051347732544,
+        "events": {}
+      },
+      "analysis": {
+        "stage": "Emerging",
+        "reason": "뉴스 언급 빈도가 낮고 투자, 출시, 수주 이벤트가 전혀 없어 시장 관심과 활동이 미미한 초기 단계로 판단됩니다."
+      }
+    },
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 1071,
+        "sentiment": 0.5032804608345032,
+        "events": {
+          "LAUNCH": 14,
+          "INVEST": 6,
+          "PARTNERSHIP": 2,
+          "CERT": 1,
+          "REGUL": 1
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "뉴스 언급 빈도가 높고 시장 감성 점수가 중간이며, 투자 및 출시 이벤트가 꾸준히 발생하지만 수주 이벤트가 없는 것으로 보아 성숙기에 접어든 기술로 판단됩니다."
+      }
+    }
+  ]
+}
