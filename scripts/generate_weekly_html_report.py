@@ -9,6 +9,13 @@ import re
 from collections import defaultdict, Counter # Counter 추가
 import time # time 모듈 추가
 import glob # <-- 1. glob 임포트 추가
+try:
+    import markdown
+    MARKDOWN_AVAILABLE = True
+except ImportError:
+    MARKDOWN_AVAILABLE = False
+    print("[WARN] markdown 라이브러리가 없습니다. LLM 응답이 HTML로 변환되지 않습니다.")
+# --- ▲▲▲ 2줄(try~except) 추가 ▲▲▲ ---
 
 # --- 설정 (경로는 실제 프로젝트 구조에 맞게 조정 필요) ---
 # ... (기존 설정 유지) ...
@@ -94,29 +101,43 @@ def _call_gemini_safe(prompt: str, default_resp: str = "AI 분석 실패") -> st
         # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
         return f"AI 분석 실패 ({e.__class__.__name__})"
 
+# --- ▼▼▼ 헬퍼 함수 추가 ▼▼▼ ---
+def convert_md_to_html(md_text):
+    """LLM이 반환한 Markdown 텍스트를 HTML로 변환합니다."""
+    if not MARKDOWN_AVAILABLE or not md_text:
+        return md_text
+    try:
+        # 'extra' 확장 기능은 테이블, 각주 등 다양한 마크다운을 지원합니다.
+        html = markdown.markdown(md_text, extensions=['extra'])
+        return html
+    except Exception as e:
+        print(f"[WARN] Markdown 변환 실패: {e}")
+        return md_text # 변환 실패 시 원본 텍스트 반환
+# --- ▲▲▲ 헬퍼 함수 추가 완료 ▲▲▲ ---
+
 def call_gemini_for_weekly_summary(context):
     """LLM을 호출하여 주간 경영 요약을 생성합니다."""
     prompt = f"""
-    당신은 디스플레이 산업 전문 수석 비즈니스 분석가입니다.
-    아래는 지난 한 주간의 시장 데이터 요약입니다. 이 데이터를 종합하여 경영진 및 팀 리더를 위한 '주간 인텔리전스 요약'을 작성해주세요.
+    당신은 디스플레이 산업 전문 비즈니스 애널리스트 입니다.
+    아래는 지난 한 주간의 시장 데이터 요약입니다. 이 데이터를 종합하여 디스플레이 제조 기업 내부의 팀 리더를 위한 '주간 인텔리전스 요약'을 작성해주세요.
+    단순 데이터의 나열, 일반적이고 표면적인 이야기는 지양하며, 깊이있고 의미있는 통찰을 차분한 톤으로 풀어주세요.
     ### 주간 데이터 요약:
     {json.dumps(context, ensure_ascii=False, indent=2)}
 
     ### 작성 가이드 (Markdown 형식):
-    1. **핵심 맥락**: 데이터를 관통하는 가장 중요한 시장의 흐름 1~2가지를 설명해주세요.
-    2. **전략적 인사이트**: 이 흐름이 우리 비즈니스에 주는 기회 또는 위협 요소를 분석해주세요.
-    3. **추천 Action Items**: 다음 주에 팀이 우선적으로 실행해야 할 구체적인 액션 아이템 2가지를 제안해주세요.
+    1. **[핵심 맥락]**: 데이터를 관통하는 가장 중요한 시장의 흐름 1~2가지를 설명해주세요.
+    2. **[전략적 인사이트]**: 이 흐름이 우리 비즈니스에 주는 기회 또는 위협 요소를 분석해주세요.
+    3. **[추천 Action Items]**: 다음 주에 팀이 우선적으로 실행해야 할 구체적인 액션 아이템 2가지를 제안해주세요.
     4. 각 항목을 명확하게 구분하고, 전문가의 시각에서 간결하고 명확한 톤으로 작성해주세요.
     ### 출력 형식 (Markdown):
-    #### 핵심 맥락
+    #### [핵심 맥락]
     - (분석 내용)
 
-    #### 전략적 인사이트
+    #### [전략적 인사이트]
     - (분석 내용)
 
-    #### 추천 Action Items
-    - (실행 제안 1)
-    - (실행 제안 2)
+    #### [추천 Action Items]
+    (설명 없이, 바로 Markdown 불릿(-)으로 2가지 제안을 작성해주세요.)
     """
     return _call_gemini_safe(prompt, default_resp="주간 AI 요약 생성 실패")
 # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
@@ -143,7 +164,7 @@ def call_gemini_for_competitor_insight(competitor_name, mentions, momentum):
     - 주간 총 언급량: {mentions}
     - 주간 평균 모멘텀 (z-like): {momentum:.2f}
 
-    이 데이터를 바탕으로 '{competitor_name}'의 **이번 주 핵심 활동**과 **주목해야 할 전략적 움직임**을 **한 문장**으로 간결하게 요약해주세요.
+    이 데이터와 기업에 대한 학습 정보를 바탕으로 '{competitor_name}'의 **이번 주 핵심 활동**과 **주목해야 할 전략적 움직임**을 **한 문장**으로 이해하기 쉽고 간결하게 요약해주세요.
     ### 분석 요약 (한 문장):
     """
     # _call_gemini_safe 함수는 이미 정의되어 있다고 가정
@@ -176,6 +197,7 @@ def call_gemini_for_weekly_insight(weak_signals: list) -> dict:
 
         prompt = f"""
         당신은 미래 기술 트렌드 분석가입니다. 아래는 지난 한 주간 포착된 초기 신호(Weak Signals) 목록입니다.
+        제공하는 정보와 함께, 당신이 지금까지 학습한 최신 정보를 배경으로 활용할 수 있습니다. 다소 일반적인 이야기는 지양해주세요.
 
         ### 주간 초기 신호 목록 (상위):
         {json.dumps(signals_context, ensure_ascii=False, indent=2)}
@@ -228,9 +250,9 @@ def call_gemini_for_momentum_recommendation(term, z_like_score, change_display):
     - 주간 평균 모멘텀 (z-like): {z_like_score:.2f}
     - 주간 변화량: {change_display}
 
-    **권고사항은 다음 주에 실행할 구체적인 행동 1가지를 명사형 어구로 간결하게, **절대로 다른 설명 없이** 제안**해주세요. (예: '경쟁사 가격 정책 변화 심층 분석', '신규 라인업 적용 가능성 검토 착수', '관련 기술 특허 동향 재확인') **Markdown(`**` 등) 서식은 사용하지 마세요.**
-
-    ### 권고사항 (핵심 액션 1가지, 명사형 어구, 설명/서식 절대 금지):
+    **권고사항은 다음 주에 실행할 구체적인 행동 1가지를 명사형 어구로 간결하게, **절대로 다른 설명 없이** 제안**해주세요. (예: '경쟁사 가격 정책 변화 심층 분석', '신규 라인업 적용 가능성 검토 착수', '관련 기술 특허 동향 재확인')
+    
+    ### 권고사항 (Markdown 서식(`**`, `-` 등) 절대 사용 금지. 핵심 액션 1가지 단어구 또는 명사형 어구):
     """
     recommendation_raw = _call_gemini_safe(prompt, default_resp=f"'{term}' 관련 AI 권고 생성 실패.")
 
@@ -332,7 +354,7 @@ def prepare_weekly_report_data():
         "주간 활동량 Top 경쟁사": top_competitors_list, "주목할 만한 약한 신호": top_weak_signals_list
     }
     llm_summary_markdown = call_gemini_for_weekly_summary(summary_context)
-    data['executive_summary'] = llm_summary_markdown
+    data['executive_summary'] = convert_md_to_html(llm_summary_markdown) # <-- HTML로 변환
     
     data['total_articles'] = len(weekly_meta) # 이번 주 총 기사량 (메타 기준)
     
@@ -448,7 +470,8 @@ def prepare_weekly_report_data():
             if momentum > 0.3: trend_key = "up"
             elif momentum < -0.3: trend_key = "down"
 
-            llm_insight = call_gemini_for_competitor_insight(competitor, mentions, momentum)
+            llm_insight_raw = call_gemini_for_competitor_insight(competitor, mentions, momentum)
+            llm_insight_html = convert_md_to_html(llm_insight_raw) # <-- HTML로 변환
 
             competitor_analysis_list.append({
                 "name": competitor,
@@ -461,7 +484,7 @@ def prepare_weekly_report_data():
                 "peak_momentum_score": f"{peak_momentum:+.2f}", # 주간 최대 모멘텀
                 "total_30d_mentions": total_30d_mentions, # 30일 누적 언급량
                 # --- ▲▲▲▲▲▲▲▲▲▲▲ ---
-                "insight": llm_insight
+                "insight": llm_insight_html # <-- 변환된 HTML 저장
             })
 
         competitor_analysis_list.sort(key=lambda x: x.get('mentions', 0), reverse=True)
@@ -488,9 +511,13 @@ def prepare_weekly_report_data():
 
                 # LLM 결과(딕셔너리)에서 상세 내용 추출
                 llm_analysis = llm_insights_map.get(term, {})
-                description = llm_analysis.get('description', "AI 해설 생성 실패.")
-                implication = llm_analysis.get('implication', "AI 잠재 영향 분석 실패.")
-                next_step = llm_analysis.get('next_step', "AI 검증 액션 생성 실패.")
+                description_raw = llm_analysis.get('description', "AI 해설 생성 실패.")
+                implication_raw = llm_analysis.get('implication', "AI 잠재 영향 분석 실패.")
+                next_step_raw = llm_analysis.get('next_step', "AI 검증 액션 생성 실패.")
+
+                description = convert_md_to_html(description_raw) # <-- HTML로 변환
+                implication = convert_md_to_html(implication_raw) # <-- HTML로 변환
+                next_step = convert_md_to_html(next_step_raw) # <-- HTML로 변환
 
                 z_like = row.get('z_like', 0.0)
                 total_mentions = row.get('total', 0) 
