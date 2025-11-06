@@ -8,7 +8,7 @@
   "MicroLED_Topic": [
     "microled", "MicroLED", "마이크로LED", "마이크로 엘이디", "마이크로 엘 이 디", "미니LED", "미니 엘이디",
     "InGaN", "Micosized LED", "대형 디스플레이", "사이니지", "The Wall", "the wall", "마이크로 전사", "Mass Transfer",
-    "풀컬러 구현", "픽셀 피치", "삼성 MicroLED", "LG 마그네트", "플레이스테이션", "애플", "애플 TV", "소니", "파나소닉"
+    "풀컬러 구현", "픽셀 피치", "삼성 MicroLED", "LG 마그네트", "플레이스테이션", "소니", "파나소닉"
   ],
   "Automotive_Display_Topic": [
     "차량용 디스플레이", "자동차 HMI", "HUD", "헤드업 디스플레이", "계기판", "CID", "중앙정보디스플레이",
@@ -18,16 +18,16 @@
   "Foldable_Display_Topic": [
     "폴더블 디스플레이", "플렉서블 패널", "롤러블 TV", "UTG", "울트라씬 글라스", "힌지 기술",
     "갤럭시 Z 폴드", "갤럭시Z폴드", "OPPO Find N", "화웨이 메이트 X", "접이식 구조", "내구성 테스트", "플렉서블 배터리",
-    "삼성전자", "Samsung Electronics", "OPPO", "화웨이", "Huawei", "샤오미", "Xiaomi"
+    "삼성전자", "Samsung Electronics", "OPPO", "화웨이", "Huawei", "샤오미", "Xiaomi", "애플"
   ],
   "XR_Device_Topic": [
     "AR", "VR", "XR", "증강현실", "가상현실", "혼합현실", "메타버스", "비전프로", "Vision Pro", "메타 퀘스트",
     "PICO", "홀로렌즈", "광학 모듈", "파이버 스캔", "foveated rendering", "eye tracking", "디스플레이 해상도", "Pancake 렌즈",
-    "메타", "Meta", "애플", "Apple", "소니", "Sony", "HTC", "파이브이알"
+    "메타", "Meta", "소니", "Sony", "HTC", "파이브이알"
   ],
   "Apple_Display_Topic": [
     "애플 디스플레이", "프로모션 디스플레이", "슈퍼 레티나 XDR", "LTPO", "ltpo", "120Hz 주사율",
-    "아이폰 디스플레이", "아이패드 프로", "비전 프로", "Vision Pro", "맥북 프로 리티나", "애플 워치 울트라", "OLED 아이폰", "MicroLED 애플 TV",
+    "아이폰 디스플레이", "아이패드 프로", "비전 프로", "Vision Pro", "맥북 프로 레티나", "애플 워치 울트라", "OLED 아이폰", "MicroLED 애플 TV",
     "폭스콘", "Foxconn", "TSMC", "삼성전자", "LG디스플레이"
   ],
   "IT_OLED_Topic": [

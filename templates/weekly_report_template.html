@@ -135,7 +135,7 @@
             </div>
 
             <div class="executive-summary">
-                <div class="summary-title">🎯 이번 주 핵심 인사이트 (AI Summary)</div>
+                <div class="summary-title">🎯 이번 주 핵심 인사이트</div>
                 <div class="summary-text">{{ executive_summary | safe }}</div>
             </div>
 
@@ -161,9 +161,9 @@
                     <div class="insight-description">{{ event_type_summary }}</div>
                 </div>
             </div>
-
+            <!--
             <div class="action-section">
-                <div class="action-title">권고 액션 (AI Suggestion)</div>
+                <div class="action-title">권고 액션</div>
                 <div class="action-items">
                     {% for action in recommended_actions %}
                     <div class="action-item">
@@ -177,6 +177,7 @@
                     {% endfor %}
                 </div>
             </div>
+            -->
         </div>
 
         <div class="section">
@@ -264,7 +265,7 @@
             </table>
 
             {% if portfolio_actions %}
-            <div class="action-section">
+            <div class="action-section"> <br>
                 <div class="action-title">주요 시그널 추세에 따른 권고</div>
                 <div class="action-items">
                      {% for action in portfolio_actions %}
@@ -315,7 +316,7 @@
                         </div>
                         </div>
                     <div class="competitor-insight">
-                         {{ competitor.insight }} </div>
+                         {{ competitor.insight | safe }} </div>
                 </div>
                 {% else %}
                  <p>주요 경쟁사 활동 데이터가 없습니다.</p>
@@ -357,9 +358,9 @@
                     <div class="signal-content">
                         <div class="signal-main-content">
                             <div class="signal-description">
-                                 {{ signal.description }}
-                                 <br><br>
-                                 {{ signal.implication }}
+                               {{ signal.description | safe }}
+                                <br><br>
+                             {{ signal.implication | safe }}
                             </div>
                                 <br>
                              {% if signal.next_step %}
@@ -367,7 +368,7 @@
                                 <div class="action-items">
                                     <div class="action-item">
                                         <div class="action-label">Next Step</div>
-                                        <div class="action-text">{{ signal.next_step }}</div>
+                                        <div class="action-text">{{ signal.next_step | safe }}</div>
                                     </div>
                                 </div>
                             </div>

@@ -48,6 +48,20 @@ def dataframe_to_html_table(df, max_rows=50):
     # 테이블 스타일 클래스 추가
     return df.head(max_rows).to_html(index=False, escape=False, border=0, classes=["dataframe-table"])
 
+# --- ▼▼▼ 2. 헬퍼 함수 추가 ▼▼▼ ---
+def convert_md_to_html(md_text):
+    """LLM이 반환한 Markdown 텍스트를 HTML로 변환합니다."""
+    if not md_text:
+        return ""
+    try:
+        # 'extra' 확장 기능은 테이블, 각주 등 다양한 마크다운을 지원합니다.
+        html = markdown.markdown(md_text, extensions=['extra'])
+        return html
+    except Exception as e:
+        print(f"[WARN] Markdown 변환 실패: {e}")
+        return md_text # 변환 실패 시 원본 텍스트 반환
+# --- ▲▲▲ 헬퍼 함수 추가 완료 ▲▲▲ ---
+
 def dataframe_to_html_table(df, max_rows=50, classes="dataframe-table"): # <-- 1. classes 인자 추가 (기본값 설정)
     if df is None or df.empty:
         return "<p>(데이터 없음)</p>"
@@ -131,6 +145,7 @@ def call_gemini_for_monthly_summary(context):
     """
     return _call_gemini_safe(prompt, default_resp="월간 AI 요약 생성 실패.")
 
+''' ### 아래와 동일 함수 ###
 def call_gemini_for_positioning_analysis(topics_context):
     """LLM 호출: 토픽 데이터를 기반으로 사분면 분석, 인사이트, 시사점을 생성"""
     prompt = f"""
@@ -223,6 +238,71 @@ def call_gemini_for_positioning_analysis(topics_context):
         print(f"[WARN] Failed to parse positioning LLM response: {e}")
         
     return insights
+'''
+
+def call_gemini_for_positioning_analysis(topics_context):
+    """LLM 호출: 토픽 데이터를 기반으로 사분면 분석, 인사이트, 시사점을 JSON으로 생성"""
+    prompt = f"""
+    당신은 최고 전략 책임자(CSO)입니다. 아래는 이번 달 시장의 핵심 토픽 데이터입니다.
+    ### 핵심 토픽 데이터:
+    {json.dumps(topics_context, ensure_ascii=False, indent=2)}
+
+    ### 분석 요청:
+    아래 10가지 항목에 대해 **반드시 JSON 형식으로만** 답변해주세요. (다른 설명 금지)
+    1.  `insight` (Markdown): 데이터를 종합한 시장의 거시적 흐름 (1~2 문단)
+    2.  `q1_topics` (String): '고관심/고긍정' 영역의 **핵심 토픽 1~2개**.
+    3.  `q1_strategy` (String): 해당 영역의 권고 전략 (1문장).
+    4.  `q2_topics` (String): '고관심/저긍정' 영역의 **핵심 토픽 1~2개**.
+    5.  `q2_strategy` (String): 해당 영역의 권고 전략 (1문장).
+    6.  `q3_topics` (String): '저관심/고긍정' 영역의 **핵심 토픽 1~2개**.
+    7.  `q3_strategy` (String): 해당 영역의 권고 전략 (1문장).
+    8.  `q4_topics` (String): '저관심/저긍정' 영역의 **핵심 토픽 1~2개**.
+    9.  `q4_strategy` (String): 해당 영역의 권고 전략 (1문장).
+    10. `implications` (List[String]): 전략적 시사점 2가지 (문자열 리스트)
+
+    ### 출력 형식 (JSON):
+    ```json
+    {{
+      "insight": "#### 전략적 인사이트 (AI)\\n...",
+      "q1_topics": "핵심 토픽 (예: IT OLED)",
+      "q1_strategy": "...",
+      "q2_topics": "...",
+      "q2_strategy": "...",
+      "q3_topics": "...",
+      "q3_strategy": "...",
+      "q4_topics": "...",
+      "q4_strategy": "...",
+      "implications": ["시사점 1", "시사점 2"]
+    }}
+    ```
+    """
+    raw_response = _call_gemini_safe(prompt, default_resp="{}")
+
+    # LLM 응답에서 JSON만 파싱
+    try:
+        json_match = re.search(r'\{.*\}', raw_response, re.DOTALL)
+        if json_match:
+            parsed_json = json.loads(json_match.group(0))
+        else:
+            parsed_json = json.loads(raw_response)
+    except json.JSONDecodeError:
+        parsed_json = {}
+
+    # 템플릿에 필요한 기본값 설정
+    insights = {
+        'positioning_insight': convert_md_to_html(parsed_json.get('insight', "AI 분석 실패")),
+        'quadrant1_topics': parsed_json.get('q1_topics', "AI 분석 실패"),
+        'quadrant1_strategy': parsed_json.get('q1_strategy', "AI 권고 생성 실패"),
+        'quadrant2_topics': parsed_json.get('q2_topics', "AI 분석 실패"),
+        'quadrant2_strategy': parsed_json.get('q2_strategy', "AI 권고 생성 실패"),
+        'quadrant3_topics': parsed_json.get('q3_topics', "AI 분석 실패"),
+        'quadrant3_strategy': parsed_json.get('q3_strategy', "AI 권고 생성 실패"),
+        'quadrant4_topics': parsed_json.get('q4_topics', "AI 분석 실패"),
+        'quadrant4_strategy': parsed_json.get('q4_strategy', "AI 권고 생성 실패"),
+        'strategic_implications': parsed_json.get('implications', ["AI 시사점 분석 실패"])
+    }
+    return insights
+
 
 def call_gemini_for_tech_recommendation(tech_name, stage, reason):
     """LLM 호출: 개별 기술 성숙도 기반 투자 권고 생성 (간결화)"""
@@ -297,6 +377,7 @@ def call_gemini_for_network_action_item(pair_info):
     # 후처리 (줄바꿈, 마크다운 제거)
     return recommendation_raw.replace("**", "").split('\n')[0].strip()
 
+''' ### 아래와 동일 함수 ### 
 def call_gemini_for_risk_analysis(risk_context):
     """LLM 호출: 리스크 데이터를 기반으로 매트릭스, 즉시 대응, 종합 평가를 생성"""
     prompt = f"""
@@ -398,6 +479,63 @@ def call_gemini_for_risk_analysis(risk_context):
         print(f"[WARN] Failed to parse risk LLM response: {e}")
         
     return insights
+'''
+
+def call_gemini_for_risk_analysis(risk_context):
+    """LLM 호출: 리스크 데이터를 기반으로 매트릭스, 즉시 대응, 종합 평가를 JSON으로 생성"""
+    prompt = f"""
+    당신은 기업 리스크 관리 최고 책임자(CRO)입니다. 아래는 이번 달 탐지된 주요 리스크 목록입니다.
+    ### 주요 리스크 목록:
+    {json.dumps(risk_context, ensure_ascii=False, indent=2)}
+
+    ### 분석 요청:
+    아래 4가지 항목에 대해 **반드시 JSON 형식으로만** 답변해주세요. (다른 설명 금지)
+    1.  `matrix` (Object): 4가지 전략('avoid', 'mitigate', 'transfer', 'accept')별 대상 리스크와 핵심 전략. (예: {{"avoid": {{"targets": "...", "strategy": "..."}}, ...}})
+    2.  `immediate_actions` (List[Object]): 가장 시급한 Top 3 리스크의 액션 아이템. (예: [{{"risk_id": "...", "action": "...", "owner": "...", "due_date": "..."}}, ...])
+    3.  `assessment` (Markdown): 리스크 종합 평가 및 차월 대응 방향 (1~2 문단)
+
+    ### 출력 형식 (JSON):
+    ```json
+    {{
+      "matrix": {{
+        "avoid": {{"targets": "...", "strategy": "..."}},
+        "mitigate": {{"targets": "...", "strategy": "..."}},
+        "transfer": {{"targets": "...", "strategy": "..."}},
+        "accept": {{"targets": "...", "strategy": "..."}}
+      }},
+      "immediate_actions": [
+        {{"risk_id": "Risk ID", "action": "액션 아이템", "owner": "담당조직", "due_date": "YYYY-MM-DD"}}
+      ],
+      "assessment": "#### 리스크 종합 평가 (AI)\\n..."
+    }}
+    ```
+    """
+    raw_response = _call_gemini_safe(prompt, default_resp="{}")
+
+    # LLM 응답에서 JSON만 파싱
+    try:
+        json_match = re.search(r'\{.*\}', raw_response, re.DOTALL)
+        if json_match:
+            parsed_json = json.loads(json_match.group(0))
+        else:
+            parsed_json = json.loads(raw_response)
+    except json.JSONDecodeError:
+        parsed_json = {}
+
+    # 기본값 설정
+    default_matrix = {"targets": "AI 분석 중...", "strategy": "AI 분석 중..."}
+    insights = {
+        'risk_matrix': parsed_json.get('matrix', {
+            "avoid": default_matrix,
+            "mitigate": default_matrix,
+            "transfer": default_matrix,
+            "accept": default_matrix
+        }),
+        'immediate_actions': parsed_json.get('immediate_actions', []),
+        'risk_assessment': convert_md_to_html(parsed_json.get('assessment', "리스크 AI 종합 평가 생성 실패."))
+    }
+    return insights
+
 
 def call_gemini_for_final_recommendation(summary_context):
     """LLM 호출: 모든 섹션의 요약을 바탕으로 최종 종합 전략 권고 생성"""
@@ -470,7 +608,7 @@ def prepare_monthly_report_data():
         # "emerging_tech": next((t['technology'] for t in tech_maturity_data.get("results", []) if t.get("analysis", {}).get("stage") == "Emerging"), "N/A"),
         "top_rising_topic": growth_df.iloc[0]['topic_name'] if not growth_df.empty and 'topic_name' in growth_df.columns else "N/A"
     }
-    data['executive_summary'] = call_gemini_for_monthly_summary(summary_context)
+    data['executive_summary'] = convert_md_to_html(call_gemini_for_monthly_summary(summary_context))
     data['kpi_total_articles'] = len(monthly_meta)
     data['kpi_article_change_mom'] = "+0%"; data['kpi_article_change_class'] = "change-neutral" # Placeholder
     data['kpi_key_topics_count'] = len(topics_data.get("topics", []))
@@ -569,7 +707,13 @@ def prepare_monthly_report_data():
             matrix_summary_for_llm.append(f"- {comp}: {focus_level} Focus, Top Topic: {top_topics_str.split(',')[0]}")
     data['competitor_positioning'] = comp_pos_list
     network_summary_for_llm = [f"- {p['source']} <-> {p['target']} ({p['rel_type']})" for p in company_network_data.get("top_pairs", [])[:3]]
-    data['competition_alerts'] = call_gemini_for_competition_alerts("\n".join(matrix_summary_for_llm), "\n".join(network_summary_for_llm))
+    # 1. LLM 호출 (변수 이름을 alerts_list로 바로 받음)
+    alerts_list = call_gemini_for_competition_alerts("\n".join(matrix_summary_for_llm), "\n".join(network_summary_for_llm))
+    # 2. HTML 변환 로직은 그대로 유지
+    if alerts_list:
+        data['competition_alerts'] = "<ul>" + "".join([f"<li>{convert_md_to_html(item)}</li>" for item in alerts_list]) + "</ul>"
+    else:
+        data['competition_alerts'] = "<p>AI 분석 실패 또는 특이사항 없음.</p>"
     df_centrality = pd.DataFrame(company_network_data.get("centrality", []))
     if not df_centrality.empty:
          data['competitor_strategy_table'] = dataframe_to_html_table(df_centrality[['org', 'degree_centrality']].rename(columns={'org': '기업 (허브)', 'degree_centrality': '연결 중심성'}), max_rows=5, classes="dataframe-table centrality-table")
@@ -577,11 +721,17 @@ def prepare_monthly_report_data():
     top_pairs = company_network_data.get("top_pairs", [])
     pair_actions_list = []
     if top_pairs:
-        print(f"[INFO] Analyzing {len(top_pairs[:5])} top company pairs...")
+        print(f"[INFO] Formatting {len(top_pairs[:5])} top company pairs with evidence...")
         for pair in top_pairs[:5]:
-            pair_info_str = f"기업1: {pair['source']}, 기업2: {pair['target']}, 관계 유형: {pair['rel_type']}, 강도: {pair['weight']}"
-            action_item = call_gemini_for_network_action_item(pair_info_str)
-            pair_actions_list.append({ "관계": f"{pair['source']} ↔ {pair['target']}", "유형": pair['rel_type'], "강도(언급빈도)": pair['weight'], "액션 아이템 (AI)": action_item })
+            # (LLM 호출 삭제)
+            key_evidence = pair.get('evidence', '근거 문장 없음') # 1단계에서 저장한 evidence 가져오기
+
+            pair_actions_list.append({ 
+                "관계": f"{pair['source']} ↔ {pair['target']}", 
+                "유형": pair['rel_type'], 
+                "강도(언급빈도)": pair['weight'], 
+                "주요 연관 근거": key_evidence  # <-- 컬럼명 및 값 변경
+            })
     data['competitor_actions_table'] = dataframe_to_html_table(pd.DataFrame(pair_actions_list), classes="dataframe-table actions-table")
     data['competitors_exec_summary'] = call_gemini_for_section_summary("경쟁사 전략적 의도 분석", matrix_summary_for_llm + network_summary_for_llm)
 

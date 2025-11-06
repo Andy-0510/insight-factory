@@ -258,7 +258,8 @@ def call_gemini_for_risk_commentary(topic_name, sentiment_drop, related_titles):
 
     prompt = f"""
     디스플레이 및 연관 산업의 리스크 분석가로서, '{topic_name}' 토픽의 감성 점수가 오늘 {sentiment_drop:.2f} 만큼 급락했습니다.
-    아래 참고 기사 제목을 바탕으로, **급락 원인과 잠재적 영향을 2~3문장으로 간결하게** 요약 분석해주세요. 절대 데이터가 부족하다거나 혹은 분석이 어렵다는 말은 하지 마세요.
+    아래 참고 기사 제목을 바탕으로, **급락 원인과 잠재적 영향을 2~3문장으로 간결하게** 요약 분석해주세요
+    근거 기반의 추정은 가능하지만, 절대 데이터가 부족하다거나 혹은 분석이 어렵다는 말은 하지 마세요.
 
     ### 관련 기사 제목:
     {titles_str}
@@ -409,7 +410,7 @@ def prepare_report_data():
             # (이전 답변에서 수정한 'next_step_message' 로직...)
             next_step_message = f"'{term}' 관련 상세 기사 및 경쟁사 반응 모니터링" # 1. 기본값
             if not df_events.empty and 'org' in df_events.columns and term in df_events['org'].values:
-                 next_step_message = f"경쟁사 '{term}'의 이벤트가 감지되었습니다. 3번 섹션(경쟁사 활동)에서 상세 내용을 확인하세요."
+                 next_step_message = f"주요 기업 '{term}'의 이벤트가 감지되었습니다. 4번 섹션(주요 기업 EVENTS)에서 상세 내용을 확인하세요."
             else: 
                 found_topic = None
                 for topic_key, keywords in master_topics.items():
@@ -417,7 +418,7 @@ def prepare_report_data():
                          found_topic = topic_key
                          break
                 if found_topic:
-                     next_step_message = f"핵심 토픽 '{found_topic}' 관련 신호입니다. 5번 섹션(리스크)에서 해당 토픽의 감성 변동을 교차 확인하세요."
+                     next_step_message = f"핵심 토픽 '{found_topic}' 관련 신호입니다. 3번 섹션(키워드 감성분석)에서 해당 토픽의 감성 변동을 교차 확인하세요."
 
             hot_signals_list.append({
                 "term": term,
