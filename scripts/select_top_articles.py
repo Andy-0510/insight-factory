@@ -203,7 +203,7 @@ def select_articles():
         scored_articles.sort(key=lambda x: x.get('score', 0), reverse=True)
 
         # 2. 내용 기반(코사인 유사도)으로 중복 제거
-        deduped_articles = deduplicate_by_content(scored_articles, threshold=0.2)
+        deduped_articles = deduplicate_by_content(scored_articles, threshold=0.15)
 
         # 3. 상위 N개 선택
         top_articles = deduped_articles[:TOP_N]
