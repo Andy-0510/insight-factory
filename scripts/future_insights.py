@@ -228,5 +228,7 @@ def analyze_weak_signals():
 
 if __name__ == "__main__":
     os.makedirs('outputs', exist_ok=True)
-    analyze_tech_maturity()
+    # --- ▼▼▼ 이 줄을 주석 처리 ▼▼▼ ---
+    # analyze_tech_maturity()
+    # --- ▲▲▲ 주석 처리 완료 ▲▲▲ ---
     analyze_weak_signals()

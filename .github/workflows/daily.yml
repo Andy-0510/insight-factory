@@ -16,7 +16,7 @@ jobs:
   pipeline:
     runs-on: ubuntu-latest
     env:
-      USE_PRO: 'false' # 일간 작업은 PRO 모드 비활성화 권장
+      USE_PRO: 'true' # 일간 작업은 PRO 모드 비활성화 권장
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       HF_HOME: ~/.cache/huggingface
 

@@ -231,7 +231,7 @@ def _section_monthly_positioning_map():
     return "\n".join(lines)
 # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
-
+'''
 def _section_monthly_tech_lifecycle():
     lines = [_section_header("2. 기술 수명 주기 및 R&D 투자 타이밍 분석")]
     lines.append("> 주요 기술의 시장 성숙도 단계를 진단하고, R&D 및 사업화 투자 시점을 판단합니다.\n")
@@ -243,6 +243,7 @@ def _section_monthly_tech_lifecycle():
         rows = [{"기술": item.get("technology"), "단계": item.get("analysis", {}).get("stage"), "판단 근거": item.get("analysis", {}).get("reason")} for item in df_tech.to_dict('records')]
         lines.append(_to_markdown_table(pd.DataFrame(rows)))
     return "\n".join(lines)
+'''
     
 # --- ▼▼▼ [수정] 월간 경쟁사 전략 섹션 (키워드 네트워크 이미지 추가) ▼▼▼ ---
 def _section_monthly_competitors():
@@ -345,7 +346,7 @@ def main():
         "period": period,
         "top_biz_idea": (opps_data.get("ideas", [{}]))[0].get("idea", "N/A"),
         "top_risk": risks_df.iloc[0]['Topic'] if not risks_df.empty else "N/A",
-        "emerging_tech": next((t['technology'] for t in tech_data.get("results", []) if t.get("analysis", {}).get("stage") == "Emerging"), "N/A")
+        # "emerging_tech": next((t['technology'] for t in tech_data.get("results", []) if t.get("analysis", {}).get("stage") == "Emerging"), "N/A")
     }
 
     # 2. 리포트 컨텐츠 조립

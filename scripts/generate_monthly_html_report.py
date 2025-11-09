@@ -145,100 +145,6 @@ def call_gemini_for_monthly_summary(context):
     """
     return _call_gemini_safe(prompt, default_resp="월간 AI 요약 생성 실패.")
 
-''' ### 아래와 동일 함수 ###
-def call_gemini_for_positioning_analysis(topics_context):
-    """LLM 호출: 토픽 데이터를 기반으로 사분면 분석, 인사이트, 시사점을 생성"""
-    prompt = f"""
-    당신은 최고 전략 책임자(CSO)입니다. 아래는 이번 달 시장의 핵심 토픽 데이터입니다.
-    각 토픽은 관심도(언급량), 긍정성(감성), 모멘텀(z-like 성장률) 점수를 가집니다.
-
-    ### 핵심 토픽 데이터:
-    {json.dumps(topics_context, ensure_ascii=False, indent=2)}
-
-    ### 분석 요청:
-    아래 3가지 항목에 대해 Markdown 형식으로 답변해주세요.
-
-    1.  **전략적 인사이트 및 실행과제 (AI)**:
-        - 위 데이터를 종합하여 시장의 거시적 흐름과 기회/위협 요소를 1~2 문단으로 요약해주세요.
-
-    2.  **사분면별 전략 권고**:
-        - 각 토픽을 4분면(고관심/고긍정, 고관심/저긍정, 저관심/고긍정, 저관심/저긍정)으로 분류하고, 각 사분면의 핵심 토픽과 권고 전략을 요약해주세요.
-        - `고관심/고긍정 (Short-term Win)`: [핵심 토픽], [권고 전략]
-        - `고관심/저긍정 (Market Building)`: [핵심 토픽], [권고 전략]
-        - `저관심/고긍정 (Long-term R&D)`: [핵심 토픽], [권고 전략]
-        - `저관심/저긍정 (Watch & Wait)`: [핵심 토픽], [권고 전략]
-
-    3.  **전략적 시사점 (AI Analysis)**:
-        - 위 분석을 바탕으로 우리 회사가 다음 분기에 고려해야 할 전략적 시사점 2가지를 불릿포인트(-)로 요약해주세요.
-
-    ### 출력 형식 (Markdown):
-    #### 전략적 인사이트 및 실행과제 (AI)
-    (1번 항목 답변)
-
-    #### 사분면별 전략 권고
-    - **고관심/고긍정 (Short-term Win)**: (2번 항목 답변)
-    - **고관심/저긍정 (Market Building)**: (2번 항목 답변)
-    - **저관심/고긍정 (Long-term R&D)**: (2번 항목 답변)
-    - **저관심/저긍정 (Watch & Wait)**: (2번 항목 답변)
-
-    #### 전략적 시사점 (AI Analysis)
-    - (3번 항목 답변 1)
-    - (3번 항목 답변 2)
-    """
-    response = _call_gemini_safe(prompt, default_resp="포지셔닝 분석 실패")
-    
-    # LLM 응답을 파싱하여 딕셔너리로 반환
-    insights = {
-        'positioning_insight': "AI 분석 실패",
-        'quadrant1_topics': "분석 필요", 'quadrant1_strategy': "AI 권고 생성 예정",
-        'quadrant2_topics': "분석 필요", 'quadrant2_strategy': "AI 권고 생성 예정",
-        'quadrant3_topics': "분석 필요", 'quadrant3_strategy': "AI 권고 생성 예정",
-        'quadrant4_topics': "분석 필요", 'quadrant4_strategy': "AI 권고 생성 예정",
-        'strategic_implications': ["AI 시사점 분석 예정"]
-    }
-    
-    try:
-        # 1. 전략적 인사이트
-        insight_match = re.search(r"#### 전략적 인사이트 및 실행과제 \(AI\)\s*(.*?)\s*#### 사분면별 전략 권고", response, re.DOTALL)
-        if insight_match:
-            insights['positioning_insight'] = markdown.markdown(insight_match.group(1).strip())
-
-        # 2. 사분면 분석
-        q1_match = re.search(r"고관심/고긍정 \(Short-term Win\)\s*:\s*(.*)", response)
-        if q1_match:
-            parts = q1_match.group(1).split(',', 1)
-            insights['quadrant1_topics'] = parts[0].strip()
-            if len(parts) > 1: insights['quadrant1_strategy'] = parts[1].strip()
-        
-        q2_match = re.search(r"고관심/저긍정 \(Market Building\)\s*:\s*(.*)", response)
-        if q2_match:
-            parts = q2_match.group(1).split(',', 1)
-            insights['quadrant2_topics'] = parts[0].strip()
-            if len(parts) > 1: insights['quadrant2_strategy'] = parts[1].strip()
-
-        q3_match = re.search(r"저관심/고긍정 \(Long-term R&D\)\s*:\s*(.*)", response)
-        if q3_match:
-            parts = q3_match.group(1).split(',', 1)
-            insights['quadrant3_topics'] = parts[0].strip()
-            if len(parts) > 1: insights['quadrant3_strategy'] = parts[1].strip()
-            
-        q4_match = re.search(r"저관심/저긍정 \(Watch & Wait\)\s*:\s*(.*)", response)
-        if q4_match:
-            parts = q4_match.group(1).split(',', 1)
-            insights['quadrant4_topics'] = parts[0].strip()
-            if len(parts) > 1: insights['quadrant4_strategy'] = parts[1].strip()
-
-        # 3. 전략적 시사점
-        implication_match = re.search(r"#### 전략적 시사점 \(AI Analysis\)\s*(.*)", response, re.DOTALL)
-        if implication_match:
-            implications = re.findall(r"-\s+(.*)", implication_match.group(1))
-            if implications:
-                insights['strategic_implications'] = [imp.strip() for imp in implications]
-    except Exception as e:
-        print(f"[WARN] Failed to parse positioning LLM response: {e}")
-        
-    return insights
-'''
 
 def call_gemini_for_positioning_analysis(topics_context):
     """LLM 호출: 토픽 데이터를 기반으로 사분면 분석, 인사이트, 시사점을 JSON으로 생성"""
@@ -303,7 +209,7 @@ def call_gemini_for_positioning_analysis(topics_context):
     }
     return insights
 
-
+'''
 def call_gemini_for_tech_recommendation(tech_name, stage, reason):
     """LLM 호출: 개별 기술 성숙도 기반 투자 권고 생성 (간결화)"""
     prompt = f"""
@@ -315,7 +221,9 @@ def call_gemini_for_tech_recommendation(tech_name, stage, reason):
     """
     # _call_gemini_safe 함수는 이미 정의되어 있다고 가정
     return _call_gemini_safe(prompt, default_resp="AI 권고 생성 실패.")
+'''
 
+'''
 def call_gemini_for_rd_recommendation(tech_details_context):
     """LLM 호출: 기술 성숙도 데이터 전체 기반 R&D 자원 배분 권고 생성"""
     prompt = f"""
@@ -331,6 +239,7 @@ def call_gemini_for_rd_recommendation(tech_details_context):
     """
     # _call_gemini_safe 함수는 이미 정의되어 있다고 가정
     return _call_gemini_safe(prompt, default_resp="R&D AI 권고 생성 실패.")
+'''
 
 def call_gemini_for_strategy_insight(company_name, topics_str):
     """LLM 호출: 기업의 토픽 집중도 기반 전략 방향성 분석 (월간용)"""
@@ -490,7 +399,8 @@ def call_gemini_for_risk_analysis(risk_context):
 
     ### 분석 요청:
     아래 4가지 항목에 대해 **반드시 JSON 형식으로만** 답변해주세요. (다른 설명 금지)
-    1.  `matrix` (Object): 4가지 전략('avoid', 'mitigate', 'transfer', 'accept')별 대상 리스크와 핵심 전략. (예: {{"avoid": {{"targets": "...", "strategy": "..."}}, ...}})
+    1.  `matrix` (Object): 4가지 전략('avoid', 'mitigate', 'transfer', 'accept')별 대상 리스크와 핵심 전략.
+        - **[중요]** `targets` 필드에는 '주요 리스크 목록' 컨텍스트에 포함된 **'Keywords'만** 요약하여 기재하세요. (토픽 이름 제외) (예: "oled, tv, 패널")
     2.  `immediate_actions` (List[Object]): 가장 시급한 Top 3 리스크의 액션 아이템. (예: [{{"risk_id": "...", "action": "...", "owner": "...", "due_date": "..."}}, ...])
     3.  `assessment` (Markdown): 리스크 종합 평가 및 차월 대응 방향 (1~2 문단)
 
@@ -736,8 +646,17 @@ def prepare_monthly_report_data():
     data['competitors_exec_summary'] = call_gemini_for_section_summary("경쟁사 전략적 의도 분석", matrix_summary_for_llm + network_summary_for_llm)
 
     # --- ▼▼▼ Section 4: Risk Management (테이블 가공 로직 수정) ▼▼▼ ---
-    data['risk_spikes_path'] = get_relative_image_path("risk_negative_spikes.png")
+    # --- ▼▼▼ [신규] risk_negative_spikes.png 파일 존재 여부 확인 ▼▼▼ ---
+    # FIG_DIR 경로는 파일 상단에 정의되어 있어야 합니다. (os.path.join(ROOT_OUTPUT_DIR, 'fig'))
+    risk_spikes_path_full = os.path.join(FIG_DIR, "risk_negative_spikes.png")
+
+    if os.path.exists(risk_spikes_path_full):
+        data['risk_spikes_path'] = get_relative_image_path("risk_negative_spikes.png")
+    else:
+        data['risk_spikes_path'] = None # 파일이 없으면 None으로 설정
+
     data['risk_network_path'] = get_relative_image_path("risk_keyword_network.png")
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
     
     if not risk_issues_df.empty:
         # --- ▼▼▼ [수정] get_risk_level_display 함수 ▼▼▼ ---

@@ -294,8 +294,12 @@ def load_meta_files(max_files=5, offset=0):
     return all_items
 
 # ====== 관계 유형 분류 ======
-def classify_relationship(context_texts: List[str]) -> str:
-    ctx = " ".join(context_texts).lower()
+def classify_relationship(context_texts: List[Dict[str, Any]]) -> str: # 1. 타입 힌트 수정
+    # 2. 딕셔너리 리스트에서 'text' 값만 추출하여 리스트 생성
+    text_snippets = [obj.get("text", "") for obj in context_texts]
+    # 3. 추출된 텍스트 스니펫을 join
+    ctx = " ".join(text_snippets).lower()
+
     r_score = sum(1 for w in COMPETITIVE_KEYWORDS if w in ctx)
     p_score = sum(1 for w in COOPERATIVE_KEYWORDS if w in ctx)
     if r_score > p_score:
@@ -307,6 +311,9 @@ def classify_relationship(context_texts: List[str]) -> str:
 # ===== Optimized co-occurrence builder (config-driven) =====
 # ===== Optimized co-occurrence builder (config-driven) =====
 def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[str, str, int, str, str]], List[str]]: # 반환 타입에 str 추가
+    # --- ▼▼▼ [신규] 테스트 1 로그 ▼▼▼ ---
+    print("\n\n[DEBUG TEST 1] build_cooccurrence_edges 함수가 실행되었습니다.\n\n")
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
     # 0) config + dictionaries
     net_cfg = CFG.get("network", {})
     whitelist_only = bool(net_cfg.get("whitelist_only", True))
@@ -372,8 +379,8 @@ def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[st
                         a, b = s_orgs[i], s_orgs[j]
                         pair = (a, b) if a < b else (b, a)
                         pair_counter[pair] += 1
-                        snippet = " | ".join([title, sent[:200]])
-                        pair_ctx[pair].append(snippet)
+                        context_obj = {"title": title, "url": it.get("url"), "text": sent}
+                        pair_ctx[pair].append(context_obj)
                         nodes.add(a); nodes.add(b)
         else:
             # document level
@@ -385,8 +392,8 @@ def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[st
                     a, b = orgs_norm[i], orgs_norm[j]
                     pair = (a, b) if a < b else (b, a)
                     pair_counter[pair] += 1
-                    snippet = " | ".join([title, text[:300]])
-                    pair_ctx[pair].append(snippet)
+                    context_obj = {"title": title, "url": it.get("url"), "text": text}
+                    pair_ctx[pair].append(context_obj)
                     nodes.add(a); nodes.add(b)
 
     # 6) 엣지 생성: 최소 가중치 + 관계 분류
@@ -406,14 +413,52 @@ def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[st
             rel = classify_relationship(pair_ctx[(a, b)]) # 2. 규칙 없으면 텍스트 분석
         # --- ▲▲▲ 수정 완료 ▲▲▲ ---
 
-        # --- ▼▼▼ [수정] 근거 문장 1개 추출 ▼▼▼ ---
-        context_snippets = pair_ctx.get((a, b), [""])
-        first_snippet = context_snippets[0].split(" | ")[-1].strip() # 기사 제목 제외
-        key_evidence = first_snippet[:150] + "..." if len(first_snippet) > 150 else first_snippet
-        if not key_evidence: key_evidence = "N/A" # 빈 스니펫 방지
-        # --- ▲▲▲ 수정 완료 ▲▲▲ ---
+        # --- ▼▼▼ [신규] 테스트 2 로그 ▼▼▼ ---
+        print(f"[DEBUG TEST 2] Top 3 근거 기사 생성 로직 진입 (Pair: {a}-{b})")
+        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
-        edges.append((a, b, int(w), rel, key_evidence)) # 5번째 요소로 evidence 추가
+        # --- ▼▼▼ [신규] Top 3 근거 기사 (제목+링크) 추출 ▼▼▼ ---
+        context_objs = pair_ctx.get((a, b), [])
+
+        # 경쟁/협력 키워드 셋 (전역 변수 사용)
+        keyword_set = set(COMPETITIVE_KEYWORDS) | set(COOPERATIVE_KEYWORDS)
+
+        scored_articles = []
+        for obj in context_objs:
+            text_low = obj.get("text", "").lower()
+            if not text_low:
+                continue
+            # 키워드 발생 횟수로 점수 계산
+            score = sum(1 for kw in keyword_set if kw in text_low)
+            scored_articles.append({
+                "title": obj.get("title", "N/A"),
+                "url": obj.get("url", "#"),
+                "score": score
+            })
+
+        # 점수(score)가 높은 순으로 정렬
+        scored_articles.sort(key=lambda x: x["score"], reverse=True)
+        top_3_articles = scored_articles[:3]
+
+        links = []
+        for art in top_3_articles:
+            # HTML 태그 이스케이프 처리 (제목에 < >가 있을 경우 대비)
+            title_clean = art['title'].replace('<', '&lt;').replace('>', '&gt;')
+
+            if art["score"] > 0:
+                # 경쟁/협력 키워드가 1개 이상 매칭된 기사 (굵게, 파란색)
+                links.append(f'<a href="{art["url"]}" target="_blank" style="font-weight:600; color:#0056b3;">{title_clean} (Score: {art["score"]})</a>')
+            else:
+                # 키워드는 없지만 동시 언급된 기사 (Fallback, 회색)
+                links.append(f'<a href="{art["url"]}" target="_blank" style="color:#555;">{title_clean}</a>')
+
+        if not links:
+            key_evidence_html = "N/A"
+        else:
+            key_evidence_html = "<br>".join(links)
+        # --- ▲▲▲ 신규 로직 완료 ▲▲▲ ---
+
+        edges.append((a, b, int(w), rel, key_evidence_html)) # 5번째 요소로 (HTML) evidence 추가
 
     return edges, sorted(nodes)
 

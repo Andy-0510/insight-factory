@@ -1,13 +1,14 @@
 import os
 import json
 import pandas as pd
-from datetime import datetime
+from datetime import datetime, timedelta
 from jinja2 import Environment, FileSystemLoader, select_autoescape
 import re # 정규 표현식 사용 위해 추가
 from src.utils import latest # <--- 이 줄을 추가하세요
 from transformers import pipeline
 from src.config import load_config # config 로더 추가
 from src.timeutil import now_kst, to_date
+import math # <-- [신규] 추가
 
 TARGET_COMPETITORS_LIST = [
     "LG디스플레이", "삼성디스플레이", "BOE", "CSOT", "AUO", "Innolux", 
@@ -25,6 +26,78 @@ TEMPLATE_NAME = 'daily_report_template.html'
 OUTPUT_BASE_DIR = os.path.join(ROOT_DIR, 'outputs')
 EXPORT_DIR = os.path.join(OUTPUT_BASE_DIR, 'export')
 FIG_DIR = os.path.join(OUTPUT_BASE_DIR, 'fig')
+
+# --- [신규] 감성 분석기 전역 변수 ---
+analyzer = None
+
+def _get_sentiment_analyzer():
+    """Hugging Face Hub에서 감성 분석 모델 파이프라인을 로드합니다."""
+    global analyzer
+    if analyzer is None:
+        print("[INFO] Initializing Sentiment Analyzer (beomi/KcELECTRA-base-v2022)...")
+        try:
+            analyzer = pipeline("sentiment-analysis", model="beomi/KcELECTRA-base-v2022", tokenizer="beomi/KcELECTRA-base-v2022", device=-1)
+        except Exception as e:
+            print(f"[WARN] 감성 분석 모델 로드 실패: {e}.")
+            analyzer = "failed" # 실패 마킹
+    return analyzer if analyzer != "failed" else None
+
+def _call_gemini_for_topic_name(keywords: list) -> str:
+    """LLM을 호출하여 토픽 키워드에 맞는 5단어 이내의 이름을 생성합니다."""
+    if not keywords:
+        return ""
+    
+    keywords_str = ", ".join(keywords)
+    prompt = f"""
+    다음은 특정 시장 토픽을 대표하는 키워드 목록입니다.
+    이 토픽의 핵심 의미를 가장 잘 나타내는 '토픽 이름'을 5단어 이내로 생성해주세요.
+
+    ### 키워드:
+    {keywords_str}
+
+    ### 토픽 이름 (5단어 이내):
+    """
+    # _call_gemini_safe 함수는 이미 파일 내에 존재함 [cite: 373]
+    name = _call_gemini_safe(prompt, default_resp="")
+    return name.replace('"', '').replace("'", "").strip() # 따옴표 제거
+
+def _find_most_negative_article(keywords: list, meta_items: list, analyzer, today_str: str) -> dict:
+    """오늘 기사 중 해당 키워드를 포함하며 가장 부정적인(raw score가 낮은) 기사 1개를 찾습니다."""
+    if not analyzer or not keywords:
+        return {}
+
+    keyword_pattern = re.compile('|'.join(re.escape(kw) for kw in keywords), re.IGNORECASE)
+    articles_with_scores = []
+
+    for item in meta_items:
+        # [수정] 1. 날짜 확인 로직 제거 (meta_items 전체를 검색 대상으로 함)
+
+        title = item.get("title", "")
+        body = item.get("body") or item.get("description", "")
+        content = title + " " + body # [수정] 제목과 본문을 합쳐서 검색
+
+        # 2. 키워드 포함 여부 확인
+        if content and keyword_pattern.search(content):
+            try:
+                # 3. 감성 분석 수행
+                result = analyzer(content, truncation=True, max_length=512)[0]
+                # 4. 원본(raw) 점수 계산 (스케일링 전)
+                score_raw = result['score'] if result['label'] == 'LABEL_1' else 1 - result['score']
+                
+                articles_with_scores.append({
+                    "score_raw": score_raw,
+                    "title": item.get("title", "N/A"),
+                    "url": item.get("url", "#")
+                })
+            except Exception:
+                continue # 분석 실패 시 제외
+
+    if not articles_with_scores:
+        return {}
+
+    # 5. 원본 점수가 가장 '낮은' (가장 부정적인) 기사 정렬
+    articles_with_scores.sort(key=lambda x: x["score_raw"])
+    return articles_with_scores[0] # 가장 부정적인 기사 반환
 
 # --- 헬퍼 함수 ---
 def format_int_filter(value):
@@ -205,22 +278,24 @@ def call_gemini_for_signal_commentary(signal_term: str, article_titles: list, z_
         return {"commentary": "JSON 디코딩 실패", "interpretation": "JSON 디코딩 실패"}
 
 def call_gemini_for_event_analysis(event_title: str, event_type: str) -> dict:
-    """LLM 호출: 경쟁사 이벤트의 5가지 핵심 요소(회사명, 요약, 사실, 영향, 대응)를 JSON으로 반환"""
+    """LLM 호출: 이벤트의 4가지 핵심 요소(요약, 사실, 영향, 대응)를 JSON으로 반환"""
 
     prompt = f"""
-    당신은 경쟁 전략 분석가입니다. 경쟁사가 '{event_title}'({event_type}) 이벤트를 실행했습니다.
-    이 이벤트에 대해 아래 5가지 항목을 추출하고 분석하여 **반드시 JSON 형식으로만** 응답해주세요.
+    당신은 시장 분석가입니다.
+    시장의 주요 사업자에서 다음과 같은 이벤트가 발생했습니다.
+    - **이벤트 제목**: {event_title}
+    - **이벤트 유형**: {event_type} (예: LAUNCH는 신제품 출시, INVEST는 투자)
 
-    1.  `company_name`: 이벤트의 주체(회사 이름).
-    2.  `summary_title`: 이벤트를 대표하는 10단어 이내의 핵심 요약 제목.
-    3.  `fact_summary`: 이벤트의 핵심 사실(Fact) 2문장 요약.
-    4.  `impact`: 이 이벤트가 우리 회사에 미칠 잠재적 영향 (1문장).
-    5.  `next_step`: 우리가 고려해야 할 초기 대응 방향 (1문장).
+    이 이벤트에 대해 아래 4가지 항목을 추출하고 분석하여 **반드시 JSON 형식으로만** 응답해주세요.
+
+    1.  `summary_title`: 이벤트를 대표하는 10단어 이내의 핵심 요약 제목.
+    2.  `fact_summary`: 이벤트의 핵심 사실(Fact) 2문장 요약.
+    3.  `impact`: 이 이벤트가 시장에 미칠 잠재적 영향 (1문장).
+    4.  `next_step`: 우리가 고려해야 할 초기 대응 방향 (1문장).
 
     ### 분석 결과 (JSON 형식):
     ```json
     {{
-      "company_name": "...",
       "summary_title": "...",
       "fact_summary": "...",
       "impact": "...",
@@ -241,8 +316,7 @@ def call_gemini_for_event_analysis(event_title: str, event_type: str) -> dict:
     except json.JSONDecodeError:
         parsed_json = {}
 
-    # 기본값 설정
-    parsed_json.setdefault("company_name", "분석 실패")
+    # 기본값 설정 (company_name 제거)
     parsed_json.setdefault("summary_title", event_title) # 실패 시 원본 제목 사용
     parsed_json.setdefault("fact_summary", "AI 사실 요약 실패")
     parsed_json.setdefault("impact", "AI 영향 분석 실패")
@@ -252,29 +326,40 @@ def call_gemini_for_event_analysis(event_title: str, event_type: str) -> dict:
 
 
 def call_gemini_for_risk_commentary(topic_name, sentiment_drop, related_titles):
-    """LLM 호출: 감성 급락 원인 및 영향 분석 (하나의 문단으로 통합)"""
+    """LLM 호출: 감성 급락 원인 및 영향 분석 (HTML 불릿포인트)"""
     if not related_titles: related_titles = ["관련 기사 제목 없음"]
     titles_str = "- " + "\n- ".join(related_titles)
 
     prompt = f"""
     디스플레이 및 연관 산업의 리스크 분석가로서, '{topic_name}' 토픽의 감성 점수가 오늘 {sentiment_drop:.2f} 만큼 급락했습니다.
-    아래 참고 기사 제목을 바탕으로, **급락 원인과 잠재적 영향을 2~3문장으로 간결하게** 요약 분석해주세요
+    아래 참고 기사 제목을 바탕으로, **급락 원인과 잠재적 영향을 2개의 핵심 불릿포인트(HTML `<ul><li>...</li></ul>` 태그 사용)**로 간결하게 요약 분석해주세요.
     근거 기반의 추정은 가능하지만, 절대 데이터가 부족하다거나 혹은 분석이 어렵다는 말은 하지 마세요.
 
     ### 관련 기사 제목:
     {titles_str}
 
-    ### 종합 분석 (2-3 문장):
+    ### 핵심 분석 (HTML <ul> <li>...</li> </ul> 형식):
     """
 
     # LLM으로부터 직접 텍스트를 받습니다.
-    result_text = _call_gemini_safe(prompt, default_resp="AI 리스크 분석에 실패했습니다.")
+    result_text = _call_gemini_safe(prompt, default_resp="<ul><li>AI 리스크 분석에 실패했습니다.</li></ul>")
 
     # LLM 응답에 포함될 수 있는 불필요한 마크다운을 제거하고 공백을 정리합니다.
-    commentary = result_text.replace("\n", " ").replace("*", "").replace("-", "").strip()
+    commentary = result_text.strip()
+
+    # --- ▼▼▼ [신규] HTML 코드 펜스(```html) 제거 ▼▼▼ ---
+    commentary = re.sub(r"^\s*```html\s*", "", commentary, flags=re.IGNORECASE | re.MULTILINE)
+    commentary = re.sub(r"```\s*$", "", commentary, flags=re.IGNORECASE | re.MULTILINE)
+    commentary = commentary.strip()
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    # LLM이 <ul>을 빼먹었을 경우 보완
+    if not commentary.startswith("<ul>") and "<li>" in commentary:
+        commentary = "<ul>" + commentary.replace("- ", "<li>") + "</ul>"
+    elif not commentary.startswith("<ul>"):
+        commentary = "<ul><li>" + commentary.replace("\n", "</li><li>") + "</li></ul>"
 
     return commentary
-# --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
 
 # --- 데이터 로딩 및 가공 함수 ---
@@ -433,76 +518,49 @@ def prepare_report_data():
     data['hot_signals'] = hot_signals_list
     data['hot_signals_image_path'] = get_relative_image_path("weekly_strong_signals_barchart.png") # 임시
 
-    # 5. 경쟁사 주요 활동 (Events) 및 LLM 분석
+    # 5. 주요 활동 (Events) 및 LLM 분석
     event_list = []
     event_colors = { "LAUNCH": "#3b82f6", "INVEST": "#10b981", "PARTNERSHIP": "#f59e0b", "ORDER": "#8b5cf6", "CERT": "#6366f1", "REGUL": "#ef4444" }
+
     if not df_events.empty:
-        # 1. 오늘 날짜의 이벤트만 필터링
-        today_events_raw = df_events[df_events['date'] == today_str]
+        # 1. '어제' 날짜 계산 (today_dt는 이미 상단에 정의됨)
+        yesterday_dt = today_dt - timedelta(days=1)
+        yesterday_str = yesterday_dt.strftime("%Y-%m-%d")
+        target_dates = [today_str, yesterday_str]
 
-        # --- ▼▼▼ 2. 경쟁사 필터링 및 이름 찾기 로직 (수정) ▼▼▼ ---
+        # 2. '어제'와 '오늘' 날짜로 필터링
+        # df_events['date'] 컬럼이 target_dates 리스트에 포함되는지 확인
+        recent_events_raw = df_events[df_events['date'].isin(target_dates)]
 
-        # (Helper function: 제목을 검색하여 '표시할 이름'을 반환)
-        def find_target_competitor_proper(title_str):
-            title_lower = str(title_str).lower()
+        # 3. 최신 기사 순(날짜 내림차순)으로 정렬 후 상위 5개 선택
+        top_5_events = recent_events_raw.sort_values(by='date', ascending=False).head(5)
 
-            found_lower = None
-            for comp_lower in TARGET_COMPETITORS_SET_LOWER: # 소문자 셋으로 검색
-                if comp_lower in title_lower:
-                    found_lower = comp_lower
-                    break # 일단 하나 찾으면 중지
+        print(f"[INFO] Found {len(recent_events_raw)} events from today/yesterday. Processing top 5.")
 
-            if not found_lower:
-                return None
-
-            # 소문자로 찾은 이름을 원본(대소문자 포함) 리스트에서 다시 찾아서 반환
-            for comp_proper in TARGET_COMPETITORS_LIST:
-                if comp_proper.lower() == found_lower:
-                    return comp_proper # (예: "LG디스플레이")
-            return None
-
-        print(f"[INFO] Filtering {len(today_events_raw)} total events for target competitors...")
-
-        processed_count = 0 # 5개 제한 카운터
-
-        # 3. 필터링된 최종 목록으로 LLM 호출 루프 실행
-        for index in today_events_raw.index: # 순서 유지를 위해 index 사용
-            if processed_count >= 5: # 5개 제한
-                break
-
-            row = today_events_raw.loc[index]
+        # 4. 상위 5개 이벤트를 루프 처리 (경쟁사 필터링 없음)
+        for index, row in top_5_events.iterrows():
             event_title = row.get('title', '')
-
-            # 필터링: 제목에서 경쟁사 이름 찾기
-            found_company_name = find_target_competitor_proper(event_title)
-
-            if not found_company_name:
-                continue # 타겟 경쟁사가 아니면 스킵
-
-            # --- 타겟 경쟁사 이벤트 감지됨 ---
-            processed_count += 1
-            print(f"  -> Processing event {processed_count}/5: {found_company_name}")
-
             event_type = str(row.get('types', 'OTHER')).split(',')[0].strip().upper()
             event_url = row.get('url', '#')
 
-            # LLM 호출 (나머지 분석 항목 요청)
+            # [수정] 'org' 컬럼에서 회사 이름을 직접 가져옴 (필터링 X)
+            found_company_name = row.get('org', 'Unknown') 
+
+            # LLM 호출 (수정된 프롬프트가 적용된 함수)
             analysis = call_gemini_for_event_analysis(event_title, event_type)
 
             event_list.append({
                 "type": event_type,
                 "date": row.get('date', ''),
                 "color_code": event_colors.get(event_type, "#6b7280"),
-                "url": event_url,
-
-                # --- ▼▼▼ 4. LLM 응답 대신 우리가 찾은 이름으로 강제 적용 ▼▼▼ ---
-                "company_name": found_company_name, 
-
-                "summary_title": analysis.get("summary_title", event_title),
+                "url": event_url, 
+                "company_name": found_company_name, # (UI에서 제거되지만 데이터는 유지)
+                "summary_title": analysis.get("summary_title", event_title), 
                 "fact_summary": analysis.get("fact_summary", "N/A"),
                 "impact": analysis.get("impact", "N/A"),
                 "next_step": analysis.get("next_step", "N/A")
             })
+
     data['competitor_events'] = event_list
 
     # 6. 주요 기사 (Top Articles) 및 요약 (이전 단계에서 완료됨)
@@ -526,32 +584,86 @@ def prepare_report_data():
 
 
     # 7. 리스크 신호 (Risk Signals) 및 LLM 해설
+    
+    # --- ▼▼▼ [신규] 7-1. 토픽 이름 매핑 준비 ▼▼▼ ---
+    print("[INFO] Preparing topic name mapping for risk signals...")
+    analyzer = _get_sentiment_analyzer() # 감성 분석기 초기화
+    
+    topics_json = load_json_safe("outputs/topics.json", {"topics": []})
+    matching_log = load_json_safe("outputs/debug/daily_topic_matching_log.json", {})
+    master_topics = load_json_safe(os.path.join(ROOT_DIR, "data/dictionaries/master_topics.json"), {}) # [신규] Fallback용 master_topics 로드
+
+    topic_id_map = {t["topic_id"]: t for t in topics_json.get("topics", [])}
+    id_to_semkey_map = matching_log.get("final_mapping", {})
+    
+    semkey_to_topic_data = {} 
+
+    for topic_id_str, semantic_key in id_to_semkey_map.items():
+        if semantic_key == "Uncategorized":
+            continue
+
+        # --- ▼▼▼ [수정] JSON의 문자열 키(str)를 숫자(int)로 변환 ▼▼▼ ---
+        topic_id_int = -1
+        try:
+            # topic_id_str (예: "0")을 topic_id_int (예: 0)로 변환
+            topic_id_int = int(topic_id_str) 
+        except ValueError:
+            print(f"[WARN] Invalid topic_id '{topic_id_str}' in matching_log. Skipping.")
+            continue # "0", "1" 등이 아닌 키는 건너뛰기
+
+        # [수정] int 키로 topic_obj 조회
+        topic_obj = topic_id_map.get(topic_id_int) 
+        if not topic_obj:
+            print(f"[WARN] Topic ID {topic_id_int} from matching_log not found in topics.json. Skipping.")
+            continue
+        # --- ▲▲▲ 수정 완료 ▲▲▲ ---
+
+        topic_name = topic_obj.get("topic_name") # module_c가 생성한 이름
+        top_words = [w.get("word") for w in topic_obj.get("top_words", [])[:5]]
+
+        # [수정] topic_name 존재 여부와 상관없이, 키워드만 있으면 LLM으로 '무조건' 
+        if top_words: # 키워드가 있을 때만 생성
+
+            # --- ▼▼▼ [디버그 로그 추가] ▼▼▼ ---
+            # [수정] topic_id -> topic_id_int 변수 사용
+            print(f"[DEBUG] LLM Topic Name Gen: [START] Key={semantic_key} (ID:{topic_id_int})") 
+            print(f"[DEBUG]   ㄴ Input Keywords: {top_words}")
+
+            generated_name = _call_gemini_for_topic_name(top_words)
+
+            if generated_name and "AI 분석 실패" not in generated_name and "LLM API" not in generated_name:
+                topic_name = generated_name # LLM 호출 성공 시에만 덮어쓰기
+                print(f"[DEBUG]   ㄴ LLM Output (Success): '{topic_name}'")
+            else:
+                # LLM 호출 실패 시, topic_name은 기존 값(module_c) 또는 None을 유지
+                print(f"[DEBUG]   ㄴ LLM Output (Failed): {generated_name}")
+            # --- ▲▲▲ [디버그 로그 종료] ▲▲▲ ---
+
+        semkey_to_topic_data[semantic_key] = {"name": topic_name, "words": top_words}
+            
     risk_signals_list = []
     if not df_sentiment.empty and 'semantic_key' in df_sentiment.columns:
         print("[INFO] Analyzing risk signals based on sentiment drop...")
         df_sentiment['date'] = pd.to_datetime(df_sentiment['date'])
         
-        df_sentiment_today = df_sentiment[df_sentiment['date'].dt.date == today_dt.date()] # 오늘 데이터만
+        df_sentiment_today = df_sentiment[df_sentiment['date'].dt.date == today_dt.date()]
 
         if not df_sentiment_today.empty:
-            # 8일 전 날짜를 계산
             eight_days_ago = today_dt.date() - pd.Timedelta(days=7) 
-            # CSV의 날짜에서도 시간(.dt.date)을 버리고 8일 전과 비교
             df_sentiment_recent = df_sentiment[df_sentiment['date'].dt.date >= eight_days_ago]
 
             analyzed_keys = 0
             for key, group in df_sentiment_recent.groupby('semantic_key'):
                 
-                if key == "Uncategorized" or len(group) < 2: continue # 최소 2일 데이터 필요
+                if key == "Uncategorized" or len(group) < 2: continue
 
                 group = group.sort_values('date')
                 today_row = group[group['date'].dt.date == today_dt.date()]
                 
-                if today_row.empty: continue # 오늘 데이터 없으면 스킵
+                if today_row.empty: continue
 
                 past_days = group[group['date'].dt.date < today_dt.date()]
-
-                if past_days.empty: continue # 과거 데이터 없으면 스킵
+                if past_days.empty: continue
 
                 today_score = today_row.iloc[0]['avg_sentiment']
                 avg_past = past_days['avg_sentiment'].mean()
@@ -566,28 +678,36 @@ def prepare_report_data():
                 if is_risky:
                     analyzed_keys += 1
                     sentiment_drop = avg_past - today_score
-                    topic_keywords = master_topics.get(key, [])
                     
-                    related_titles = []
-                    if topic_keywords:
-                         kw_pattern = re.compile('|'.join(re.escape(kw) for kw in topic_keywords), re.IGNORECASE)
-                         related_titles = [
-                             item.get("title", "") for item in meta_items
-                             if isinstance(item, dict) and item.get("title") and kw_pattern.search(item.get("title", ""))
-                         ][:5] 
+                    # [수정] 7-1에서 생성한 맵에서 토픽 이름과 키워드 가져오기
+                    topic_data = semkey_to_topic_data.get(key, {})
+                    display_name = topic_data.get("name") or key # 1순위: topic_name, 2순위: semantic_key
+                    keywords = topic_data.get("words") or master_topics.get(key, []) # 1순위: 일간, 2순위: 마스터
+                    
+                    # 관련 기사 제목 (LLM 해설용)
+                    related_titles = [
+                        item.get("title", "") for item in meta_items
+                        if isinstance(item, dict) and item.get("title") and keywords and re.search('|'.join(re.escape(kw) for kw in keywords), item.get("title", ""), re.IGNORECASE)
+                    ][:5] 
 
-                    llm_comment = call_gemini_for_risk_commentary(key, sentiment_drop, related_titles)
+                    # [수정] LLM 해설 (불릿포인트)
+                    llm_comment = call_gemini_for_risk_commentary(display_name, sentiment_drop, related_titles)
+                    
+                    # [신규] 가장 부정적인 근거 기사 찾기
+                    evidence_article = _find_most_negative_article(keywords, meta_items, analyzer, today_str)
 
                     risk_signals_list.append({
-                        "topic": key,
+                        "topic": key, # (내부 키)
+                        "display_name": display_name, # (표시용 이름)
                         "drop_display": f"{sentiment_drop:.2f}",
-                        "commentary": llm_comment, # LLM 결과 사용
+                        "commentary": llm_comment, # (수정된 LLM 해설)
                         "score_today": f"{today_score:.2f}",
                         "score_avg_7d": f"{avg_past:.2f}",
-                        "next_step": f"'{key}' 토픽 관련 부정 이슈 및 고객사 영향 점검" # 예시
+                        "evidence_title": evidence_article.get("title", "근거 기사 없음"), # (신규)
+                        "evidence_url": evidence_article.get("url", "#") # (신규)
                     })
             print(f"  Analyzed {analyzed_keys} risk signals.")
-    data['risk_signals'] = sorted(risk_signals_list, key=lambda x: float(x.get('drop_display', 0)), reverse=True) # 하락폭 큰 순 정렬
+    data['risk_signals'] = sorted(risk_signals_list, key=lambda x: float(x.get('drop_display', 0)), reverse=True)
 
     # 8. Footer 정보
     data['contact_email'] = 'intelligence@company.com'

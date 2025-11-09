@@ -20,6 +20,7 @@ import networkx as nx
 import matplotlib
 
 from src.utils import load_json
+from src.timeutil import to_date # <-- 이 줄을 추가합니다.
 
 # --- ▼▼▼ [수정] ensure_fonts 함수 (캐시 재구성 추가) ▼▼▼ ---
 def ensure_fonts():
@@ -118,8 +119,9 @@ def load_all_data():
         "topics": load_json(os.path.join(ROOT_OUTPUT_DIR, "topics.json"), {"topics": []}),
         "ts": load_json(os.path.join(ROOT_OUTPUT_DIR, "trend_timeseries.json"), {"daily": []}),
         "biz_opps": load_json(os.path.join(ROOT_OUTPUT_DIR, "biz_opportunities.json"), {"ideas": []}),
-        "tech_maturity": load_json(os.path.join(ROOT_OUTPUT_DIR, "tech_maturity.json"), {"results": []}),
+        # "tech_maturity": load_json(os.path.join(ROOT_OUTPUT_DIR, "tech_maturity.json"), {"results": []}),
         "company_network": load_json(os.path.join(ROOT_OUTPUT_DIR, "company_network.json"), {}),
+        "growth": _safe_read_csv(os.path.join(EXPORT_DIR, "topic_growth.csv")),
         "signal_counts": _safe_read_csv(os.path.join(EXPORT_DIR, "daily_signal_counts.csv")),
         "trend_strength": _safe_read_csv(os.path.join(EXPORT_DIR, "trend_strength.csv")),
         "weak_signals": _safe_read_csv(os.path.join(EXPORT_DIR, "weak_signals.csv")),
@@ -256,7 +258,12 @@ def plot_topics_bubble(topics_data, output_path, min_bubble=100, max_bubble=8000
         xs.append(x_jittered)
         ys.append(y_jittered)
         positivity_scores.append(s_val)
-        labels.append(t.get("topic_name") or f"Topic #{t.get('topic_id')}")
+        # [수정] topic_name이 없으면 semantic_key를, 그것도 없으면 topic_id를 사용
+        label_name = t.get("topic_name")
+        label_semantic = t.get("semantic_key") # 1단계에서 저장한 키
+        label_id = f"Topic #{t.get('topic_id')}"
+
+        labels.append(label_name or label_semantic or label_id)
 
     # 2. 원 크기 정규화 (스케일링)
     s_arr = np.array(positivity_scores)
@@ -269,9 +276,12 @@ def plot_topics_bubble(topics_data, output_path, min_bubble=100, max_bubble=8000
     # 3. 시각화
     fig, ax = plt.subplots(figsize=(12, 7))
     
-    # 4. [수정] 스캐터 플롯 (단색)
-    sc = ax.scatter(xs, ys, s=ss, color="#3b82f6", alpha=0.6, edgecolors="#343a40", linewidths=0.5)
-
+    # 4. [수정] 스캐터 플롯 (긍정/부정 색상 및 크기 적용)
+    # c=positivity_scores: 긍정/부정 점수를 색상(c)으로 매핑
+    # cmap="RdYlGn": (부정)Red -> (중립)Yellow -> (긍정)Green 컬러맵 사용
+    sc = ax.scatter(xs, ys, s=ss, 
+                    c=positivity_scores, cmap="RdYlGn", vmin=0, vmax=1, 
+                    alpha=0.7, edgecolors="#343a40", linewidths=0.5)
     # --- ▼▼▼ 5. [수정] 축 스케일 및 평균선 (순서 변경) ▼▼▼ ---
     # 축 스케일을 먼저 설정합니다.
     ax.set_xscale('log')
@@ -330,17 +340,14 @@ def plot_topics_bubble(topics_data, output_path, min_bubble=100, max_bubble=8000
                 bbox=dict(boxstyle='square,pad=0.1', fc='white', alpha=0.7, ec='none'))
     # --- ▲▲▲ X축 라벨 추가 완료 ▲▲▲ ---
 
-    # 7d. 원 크기 설명 (축 범위와 무관)
-    legend_text = "[원의 크기]\n긍정성/positivity (해당 토픽의 월간 평균 감성 점수)"
-    ax.text(0.01, 0.03, legend_text,
-            transform=ax.transAxes, # (0,0)을 축의 왼쪽 하단으로 설정
-            ha='left',
-            va='bottom',
-            fontsize=10,
-            color='#333333',
-            style='italic',
-            bbox=dict(boxstyle='round,pad=0.5', fc='white', alpha=0.7, ec='none'))
-    # --- ▲▲▲ 텍스트 추가 완료 ▲▲▲ ---
+    # --- ▼▼▼ [신규] 5. 컬러바(범례) 추가 ▼▼▼ ---
+    cbar = fig.colorbar(sc, ax=ax, orientation='vertical', pad=0.02)
+    cbar.set_label('감성 점수 (Positivity)', fontsize=12)
+    # 컬러바 라벨을 0, 0.5, 1.0에만 표시
+    cbar.set_ticks([0, 0.5, 1.0])
+    cbar.set_ticklabels(['0.0 (부정)', '0.5 (중립)', '1.0 (긍정)'])
+    cbar.ax.tick_params(labelsize=10)
+    # --- ▲▲▲ 컬러바 추가 완료 ▲▲▲ ---
 
     # 8. 최종 라벨 및 저장
     ax.set_xlabel("관심도 (Interest / Log Scale)")
@@ -923,126 +930,145 @@ def plot_keyword_network(keywords_data, meta_items, output_path, top_n=20, min_w
              plt.close(fig)
 
 # --- ▼▼▼ [NEW] Function to plot Topic Mini Trends ▼▼▼ ---
-def plot_topic_mini_trends(topics_data, timeseries_data, output_path, top_n_topics=5):
-    """(Monthly) Generates mini line charts for top topic trends."""
-    print("[INFO] Generating topic mini trends...")
-    if not topics_data or not timeseries_data:
-        print("[WARN] Insufficient data for topic mini trends.")
-        return
+def plot_topic_mini_trends(topics_data, growth_df, meta_items, output_path, top_n=2, keyword_n=10):
+    """(Monthly) Generates ONE chart for Top 2 Rising (Solid) and Bottom 2 Falling (Dashed) topics (WEEKLY)."""
+    print(f"[INFO] Generating ACTUAL topic mini trends (Top {top_n} 상위/하위, Weekly, 1 Chart)...")
+    
+    fig = None # finally 블록용 초기화
+    try:
+        if not topics_data or not topics_data.get("topics") or not meta_items or growth_df.empty:
+            print("[WARN] Insufficient data for actual topic mini trends (topics, growth, or meta missing).")
+            _create_empty_plot(output_path, "토픽 트렌드: 데이터 부족")
+            return
 
-    topics = topics_data.get("topics", [])
-    daily_ts = timeseries_data.get("daily", [])
-    if not topics or not daily_ts:
-        print("[WARN] No topics or timeseries data available.")
-        return
+        # 1. Top/Bottom N 토픽 ID 및 이름 찾기 (growth_df 기준)
+        growth_df = growth_df.dropna(subset=['momentum_score', 'topic_id'])
+        rising_topics_df = growth_df.nlargest(top_n, 'momentum_score')
+        falling_topics_df = growth_df.nsmallest(top_n, 'momentum_score')
+        
+        target_topic_ids = set(rising_topics_df['topic_id']) | set(falling_topics_df['topic_id'])
+        
+        if not target_topic_ids:
+            print("[WARN] No rising or falling topics found from growth_df.")
+            _create_empty_plot(output_path, "토픽 트렌드: 성장률 데이터 없음")
+            return
 
-    df_ts = pd.DataFrame(daily_ts)
-    if 'date' not in df_ts.columns or 'count' not in df_ts.columns:
-         print("[WARN] Timeseries data missing 'date' or 'count' column.")
-         return
-    df_ts['date'] = pd.to_datetime(df_ts['date'])
-    df_ts = df_ts.set_index('date').resample('W-MON')['count'].sum().reset_index() # Resample to weekly counts
+        # 2. 상위/하위 토픽의 키워드 맵 생성
+        topic_map = {t.get("topic_id"): t for t in topics_data.get("topics", [])}
+        topic_info = {}
 
-    # Approximate topic trends by summing counts (needs keyword-doc mapping for accuracy)
-    # This is a simplification; accurate trends require mapping docs to topics.
-    # We'll use topic rank as a proxy for importance here.
-    top_topics = topics[:top_n_topics]
-    if not top_topics:
-        print("[WARN] No topics selected for mini trends.")
-        return
+        for topic_id in target_topic_ids:
+            topic = topic_map.get(topic_id)
+            if not topic:
+                print(f"[WARN] Topic ID {topic_id} (from growth_df) not found in topics.json, skipping.")
+                continue
+                
+            # [수정] topic_name이 없으면 topic_id 사용
+            topic_name = topic.get("topic_name") or f"Topic {topic_id}"
+            keywords = [w.get("word") for w in topic.get("top_words", [])[:keyword_n]]
+            if not keywords:
+                print(f"[WARN] Topic '{topic_name}' has no keywords, skipping.")
+                continue
+                
+            topic_info[topic_id] = {
+                "name": topic_name,
+                "pattern": re.compile('|'.join(re.escape(kw) for kw in keywords), re.IGNORECASE)
+            }
 
-    num_topics = len(top_topics)
-    fig, axes = plt.subplots(num_topics, 1, figsize=(8, 2 * num_topics), sharex=True)
-    if num_topics == 1: axes = [axes] # Ensure axes is iterable for single topic
+        if not topic_info:
+            print("[WARN] No valid topics with keywords to plot.")
+            _create_empty_plot(output_path, "토픽 트렌드: 키워드 없음")
+            return
 
-    for i, topic in enumerate(top_topics):
-        topic_id = topic.get("topic_id", i)
-        topic_name = topic.get("topic_name", f"Topic {topic_id}")
-        # Simplified: Use overall trend, scaled slightly by rank
-        df_topic_trend = df_ts.copy()
-        df_topic_trend['count'] = df_topic_trend['count'] * (1 - i*0.05) # Dummy scaling
+        # 3. [수정] 30일간의 일별 기사 카운트 집계 (D-1 기준)
+        daily_counts = defaultdict(lambda: defaultdict(int))
+        end_date = datetime.now().date() - timedelta(days=1) # [수정] D-1
+        start_date = end_date - timedelta(days=29) # 30일치 데이터
 
-        ax = axes[i]
-        ax.plot(df_topic_trend['date'], df_topic_trend['count'], marker='.', linestyle='-')
-        ax.set_title(f"{topic_name}", fontsize=10)
-        ax.tick_params(axis='x', labelsize=8)
-        ax.tick_params(axis='y', labelsize=8)
+        for item in meta_items:
+            d_raw = item.get("published_time") or item.get("pubDate_raw") or ""
+            item_date_str = to_date(d_raw) # 1단계에서 import한 to_date 사용
+            
+            try:
+                item_date = datetime.strptime(item_date_str, "%Y-%m-%d").date()
+            except (ValueError, TypeError):
+                continue
+            
+            if not (start_date <= item_date <= end_date):
+                continue
+
+            content = (item.get("title", "") + " " + (item.get("body") or item.get("description", ""))).strip()
+            if not content:
+                continue
+
+            # 각 토픽의 키워드(패턴)와 매칭
+            for topic_id, info in topic_info.items():
+                if info["pattern"].search(content):
+                    daily_counts[item_date_str][topic_id] += 1
+
+        if not daily_counts:
+            print("[WARN] No articles matched any top/bottom topics in the last 30 days.")
+            _create_empty_plot(output_path, "토픽 트렌드: 매칭 없음")
+            return
+
+        # 4. DataFrame 변환 및 Plotting 준비
+        df_counts = pd.DataFrame(daily_counts).T.fillna(0)
+        df_counts.index = pd.to_datetime(df_counts.index)
+        all_dates_index = pd.to_datetime(pd.date_range(start=start_date, end=end_date, freq='D'))
+        df_counts = df_counts.reindex(all_dates_index, fill_value=0)
+        
+        # [수정] 주간 단위로 리샘플링
+        df_weekly = df_counts.resample('W-MON', label='left', closed='left').sum()
+
+        # 5. [신규] 1x1 차트 생성
+        fig, ax = plt.subplots(1, 1, figsize=(10, 5)) # 1행 1열
+
+        # 6. 상위 2개 그래프 (실선, 색상 지정)
+        colors = plt.cm.get_cmap('Dark2', 8)
+        for i, (_, row) in enumerate(rising_topics_df.iterrows()):
+            topic_id = row['topic_id']
+            if topic_id in df_weekly.columns:
+                topic_name = topic_info[topic_id]['name']
+                # [수정] 범례(label)에서 'Mom:' 제거, 색상 지정
+                ax.plot(df_weekly.index, df_weekly[topic_id], marker='.', linestyle='-', color=colors(i), label=f"[상위] {topic_name}")
+        
+        # 7. 하위 2개 그래프 (점선, 다른 색상)
+        for i, (_, row) in enumerate(falling_topics_df.iterrows()):
+            topic_id = row['topic_id']
+            if topic_id in df_weekly.columns:
+                topic_name = topic_info[topic_id]['name']
+                # [수정] 범례(label)에서 'Mom:' 제거, 색상/스타일 지정
+                ax.plot(df_weekly.index, df_weekly[topic_id], marker='.', linestyle='--', color=colors(i + top_n), label=f"[하위] {topic_name}")
+        
+        ax.set_title(f'Top {top_n} 상위(실선) vs 하위(점선) 토픽 트렌드', fontsize=12) # [수정] 이름
+        ax.set_ylabel('Weekly Mentions')
+        ax.legend(fontsize='small')
         ax.grid(True, linestyle='--', alpha=0.6)
 
-    plt.xlabel('Date (Weekly)', fontsize=9)
-    fig.suptitle('Top Topic Trends (Weekly Aggregated - Simplified)', fontsize=14, y=1.02)
-    plt.tight_layout()
-    _savefig(fig, output_path) # Use _savefig helper
-    print(f"[INFO] Topic mini trends saved to {output_path}")
+        # 8. 공통 X축 설정
+        ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+        plt.xlabel('Date', fontsize=10) # [수정] X축 이름
+        
+        fig.suptitle('토픽 별 언급량 추이 (주 단위)', fontsize=16, y=1.03) # [수정] 제목
+        plt.tight_layout()
+        _savefig(fig, output_path)
+        print(f"[INFO] ACTUAL Top/Bottom {top_n} topic trends (Weekly, 1 Chart) saved to {output_path}")
 
-# --- ▼▼▼ [NEW] Function to plot Risk Signals (Negative Spikes) ▼▼▼ ---
-def plot_risk_negative_spikes(sentiment_df, output_path, top_n_topics=5, window=7, threshold=1.5):
-    """(Monthly) Plots sentiment trends for topics with recent negative spikes."""
-    print("[INFO] Generating risk negative spikes chart...")
-    if sentiment_df is None or sentiment_df.empty or 'semantic_key' not in sentiment_df.columns:
-        print("[WARN] Insufficient or invalid sentiment data for risk spikes.")
-        return
-
-    sentiment_df['date'] = pd.to_datetime(sentiment_df['date'])
-    sentiment_df = sentiment_df.sort_values('date')
-
-    spiking_topics = []
-    analyzed_topics = 0
-    for key, group in sentiment_df.groupby('semantic_key'):
-        if key == "Uncategorized" or len(group) < window + 1: continue
-        analyzed_topics += 1
-
-        group['ma'] = group['avg_sentiment'].rolling(window=window, closed='left').mean()
-        group['std'] = group['avg_sentiment'].rolling(window=window, closed='left').std()
-        group['z_score'] = (group['avg_sentiment'] - group['ma']) / (group['std'] + 1e-6)
-
-        # Check the last data point for a negative spike
-        last_point = group.iloc[-1]
-        if pd.notna(last_point['z_score']) and last_point['z_score'] < -threshold:
-            spiking_topics.append({'key': key, 'last_z': last_point['z_score'], 'last_date': last_point['date']})
-
-    if not spiking_topics:
-        print("[INFO] No significant negative sentiment spikes detected recently.")
-        # Create an empty plot as placeholder? Or just skip. Let's skip.
-        return
-
-    # Select top N spiking topics based on the magnitude of the Z-score drop
-    spiking_topics.sort(key=lambda x: x['last_z']) # Sort by most negative Z-score
-    top_spiking_keys = [t['key'] for t in spiking_topics[:top_n_topics]]
-
-    num_plot_topics = len(top_spiking_keys)
-    fig, axes = plt.subplots(num_plot_topics, 1, figsize=(10, 2.5 * num_plot_topics), sharex=True)
-    if num_plot_topics == 1: axes = [axes] # Ensure iterable
-
-    for i, key in enumerate(top_spiking_keys):
-        group = sentiment_df[sentiment_df['semantic_key'] == key].set_index('date')
-        ax = axes[i]
-        ax.plot(group.index, group['avg_sentiment'], marker='.', linestyle='-', label='Sentiment Score')
-        ax.plot(group.index, group['ma'], linestyle='--', color='gray', alpha=0.7, label=f'{window}-day MA')
-
-        # Highlight the last spike point
-        last_date = spiking_topics[i]['last_date']
-        last_score = group.loc[last_date, 'avg_sentiment']
-        ax.scatter(last_date, last_score, color='red', s=100, zorder=5, label=f'Spike (Z={spiking_topics[i]["last_z"]:.2f})')
-
-        ax.set_title(f"Topic: {key}", fontsize=11)
-        ax.tick_params(axis='x', labelsize=9)
-        ax.tick_params(axis='y', labelsize=9)
-        ax.grid(True, linestyle='--', alpha=0.6)
-        if i == 0: ax.legend(fontsize=8) # Legend only on the first plot
-
-    plt.xlabel('Date', fontsize=10)
-    fig.suptitle('Topics with Recent Negative Sentiment Spikes', fontsize=15, y=1.03)
-    plt.tight_layout()
-    _savefig(fig, output_path) # Use _savefig helper
-    print(f"[INFO] Risk negative spikes chart saved to {output_path} ({len(spiking_topics)}/{analyzed_topics} topics spiked)")
+    except Exception as e:
+        print(f"[ERROR] An error occurred during actual topic trend plotting: {e}")
+        import traceback
+        traceback.print_exc()
+        _create_empty_plot(output_path, "토픽 트렌드: 생성 오류")
+    finally:
+        if fig:
+            plt.close(fig)
 
 # --- ▼▼▼ [NEW] Function to plot Risk Keyword Network ▼▼▼ ---
 # Note: This requires defining risk keywords and calculating their co-occurrence.
 # We'll use a placeholder list and simple co-occurrence for demonstration.
 RISK_KEYWORDS_SAMPLE = ["규제", "리스크", "우려", "논란", "지연", "하락", "부진", "문제", "보안", "취약점"]
 
-def plot_risk_negative_spikes(sentiment_df, output_path, top_n_topics=5, window=7, threshold=1.5):
+def plot_risk_negative_spikes(sentiment_df, topics_data, output_path, top_n_topics=5, window=7, threshold=1.5):
     """(Monthly) Plots sentiment trends for topics with recent negative spikes."""
     print("[INFO] Generating risk negative spikes chart...")
     fig = None # finally 블록용 초기화
@@ -1050,11 +1076,17 @@ def plot_risk_negative_spikes(sentiment_df, output_path, top_n_topics=5, window=
     try:
         if sentiment_df is None or sentiment_df.empty or 'semantic_key' not in sentiment_df.columns:
             print("[WARN] Insufficient or invalid sentiment data for risk spikes.")
-            _create_empty_plot(output_path, "부정 감성 급등: 데이터 없음") # 빈 그래프 생성
+            # _create_empty_plot(output_path, "부정 감성 급등: 데이터 없음") # [삭제]
             return
 
         sentiment_df['date'] = pd.to_datetime(sentiment_df['date'])
         sentiment_df = sentiment_df.sort_values('date')
+
+        # --- ▼▼▼ [신규] 최근 30일 데이터만 필터링 ▼▼▼ ---
+        end_date = sentiment_df['date'].max()
+        start_date = end_date - pd.Timedelta(days=29) # 30일간의 데이터
+        sentiment_df = sentiment_df[sentiment_df['date'] >= start_date].copy()
+        # --- ▲▲▲ 필터링 완료 ▲▲▲ ---
 
         spiking_topics = []
         analyzed_topics = 0
@@ -1081,17 +1113,26 @@ def plot_risk_negative_spikes(sentiment_df, output_path, top_n_topics=5, window=
             if pd.notna(last_point['ma']) and pd.notna(last_point['std']) and pd.notna(last_point['z_score']):
                 # 조건: Z-score가 임계치 미만
                 if last_point['z_score'] < -threshold:
-                    spiking_topics.append({'key': key, 'last_z': last_point['z_score'], 'last_date': last_point.name}) # Use index (date)
+                    spiking_topics.append({'key': key, 'last_z': last_point['z_score'], 'last_date': last_point['date']})
             # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
         if not spiking_topics:
             print("[INFO] No significant negative sentiment spikes detected recently.")
-            _create_empty_plot(output_path, "부정 감성 급등: 해당 없음") # 빈 그래프 생성
+            # _create_empty_plot(output_path, "부정 감성 급등: 해당 없음") # [삭제]
             return
 
         # Z-score 하락폭 기준으로 상위 N개 토픽 선정
         spiking_topics.sort(key=lambda x: x['last_z']) # 가장 부정적인 Z-score 순
         top_spiking_keys = [t['key'] for t in spiking_topics[:top_n_topics]]
+
+        # --- ▼▼▼ [신규] semantic_key를 topic_name으로 매핑 ▼▼▼ ---
+        topics_list = topics_data.get("topics", [])
+        semkey_to_name_map = {
+            t.get("semantic_key"): t.get("topic_name")
+            for t in topics_list
+            if t.get("semantic_key") and t.get("topic_name")
+        }
+        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
         num_plot_topics = len(top_spiking_keys)
         fig, axes = plt.subplots(num_plot_topics, 1, figsize=(10, 2.5 * num_plot_topics), sharex=True)
@@ -1099,6 +1140,7 @@ def plot_risk_negative_spikes(sentiment_df, output_path, top_n_topics=5, window=
 
         for i, key in enumerate(top_spiking_keys):
             group_to_plot = all_groups_data[key] # Use stored group data
+            group_to_plot = group_to_plot.set_index('date') # <-- 이 줄을 추가하세요
             ax = axes[i]
             # Plot only non-NaN values for MA
             valid_ma = group_to_plot.dropna(subset=['ma'])
@@ -1112,8 +1154,14 @@ def plot_risk_negative_spikes(sentiment_df, output_path, top_n_topics=5, window=
             # Check if last_score is valid before plotting
             if pd.notna(last_score):
                  ax.scatter(last_date, last_score, color='red', s=100, zorder=5, label=f'Spike (Z={spike_info["last_z"]:.2f})')
-
-            ax.set_title(f"Topic: {key}", fontsize=11)
+        
+            # --- ▼▼▼ [신규] Y축 범위를 0.0에서 1.0으로 고정 ▼▼▼ ---
+            ax.set_ylim(0, 1)
+            # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+            
+            # [수정] topic_name 사용, 없으면 key(semantic_key) 사용
+            display_name = semkey_to_name_map.get(key, key)
+            ax.set_title(f"Topic: {display_name}", fontsize=11)
             ax.tick_params(axis='x', labelsize=9, rotation=30) # Rotate labels slightly
             ax.tick_params(axis='y', labelsize=9)
             ax.grid(True, linestyle='--', alpha=0.6)
@@ -1130,13 +1178,13 @@ def plot_risk_negative_spikes(sentiment_df, output_path, top_n_topics=5, window=
          import traceback
          traceback.print_exc()
          if fig: plt.close(fig) # Close figure if created
-         _create_empty_plot(output_path, "부정 감성 급등: 처리 오류 (KeyError)")
+         # _create_empty_plot(output_path, "부정 감성 급등: 처리 오류 (KeyError)") # [삭제]
     except Exception as e:
         print(f"[ERROR] An error occurred during risk spike plotting: {e}")
         import traceback
         traceback.print_exc()
         if fig: plt.close(fig) # Close figure if created
-        _create_empty_plot(output_path, "부정 감성 급등: 생성 오류")
+        # _create_empty_plot(output_path, "부정 감성 급등: 생성 오류") # [삭제]
     finally:
         if fig:
              plt.close(fig)
@@ -1500,8 +1548,10 @@ def run_monthly_visuals():
     try: plot_topics_bubble(all_data["topics"], os.path.join(FIG_DIR, "topics_bubble.png"))
     except Exception as e: print(f"[WARN] plot_topics_bubble failed: {e}")
     
-    try: plot_tech_maturity_map(all_data['tech_maturity'])
-    except Exception as e: print(f"[WARN] plot_tech_maturity_map failed: {e}")
+    # --- ▼▼▼ 이 줄을 주석 처리 ▼▼▼ ---
+    # try: plot_tech_maturity_map(all_data['tech_maturity'])
+    # except Exception as e: print(f"[WARN] plot_tech_maturity_map failed: {e}")
+    # --- ▲▲▲ 주석 처리 완료 ▲▲▲ ---
         
     try: plot_company_network_from_json()
     except Exception as e: print(f"[WARN] plot_company_network_from_json failed: {e}")
@@ -1517,28 +1567,50 @@ def run_monthly_visuals():
 
     # --- ▼▼▼ [추가] 월간 리포트용 누락 시각화 생성 호출 ▼▼▼ ---
 
-    # 1. 키워드 네트워크 생성
+    # 1. 월간 메타 데이터 로드 (키워드 네트워크 및 토픽 트렌드 생성에 모두 필요)
+    meta_items_monthly = load_json(os.path.join(ROOT_OUTPUT_DIR, "debug", "monthly_meta_agg.json"), [])
+
+    # 2. 키워드 네트워크 생성
     try:
-        # Load necessary data (assuming load_all_data doesn't fetch meta_items yet)
-        meta_items_monthly = load_json(os.path.join(ROOT_OUTPUT_DIR, "debug", "monthly_meta_agg.json"), [])
         plot_keyword_network(all_data['keywords'], meta_items_monthly, os.path.join(FIG_DIR, "keyword_network.png"))
     except Exception as e:
         print(f"[WARN] plot_keyword_network failed: {e}")
 
-    # 2. 토픽 미니 트렌드 생성
+    # 3. 토픽 미니 트렌드 생성 (실제 데이터 기반)
     try:
-        plot_topic_mini_trends(all_data['topics'], all_data['ts'], os.path.join(FIG_DIR, "topics_mini_trends.png"))
+        # [수정] growth_df, meta_items_monthly를 전달, top_n=2로 변경
+        plot_topic_mini_trends(
+            all_data['topics'], 
+            all_data['growth'], 
+            meta_items_monthly, 
+            os.path.join(FIG_DIR, "topics_mini_trends.png"), 
+            top_n=2
+        )
     except Exception as e:
         print(f"[WARN] plot_topic_mini_trends failed: {e}")
 
     # 3. 리스크 관련 시각화 생성
     try:
-        # Load monthly aggregated sentiment data if available, otherwise use daily export as approximation
-        sentiment_df_monthly = _safe_read_csv(os.path.join(EXPORT_DIR, "monthly_aggregated_sentiment.csv")) # Assuming this might exist
-        if sentiment_df_monthly.empty:
-            sentiment_df_monthly = _safe_read_csv(os.path.join(EXPORT_DIR, "daily_topic_sentiment.csv")) # Fallback
+        # --- ▼▼▼ [수정] 데이터 로딩 로직 변경 ▼▼▼ ---
+        # 1. 아카이브에서 가장 최신 daily_topic_sentiment.csv 찾기
+        archive_files = sorted(glob.glob(os.path.join(DAILY_ARCHIVE_DIR, "*", "*", "export", "daily_topic_sentiment.csv")))
+        sentiment_csv_path = None
+        if archive_files:
+            sentiment_csv_path = archive_files[-1] # 가장 최신 파일
 
-        plot_risk_negative_spikes(sentiment_df_monthly, os.path.join(FIG_DIR, "risk_negative_spikes.png"))
+        # 1b. 아카이브에 없으면 루트 export 폴더 확인
+        if not sentiment_csv_path or not os.path.exists(sentiment_csv_path):
+            sentiment_csv_path = os.path.join(EXPORT_DIR, "daily_topic_sentiment.csv")
+
+        print(f"[INFO] Loading sentiment data for risk chart from: {sentiment_csv_path}")
+        sentiment_df_monthly = _safe_read_csv(sentiment_csv_path)
+
+        # 2. 토픽 이름 매핑을 위해 topics.json 로드
+        # (all_data 딕셔너리에서 이미 로드됨)
+        topics_data = all_data["topics"] 
+        # --- ▲▲▲ 로딩 로직 변경 완료 ▲▲▲ ---
+
+        plot_risk_negative_spikes(sentiment_df_monthly, topics_data, os.path.join(FIG_DIR, "risk_negative_spikes.png"))
     except Exception as e:
         print(f"[WARN] plot_risk_negative_spikes failed: {e}")
 
