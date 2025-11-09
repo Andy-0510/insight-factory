@@ -137,24 +137,59 @@ def analyze_risks(articles):
         if pd.notna(threshold_value) and today_data['avg_sentiment'] < threshold_value:
             sentiment_drop = today_data['ma'] - today_data['avg_sentiment']
             
-            # [수정] master_topics에서 직접 topic_info를 구성합니다.
-            topic_keywords = master_topics.get(semantic_key)
+            # --- ▼▼▼ [신규] 일간 토픽 키워드 역추적 로직 ▼▼▼ ---
+            topic_name = semantic_key
+            risk_date = today_data.name # today_data의 인덱스(날짜 문자열)
+            risk_topic_id = today_data['topic_id']
+
+            topic_keywords = []
+            source = "master_topics (fallback)" # 키워드 출처 (디버깅용)
+
+            try:
+                date_dir = os.path.join("outputs/daily", risk_date)
+                # 해당 날짜의 가장 최신 시간 폴더 찾기
+                time_folders = [d for d in os.listdir(date_dir) if os.path.isdir(os.path.join(date_dir, d))]
+                if not time_folders:
+                    raise FileNotFoundError(f"No time folders found in {date_dir}")
+
+                latest_time_folder = sorted(time_folders)[-1]
+                topics_json_path = os.path.join(date_dir, latest_time_folder, "topics.json")
+
+                if not os.path.exists(topics_json_path):
+                    raise FileNotFoundError(f"topics.json not found at {topics_json_path}")
+
+                topics_data = load_json(topics_json_path, {"topics": []})
+
+                for topic in topics_data.get("topics", []):
+                    if topic.get("topic_id") == risk_topic_id:
+                        topic_keywords = [w.get("word") for w in topic.get("top_words", [])]
+                        source = f"daily_topics.json (T_ID: {risk_topic_id})"
+                        break
+
+                if not topic_keywords:
+                    print(f"[WARN] Topic ID {risk_topic_id} not found in {topics_json_path}. Falling back to master_topics.")
+
+            except Exception as e:
+                print(f"[WARN] Failed to load daily topics.json for {risk_date}: {e}. Falling back to master_topics.")
+
+            # [Fallback] 일간 topics.json 로드 실패 시 master_topics에서 키워드 가져오기
             if not topic_keywords:
-                continue # master_topics에 정의되지 않은 키는 건너뜁니다.
+                topic_keywords = master_topics.get(semantic_key, [])
 
-            topic_info = {
-                "name": semantic_key,
-                "keywords": topic_keywords
-            }
+            if not topic_keywords:
+                print(f"[WARN] No keywords found for {semantic_key}. Skipping risk analysis.")
+                continue # 키워드가 전혀 없으면 리스크 분석 불가
+            # --- ▲▲▲ 키워드 역추적 로직 완료 ▲▲▲ ---
 
-            print(f"[INFO] 리스크 탐지: Topic '{topic_info['name']}', 감성 점수 하락폭: {sentiment_drop:.2f}")
-            
-            evidence = get_negative_sentences(topic_info['keywords'], articles)
-            llm_analysis = call_gemini_for_risk_analysis(topic_info['name'], sentiment_drop, evidence)
+            print(f"[INFO] 리스크 탐지: Topic '{topic_name}', 하락폭: {sentiment_drop:.2f}, Keywords Source: {source}")
+
+            evidence = get_negative_sentences(topic_keywords, articles)
+            llm_analysis = call_gemini_for_risk_analysis(topic_name, sentiment_drop, evidence)
 
             risk_issues.append({
-                "Date": today_data.name,
-                "Topic": topic_info['name'],
+                "Date": risk_date,
+                "Topic": topic_name,
+                "Keywords": ", ".join(topic_keywords[:5]), # [신규] 키워드 컬럼 추가 (상위 5개)
                 "sentiment_drop": round(sentiment_drop, 3),
                 **llm_analysis
             })
@@ -166,7 +201,8 @@ def analyze_risks(articles):
     else:
         print("[INFO] 금일 탐지된 신규 리스크가 없습니다.")
         if not os.path.exists(OUTPUT_CSV_PATH):
-            pd.DataFrame(columns=["Date", "Topic", "sentiment_drop", "impact_range", "summary", "mitigation"]).to_csv(OUTPUT_CSV_PATH, index=False, encoding="utf-8-sig")
+            # [수정] "Keywords" 컬럼 추가
+            pd.DataFrame(columns=["Date", "Topic", "Keywords", "sentiment_drop", "impact_range", "summary", "mitigation"]).to_csv(OUTPUT_CSV_PATH, index=False, encoding="utf-8-sig")
 
 # --- ▼▼▼▼▼ [수정] main 함수가 analyze_risks를 호출하도록 변경 ▼▼▼▼▼ ---
 def main():

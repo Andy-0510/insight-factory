@@ -466,26 +466,33 @@
                 
                 {% if risk_signals %}
                     {% for risk in risk_signals %}
-                    <div class="topic-card" style="border-left: 4px solid #e53e3e;"> <div class="topic-header">
-                            <div class="topic-rank" style="background-color: #e53e3e;">!</div> <div class="topic-name">{{ risk.topic }}</div>
+                    <div class="topic-card" style="border-left: 4px solid #e53e3e;"> 
+                        <div class="topic-header">
+                            <div class="topic-rank" style="background-color: #e53e3e;">!</div>
+                            <div class="topic-name">{{ risk.display_name }}</div> 
                             <div class="topic-score" style="color: #e53e3e;">하락폭: {{ risk.drop_display }}</div>
                         </div>
                         <div class="topic-description">
-                             {{ risk.commentary }} </div>
+                            {{ risk.commentary | safe }} 
+                        </div>
                         <div class="action-block">
-                             <div class="action-item">
-                                 <div class="action-label">Current Status</div>
-                                 <div class="action-text">오늘 점수: {{ risk.score_today }}, 7일 평균: {{ risk.score_avg_7d }}</div>
-                             </div>
-                             <div class="action-item">
-                                 <div class="action-label">Next Step</div>
-                                 <div class="action-text">{{ risk.next_step }}</div>
-                             </div>
+                            <div class="action-item">
+                                <div class="action-label">Current Status</div>
+                                <div class="action-text">오늘 점수: {{ risk.score_today }}, 7일 평균: {{ risk.score_avg_7d }}</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Key Evidence Article (Most Negative)</div>
+                                <div class="action-text">
+                                    <a href="{{ risk.evidence_url | default('#') }}" target="_blank" style="color: #2d3748; text-decoration: underline;">
+                                        {{ risk.evidence_title | default('근거 기사를 찾지 못했습니다.') }}
+                                    </a>
+                                </div>
+                            </div>
                         </div>
                     </div>
                     {% endfor %}
                 {% else %}
-                     <p>금일 감성 급락으로 인한 리스크 신호는 포착되지 않았습니다.</p>
+                    <p>금일 감성 급락으로 인한 리스크 신호는 포착되지 않았습니다.</p>
                 {% endif %}
             </div>
 
@@ -500,7 +507,6 @@
                 <div class="event-item" style="border-left-color: {{ event.color_code | default('#00b8a9') }};">
                     <div class="event-meta">
                         <span class="event-type" style="background-color: {{ event.color_code | default('#00b8a9') }};">{{ event.type }}</span>
-                        <span class="event-company">{{ event.company_name }}</span>
                         <span> · {{ event.date }}</span>
                     </div>
 

@@ -360,7 +360,9 @@ def load_context_for_prompt() -> Dict[str, Any]:
     insights = load_json("outputs/trend_insights.json", default={"summary": "", "top_topics": [], "evidence": {}}) or {"summary": "", "top_topics": [], "evidence": {}}
     trend_strength_path = "outputs/export/trend_strength.csv"
     events_path = "outputs/export/events.csv"
-    tech_maturity = load_json("outputs/tech_maturity.json", default={"results": []}) or {"results": []}
+    # --- ▼▼▼ 이 줄을 주석 처리 ▼▼▼ ---
+    # tech_maturity = load_json("outputs/tech_maturity.json", default={"results": []}) or {"results": []}
+    # --- ▲▲▲ 주석 처리 완료 ▲▲▲ ---
 
     summary = (insights.get("summary") or "").strip()
     if len(summary) > 1200:
@@ -400,13 +402,13 @@ def load_context_for_prompt() -> Dict[str, Any]:
         pass
     events_simple = dict(evt_summary)
 
-    maturity_summary = []
-    for res in tech_maturity.get("results", []):
-        tech = res.get("technology")
-        stage = res.get("analysis", {}).get("stage")
-        if tech and stage and stage != "N/A":
-            maturity_summary.append(f"- {tech}: {stage} 단계")
-    maturity_context = "\n".join(maturity_summary)
+    # maturity_summary = []
+    # for res in tech_maturity.get("results", []):
+    #     tech = res.get("technology")
+    #     stage = res.get("analysis", {}).get("stage")
+    #     if tech and stage and stage != "N/A":
+    #         maturity_summary.append(f"- {tech}: {stage} 단계")
+    # maturity_context = "\n".join(maturity_summary)
 
     return {
         "summary": summary, 
@@ -414,7 +416,7 @@ def load_context_for_prompt() -> Dict[str, Any]:
         "topics": tp_simple, 
         "trends": trend_rows, 
         "events": events_simple,
-        "tech_maturity": maturity_context
+        # "tech_maturity": maturity_context
     }
 
 def call_gemini(prompt: str) -> str:

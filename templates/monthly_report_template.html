@@ -478,14 +478,14 @@
                     <h4>주요 기업 관계 Top 5</h4>
                     <div>{{ competitor_actions_table | safe }}</div>
 
-                    <h4>산업 내 관계 영향력</h4>
-                    <div>{{ competitor_strategy_table | safe }}</div>
-
                     <div class="alert-box">
                         <h4>⚠️ 경쟁 강도 변화 경보 (AI)</h4>
                         {{ competition_alerts | safe }}
                     </div>
-                    
+
+                    <h4>#참고. 산업 내 관계 영향력</h4>
+                    <div>{{ competitor_strategy_table | safe }}</div>
+                                        
             </div>
             <br><br>
 
@@ -501,12 +501,19 @@
                     <div class="exec-summary-text">{{ risk_exec_summary | safe }}</div>
                 </div> 
 
-                <h3>시장 내 주요 리스크 탐지</h3>
-                    <div>{{ risk_list_table | safe }}</div>
-                    <img src="{{ risk_spikes_path | default('fig/placeholder.png') }}" alt="부정 감성 급등 토픽" class="report-graph mb-2">
+                <h3>시장 내 주요 리스크 탐지</h3>                    
+                    {% if risk_spikes_path %}
+                        <img src="{{ risk_spikes_path }}" alt="부정 감성 급등 토픽" class="report-graph mb-2">
+                    {% else %}
+                        <p style="text-align:center; color:#718096; margin:1.5em 0;">(감지된 주요 리스크 시그널 없음)</p>
+                    {% endif %}
 
+                    <div>{{ risk_list_table | safe }}</div>
+
+                <!--
                 <h3>리스크 분석: 리스크 네트워크</h3>                
                     <img src="{{ risk_network_path | default('fig/placeholder.png') }}" alt="리스크 키워드 네트워크" class="report-graph">
+                -->
 
                 <div class="mb-4">
                      <h3>리스크 대응 매트릭스</h3>
