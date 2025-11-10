@@ -1,522 +1,171 @@
 {
   "daily": {
-    "2025-11-03": [
+    "2025-11-10": [
+      {
+        "time": "0715-KST",
+        "reports": [
+          {
+            "name": "daily_report.html",
+            "path": "outputs/daily/2025-11-10/0715-KST/daily_report.html"
+          }
+        ]
+      }
+    ],
+    "2025-11-09": [
       {
         "time": "0551-KST",
         "reports": [
           {
             "name": "daily_report.html",
-            "path": "outputs/daily/2025-11-03/0551-KST/daily_report.html"
+            "path": "outputs/daily/2025-11-09/0551-KST/daily_report.html"
           }
         ]
       }
     ],
-    "2025-11-02": [
+    "2025-11-08": [
       {
-        "time": "0601-KST",
+        "time": "0604-KST",
         "reports": [
           {
             "name": "daily_report.html",
-            "path": "outputs/daily/2025-11-02/0601-KST/daily_report.html"
+            "path": "outputs/daily/2025-11-08/0604-KST/daily_report.html"
           }
         ]
       }
     ],
-    "2025-11-01": [
-      {
-        "time": "0615-KST",
-        "reports": [
-          {
-            "name": "daily_report.html",
-            "path": "outputs/daily/2025-11-01/0615-KST/daily_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-31": [
-      {
-        "time": "1509-KST",
-        "reports": [
-          {
-            "name": "daily_report.html",
-            "path": "outputs/daily/2025-10-31/1509-KST/daily_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-30": [
-      {
-        "time": "0624-KST",
-        "reports": [
-          {
-            "name": "daily_commentary_report.html",
-            "path": "outputs/daily/2025-10-30/0624-KST/daily_commentary_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-29": [
-      {
-        "time": "0755-KST",
-        "reports": [
-          {
-            "name": "daily_report.html",
-            "path": "outputs/daily/2025-10-29/0755-KST/daily_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-28": [
+    "2025-11-07": [
       {
         "time": "0609-KST",
         "reports": [
           {
-            "name": "daily_commentary_report.html",
-            "path": "outputs/daily/2025-10-28/0609-KST/daily_commentary_report.html"
+            "name": "daily_report.html",
+            "path": "outputs/daily/2025-11-07/0609-KST/daily_report.html"
           }
         ]
       }
     ],
-    "2025-10-27": [
+    "2025-11-06": [
       {
-        "time": "1101-KST",
+        "time": "0835-KST",
         "reports": [
           {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-27/1101-KST/report.html"
+            "name": "daily_report.html",
+            "path": "outputs/daily/2025-11-06/0835-KST/daily_report.html"
           }
         ]
       }
     ],
-    "2025-10-26": [
+    "2025-11-05": [
       {
-        "time": "1239-KST",
+        "time": "0621-KST",
         "reports": [
           {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-26/1239-KST/report.html"
+            "name": "daily_report.html",
+            "path": "outputs/daily/2025-11-05/0621-KST/daily_report.html"
           }
         ]
       }
     ],
-    "2025-10-25": [
+    "2025-11-04": [
       {
-        "time": "0630-KST",
+        "time": "0612-KST",
         "reports": [
           {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-25/0630-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-24": [
-      {
-        "time": "2118-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-24/2118-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-23": [
-      {
-        "time": "0633-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-23/0633-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-22": [
-      {
-        "time": "1734-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-22/1734-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-21": [
-      {
-        "time": "2222-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-21/2222-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-20": [
-      {
-        "time": "1131-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-20/1131-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-19": [
-      {
-        "time": "1713-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-19/1713-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-18": [
-      {
-        "time": "1529-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-18/1529-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-17": [
-      {
-        "time": "1930-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-17/1930-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-16": [
-      {
-        "time": "1007-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-16/1007-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-15": [
-      {
-        "time": "1806-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-15/1806-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-14": [
-      {
-        "time": "2331-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-14/2331-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-09": [
-      {
-        "time": "1007-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-09/1007-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-08": [
-      {
-        "time": "1235-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-08/1235-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-07": [
-      {
-        "time": "0630-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-07/0630-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-06": [
-      {
-        "time": "0631-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-06/0631-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-05": [
-      {
-        "time": "0630-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-05/0630-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-04": [
-      {
-        "time": "0632-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-04/0632-KST/report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-03": [
-      {
-        "time": "1639-KST",
-        "reports": [
-          {
-            "name": "report.html",
-            "path": "outputs/daily/2025-10-03/1639-KST/report.html"
+            "name": "daily_report.html",
+            "path": "outputs/daily/2025-11-04/0612-KST/daily_report.html"
           }
         ]
       }
     ]
   },
   "weekly": {
-    "2025-11-03": [
+    "2025-11-10": [
       {
-        "time": "1400-KST",
+        "time": "0952-KST",
         "reports": [
           {
             "name": "weekly_report.html",
-            "path": "outputs/weekly/2025-11-03/1400-KST/weekly_report.html"
+            "path": "outputs/weekly/2025-11-10/0952-KST/weekly_report.html"
           }
         ]
       }
     ],
-    "2025-10-24": [
+    "2025-11-07": [
       {
-        "time": "0740-KST",
+        "time": "0749-KST",
         "reports": [
           {
             "name": "weekly_report.html",
-            "path": "outputs/weekly/2025-10-24/0740-KST/weekly_report.html"
+            "path": "outputs/weekly/2025-11-07/0749-KST/weekly_report.html"
           }
         ]
       }
     ],
-    "2025-10-22": [
+    "2025-11-05": [
       {
-        "time": "1800-KST",
+        "time": "1500-KST",
         "reports": [
           {
             "name": "weekly_report.html",
-            "path": "outputs/weekly/2025-10-22/1800-KST/weekly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-20": [
-      {
-        "time": "1621-KST",
-        "reports": [
-          {
-            "name": "weekly_report.html",
-            "path": "outputs/weekly/2025-10-20/1621-KST/weekly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-19": [
-      {
-        "time": "1822-KST",
-        "reports": [
-          {
-            "name": "weekly_report.html",
-            "path": "outputs/weekly/2025-10-19/1822-KST/weekly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-17": [
-      {
-        "time": "1942-KST",
-        "reports": [
-          {
-            "name": "weekly_report.html",
-            "path": "outputs/weekly/2025-10-17/1942-KST/weekly_report.html"
+            "path": "outputs/weekly/2025-11-05/1500-KST/weekly_report.html"
           }
         ]
       }
     ]
   },
   "monthly": {
-    "2025-10-29": [
+    "2025-11-10": [
       {
-        "time": "0715-KST",
+        "time": "1117-KST",
+        "reports": [
+          {
+            "name": "monthly_report.html",
+            "path": "outputs/monthly/2025-11-10/1117-KST/monthly_report.html"
+          }
+        ]
+      }
+    ],
+    "2025-11-07": [
+      {
+        "time": "1047-KST",
         "reports": [
           {
             "name": "monthly_commentary_report.html",
-            "path": "outputs/monthly/2025-10-29/0715-KST/monthly_commentary_report.html"
+            "path": "outputs/monthly/2025-11-07/1047-KST/monthly_commentary_report.html"
+          },
+          {
+            "name": "monthly_report.html",
+            "path": "outputs/monthly/2025-11-07/1047-KST/monthly_report.html"
           }
         ]
       }
     ],
-    "2025-10-28": [
+    "2025-11-05": [
       {
-        "time": "0711-KST",
+        "time": "1622-KST",
         "reports": [
           {
             "name": "monthly_commentary_report.html",
-            "path": "outputs/monthly/2025-10-28/0711-KST/monthly_commentary_report.html"
+            "path": "outputs/monthly/2025-11-05/1622-KST/monthly_commentary_report.html"
+          },
+          {
+            "name": "monthly_report.html",
+            "path": "outputs/monthly/2025-11-05/1622-KST/monthly_report.html"
           }
         ]
       }
     ],
-    "2025-10-27": [
+    "2025-11-03": [
       {
-        "time": "0709-KST",
+        "time": "1823-KST",
         "reports": [
           {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-10-27/0709-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-26": [
-      {
-        "time": "0656-KST",
-        "reports": [
+            "name": "monthly_commentary_report.html",
+            "path": "outputs/monthly/2025-11-03/1823-KST/monthly_commentary_report.html"
+          },
           {
             "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-10-26/0656-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-25": [
-      {
-        "time": "0705-KST",
-        "reports": [
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-10-25/0705-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-24": [
-      {
-        "time": "0700-KST",
-        "reports": [
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-10-24/0700-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-23": [
-      {
-        "time": "0655-KST",
-        "reports": [
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-10-23/0655-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-22": [
-      {
-        "time": "1845-KST",
-        "reports": [
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-10-22/1845-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-21": [
-      {
-        "time": "1412-KST",
-        "reports": [
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-10-21/1412-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-20": [
-      {
-        "time": "0014-KST",
-        "reports": [
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-10-20/0014-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-19": [
-      {
-        "time": "1809-KST",
-        "reports": [
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-10-19/1809-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-18": [
-      {
-        "time": "1642-KST",
-        "reports": [
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-10-18/1642-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-10-17": [
-      {
-        "time": "1951-KST",
-        "reports": [
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-10-17/1951-KST/monthly_report.html"
+            "path": "outputs/monthly/2025-11-03/1823-KST/monthly_report.html"
           }
         ]
       }
