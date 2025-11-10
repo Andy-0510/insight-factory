@@ -1,0 +1,120 @@
+{
+  "results": [
+    {
+      "technology": "양산",
+      "metrics": {
+        "frequency": 16,
+        "sentiment": 0.5001630783081055,
+        "events": {}
+      },
+      "analysis": {
+        "stage": "Emerging",
+        "reason": "뉴스 언급 빈도가 낮고 투자, 출시, 수주 이벤트가 없어 아직 시장이 초기 단계에 머물러 있다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "모니터",
+      "metrics": {
+        "frequency": 225,
+        "sentiment": 0.5027831494808197,
+        "events": {
+          "LAUNCH": 7,
+          "CERT": 2,
+          "INVEST": 2,
+          "PARTNERSHIP": 1
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "뉴스 언급 빈도가 높고 시장 감성 점수가 중간 수준이며, 투자 이벤트는 적고 출시 이벤트만 발생한 것으로 보아 성숙기에 접어든 시장으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "OLED",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.506165936589241,
+        "events": {
+          "LAUNCH": 8,
+          "INVEST": 5,
+          "CERT": 1,
+          "REGUL": 1
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "OLED 기술 관련 투자가 꾸준히 발생하고 신제품 출시가 활발한 것으로 보아 성장기에 있다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 1026,
+        "sentiment": 0.5091669162114462,
+        "events": {
+          "LAUNCH": 18,
+          "INVEST": 8,
+          "REGUL": 2,
+          "PARTNERSHIP": 2
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "높은 뉴스 언급 빈도와 안정적인 시장 감성 점수를 보이는 반면, 투자나 수주 이벤트가 상대적으로 적어 성숙기에 접어든 것으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "노트북",
+      "metrics": {
+        "frequency": 194,
+        "sentiment": 0.5043280720710754,
+        "events": {
+          "LAUNCH": 5,
+          "INVEST": 4,
+          "CERT": 3,
+          "REGUL": 1,
+          "ORDER": 1
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "뉴스 언급 빈도가 높고, 시장 감성 점수가 중간 수준이며, 투자 및 출시 이벤트가 꾸준히 발생하지만 수주 이벤트가 적은 것으로 보아 성숙기에 접어든 시장으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "디스플레이",
+      "metrics": {
+        "frequency": 637,
+        "sentiment": 0.5038088709115982,
+        "events": {
+          "LAUNCH": 15,
+          "INVEST": 12,
+          "CERT": 4,
+          "ORDER": 3,
+          "REGUL": 3,
+          "PARTNERSHIP": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "높은 뉴스 언급 빈도와 투자 및 출시 이벤트가 활발한 것으로 보아 디스플레이 기술 시장은 성장기에 있는 것으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "스마트폰",
+      "metrics": {
+        "frequency": 232,
+        "sentiment": 0.5071777900060018,
+        "events": {
+          "LAUNCH": 5,
+          "INVEST": 2,
+          "CERT": 1
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "스마트폰은 뉴스 언급 빈도가 높고 시장 감성이 중립적이며 투자 및 출시 이벤트 발생 빈도가 낮아 성숙기에 접어든 기술로 판단됩니다."
+      }
+    }
+  ]
+}

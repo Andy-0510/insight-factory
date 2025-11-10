@@ -1,0 +1,102 @@
+{
+  "results": [
+    {
+      "technology": "노트북",
+      "metrics": {
+        "frequency": 220,
+        "sentiment": 0.5154689013957977,
+        "events": {
+          "LAUNCH": 3,
+          "INVEST": 3,
+          "CERT": 3,
+          "REGUL": 1,
+          "ORDER": 1
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "뉴스 언급 빈도가 높고, 시장 감성 점수가 중간 수준이며, 투자나 출시 건수가 적어 성숙기에 접어든 기술로 판단됩니다."
+      }
+    },
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 1057,
+        "sentiment": 0.5134503602981567,
+        "events": {
+          "LAUNCH": 15,
+          "INVEST": 7,
+          "PARTNERSHIP": 3
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "높은 뉴스 언급 빈도와 긍정적인 시장 감성 점수는 애플 기술이 이미 성숙 단계에 진입했음을 시사합니다."
+      }
+    },
+    {
+      "technology": "디스플레이",
+      "metrics": {
+        "frequency": 634,
+        "sentiment": 0.5164239406585693,
+        "events": {
+          "LAUNCH": 15,
+          "INVEST": 9,
+          "CERT": 4,
+          "REGUL": 3,
+          "ORDER": 3,
+          "PARTNERSHIP": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "디스플레이 기술은 뉴스 언급 빈도가 높고 출시 이벤트가 활발하게 발생하는 등 시장 성장기에 진입한 것으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "모니터",
+      "metrics": {
+        "frequency": 300,
+        "sentiment": 0.5192723095417022,
+        "events": {
+          "LAUNCH": 7,
+          "CERT": 2,
+          "INVEST": 2,
+          "PARTNERSHIP": 1
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "비교적 높은 뉴스 언급 빈도와 출시 이벤트가 빈번하게 발생하는 것으로 보아 시장 성장기에 해당한다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "양산",
+      "metrics": {
+        "frequency": 16,
+        "sentiment": 0.5210914313793182,
+        "events": {}
+      },
+      "analysis": {
+        "stage": "Emerging",
+        "reason": "뉴스 언급 빈도는 낮지 않으나, 투자, 출시, 수주 등 실질적인 시장 활동이 미미하고 시장 감성 점수도 중간 수준에 머물러 있어 초기 단계로 판단됩니다."
+      }
+    },
+    {
+      "technology": "스마트폰",
+      "metrics": {
+        "frequency": 232,
+        "sentiment": 0.5195493578910828,
+        "events": {
+          "LAUNCH": 5,
+          "CERT": 1,
+          "INVEST": 1
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "스마트폰은 뉴스 언급 빈도가 높고, 긍정적 시장 감성이 중간 수준이며, 투자 및 출시 이벤트 빈도가 낮아 성숙기에 접어든 기술로 판단됩니다."
+      }
+    }
+  ]
+}

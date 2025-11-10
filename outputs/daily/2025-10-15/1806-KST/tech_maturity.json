@@ -1,0 +1,102 @@
+{
+  "results": [
+    {
+      "technology": "삼성",
+      "metrics": {
+        "frequency": 355,
+        "sentiment": 0.5076649427413941,
+        "events": {
+          "LAUNCH": 34,
+          "INVEST": 16,
+          "PARTNERSHIP": 5,
+          "ORDER": 5,
+          "REGUL": 2,
+          "CERT": 1
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "뉴스 언급 빈도가 높고 출시 이벤트가 투자 이벤트보다 많아 시장 성장 단계로 판단됩니다."
+      }
+    },
+    {
+      "technology": "구글",
+      "metrics": {
+        "frequency": 13,
+        "sentiment": 0.507930682765113,
+        "events": {
+          "LAUNCH": 5
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "출시 이벤트가 비교적 빈번하게 발생하고 시장 감성 점수가 중간 수준인 점을 고려할 때, 구글 기술은 성장 단계에 있다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 77,
+        "sentiment": 0.5084901869297027,
+        "events": {
+          "LAUNCH": 9,
+          "INVEST": 3,
+          "ORDER": 2,
+          "CERT": 1,
+          "PARTNERSHIP": 1,
+          "REGUL": 1
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "높은 뉴스 언급 빈도와 안정적인 시장 감성 점수, 그리고 꾸준한 출시 이벤트는 애플 기술이 성숙 단계에 있음을 시사합니다."
+      }
+    },
+    {
+      "technology": "폴더블",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.5129176709387038,
+        "events": {
+          "LAUNCH": 4,
+          "ORDER": 2,
+          "INVEST": 1
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "뉴스 언급 빈도는 낮지만 긍정적인 시장 감성 점수와 꾸준한 출시 및 수주 이벤트 발생 비율로 보아 성장기에 진입한 것으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "패널",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.5117443859577179,
+        "events": {
+          "LAUNCH": 6,
+          "ORDER": 1,
+          "CERT": 1,
+          "PARTNERSHIP": 1,
+          "INVEST": 1
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "뉴스 언급은 없지만 출시 건수가 많고 투자가 발생한 점을 고려했을 때 시장 성장기에 진입한 것으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "메타",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.5124189555644989,
+        "events": {}
+      },
+      "analysis": {
+        "stage": "Emerging",
+        "reason": "뉴스 언급 빈도가 0회이고 투자, 출시, 수주 이벤트가 전혀 없어 시장의 관심과 활동이 극히 미미한 초기 단계로 판단됩니다."
+      }
+    }
+  ]
+}

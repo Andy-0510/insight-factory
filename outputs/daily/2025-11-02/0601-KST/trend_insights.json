@@ -1,0 +1,126 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "반도체",
+        "핵심",
+        "소재",
+        "디스플레이",
+        "배터리"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "누계",
+        "전년",
+        "하이마트",
+        "서비스",
+        "롯데하이마트는"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "붉은사막",
+        "oled",
+        "amd",
+        "창립",
+        "이청"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "레드포스",
+        "pc방",
+        "프리미엄",
+        "게이밍",
+        "수출"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "할인",
+        "규모의",
+        "대규모",
+        "한층",
+        "브랜드"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "지포스",
+        "게임",
+        "엔비디아",
+        "게이밍",
+        "젠슨"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "중국",
+        "미국",
+        "앵커",
+        "중국의",
+        "어떻게"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "엔비디아",
+        "솔루션",
+        "인프라",
+        "서비스"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "oled",
+        "매출",
+        "사업",
+        "전년",
+        "tv"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "중국",
+        "주석은",
+        "시진핑",
+        "한중",
+        "공동"
+      ]
+    }
+  ],
+  "evidence": {}
+}

@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "스마트폰",
+        "미국",
+        "tv",
+        "최신",
+        "성능"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ai",
+        "중국",
+        "삼성",
+        "적용해",
+        "반면"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "반도체",
+        "oled",
+        "ai",
+        "미국",
+        "사업"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "삼성전자",
+        "패널",
+        "lg디스플레이는",
+        "사업",
+        "향후"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "기술",
+        "에서",
+        "ai",
+        "오는",
+        "lg디스플레이는"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "시장에서",
+        "높은",
+        "차량",
+        "에서",
+        "시장에"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "중국",
+        "삼성",
+        "적용해",
+        "반면"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "oled",
+        "디스플레이",
+        "프리미엄",
+        "패널",
+        "lcd"
+      ]
+    }
+  ],
+  "evidence": {}
+}

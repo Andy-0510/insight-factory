@@ -1,0 +1,97 @@
+{
+  "results": [
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 176,
+        "sentiment": 0.5052383363246917,
+        "events": {
+          "LAUNCH": 172,
+          "INVEST": 55,
+          "REGUL": 29,
+          "CERT": 22,
+          "ORDER": 13,
+          "PARTNERSHIP": 10
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "출시 이벤트가 잦고 투자 빈도가 높은 반면, 수주 빈도가 낮으며 뉴스 언급 빈도와 시장 감성 점수가 중간 수준이므로 성숙기에 접어든 것으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "양산",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.5061884266989571,
+        "events": {
+          "INVEST": 23,
+          "LAUNCH": 22,
+          "ORDER": 12,
+          "CERT": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "뉴스 언급은 없지만, 투자, 출시, 수주 이벤트가 비교적 활발하게 발생하고 시장 감성 점수가 중간 수준이므로 성장기에 있다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "스마트폰",
+      "metrics": {
+        "frequency": 46,
+        "sentiment": 0.5047996375295851,
+        "events": {
+          "LAUNCH": 47,
+          "INVEST": 17,
+          "CERT": 5,
+          "ORDER": 3,
+          "REGUL": 3,
+          "PARTNERSHIP": 1
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "스마트폰은 뉴스 언급 빈도가 비교적 낮고 시장 감성 점수도 중간 수준이며, 출시 이벤트가 투자를 압도하는 것으로 보아 성숙기에 접어들었다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "디스플레이",
+      "metrics": {
+        "frequency": 116,
+        "sentiment": 0.505874615907669,
+        "events": {
+          "INVEST": 292,
+          "LAUNCH": 282,
+          "ORDER": 49,
+          "PARTNERSHIP": 32,
+          "REGUL": 29,
+          "CERT": 27
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "높은 투자 및 출시 건수와 비교적 낮은 수주 건수는 디스플레이 기술이 성장기에 진입하여 시장 확장을 위한 활발한 활동이 이루어지고 있음을 시사합니다."
+      }
+    },
+    {
+      "technology": "구글",
+      "metrics": {
+        "frequency": 28,
+        "sentiment": 0.5062204930517409,
+        "events": {
+          "LAUNCH": 38,
+          "REGUL": 4,
+          "INVEST": 3,
+          "PARTNERSHIP": 3,
+          "CERT": 3,
+          "ORDER": 2
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "구글은 뉴스 언급 빈도가 낮지 않지만 시장 감성 점수가 중간 수준이고 출시 이벤트가 많아 성숙 단계에 접어든 기술로 판단됩니다."
+      }
+    }
+  ]
+}

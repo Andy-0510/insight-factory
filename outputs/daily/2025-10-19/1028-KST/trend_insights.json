@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "중국",
+        "반도체",
+        "프리미엄",
+        "가격",
+        "스마트폰"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "시장에서",
+        "시장에",
+        "가장",
+        "높은",
+        "유럽"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "플랫폼",
+        "경쟁력을",
+        "것이",
+        "경쟁이",
+        "점유율"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "lcd",
+        "차세대",
+        "lg"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "기술",
+        "ai",
+        "이는",
+        "디스플레이",
+        "시장에서"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "경험을",
+        "가장",
+        "기사",
+        "이를"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "oled",
+        "패널",
+        "반도체",
+        "사업",
+        "향후"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "이를",
+        "lg",
+        "산업",
+        "미국"
+      ]
+    }
+  ],
+  "evidence": {}
+}

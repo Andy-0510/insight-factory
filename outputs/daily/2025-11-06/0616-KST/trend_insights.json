@@ -1,0 +1,126 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "애플",
+        "맥북",
+        "아이폰",
+        "인도",
+        "미국"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "지스타",
+        "게임",
+        "즐길",
+        "오디세이",
+        "브랜드"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "oled",
+        "tv",
+        "중국",
+        "프리미엄",
+        "매출"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "무빙스타일",
+        "삼성전자",
+        "매장",
+        "사례를",
+        "소상공인"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "중국",
+        "흑자",
+        "구동",
+        "ceo",
+        "정철동"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "경주의",
+        "경북",
+        "문화",
+        "지사는",
+        "이철우"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "게이밍",
+        "보안",
+        "자동차",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "반도체",
+        "사업",
+        "핵심",
+        "배터리",
+        "소재"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "ai",
+        "건설",
+        "안전",
+        "인공지능",
+        "기술과"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "ai",
+        "sk",
+        "라인",
+        "영업이익",
+        "실시간"
+      ]
+    }
+  ],
+  "evidence": {}
+}

@@ -1,0 +1,107 @@
+{
+  "results": [
+    {
+      "technology": "삼성",
+      "metrics": {
+        "frequency": 2103,
+        "sentiment": 0.5353922069072723,
+        "events": {
+          "LAUNCH": 95,
+          "INVEST": 52,
+          "ORDER": 19,
+          "REGUL": 11,
+          "PARTNERSHIP": 11,
+          "CERT": 8
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "높은 뉴스 언급 빈도와 투자 및 출시 이벤트의 활발한 발생은 삼성 기술이 시장 성장 단계에 있음을 시사합니다."
+      }
+    },
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 310,
+        "sentiment": 0.5325044333934784,
+        "events": {
+          "LAUNCH": 24,
+          "INVEST": 7,
+          "ORDER": 4,
+          "CERT": 4,
+          "REGUL": 4,
+          "PARTNERSHIP": 2
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "높은 뉴스 언급 빈도와 안정적인 시장 감성 점수, 그리고 꾸준한 출시 이벤트 발생은 애플 기술이 성숙기에 접어들었음을 나타낸다."
+      }
+    },
+    {
+      "technology": "폴더블",
+      "metrics": {
+        "frequency": 77,
+        "sentiment": 0.5351182818412781,
+        "events": {
+          "LAUNCH": 12,
+          "ORDER": 4,
+          "INVEST": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "폴더블 기술 관련 출시 이벤트가 비교적 빈번하게 발생하고 시장의 긍정적 감성이 중간 정도를 나타내어 성장기에 진입한 것으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "패널",
+      "metrics": {
+        "frequency": 9,
+        "sentiment": 0.532453739643097,
+        "events": {
+          "LAUNCH": 16,
+          "INVEST": 6,
+          "ORDER": 2,
+          "CERT": 2,
+          "PARTNERSHIP": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "출시 이벤트가 투자를 포함한 다른 이벤트보다 많고 시장 감성이 긍정적인 편이라 성장기로 판단됩니다."
+      }
+    },
+    {
+      "technology": "메타",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.5377324819564819,
+        "events": {
+          "LAUNCH": 1,
+          "REGUL": 1
+        }
+      },
+      "analysis": {
+        "stage": "Emerging",
+        "reason": "뉴스 언급이 없고 투자나 수주 활동이 없는 반면, 출시가 1회 발생한 것으로 보아 시장의 초기 단계로 판단됩니다."
+      }
+    },
+    {
+      "technology": "양산",
+      "metrics": {
+        "frequency": 21,
+        "sentiment": 0.5336507499217987,
+        "events": {
+          "INVEST": 3,
+          "LAUNCH": 3,
+          "CERT": 1
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "뉴스 언급 빈도와 투자 및 출시 이벤트가 발생한 점을 고려할 때, 양산 기술은 시장 관심이 증가하고 상업화가 진행 중인 성장기에 있다고 판단됩니다."
+      }
+    }
+  ]
+}

@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "oled",
+        "패널",
+        "애플",
+        "oled 패널",
+        "폴더블"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ai",
+        "tv",
+        "삼성전자",
+        "전장",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "차세대",
+        "마이크로",
+        "oledos",
+        "ar",
+        "sharp"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "micro",
+        "micro led",
+        "led",
+        "연구"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "oled",
+        "led",
+        "홈프로젝터",
+        "ef",
+        "jdi"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "lcd",
+        "auo",
+        "대만",
+        "innolux"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "차세대",
+        "lg",
+        "차량용"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "삼성",
+        "마이크로",
+        "아트",
+        "rgb",
+        "바젤"
+      ]
+    }
+  ],
+  "evidence": {}
+}

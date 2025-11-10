@@ -1,0 +1,174 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "산나비",
+        "산나비 외전",
+        "외전",
+        "씌인"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ai",
+        "ceo",
+        "투명",
+        "올레드",
+        "테크"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "배터리",
+        "반도체",
+        "핵심",
+        "소재",
+        "미국"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "중국",
+        "oled",
+        "반도체",
+        "투자",
+        "6세대"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "브랜드",
+        "차량용",
+        "데뷔",
+        "플로",
+        "아시아"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "평균",
+        "개선",
+        "나온다",
+        "성장",
+        "소비자"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "씽크스테이션",
+        "엔비디아",
+        "클라우드",
+        "생성형"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "시진핑",
+        "트라이폴드",
+        "테크",
+        "폴더블",
+        "스마트폰"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "ai",
+        "갤럭시",
+        "시리즈",
+        "라인",
+        "가격"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "oled",
+        "패널",
+        "전망",
+        "tv",
+        "분기"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "tv",
+        "아트",
+        "가을",
+        "게이밍",
+        "게임"
+      ]
+    },
+    {
+      "topic_id": 11,
+      "topic_name": "Topic #11",
+      "summary": "",
+      "words": [
+        "ai",
+        "디스플레이",
+        "서비스",
+        "인공지능",
+        "플랫폼"
+      ]
+    },
+    {
+      "topic_id": 12,
+      "topic_name": "Topic #12",
+      "summary": "",
+      "words": [
+        "ai",
+        "미국",
+        "서비스",
+        "데이터센터",
+        "애플"
+      ]
+    },
+    {
+      "topic_id": 13,
+      "topic_name": "Topic #13",
+      "summary": "",
+      "words": [
+        "미국",
+        "경기",
+        "것을",
+        "없다",
+        "않은"
+      ]
+    }
+  ],
+  "evidence": {}
+}

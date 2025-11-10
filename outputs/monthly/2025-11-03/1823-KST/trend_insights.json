@@ -1,0 +1,1506 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 15\nPlease retry in 30.25855892s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.0-flash\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 15\n}\n, retry_delay {\n  seconds: 30\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "OLED AI 디스플레이 경쟁",
+      "summary": "한국, 미국, 중국이 차세대 OLED 디스플레이 기술, 특히 AI와 결합된 핵심 기술을 놓고 경쟁하는 상황을 다룬 뉴스. 삼성 등이 주요 기업으로 언급됨.",
+      "words": [
+        "oled",
+        "ai",
+        "디스플레이",
+        "중국",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "oled",
+        "중국",
+        "디스플레이",
+        "패널",
+        "6세대"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "갤럭시 폴더블폰",
+      "summary": "삼성 갤럭시 폴더블폰의 최신 트렌드(트라이폴드폰 포함) 및 아이폰과의 경쟁 구도 관련 뉴스.",
+      "words": [
+        "갤럭시",
+        "스마트폰",
+        "폴더블폰",
+        "폴더블",
+        "접는"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "갤럭시 히어로 페스타",
+      "summary": "갤럭시 시리즈를 대상으로 군인(일반 병사 포함)에게 특별 할인 혜택을 제공하는 히어로 페스타 관련 소식.",
+      "words": [
+        "히어로",
+        "할인된",
+        "갤럭시",
+        "히어로 페스타",
+        "페스타"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "LG 이지 TV",
+      "summary": "LG전자가 시니어 계층을 위해 출시한 '이지 TV'에 대한 뉴스 기사. 헬프 기능 등 사용 편의성을 강조한 제품으로 보임.",
+      "words": [
+        "시니어",
+        "이지",
+        "lg",
+        "tv",
+        "lg 이지"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "APEC CEO 테크 서밋",
+      "summary": "경주에서 열리는 APEC CEO 서밋에서 AI 기술 쇼케이스를 통해 투명성을 강조하는 행사 관련 내용.",
+      "words": [
+        "apec",
+        "ceo",
+        "경주",
+        "apec ceo",
+        "테크"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "토요타-삼성 사이니지",
+      "summary": "토요타 자동차 매장/전시장에 설치된 삼성전자 사이니지 디자인 및 전시 관련 내용.",
+      "words": [
+        "사이니지",
+        "토요타",
+        "사이니지를",
+        "자동차",
+        "삼성전자는"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "삼성D 기술 중국 유출",
+      "summary": "경찰이 삼성디스플레이 기술 유출 혐의를 포착하고 수사에 착수, 산업기술보호법 위반 혐의로 압수수색을 진행하는 사건. 중국으로의 기술 유출 여부가 핵심 쟁점.",
+      "words": [
+        "유출",
+        "삼성디스플레이",
+        "경찰은",
+        "경찰",
+        "기술 유출"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "마이크로 RGB TV",
+      "summary": "마이크로 RGB 기술을 적용한 TV 관련 뉴스를 다룸. 컬러 구현 방식과 관련된 특징을 포함.",
+      "words": [
+        "rgb",
+        "마이크로 rgb",
+        "마이크로",
+        "rgb tv는",
+        "micro rgb"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "메모리반도체 3분기 실적",
+      "summary": "3분기 메모리 반도체(D램, HBM) 시장의 수요와 판매, 매출 실적 및 파운드리 사업 관련 분석.",
+      "words": [
+        "메모리",
+        "분기",
+        "3분기",
+        "hbm",
+        "판매"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "반도체·로봇 부품 소재",
+      "summary": "반도체 및 로봇 산업 관련 부품, 소재, 장비, 배터리 등을 다루는 기업 설립 및 사업 동향 분석. 거래일 기준 시장 상황 포함.",
+      "words": [
+        "반도체",
+        "로봇",
+        "기업으로",
+        "거래일",
+        "부품"
+      ]
+    },
+    {
+      "topic_id": 11,
+      "topic_name": "엔씨 신작 게임쇼",
+      "summary": "엔씨소프트 신작 '브레이커스'가 도쿄 게임쇼에서 공개되었으며, OLED 게이밍 환경에서 속도감을 강조한 게임으로 소개됨.",
+      "words": [
+        "브레이커스",
+        "도쿄게임쇼",
+        "게이밍",
+        "omen",
+        "oled 게이밍"
+      ]
+    },
+    {
+      "topic_id": 12,
+      "topic_name": "반도체/디스플레이 주가",
+      "summary": "반도체, 디스플레이 소재 및 핵심 기술 관련 장비 기업들의 주가 변동과 한국거래소에서의 동향에 대한 분석 및 전망.",
+      "words": [
+        "장비",
+        "반도체",
+        "디스플레이",
+        "주가가",
+        "한국거래소에"
+      ]
+    },
+    {
+      "topic_id": 13,
+      "topic_name": "게이밍 모니터",
+      "summary": "ROG STRIX, MSI 등 고성능 게이밍 모니터(QD-OLED, DP, USB 지원) 관련 정보.",
+      "words": [
+        "게이밍",
+        "모니터",
+        "rog",
+        "msi",
+        "strix"
+      ]
+    },
+    {
+      "topic_id": 14,
+      "topic_name": "Topic #14",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "ai",
+        "데이터",
+        "ai 팩토리",
+        "팩토리",
+        "데이터를"
+      ]
+    },
+    {
+      "topic_id": 15,
+      "topic_name": "Topic #15",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "oled",
+        "oled 서밋",
+        "ut",
+        "모니터",
+        "서밋 2025"
+      ]
+    },
+    {
+      "topic_id": 16,
+      "topic_name": "Topic #16",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "자산운용",
+        "추석",
+        "증권",
+        "그로쓰리서치",
+        "스마트폰"
+      ]
+    },
+    {
+      "topic_id": 17,
+      "topic_name": "Topic #17",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "사랑받는",
+        "가장 사랑받는",
+        "호주",
+        "가장",
+        "most"
+      ]
+    },
+    {
+      "topic_id": 18,
+      "topic_name": "갤럭시 XR 헤드셋",
+      "summary": "구글 안드로이드 기반의 갤럭시 XR 헤드셋 개발 및 멀티모달 기술 관련 뉴스 토픽.",
+      "words": [
+        "xr",
+        "갤럭시",
+        "갤럭시 xr",
+        "안드로이드",
+        "구글"
+      ]
+    },
+    {
+      "topic_id": 19,
+      "topic_name": "Topic #19",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "rgb",
+        "tv",
+        "마이크로",
+        "led",
+        "프리미엄"
+      ]
+    },
+    {
+      "topic_id": 20,
+      "topic_name": "아이오닉 코스닥 IPO",
+      "summary": "아이오닉이라는 회사가 디스플레이 장비 관련 기술 신뢰성을 바탕으로 코스닥에 상장(IPO)하며, 공모가를 결정하는 복합적인 과정을 다루는 뉴스.",
+      "words": [
+        "신뢰성",
+        "상장",
+        "복합",
+        "장비",
+        "ipo"
+      ]
+    },
+    {
+      "topic_id": 21,
+      "topic_name": "Topic #21",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "청소기",
+        "청소",
+        "제트",
+        "무선",
+        "ai 제트"
+      ]
+    },
+    {
+      "topic_id": 22,
+      "topic_name": "Topic #22",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "이재용",
+        "삼성디스플레이",
+        "생산라인을",
+        "찾아",
+        "사업장을"
+      ]
+    },
+    {
+      "topic_id": 23,
+      "topic_name": "Topic #23",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "아이폰17",
+        "프로",
+        "아이폰",
+        "애플",
+        "a19"
+      ]
+    },
+    {
+      "topic_id": 24,
+      "topic_name": "Topic #24",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "코스피",
+        "사상",
+        "김현정",
+        "상승",
+        "코스피가"
+      ]
+    },
+    {
+      "topic_id": 25,
+      "topic_name": "Topic #25",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "주행",
+        "mini",
+        "전기",
+        "쿠퍼",
+        "suv"
+      ]
+    },
+    {
+      "topic_id": 26,
+      "topic_name": "Topic #26",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "샤오미",
+        "주석은",
+        "시진핑",
+        "주석이",
+        "이재명"
+      ]
+    },
+    {
+      "topic_id": 27,
+      "topic_name": "Topic #27",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "oled",
+        "연간",
+        "패널",
+        "흑자",
+        "lg디스플레이는"
+      ]
+    },
+    {
+      "topic_id": 28,
+      "topic_name": "Topic #28",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "장비",
+        "검사",
+        "패턴",
+        "양산",
+        "검사장비"
+      ]
+    },
+    {
+      "topic_id": 29,
+      "topic_name": "Topic #29",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "ai",
+        "에너지",
+        "비스포크 ai",
+        "비스포크",
+        "선보인다"
+      ]
+    },
+    {
+      "topic_id": 30,
+      "topic_name": "Topic #30",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "붉은사막",
+        "amd",
+        "팝업스토어",
+        "게이밍",
+        "메이플스토리"
+      ]
+    },
+    {
+      "topic_id": 31,
+      "topic_name": "Topic #31",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "sns",
+        "대한민국 sns",
+        "사람",
+        "대한민국",
+        "진정성"
+      ]
+    },
+    {
+      "topic_id": 32,
+      "topic_name": "Topic #32",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "애플워치",
+        "수면",
+        "운동",
+        "에어팟",
+        "애플"
+      ]
+    },
+    {
+      "topic_id": 33,
+      "topic_name": "Topic #33",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "머크",
+        "학생은",
+        "신소재공학과",
+        "imid",
+        "인하대"
+      ]
+    },
+    {
+      "topic_id": 34,
+      "topic_name": "Topic #34",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "퍼플렉시티",
+        "tv와",
+        "2025년형",
+        "모니터에",
+        "퍼플렉시티를"
+      ]
+    },
+    {
+      "topic_id": 35,
+      "topic_name": "Topic #35",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "아이폰",
+        "아이폰17",
+        "애플",
+        "ltpo",
+        "아이폰 17"
+      ]
+    },
+    {
+      "topic_id": 36,
+      "topic_name": "Topic #36",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "디자인",
+        "상을",
+        "레드닷",
+        "레드닷 디자인",
+        "lg"
+      ]
+    },
+    {
+      "topic_id": 37,
+      "topic_name": "Topic #37",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "oled",
+        "연구원은",
+        "북미",
+        "lg디스플레이",
+        "lg디스플레이의"
+      ]
+    },
+    {
+      "topic_id": 38,
+      "topic_name": "Topic #38",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "samsung",
+        "display",
+        "its",
+        "market",
+        "electronics"
+      ]
+    },
+    {
+      "topic_id": 39,
+      "topic_name": "Topic #39",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "중고폰",
+        "선진",
+        "전년",
+        "전년 동기",
+        "상반기"
+      ]
+    },
+    {
+      "topic_id": 40,
+      "topic_name": "Topic #40",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "구광모",
+        "부회장",
+        "회장은",
+        "인사",
+        "lg그룹"
+      ]
+    },
+    {
+      "topic_id": 41,
+      "topic_name": "Topic #41",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "그랜드십일절",
+        "인기",
+        "매일",
+        "할인",
+        "상품"
+      ]
+    },
+    {
+      "topic_id": 42,
+      "topic_name": "Topic #42",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "패널",
+        "출하량이",
+        "패널 출하량이",
+        "3분기",
+        "출하가"
+      ]
+    },
+    {
+      "topic_id": 43,
+      "topic_name": "Topic #43",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "아산",
+        "기업이",
+        "유치",
+        "입지",
+        "기업"
+      ]
+    },
+    {
+      "topic_id": 44,
+      "topic_name": "Topic #44",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "ef",
+        "라이프스튜디오",
+        "홈프로젝터",
+        "뷰티",
+        "피부"
+      ]
+    },
+    {
+      "topic_id": 45,
+      "topic_name": "Topic #45",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "최우수",
+        "동반성장지수",
+        "등급을",
+        "최우수 등급을",
+        "동반성장"
+      ]
+    },
+    {
+      "topic_id": 46,
+      "topic_name": "Topic #46",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "이재용",
+        "회장이",
+        "회장은",
+        "취임",
+        "회장의"
+      ]
+    },
+    {
+      "topic_id": 47,
+      "topic_name": "Topic #47",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "차량용",
+        "iaa",
+        "차량용 oled",
+        "부사장은",
+        "이주형"
+      ]
+    },
+    {
+      "topic_id": 48,
+      "topic_name": "Topic #48",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "할인",
+        "빅스마일데이",
+        "g마켓",
+        "매일",
+        "연중"
+      ]
+    },
+    {
+      "topic_id": 49,
+      "topic_name": "Topic #49",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "할인",
+        "구매",
+        "가전절",
+        "가습기",
+        "구매하면"
+      ]
+    },
+    {
+      "topic_id": 50,
+      "topic_name": "Topic #50",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "반도체",
+        "인도",
+        "철도",
+        "광전자",
+        "전시회"
+      ]
+    },
+    {
+      "topic_id": 51,
+      "topic_name": "Topic #51",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "광학",
+        "핵심 요약",
+        "요약",
+        "etf",
+        "sol"
+      ]
+    },
+    {
+      "topic_id": 52,
+      "topic_name": "Topic #52",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "3분기",
+        "영업이익",
+        "시총",
+        "3분기 영업이익",
+        "실적"
+      ]
+    },
+    {
+      "topic_id": 53,
+      "topic_name": "Topic #53",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "케이스",
+        "ams",
+        "icue",
+        "에어",
+        "레이저"
+      ]
+    },
+    {
+      "topic_id": 54,
+      "topic_name": "Topic #54",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "현대모비스는",
+        "차량용",
+        "차량용 반도체",
+        "반도체",
+        "현대모비스"
+      ]
+    },
+    {
+      "topic_id": 55,
+      "topic_name": "Topic #55",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "폴더블",
+        "패널",
+        "패널을",
+        "아이폰",
+        "oled"
+      ]
+    },
+    {
+      "topic_id": 56,
+      "topic_name": "Topic #56",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "tv",
+        "lcd",
+        "중국",
+        "3분기",
+        "삼성전자와"
+      ]
+    },
+    {
+      "topic_id": 57,
+      "topic_name": "Topic #57",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "디스플레이의",
+        "정철동",
+        "사장은",
+        "oled",
+        "흑자"
+      ]
+    },
+    {
+      "topic_id": 58,
+      "topic_name": "Topic #58",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "아이패드",
+        "폴더블",
+        "애플이",
+        "맥북",
+        "폴더블 아이패드"
+      ]
+    },
+    {
+      "topic_id": 59,
+      "topic_name": "Topic #59",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "누계",
+        "하이마트",
+        "롯데하이마트는",
+        "전년",
+        "안심"
+      ]
+    },
+    {
+      "topic_id": 60,
+      "topic_name": "Topic #60",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "포스터",
+        "한국앤컴퍼니그룹은",
+        "한국앤컴퍼니그룹",
+        "건축",
+        "투어"
+      ]
+    },
+    {
+      "topic_id": 61,
+      "topic_name": "Topic #61",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "기여한",
+        "윤수영",
+        "디스플레이",
+        "공로를",
+        "디스플레이의"
+      ]
+    },
+    {
+      "topic_id": 62,
+      "topic_name": "Topic #62",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "에센셜",
+        "프로",
+        "dell",
+        "기업용",
+        "dell pro"
+      ]
+    },
+    {
+      "topic_id": 63,
+      "topic_name": "Topic #63",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "사장은",
+        "이청",
+        "6세대",
+        "공정한",
+        "굉장히"
+      ]
+    },
+    {
+      "topic_id": 64,
+      "topic_name": "Topic #64",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "아트",
+        "삼성 아트",
+        "바젤",
+        "아트 바젤",
+        "삼성"
+      ]
+    },
+    {
+      "topic_id": 65,
+      "topic_name": "Topic #65",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "13주년",
+        "창립",
+        "창립 13주년",
+        "이청",
+        "기념사를"
+      ]
+    },
+    {
+      "topic_id": 66,
+      "topic_name": "Topic #66",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "코닝정밀소재",
+        "코닝의",
+        "오세현",
+        "유리",
+        "아산의"
+      ]
+    },
+    {
+      "topic_id": 67,
+      "topic_name": "Topic #67",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "공공디자인",
+        "문체부",
+        "공공디자인 페스티벌",
+        "페스티벌 2025",
+        "공존을"
+      ]
+    },
+    {
+      "topic_id": 68,
+      "topic_name": "Topic #68",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "사업",
+        "신용등급",
+        "3분기",
+        "lg전자",
+        "전장"
+      ]
+    },
+    {
+      "topic_id": 69,
+      "topic_name": "Topic #69",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "인사",
+        "인사를",
+        "추석",
+        "회장은",
+        "경영"
+      ]
+    },
+    {
+      "topic_id": 70,
+      "topic_name": "Topic #70",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "차량용",
+        "차량용 oled",
+        "차량용 디스플레이",
+        "sdv",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 71,
+      "topic_name": "Topic #71",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "평가에서",
+        "폴드7",
+        "소비자",
+        "플립7은",
+        "레이저60"
+      ]
+    },
+    {
+      "topic_id": 72,
+      "topic_name": "Topic #72",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "특허",
+        "특허를",
+        "상대로",
+        "확립된",
+        "소송을"
+      ]
+    },
+    {
+      "topic_id": 73,
+      "topic_name": "Topic #73",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "xr",
+        "무한",
+        "프로젝트",
+        "헤드셋",
+        "프로젝트 무한"
+      ]
+    },
+    {
+      "topic_id": 74,
+      "topic_name": "Topic #74",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "유리기판",
+        "이송",
+        "반도체 유리기판",
+        "티로보틱스",
+        "진공로봇"
+      ]
+    },
+    {
+      "topic_id": 75,
+      "topic_name": "Topic #75",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "전주",
+        "동기",
+        "철강",
+        "있음",
+        "전망"
+      ]
+    },
+    {
+      "topic_id": 76,
+      "topic_name": "Topic #76",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "etf",
+        "매수",
+        "tiger",
+        "부문",
+        "두산에너빌리티"
+      ]
+    },
+    {
+      "topic_id": 77,
+      "topic_name": "Topic #77",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "sns",
+        "대한민국 sns",
+        "사람",
+        "대한민국",
+        "콘텐츠를"
+      ]
+    },
+    {
+      "topic_id": 78,
+      "topic_name": "Topic #78",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "홍콩",
+        "세탁기",
+        "중국",
+        "가전",
+        "가전제품"
+      ]
+    },
+    {
+      "topic_id": 79,
+      "topic_name": "Topic #79",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "비전",
+        "애플은",
+        "아이브는",
+        "애플",
+        "애플이"
+      ]
+    },
+    {
+      "topic_id": 80,
+      "topic_name": "Topic #80",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "교수",
+        "연구팀은",
+        "연구는",
+        "materials",
+        "발광"
+      ]
+    },
+    {
+      "topic_id": 81,
+      "topic_name": "Topic #81",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "1분기",
+        "증가한",
+        "신수요",
+        "디스플레이산업",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 82,
+      "topic_name": "Topic #82",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "연구원은",
+        "kh바텍",
+        "실적",
+        "블랙pdl",
+        "전망했다"
+      ]
+    },
+    {
+      "topic_id": 83,
+      "topic_name": "Topic #83",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "상승한",
+        "사상",
+        "지수는",
+        "달러를",
+        "시총"
+      ]
+    },
+    {
+      "topic_id": 84,
+      "topic_name": "Topic #84",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "괴수",
+        "스팀",
+        "괴수 8호",
+        "8호",
+        "정식"
+      ]
+    },
+    {
+      "topic_id": 85,
+      "topic_name": "Topic #85",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "삼성디스플레이는",
+        "oled의",
+        "차량용",
+        "iaa 모빌리티",
+        "iaa"
+      ]
+    },
+    {
+      "topic_id": 86,
+      "topic_name": "Topic #86",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "aqua",
+        "정수",
+        "필터",
+        "교체",
+        "개발 노하우를"
+      ]
+    },
+    {
+      "topic_id": 87,
+      "topic_name": "Topic #87",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "상품을",
+        "할인",
+        "선보인다",
+        "구매",
+        "혜택을"
+      ]
+    },
+    {
+      "topic_id": 88,
+      "topic_name": "Topic #88",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "아이파크",
+        "운정 아이파크",
+        "운정",
+        "gtx",
+        "아이파크 시티는"
+      ]
+    },
+    {
+      "topic_id": 89,
+      "topic_name": "Topic #89",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "유럽",
+        "ifa",
+        "가전",
+        "독일",
+        "로봇청소기"
+      ]
+    },
+    {
+      "topic_id": 90,
+      "topic_name": "Topic #90",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "수출이",
+        "ict",
+        "수출",
+        "컴퓨터",
+        "수출은"
+      ]
+    },
+    {
+      "topic_id": 91,
+      "topic_name": "Topic #91",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "미성년자",
+        "주주",
+        "1인당",
+        "상장사",
+        "평균"
+      ]
+    },
+    {
+      "topic_id": 92,
+      "topic_name": "Topic #92",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "퀴즈",
+        "정답은",
+        "이다",
+        "보상을",
+        "신한"
+      ]
+    },
+    {
+      "topic_id": 93,
+      "topic_name": "Topic #93",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "다크",
+        "볼보",
+        "2026년식",
+        "폴스타",
+        "suv"
+      ]
+    },
+    {
+      "topic_id": 94,
+      "topic_name": "Topic #94",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "렌즈",
+        "t30",
+        "초점",
+        "필름",
+        "미러리스"
+      ]
+    },
+    {
+      "topic_id": 95,
+      "topic_name": "Topic #95",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "산학연협력",
+        "엑스포",
+        "교육부",
+        "인공지능",
+        "신산업"
+      ]
+    },
+    {
+      "topic_id": 96,
+      "topic_name": "Topic #96",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "순매수",
+        "기관",
+        "외국인",
+        "순매도",
+        "기관은"
+      ]
+    },
+    {
+      "topic_id": 97,
+      "topic_name": "Topic #97",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "아이폰",
+        "a20",
+        "아이폰20",
+        "2027년",
+        "아이폰18"
+      ]
+    },
+    {
+      "topic_id": 98,
+      "topic_name": "Topic #98",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "사장은",
+        "하반기",
+        "하반기 실적",
+        "6세대",
+        "이청"
+      ]
+    },
+    {
+      "topic_id": 99,
+      "topic_name": "Topic #99",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "amg",
+        "cle",
+        "메르세데스",
+        "쿠페",
+        "amg cle"
+      ]
+    },
+    {
+      "topic_id": 100,
+      "topic_name": "Topic #100",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "dd퇴근길",
+        "xr",
+        "밝혔습니다",
+        "ai",
+        "갤럭시"
+      ]
+    },
+    {
+      "topic_id": 101,
+      "topic_name": "Topic #101",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "2025년",
+        "2024년",
+        "대표이사",
+        "반도체",
+        "2023년"
+      ]
+    },
+    {
+      "topic_id": 102,
+      "topic_name": "Topic #102",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "엔비디아",
+        "ai",
+        "gpu",
+        "엔비디아의",
+        "엔비디아는"
+      ]
+    },
+    {
+      "topic_id": 103,
+      "topic_name": "Topic #103",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "화합물반도체",
+        "gan",
+        "sic",
+        "배터리는",
+        "전력"
+      ]
+    },
+    {
+      "topic_id": 104,
+      "topic_name": "Topic #104",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "희망퇴직을",
+        "희망퇴직",
+        "인력",
+        "lg전자가",
+        "lg전자는"
+      ]
+    },
+    {
+      "topic_id": 105,
+      "topic_name": "Topic #105",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "닌텐도",
+        "삼성 oled",
+        "oled tv로",
+        "닌텐도 스위치2",
+        "스위치2"
+      ]
+    },
+    {
+      "topic_id": 106,
+      "topic_name": "Topic #106",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "아이패드",
+        "태블릿 pc용",
+        "pc용 oled",
+        "pc용",
+        "태블릿"
+      ]
+    },
+    {
+      "topic_id": 107,
+      "topic_name": "Topic #107",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "단열",
+        "난연",
+        "단열 난연",
+        "pps",
+        "복합소재"
+      ]
+    },
+    {
+      "topic_id": 108,
+      "topic_name": "Topic #108",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "iaa",
+        "모빌리티",
+        "부사장은",
+        "oled는",
+        "이주형"
+      ]
+    },
+    {
+      "topic_id": 109,
+      "topic_name": "Topic #109",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "kai",
+        "시뮬레이터",
+        "kai는",
+        "비행",
+        "드론"
+      ]
+    },
+    {
+      "topic_id": 110,
+      "topic_name": "Topic #110",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "마이크로 led",
+        "마이크로",
+        "led",
+        "아이오닉",
+        "스마트워치"
+      ]
+    },
+    {
+      "topic_id": 111,
+      "topic_name": "Topic #111",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "샤오미",
+        "샤오미는",
+        "오프라인",
+        "조니",
+        "xiaomi"
+      ]
+    },
+    {
+      "topic_id": 112,
+      "topic_name": "Topic #112",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "인텔",
+        "팝업",
+        "ai pc",
+        "pc",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 113,
+      "topic_name": "Topic #113",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "로봇",
+        "ltom",
+        "뉴로메카",
+        "뉴로메카는",
+        "중국 로봇"
+      ]
+    },
+    {
+      "topic_id": 114,
+      "topic_name": "Topic #114",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "포르쉐",
+        "카이엔",
+        "인테리어",
+        "무드",
+        "시트"
+      ]
+    },
+    {
+      "topic_id": 115,
+      "topic_name": "Topic #115",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "v1",
+        "이비인후과",
+        "v1 smart",
+        "동아참메드는",
+        "동아참메드"
+      ]
+    },
+    {
+      "topic_id": 116,
+      "topic_name": "Topic #116",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "ls일렉트릭",
+        "ls일렉트릭은",
+        "초격차",
+        "디스플레이",
+        "혁신공정사업"
+      ]
+    },
+    {
+      "topic_id": 117,
+      "topic_name": "Topic #117",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "이청",
+        "사장은",
+        "13주년",
+        "캠페인을",
+        "창립"
+      ]
+    },
+    {
+      "topic_id": 118,
+      "topic_name": "Topic #118",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "순이익률을",
+        "5년간 평균",
+        "중국",
+        "5년간",
+        "저가"
+      ]
+    },
+    {
+      "topic_id": 119,
+      "topic_name": "Topic #119",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "열화상",
+        "저희가",
+        "광학",
+        "ar",
+        "라온텍은"
+      ]
+    },
+    {
+      "topic_id": 120,
+      "topic_name": "Topic #120",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "쿠쿠",
+        "보관",
+        "김치냉장고",
+        "미식컬렉션",
+        "쿠쿠는"
+      ]
+    },
+    {
+      "topic_id": 121,
+      "topic_name": "Topic #121",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "sk온",
+        "페라리",
+        "조지아",
+        "조지아주",
+        "이석희"
+      ]
+    },
+    {
+      "topic_id": 122,
+      "topic_name": "Topic #122",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "tsmc의",
+        "tsmc는",
+        "cowos",
+        "cxmt는",
+        "tsmc"
+      ]
+    },
+    {
+      "topic_id": 123,
+      "topic_name": "Topic #123",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "lg디스플레이",
+        "lcd",
+        "2분기",
+        "oled",
+        "광저우"
+      ]
+    },
+    {
+      "topic_id": 124,
+      "topic_name": "Topic #124",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "lg이노텍",
+        "고부가",
+        "lg이노텍은",
+        "폴디드",
+        "카메라"
+      ]
+    }
+  ],
+  "evidence": {}
+}

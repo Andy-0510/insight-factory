@@ -1,0 +1,150 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "차세대",
+        "xr",
+        "마이크로",
+        "구동"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "오디세이",
+        "게이밍",
+        "모니터",
+        "패션",
+        "메이플"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "미국",
+        "안전",
+        "반면",
+        "금리",
+        "없다"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "삼성전자",
+        "경기",
+        "sk",
+        "샤오미"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "pc방",
+        "브랜드",
+        "프리미엄",
+        "게이밍",
+        "엔비디아"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "에너지",
+        "서비스",
+        "노트북",
+        "성능을"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "빅세일",
+        "와우빅세일",
+        "브랜드",
+        "베스트",
+        "추천"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "반도체",
+        "핵심",
+        "소재",
+        "사업",
+        "배터리"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "ai",
+        "클라우드",
+        "gpu",
+        "엔비디아",
+        "인프라"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "oled",
+        "특허",
+        "중국",
+        "미국",
+        "스마트폰"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "선보였다",
+        "미디어",
+        "그의",
+        "중국",
+        "패션"
+      ]
+    },
+    {
+      "topic_id": 11,
+      "topic_name": "Topic #11",
+      "summary": "",
+      "words": [
+        "인기",
+        "tv",
+        "할인",
+        "자사주",
+        "로켓직구"
+      ]
+    }
+  ],
+  "evidence": {}
+}

@@ -1,0 +1,78 @@
+{
+  "results": [
+    {
+      "technology": "양산",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.506232758363088,
+        "events": {
+          "LAUNCH": 24,
+          "INVEST": 24,
+          "ORDER": 13,
+          "CERT": 2
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "뉴스 언급은 없지만 투/출/수 이벤트가 활발하게 발생하고 시장 감성 점수가 0.5 이상으로 긍정적이므로 성장기에 해당한다고 판단됩니다."
+      }
+    },
+    {
+      "technology": "스마트폰",
+      "metrics": {
+        "frequency": 46,
+        "sentiment": 0.5074232816696167,
+        "events": {
+          "LAUNCH": 56,
+          "INVEST": 21,
+          "CERT": 6,
+          "ORDER": 3,
+          "REGUL": 3,
+          "PARTNERSHIP": 1
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "스마트폰은 뉴스 언급 빈도가 비교적 낮고 시장 감성 점수가 중간 수준이며 출시 이벤트가 투자를 크게 상회하는 등 성숙기에 접어든 것으로 판단됩니다."
+      }
+    },
+    {
+      "technology": "디스플레이",
+      "metrics": {
+        "frequency": 102,
+        "sentiment": 0.5022417902946472,
+        "events": {
+          "INVEST": 333,
+          "LAUNCH": 330,
+          "ORDER": 55,
+          "PARTNERSHIP": 37,
+          "REGUL": 34,
+          "CERT": 31
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "디스플레이 기술은 높은 투자 및 출시 건수를 보이며, 뉴스 언급 빈도와 시장 감성 점수가 중간 수준으로 성장기에 해당합니다."
+      }
+    },
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 170,
+        "sentiment": 0.0,
+        "events": {
+          "LAUNCH": 207,
+          "INVEST": 70,
+          "REGUL": 29,
+          "CERT": 23,
+          "PARTNERSHIP": 15,
+          "ORDER": 13
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "높은 출시 빈도와 비교적 낮은 투자 및 수주 빈도, 그리고 매우 낮은 시장 감성 점수는 애플 기술이 성숙기에 접어들었음을 시사합니다."
+      }
+    }
+  ]
+}

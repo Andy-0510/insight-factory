@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "oled",
+        "기술",
+        "디스플레이",
+        "중국",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "oled",
+        "반도체",
+        "패널",
+        "디스플레이",
+        "rgb"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "산업",
+        "기술",
+        "핵심",
+        "산업의"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "반도체",
+        "기술",
+        "디스플레이",
+        "애플",
+        "비전"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "사업",
+        "lg전자",
+        "lg전자는",
+        "실적",
+        "3분기"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "자동차",
+        "매출",
+        "차량용"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "vr",
+        "높은",
+        "led",
+        "일부",
+        "없는"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "기술을",
+        "아닌",
+        "노트북",
+        "애플",
+        "모두"
+      ]
+    }
+  ],
+  "evidence": {}
+}
