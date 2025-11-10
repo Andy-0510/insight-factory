@@ -133,11 +133,11 @@ def call_gemini_for_section_summary(section_title, context_summary):
 def call_gemini_for_monthly_summary(context):
     """LLM 호출: 월간 Executive Summary 생성"""
     prompt = f"""
-    당신은 디스플레이 산업 최고 전략 책임자(CSO)입니다.
+    당신은 디스플레이 제조 기업의 최고 전략 책임자 입니다.
     아래는 지난 한 달간의 시장 데이터 분석 결과 요약입니다. 
     이 데이터를 종합하여 CEO 및 경영진을 위한 '월간 전략 보고서 Executive Summary'를 Markdown 형식으로 작성해주세요.
     지난달 시장의 핵심적인 변화, 우리에게 가장 큰 기회와 위협 요인, 그리고 다음 분기에 집중해야 할 최우선 전략 방향을 중심으로 서술해주세요.
-    
+    답변 이외 군더더기는 절대로 포함하지 않으며, **본론부터 바로 답변**해주세요. **일반론적인 논지와 전개는 지양**하며, **주어진 데이터에 충실히 근거**하여 **깊이 있는 통찰**을 제공해주세요.
     ### 월간 데이터 요약:
     {json.dumps(context, ensure_ascii=False, indent=2)}
 
@@ -149,7 +149,7 @@ def call_gemini_for_monthly_summary(context):
 def call_gemini_for_positioning_analysis(topics_context):
     """LLM 호출: 토픽 데이터를 기반으로 사분면 분석, 인사이트, 시사점을 JSON으로 생성"""
     prompt = f"""
-    당신은 최고 전략 책임자(CSO)입니다. 아래는 이번 달 시장의 핵심 토픽 데이터입니다.
+    당신은 최고 전략 책임자 입니다. 아래는 이번 달 시장의 핵심 토픽 데이터입니다.
     ### 핵심 토픽 데이터:
     {json.dumps(topics_context, ensure_ascii=False, indent=2)}
 
@@ -507,7 +507,7 @@ def prepare_monthly_report_data():
         {'number': '2', 'id': 'competitors', 'title': '주요 기업의 전략적 의도 분석', 'subtitle': '경쟁 구도 분석 · Company Network'},
         {'number': '3', 'id': 'risk', 'title': 'Market Risk Management', 'subtitle': '리스크/이슈 탐지 · Mitigation Plan'},
         {'number': '4', 'id': 'actionplan', 'title': '전략 방향성 및 실행 방안 제안', 'subtitle': '중장기 전략 제안 · Resource Allocation'},
-        {'number': '🍳', 'id': 'opportunities', 'title': '신사업 기회 발굴', 'subtitle': '데이터 기반 신사업 아이디어 · Top 5 Opportunities'},
+        {'number': '🔍', 'id': 'opportunities', 'title': '신사업 기회 발굴', 'subtitle': '데이터 기반 신사업 아이디어 · Top 5 Opportunities'},
     ]
     
     # --- ▼▼▼ Section 0: Executive Summary & KPI ▼▼▼ ---

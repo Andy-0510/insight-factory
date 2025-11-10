@@ -10,11 +10,8 @@
         body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f7fa; color: #1a2332; padding: 20px; line-height: 1.6; }
         .container { max-width: 960px; /* <- 1200px; */ margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
         .header { background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%); color: #ffffff; padding: 32px 40px; /*border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); */ }   
-        /* .header-content { max-width: 1200px; margin: 0 auto; padding: 0 40px; } */
         .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; } /* 간격 조정 */
         .logo { font-size: 12px; font-weight: 600; letter-spacing: 2px; color: #0066ff; text-transform: uppercase; /* display: flex; align-items: center; gap: 12px; */ } /* 일간 리포트 로고 스타일 */
-        /* .logo-icon { width: 40px; height: 40px; background: #0066ff; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-size: 20px; } */
-        /* .logo-text { font-size: 14px; font-weight: 600; letter-spacing: 1.5px; text-transform: uppercase; } */
         .date-range { font-size: 13px; color: #a0aec0; } /* 일간 리포트 날짜 스타일 */
         .title { font-size: 28px; font-weight: 700; margin-bottom: 8px; } /* 일간 리포트 제목 스타일 */
         .subtitle { font-size: 14px; color: #cbd5e0; } /* 일간 리포트 부제목 스타일 */
@@ -68,16 +65,6 @@
         .metric-value { font-size: 20px; font-weight: 700; color: #1a2332; }
         .competitor-insight { font-size: 13px; color: #4a5568; line-height: 1.6; padding: 12px; background: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 8px; } /* 스타일 변경 */
         .weak-signals { display: grid; gap: 20px; }
-        /*.signal-card { background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%); border: 2px solid #e2e8f0; border-left: 6px solid #00b8a9; border-radius: 12px; padding: 28px; }*/
-        /*.signal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }*/
-        /*.signal-title { font-size: 18px; font-weight: 700; color: #1a2332; flex: 1; }*/
-        /*.signal-badges { display: flex; gap: 8px; }*/
-        /*.signal-badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; }*/
-        /*.badge-emerging { background: #e6f7ff; color: #0066ff; }*/
-        /*.badge-confidence { background: #fffbeb; color: #d97706; } /* 색상 변경 */
-        /* .signal-content { display: grid; grid-template-columns: 1fr; gap: 24px; } 1단 그리드 */
-        /*.signal-content { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; } /* 2:1 비율의 2단 그리드로 변경 */
-        /* .signal-description { font-size: 14px; color: #4a5568; line-height: 1.7; margin-bottom: 16px; }*/
         .signal-card { background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%); border: 2px solid #e2e8f0; border-left: 6px solid #00b8a9; border-radius: 12px; padding: 28px; }        
         .signal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
         .signal-title { font-size: 18px; font-weight: 700; color: #1a2332; flex: 1; }
@@ -88,12 +75,10 @@
         .signal-content { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
         .signal-description { font-size: 14px; color: #4a5568; line-height: 1.7; }
         .signal-meta { background: white; border-radius: 8px; padding: 16px; }
-        /*.signal-meta { background: white; border-radius: 8px; padding: 16px; border: 1px solid #e2e8f0; }*/
         .meta-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0; }
         .meta-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
         .meta-label { font-size: 11px; color: #718096; text-transform: uppercase; margin-bottom: 4px; }
         .meta-value { font-size: 14px; font-weight: 600; color: #1a2332; }
-        /*.action-section { background: #f7fafc; border-radius: 8px; padding: 20px; margin-top: 16px; }*/
         .action-title { font-size: 14px; font-weight: 700; color: #0066ff; text-transform: uppercase; margin-bottom: 12px; }
         .action-items { display: grid; gap: 12px; }
         .action-item { display: flex; gap: 12px; align-items: baseline; }
@@ -101,7 +86,7 @@
         .action-text { font-size: 13px; color: #2d3748; line-height: 1.5; flex: 1; }
         .momentum-table { width: 100%; border-collapse: collapse; margin-top: 1em; } /* 테이블 상단 여백 추가 */
         .momentum-table thead { background: #f7fafc; }
-        .momentum-table th { padding: 16px; text-align: left; font-size: 12px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0; }
+        .momentum-table th { padding: 16px; text-align: center; font-size: 12px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0; }
         .momentum-table td { padding: 16px; font-size: 13px; color: #2d3748; border-bottom: 1px solid #e2e8f0; vertical-align: middle; } /* 수직 정렬 추가 */
         .momentum-table tbody tr:hover { background: #f0f9ff; } /* 호버 색상 변경 */
         .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #0066ff; color: white; border-radius: 50%; font-weight: 700; font-size: 14px; }
@@ -113,6 +98,20 @@
         .footer-content { max-width: 1200px; margin: 0 auto; font-size: 13px; color: #718096; }
         .footer-links { margin-top: 16px; display: flex; justify-content: center; gap: 24px; }
         .footer-link { color: #0066ff; text-decoration: none; font-weight: 600; }
+        .article-summary {
+            font-size: 15px;
+            color: #4a5568;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        .section-support {
+            font-size: 14px;
+            color: #535a64;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
     </style>
 </head>
 <body>
@@ -124,19 +123,13 @@
                 <div class="date">{{ date_range_display }}</div>
             </div>
             <div class="title">Weekly Report</div>
-            <div class="subtitle">이번 주 트랜드 분석 & 다음주 실행 계획 수립 지원</div>
+            <div class="subtitle">이번 주 트렌드 분석 및 다음 주 실행 계획 지원</div>
         </div>
     
         <div class="section">
             <div class="section-header">
                 <div class="section-number">1</div>
                 <div class="section-title">주간 트렌드 요약</div>
-                <div class="section-subtitle">금주의 인텔리전스 요약</div>
-            </div>
-
-            <div class="executive-summary">
-                <div class="summary-title">🎯 이번 주 핵심 인사이트</div>
-                <div class="summary-text">{{ executive_summary | safe }}</div>
             </div>
 
             <div class="key-insights">
@@ -161,39 +154,28 @@
                     <div class="insight-description">{{ event_type_summary }}</div>
                 </div>
             </div>
-            <!--
-            <div class="action-section">
-                <div class="action-title">권고 액션</div>
-                <div class="action-items">
-                    {% for action in recommended_actions %}
-                    <div class="action-item">
-                        <div class="action-label">Action {{ loop.index }}</div>
-                        <div class="action-text">{{ action }}</div>
-                    </div>
-                    {% else %}
-                    <div class="action-item">
-                         <div class="action-text">다음 주 실행 계획을 검토하세요.</div>
-                    </div>
-                    {% endfor %}
-                </div>
+
+            <div class="executive-summary">
+                <div class="summary-title">🎯 이번 주 핵심 인사이트</div>
+                <div class="article-summary">{{ executive_summary | safe }}</div>                
             </div>
-            -->
         </div>
 
         <div class="section">
             <div class="section-header">
                 <div class="section-number">2</div>
                 <div class="section-title">주간 시장 테마</div>
-                <div class="section-subtitle">주간 핵심 토픽 및 모멘텀</div>
+                <div class="section-subtitle">주요 키워드 및 토픽</div>
             </div>
             
-            <div class="visualization">
-                <img src="{{ wordcloud_image_path }}" alt="주간 키워드 워드클라우드" class="report-graph">
-            </div>
+            <h4>[주간 키워드] 이번 주 디스플레이 시장의 주요 관심사</h4>
+            <img src="{{ wordcloud_image_path }}" alt="주간 키워드 워드클라우드" class="report-graph">
+            <div class="section-subtitle">단어 크기=빈도 수 x Domain 가중치</div> <br>
 
-            <div class="visualization">
-                <img src="{{ weekly_topic_barchart_path }}" alt="주간 토픽 막대 바 그래프" class="report-graph">
-            </div>
+            <h4>[주간 토픽] 시장의 큰 흐름을 살펴보고, 그 속에서 중요한 의미를 찾습니다.</h4>
+            <img src="{{ weekly_topic_barchart_path }}" alt="주간 토픽 막대 바 그래프" class="report-graph">
+            <div class="section-subtitle">Weight: 토픽(시장 테마) 내 해당 키워드(구성요소)의 영향력</div> <br>
+
 
             <div class="theme-grid">
                 {% for theme in market_themes %}
@@ -226,18 +208,30 @@
         <div class="section">
             <div class="section-header">
                 <div class="section-number">3</div>
-                <div class="section-title">트렌드 모멘텀 변화</div>
-                <div class="section-subtitle">주요 신호 변화 추이</div>
+                <div class="section-title">시장 트렌드 가속도 분석</div>
             </div>
+            <div class="section-support">
+                [설명] 주요 트렌드의 상승·하락 속도를 정량적으로 분석함<br>
+                [역할] 시장 변화에 맞춰 우선순위를 정하고, 빠른 대응 전략을 세울 수 있도록 도움
+            </div> <br>
+                
+            <img src="{{ strong_signals_bar_image_path }}" alt="주간 강한 신호 바차트" class="report-graph"> <br>
 
-            <div class="visualization">
-                 <img src="{{ strong_signals_bar_image_path }}" alt="주간 강한 신호 바차트" class="report-graph">
+            {% if portfolio_actions %}
+            <div class="action-section"> <br>
+                <div class="action-title">주요 시그널 추세에 따른 권고</div>
+                <div class="action-items">
+                     {% for action in portfolio_actions %}
+                     <div class="action-item">
+                         <div class="action-label">Action {{ loop.index }}</div>
+                         <div class="action-text">{{ action }}</div>
+                     </div>
+                     {% endfor %}
+                </div>
             </div>
-            <!--
-            <div class="visualization" style="margin-top: 32px;">
-                 <img src="{{ momentum_bar_image_path }}" alt="주간 상승/하강 모멘텀 차트" class="report-graph">
-            </div>
-            -->
+            {% endif %}
+            <br>
+
             <table class="momentum-table">
                 <thead>
                     <tr>
@@ -246,7 +240,7 @@
                         <th>모멘텀 점수 <br> (z-like)</th>
                         <th>주간 변화</th>
                         <th>추세</th>
-                        <th>권고사항 (AI)</th>
+                        <th>권고사항</th>
                     </tr>
                 </thead>
                 <tbody>
@@ -264,28 +258,19 @@
                 </tbody>
             </table>
 
-            {% if portfolio_actions %}
-            <div class="action-section"> <br>
-                <div class="action-title">주요 시그널 추세에 따른 권고</div>
-                <div class="action-items">
-                     {% for action in portfolio_actions %}
-                     <div class="action-item">
-                         <div class="action-label">Action {{ loop.index }}</div>
-                         <div class="action-text">{{ action }}</div>
-                     </div>
-                     {% endfor %}
-                </div>
-            </div>
-            {% endif %}
         </div>
 
 
         <div class="section">
             <div class="section-header">
                 <div class="section-number">4</div>
-                <div class="section-title">경쟁사 활동 강도</div>
-                <div class="section-subtitle">주간 경쟁 동향 분석</div>
+                <div class="section-title">주요 기업의 주간 활동 분석</div>
+                <div class="section-subtitle">언론 노출량 기반 기업 활동성 평가</div>
             </div>
+            <div class="section-support">
+                [설명] 기사 속 기업 언급량과 변화를 정량적으로 분석함<br>
+                [역할] 주요 기업의 활동성을 파악해 대응 전략을 세울 수 있도록 도움
+            </div> <br>
 
             <div class="competitor-grid">
                 {% for competitor in competitor_analysis %}
@@ -344,6 +329,10 @@
                 <div class="section-title">미래 신호 발견</div>
                 <div class="section-subtitle">금주의 Weak Signal 분석</div>
             </div>
+            <div class="section-support">
+                [설명] 이번 주 급등한 초기 신호를 통계적으로 분석해, 그 의미를 예측함<br>
+                [역할] 시장 변화의 징후를 선제적으로 탐지해 대응 전략을 세울 수 있도록 도움
+            </div> <br>
 
             <div class="weak-signals">
                 {% for signal in weak_signals %}

@@ -615,12 +615,12 @@ def main():
     
     try:
         if use_pro_mode():
-            topics_obj = pro_build_topics_bertopic(docs_today or [], topn=10)
+            topics_obj = pro_build_topics_bertopic(docs_today or [], topn=25)
         else:
-            topics_obj = build_topics_lite(docs_today or [], max_features=8000, topn=10)
+            topics_obj = build_topics_lite(docs_today or [], max_features=8000, topn=25)
     except Exception as e:
         print(f"[WARN] Pro 토픽 실패, Lite로 폴백: {e}")
-        topics_obj = build_topics_lite(docs_today or [], max_features=8000, topn=10)
+        topics_obj = build_topics_lite(docs_today or [], max_features=8000, topn=25)
 
     keywords_obj = load_json("outputs/keywords.json", {"keywords": []})
     top_keywords = [k.get("keyword") for k in keywords_obj.get("keywords", [])[:10]]

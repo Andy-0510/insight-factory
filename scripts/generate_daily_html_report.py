@@ -402,7 +402,7 @@ def prepare_report_data():
     article_count = 0
     article_wow_change = "N/A"
     wow_change_class = "change-neutral"
-    article_z_score = "< ±2σ"# <-- 이렇게 변경
+    article_z_score = "±6.7% 이하"# <-- 이렇게 변경
     latest_data_date_str = today_str
 
     if not df_ts.empty:
