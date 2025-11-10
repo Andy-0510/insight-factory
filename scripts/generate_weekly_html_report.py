@@ -126,18 +126,20 @@ def call_gemini_for_weekly_summary(context):
 
     ### 작성 가이드 (Markdown 형식):
     1. **[핵심 맥락]**: 데이터를 관통하는 가장 중요한 시장의 흐름 1~2가지를 설명해주세요.
-    2. **[전략적 인사이트]**: 이 흐름이 우리 비즈니스에 주는 기회 또는 위협 요소를 분석해주세요.
+    2. **[INSIGHT]**: 이 흐름이 우리 비즈니스에 주는 기회 또는 위협 요소를 분석해주세요.
     3. **[추천 Action Items]**: 다음 주에 팀이 우선적으로 실행해야 할 구체적인 액션 아이템 2가지를 제안해주세요.
     4. 각 항목을 명확하게 구분하고, 전문가의 시각에서 간결하고 명확한 톤으로 작성해주세요.
     ### 출력 형식 (Markdown):
     #### [핵심 맥락]
-    - (분석 내용)
-
-    #### [전략적 인사이트]
-    - (분석 내용)
-
+    - (분석 내용 핵심 문장)
+        - (분석 내용 설명)
+        - (분석 내용 설명)
+    #### [INSIGHT]
+    - (핵심 문장)
+        - (내용 설명)
+        - (내용 설명)
     #### [추천 Action Items]
-    (설명 없이, 바로 Markdown 불릿(-)으로 2가지 제안을 작성해주세요.)
+        - (설명 없이, 바로 Markdown 불릿(-)으로 2가지 제안을 작성해주세요.)
     """
     return _call_gemini_safe(prompt, default_resp="주간 AI 요약 생성 실패")
 # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
@@ -246,7 +248,7 @@ def call_gemini_for_weekly_insight(weak_signals: list) -> dict:
 def call_gemini_for_momentum_recommendation(term, z_like_score, change_display):
     """LLM을 호출하여 모멘텀 변화에 대한 권고사항을 생성합니다."""
     prompt = f"""
-    디스플레이 제조 기업의 시장 분석가로서, '{term}' 키워드의 주간 모멘텀 변화에 대한 **실행 중심의 권고사항**을 작성해주세요.
+    디스플레이 제조 기업의 시장 분석가로서, '{term}' 키워드의 주간 모멘텀 변화에 대한 **실행 중심의 단기 권고사항**을 작성해주세요.
     - 주간 평균 모멘텀 (z-like): {z_like_score:.2f}
     - 주간 변화량: {change_display}
 
@@ -273,14 +275,14 @@ def call_gemini_for_momentum_recommendation(term, z_like_score, change_display):
 def call_gemini_for_portfolio_actions(momentum_summary):
     """LLM을 호출하여 모멘텀 분석 기반 포트폴리오/전략 조정 권고를 생성합니다."""
     prompt = f"""
-    당신은 전략 기획 담당자입니다. 아래는 이번 주 주요 키워드들의 모멘텀 변화 요약입니다.
+    당신은 디스플레이 제조 기업의 전략 기획 담당자입니다. 아래는 이번 주 주요 키워드들의 모멘텀 변화 요약입니다.
     ### 주간 모멘텀 요약:
     {momentum_summary}
 
-    이 정보를 바탕으로, 다음 분기 **기술/제품 포트폴리오** 관점에서 고려해야 할 **전략적 시사점** 또는 **조정 방향**에 대한 권고 사항 **2가지**를 제안해주세요. (각 제안은 한 문장)
+    이 정보를 바탕으로, **기술/제품 포트폴리오** 관점에서 고려해야 할 **전략적 시사점** 또는 **조정 방향**에 대한 단기적 권고 사항 **2가지**를 제안해주세요. (각 제안은 한 문장)
     ### 포트폴리오 권고 (2가지):
-    - (제안 1)
-    - (제안 2)
+        - 
+        - 
     """
     llm_response = _call_gemini_safe(prompt, default_resp="포트폴리오 권고 생성 실패.")
     # LLM 응답 파싱 (Markdown 리스트 형식 가정)

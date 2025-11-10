@@ -172,15 +172,15 @@ def plot_enhanced_timeseries(df_display, spike_threshold=2.0):
 
     # --- 차트 생성 (수정됨) ---
     fig, ax1 = plt.subplots(figsize=(12, 6))
-    ax1.plot(df['date'], df['count'], color='#3b82f6', linestyle='-', linewidth=2, label='전체 기사량')
+    ax1.plot(df['date'], df['count'], color='#3b82f6', linestyle='-', linewidth=2, label='일간 기사량')
     ax1.plot(df['date'], df.get('count_ma'), color='#343a40', linestyle=':', linewidth=1, label='기사량 7일 이동평균')
-    ax1.set_ylabel('전체 기사량 (건)', color='#343a40')
+    ax1.set_ylabel('일간 기사량 (건)', color='#343a40')
     ax1.tick_params(axis='y', labelcolor='#343a40'); ax1.set_ylim(bottom=0)
 
     ax2 = ax1.twinx()
     # [수정] color를 '#e9ecef'에서 '#ced4da' (더 진한 회색)로 변경
-    ax2.bar(df['date'], df['signal_ratio'], color='#ced4da', label='관심 기사 비율', zorder=1)
-    ax2.set_ylabel('관심 기사 비율 (%)', color='#6c757d')
+    ax2.bar(df['date'], df['signal_ratio'], color='#ced4da', label='고관여 기사 비율', zorder=1)
+    ax2.set_ylabel('고관여 기사 비율 (%)', color='#6c757d')
     ax2.tick_params(axis='y', labelcolor='#6c757d')
     ax2.yaxis.set_major_formatter(plt.FuncFormatter(lambda y, _: f'{y:.0%}')); ax2.set_ylim(bottom=0)
 
@@ -195,8 +195,8 @@ def plot_enhanced_timeseries(df_display, spike_threshold=2.0):
             ax2.scatter(spikes_ratio['date'], spikes_ratio['signal_ratio'], color='#dc3545', s=150, marker='X', zorder=4, label='비율 스파이크')
 
     ax1.set_zorder(2); ax1.patch.set_visible(False)
-    plt.title('일일 전체 기사량(좌) 및 관심 기사 비율(우) 추이', fontsize=16)
-    ax1.set_xlabel('날짜'); ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
+    plt.title('일간 기사량(좌) 및 고관여 기사 비율(우) 추이', fontsize=16)
+    ax1.set_xlabel('DATE'); ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
     
     # [수정] fig.legend 대신 ax1.legend를 사용하여 그래프 내부에 범례 배치
     handles1, labels1 = ax1.get_legend_handles_labels()
