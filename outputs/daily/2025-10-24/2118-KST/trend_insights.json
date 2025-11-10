@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "렌즈",
+        "t30",
+        "아트",
+        "필름",
+        "초점"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "xr",
+        "갤럭시",
+        "n32",
+        "기술을",
+        "관광"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "게임",
+        "새로운",
+        "모두",
+        "가장"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "브랜드",
+        "오는",
+        "제품",
+        "행사",
+        "이벤트"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "프로",
+        "에센셜",
+        "공공디자인",
+        "pc",
+        "dell"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "반도체",
+        "oled",
+        "로봇",
+        "ai",
+        "장비"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "붉은사막",
+        "amd",
+        "게이밍",
+        "팝업스토어",
+        "홍대"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "미국",
+        "중국",
+        "기술",
+        "폴더블"
+      ]
+    }
+  ],
+  "evidence": {}
+}

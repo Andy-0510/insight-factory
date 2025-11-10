@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "테크노플렉스는",
+        "혁신을",
+        "업무",
+        "포스터",
+        "오픈하우스"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "중국",
+        "샤오미",
+        "주석은",
+        "스마트폰",
+        "시진핑"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "미국",
+        "젠슨",
+        "엔비디아",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "오픈하우스",
+        "건축",
+        "본사",
+        "투어",
+        "한국앤컴퍼니그룹은"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "브랜드",
+        "게이밍",
+        "프리미엄",
+        "rtx",
+        "amd"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "tv",
+        "lg전자",
+        "라며",
+        "역시",
+        "지난달"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "데이터를",
+        "솔루션",
+        "자율주행",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "배터리",
+        "핵심",
+        "사업",
+        "ai",
+        "반도체"
+      ]
+    }
+  ],
+  "evidence": {}
+}

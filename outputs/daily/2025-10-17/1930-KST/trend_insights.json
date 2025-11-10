@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "lg디스플레이",
+        "4k",
+        "강화하고",
+        "삼성전자",
+        "tv"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "애플",
+        "즐길",
+        "기간",
+        "등에",
+        "2027년"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "3분기",
+        "반도체",
+        "tv",
+        "매출은"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "배터리",
+        "매출",
+        "장비",
+        "생산",
+        "높은"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "oled",
+        "디스플레이",
+        "rgb",
+        "이를",
+        "다른"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "반도체",
+        "oled",
+        "장비",
+        "사업",
+        "사업을"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "자동차",
+        "oled",
+        "패널",
+        "lcd"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "oled",
+        "기술",
+        "디스플레이",
+        "패널",
+        "중국"
+      ]
+    }
+  ],
+  "evidence": {}
+}

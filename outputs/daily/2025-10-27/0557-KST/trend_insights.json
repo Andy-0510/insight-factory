@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "ceo",
+        "중국",
+        "lg",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "중국",
+        "oled",
+        "매출",
+        "디스플레이",
+        "lg전자"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "xr",
+        "외국인",
+        "정상회의",
+        "대학"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "미국",
+        "christy",
+        "관세",
+        "한미",
+        "tcl"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "미국",
+        "삼성전자",
+        "자동차",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "소비자",
+        "tv",
+        "ai",
+        "비스포크",
+        "비스포크 ai"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "반도체",
+        "소재",
+        "핵심",
+        "배터리",
+        "사업"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "삼성은",
+        "채용",
+        "gsat",
+        "공채",
+        "삼성전자"
+      ]
+    }
+  ],
+  "evidence": {}
+}

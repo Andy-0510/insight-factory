@@ -1,0 +1,48 @@
+{
+  "results": [
+    {
+      "technology": "패널",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.5218385636806488,
+        "events": {}
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "뉴스 언급 빈도가 0회이고 투자, 출시, 수주 이벤트가 없어 기술 혁신이나 시장 확대가 정체된 성숙기 단계로 판단됩니다."
+      }
+    },
+    {
+      "technology": "애플",
+      "metrics": {
+        "frequency": 0,
+        "sentiment": 0.522187465429306,
+        "events": {
+          "LAUNCH": 4
+        }
+      },
+      "analysis": {
+        "stage": "Maturity",
+        "reason": "최근 뉴스 언급 빈도가 없고 투자나 수주 이벤트 없이 출시만 발생하며, 시장 감성 점수가 중간 수준인 것은 성숙기에 접어들었다는 것을 시사합니다."
+      }
+    },
+    {
+      "technology": "삼성",
+      "metrics": {
+        "frequency": 349,
+        "sentiment": 0.5197903633117675,
+        "events": {
+          "LAUNCH": 8,
+          "INVEST": 4,
+          "CERT": 3,
+          "REGUL": 3,
+          "PARTNERSHIP": 1
+        }
+      },
+      "analysis": {
+        "stage": "Growth",
+        "reason": "뉴스 언급 빈도가 높고, 긍정적 시장 감성이 중간 수준이며, 출시 이벤트가 투자를 상회하여 시장 성장 단계에 진입한 것으로 판단됩니다."
+      }
+    }
+  ]
+}

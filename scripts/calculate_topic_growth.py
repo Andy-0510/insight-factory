@@ -8,7 +8,7 @@ from collections import defaultdict
 ROOT_OUTPUT_DIR = "outputs"
 EXPORT_DIR = os.path.join(ROOT_OUTPUT_DIR, "export")
 OUTPUT_CSV = os.path.join(EXPORT_DIR, "topic_growth.csv")
-TOP_N_KEYWORDS_PER_TOPIC = 5 # 각 토픽의 모멘텀 계산에 사용할 상위 키워드 수
+TOP_N_KEYWORDS_PER_TOPIC = 20 # 각 토픽의 모멘텀 계산에 사용할 상위 키워드 수
 
 def calculate_topic_momentum():
     """
