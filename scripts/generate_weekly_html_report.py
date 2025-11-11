@@ -139,7 +139,7 @@ def call_gemini_for_weekly_summary(context):
         - (내용 설명)
         - (내용 설명)
     #### [추천 Action Items]
-        - (설명 없이, 바로 Markdown 불릿(-)으로 2가지 제안을 작성해주세요.)
+    - (제안 작성)
     """
     return _call_gemini_safe(prompt, default_resp="주간 AI 요약 생성 실패")
 # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
