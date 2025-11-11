@@ -277,7 +277,7 @@
                     <div class="competitor-header">
                         <div class="competitor-name">{{ competitor.name }}</div>
                         <div class="activity-trend {{ competitor.trend_class }}">
-                             {{ competitor.trend_icon }} {{ competitor.trend_percentage }}
+                            Avg. Momentum: {{ competitor.trend_icon }} {{ competitor.trend_percentage }}
                         </div>
                     </div>
 
@@ -285,10 +285,6 @@
                         <div class="metric-item">
                             <div class="metric-label">주간 언급량</div>
                             <div class="metric-value">{{ competitor.mentions | format_int }}</div>
-                        </div>
-                        <div class="metric-item">
-                            <div class="metric-label">평균 모멘텀</div>
-                            <div class="metric-value">{{ competitor.momentum_score }}</div>
                         </div>
                         <div class="metric-item">
                             <div class="metric-label">주간 최고 모멘텀</div>
