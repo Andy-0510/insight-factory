@@ -171,7 +171,7 @@
         /* 콘텐츠 영역 스타일 */
         .content-padding { padding: 24px 40px; }
         .section { margin-bottom: 40px; }
-        .section-header { display: flex; align-items: center; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 3px solid #e2e8f0; }
+        .section-header { display: flex; align-items: center; margin-bottom: 10px; padding-bottom: 20px; border-bottom: 3px solid #e2e8f0; }
         .section-number { width: 40px; height: 40px; background: linear-gradient(135deg, #0066ff, #00b8a9); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; margin-right: 16px; }
         .section-title { font-size: 24px; font-weight: 800; color: #1a2332; }
         .section-subtitle { font-size: 14px; color: #718096; margin-left: auto; }
@@ -418,7 +418,7 @@
                     <div class="exec-summary-text">{{ positioning_exec_summary | safe }}</div>
                 </div>
 
-                <h3>월간 주요 토픽 추이</h3>
+                <h3>이달의 핵심 트렌드 추이</h3>
                     <img src="{{ topic_mini_trends_path | default('fig/placeholder.png') }}" alt="토픽 미니 트렌드" class="report-graph">
 
                     <h4>토픽 상세 정보</h4>
@@ -435,9 +435,9 @@
                         </ul>
                     </div>
 
-                <h3>핵심 토픽 포지셔닝: 버블 맵 분석</h3>
+                <h3>주요 트렌드의 포지셔닝 분석</h3>
                     <img src="{{ topic_bubble_map_path | default('fig/placeholder.png') }}" alt="토픽 버블 맵" class="report-graph">
-
+                    <div class="section-subtitle"> 한 달간 (X축)무엇에 가장 관심이 많았고, (Y축)최근 얼마나 뜨고 있는지(모멘텀), (색상/크기)얼마나 긍정적/부정적으로 반응했는지 시각화</div>
                     <div class="mb-4">
                         <h4>사분면별 전략 권고</h4>
                         <div class="quadrant-grid">
@@ -469,8 +469,8 @@
             <div class="section" id="competitors">
                 <div class="section-header">
                      <div class="section-number">2</div>
-                     <div class="section-title" id="section-competitors">주요 기업의 전략적 의도 분석</div>
-                     <div class="section-subtitle">경쟁 구도 심층 분석</div>
+                     <div class="section-title" id="section-competitors">주요 기업의 전략 의도 분석</div>
+                     <div class="section-subtitle">기업 X 토픽 분석</div>
                  </div>
 
                 <div class="exec-summary-box">
@@ -478,8 +478,10 @@
                     <div class="exec-summary-text">{{ competitors_exec_summary | safe }}</div>
                 </div> 
 
-                <h3>기업별 전략 방향성 분석: 기업X토픽 분석</h3>
+                <h3>기업-토픽 매트릭스</h3>
+                    <div class="section-subtitle">매트릭스를 활용하여 특정 기업이 특정 주제에 얼마나 집중하고 있는지 분석하고, 이를 기반으로 전략 의도를 예측함</div>
                     <img src="{{ matrix_heatmap_path | default('fig/placeholder.png') }}" alt="기업-토픽 히트맵" class="report-graph">
+                    <div class="section-subtitle">※ Hybrid Score: 토픽-기업 관련성 x 기업의 최근 주목도 가중치</div> 
                     <div class="competitor-positioning-grid">
                         {% for comp in competitor_positioning %}
                         <div class="competitor-positioning-card">
@@ -498,7 +500,8 @@
                         {% else %}<p>주요 기업의 포지셔닝 분석 데이터 없음.</p>{% endfor %}
                     </div>
 
-                <h3>경쟁/협력 관계: 키워드 네트워크 분석</h3>
+                <h3>기업 간 경쟁-협력 네트워크 분석</h3>
+                <div class="section-subtitle">다수 기업 간 관계를 시각화하여 산업 내 경쟁·협력 구조를 조망하고 전략 수립을 지원함 </div>
                     <img src="{{ company_network_path | default('fig/placeholder.png') }}" alt="기업 관계망" class="report-graph">
 
                     <h4>주요 기업 관계 Top 5</h4>
@@ -508,10 +511,10 @@
                         <h4>⚠️ 경쟁 강도 변화 경보 (AI)</h4>
                         {{ competition_alerts | safe }}
                     </div>
-
+                    <!--
                     <h4>#참고. 산업 내 관계 영향력</h4>
                     <div>{{ competitor_strategy_table | safe }}</div>
-                                        
+                    -->                    
             </div>
             <br><br>
 
@@ -521,6 +524,7 @@
                      <div class="section-title" id="section-risk">Market Risk Management</div>
                      <div class="section-subtitle">리스크/이슈 탐지</div>
                  </div>
+                 <div class="section-subtitle">텍스트의 긍·부정 수준을 정량화하여 부정적 이슈의 급격한 증가를 탐지</div><br>
 
                 <div class="exec-summary-box">
                     <div class="exec-summary-title">Summary</div>
@@ -543,6 +547,7 @@
 
                 <div class="mb-4">
                      <h3>리스크 대응 매트릭스</h3>
+                     <div class="section-subtitle">위험 유형을 기준으로 대응 전략을 제시하고, 우선순위 결정을 지원함</div><br>
                      <div class="risk-matrix-grid">
                          <div class="risk-matrix-card avoid">
                              <h4>🔴 회피 (Avoid)</h4>
@@ -594,9 +599,10 @@
             <div class="section" id="opportunities">
                  <div class="section-header">
                      <div class="section-number">NEW</div>
-                     <div class="section-title" id="section-opportunities">신사업 기회 발굴</div>
-                     <div class="section-subtitle">데이터 기반 신사업 아이디어 Top 5</div>
+                     <div class="section-title" id="section-opportunities">잠재 사업 기회</div>
+                     <div class="section-subtitle">데이터 기반 Top 5 아이디어</div>
                  </div>
+                 <div class="section-subtitle">수집된 데이터(키워드, 토픽, 트렌드 변화, 주요 이벤트)를 LLM에게 제공해 잠재적인 사업기회를 발굴하고, 검증을 위한 실행 계획을 도출함</div>
 
                 <div class="exec-summary-box">
                     <div class="exec-summary-title">Summary</div>
