@@ -507,7 +507,7 @@ def prepare_monthly_report_data():
         {'number': '2', 'id': 'competitors', 'title': '주요 기업의 전략적 의도 분석', 'subtitle': '경쟁 구도 분석 · Company Network'},
         {'number': '3', 'id': 'risk', 'title': 'Market Risk Management', 'subtitle': '리스크/이슈 탐지 · Mitigation Plan'},
         {'number': '4', 'id': 'actionplan', 'title': '전략 방향성 및 실행 방안 제안', 'subtitle': '중장기 전략 제안 · Resource Allocation'},
-        {'number': '🔍', 'id': 'opportunities', 'title': '신사업 기회 발굴', 'subtitle': '데이터 기반 신사업 아이디어 · Top 5 Opportunities'},
+        {'number': '🔍', 'id': 'opportunities', 'title': '잠재 사업 기회', 'subtitle': '데이터 기반 아이디어 제안 · Top 5 Opportunities'},
     ]
     
     # --- ▼▼▼ Section 0: Executive Summary & KPI ▼▼▼ ---
@@ -711,7 +711,7 @@ def prepare_monthly_report_data():
             classes="dataframe-table risk-table" # 'risk-table' 클래스 전달
         )
     else:
-        data['risk_list_table'] = "<p>(탐지된 주요 리스크 없음)</p>"
+        data['risk_list_table'] = "<p> </p>"
     
     risk_context = risk_issues_df.head(5).to_dict('records') if not risk_issues_df.empty else []
     risk_analysis_results = call_gemini_for_risk_analysis(risk_context)

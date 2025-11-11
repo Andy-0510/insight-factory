@@ -366,6 +366,13 @@
             padding-left: 10px;
             border-left: 2px solid #cbd5e0;
         }
+        .section-support {
+            font-size: 14px;
+            color: #535a64;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
         /* --- ▲▲▲ CSS 추가 완료 ▲▲▲ --- */
     </style>
 </head>
@@ -387,8 +394,12 @@
                     <div class="section-title">시장 활동 지표</div>
                     <div class="section-subtitle">기사량 추세 & 이상 징후 탐지</div>
                 </div>
+                <div class="section-support">
+                시장의 '전체 기사량'이 평소보다 비정상적으로 급증했는지(Spike)를 차트로 확인하고, LLM이 분석한 급등의 핵심 원인을 파악할 수 있음
+                </div> <br>
 
                 <img src="{{ timeseries_image_path }}" alt="시장 활동량 시계열 그래프" class="report-graph">
+                <div class="section-subtitle">고관여 기사란? 산업 연관 키워드로 수집된 기사들 중 디스플레이 키워드에 가중치를 반영하여 도출된 관련성 높은 기사</div>
 
                 <div class="metric-box">
                     <div class="metric-row">
@@ -471,6 +482,9 @@
                     <div class="section-title">실시간 Risk 키워드</div>
                     <div class="section-subtitle">경계해야 할 시그널 탐지</div>                    
                 </div>
+                <div class="section-support">
+                특정 토픽의 부정 감성 점수가 급등할 때 이를 즉시 탐지하고, "근거 기사" 링크를 통해 리스크의 실체를 빠르게 파악할 수 있음
+                </div> <br>
                 
                 {% if risk_signals %}
                     {% for risk in risk_signals %}
@@ -511,6 +525,9 @@
                     <div class="section-title">주요 이벤트 모니터링</div>
                     <div class="section-subtitle">실시간 산업 동향 파악을 위한 주요 활동</div>
                 </div>
+                <div class="section-support">
+                최근 발생한 주요 기업들의 신제품 출시, 투자 등 주요 이벤트를 제공하여 매일 경쟁사 동향을 확인할 수 있음
+                </div> <br>
 
                 {% for event in competitor_events %}
                 <div class="event-item" style="border-left-color: {{ event.color_code | default('#00b8a9') }};">

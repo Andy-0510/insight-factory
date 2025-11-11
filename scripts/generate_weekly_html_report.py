@@ -28,7 +28,18 @@ EXPORT_DIR = os.path.join(OUTPUT_BASE_DIR, 'export')
 FIG_DIR = os.path.join(OUTPUT_BASE_DIR, 'fig')
 DEBUG_DIR = os.path.join(OUTPUT_BASE_DIR, 'debug')
 DAILY_ARCHIVE_DIR = os.path.join(OUTPUT_BASE_DIR, "daily")
-TARGET_COMPETITORS = ["LG디스플레이", "삼성디스플레이", "BOE", "CSOT", "AUO", "Innolux", "Visionox", "Tianma", "JDI", "Sharp"] # 경쟁사 목록
+TARGET_COMPETITORS = [
+      "삼성디스플레이", "lg디스플레이", "boe", "csot", "visionox", "tianma",
+      "샤프", "truly", "jdi", "auo", "innolux", "삼성전자", "샤오미",
+      "dell", "asus", "acer", "lg전자", "애플", "하이센스", "하이얼", "미디어텍", "corning", 
+      "schott", "agc", "nitto", "sumitomo chemical", "toray",
+      "idemitsu", "merck", "lg화학", "canon tokk", "폭스바겐", "byd", "리오토", "니오", 
+      "샤오펑", "magna", "continental", "bosch", "harman", "원익ips", "한미반도체", "ap systems", 
+      "한화솔루션", "화웨이", "레노버", "tcl", "오포", "비보", "구글", "피규어ai", 
+      "한화시스템", "한화", "마이크로소프트", "현대모비스", "현대자동차", "기아자동차", 
+      "두산로보틱스", "네이버", "카카오", "소니", "선익시스템", "도우인시스", "넷플릭스", "인텔", 
+      "엔비디아", "amd", "퀄컴", "tsmc", "sk하이닉스", "퓨리오사ai", "리벨리온", "텐센트", 
+      "오픈ai", "바이두", "메타", "아마존", "벤츠", "bmw"]
 
 # --- 필요한 헬퍼 함수 ---
 from src.utils import load_json, latest
@@ -121,25 +132,25 @@ def call_gemini_for_weekly_summary(context):
     당신은 디스플레이 산업 전문 비즈니스 애널리스트 입니다.
     아래는 지난 한 주간의 시장 데이터 요약입니다. 이 데이터를 종합하여 디스플레이 제조 기업 내부의 팀 리더를 위한 '주간 인텔리전스 요약'을 작성해주세요.
     단순 데이터의 나열, 일반적이고 표면적인 이야기는 지양하며, 깊이있고 의미있는 통찰을 차분한 톤으로 풀어주세요.
-    ### 주간 데이터 요약:
+    ## 주간 데이터 요약:
     {json.dumps(context, ensure_ascii=False, indent=2)}
 
-    ### 작성 가이드 (Markdown 형식):
+    ## 작성 가이드 (Markdown 형식):
     1. **[핵심 맥락]**: 데이터를 관통하는 가장 중요한 시장의 흐름 1~2가지를 설명해주세요.
     2. **[INSIGHT]**: 이 흐름이 우리 비즈니스에 주는 기회 또는 위협 요소를 분석해주세요.
     3. **[추천 Action Items]**: 다음 주에 팀이 우선적으로 실행해야 할 구체적인 액션 아이템 2가지를 제안해주세요.
     4. 각 항목을 명확하게 구분하고, 전문가의 시각에서 간결하고 명확한 톤으로 작성해주세요.
-    ### 출력 형식 (Markdown):
-    #### [핵심 맥락]
+    ## 출력 형식 (Markdown):
+    ### [핵심 맥락]
     - (분석 내용 핵심 문장)
         - (분석 내용 설명)
         - (분석 내용 설명)
-    #### [INSIGHT]
+    ### [INSIGHT]
     - (핵심 문장)
         - (내용 설명)
         - (내용 설명)
-    #### [추천 Action Items]
-        - (설명 없이, 바로 Markdown 불릿(-)으로 2가지 제안을 작성해주세요.)
+    ### [추천 Action Items]
+    - (제안 작성)
     """
     return _call_gemini_safe(prompt, default_resp="주간 AI 요약 생성 실패")
 # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
@@ -449,15 +460,7 @@ def prepare_weekly_report_data():
         weekly_momentum = trends_df.groupby('term')['z_like'].mean()
         # --- ▼▼▼ 추가 계산 ▼▼▼ ---
         weekly_peak_momentum = trends_df.groupby('term')['z_like'].max() # 주간 최고 z_like
-        # 30일 누적 언급량 계산 (weekly_trend_details.csv 사용 가정, 없으면 trends_df 사용)
-        trends_details_df = safe_read_csv(os.path.join(DEBUG_DIR, "weekly_trend_details.csv"))
-        if not trends_details_df.empty:
-             cumulative_mentions_30d = trends_details_df.groupby('term')['cur'].sum()
-        else:
-             # Fallback: Use weekly data if details not available (less accurate for 30d)
-             cumulative_mentions_30d = trends_df.groupby('term')['cur'].sum()
-        # --- ▲▲▲▲▲▲▲▲▲▲▲ ---
-
+        
         for competitor in TARGET_COMPETITORS:
             mentions = competitor_mentions_counter.get(competitor, 0)
             if mentions == 0: continue
@@ -465,7 +468,6 @@ def prepare_weekly_report_data():
             momentum = weekly_momentum.get(competitor, 0.0)
             # --- ▼▼▼ 추가 데이터 가져오기 ▼▼▼ ---
             peak_momentum = weekly_peak_momentum.get(competitor, 0.0)
-            total_30d_mentions = cumulative_mentions_30d.get(competitor, 0)
             # --- ▲▲▲▲▲▲▲▲▲▲▲ ---
 
             trend_key = "stable"
@@ -484,7 +486,6 @@ def prepare_weekly_report_data():
                 "momentum_score": f"{momentum:+.2f}", # 주간 평균 모멘텀
                 # --- ▼▼▼ 추가 데이터 추가 ▼▼▼ ---
                 "peak_momentum_score": f"{peak_momentum:+.2f}", # 주간 최대 모멘텀
-                "total_30d_mentions": total_30d_mentions, # 30일 누적 언급량
                 # --- ▲▲▲▲▲▲▲▲▲▲▲ ---
                 "insight": llm_insight_html # <-- 변환된 HTML 저장
             })

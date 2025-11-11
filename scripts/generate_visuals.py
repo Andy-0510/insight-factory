@@ -342,7 +342,7 @@ def plot_topics_bubble(topics_data, output_path, min_bubble=100, max_bubble=8000
 
     # --- ▼▼▼ [신규] 5. 컬러바(범례) 추가 ▼▼▼ ---
     cbar = fig.colorbar(sc, ax=ax, orientation='vertical', pad=0.02)
-    cbar.set_label('감성 점수 (Positivity)', fontsize=12)
+    #cbar.set_label('텍스트 긍/부정 척도', fontsize=12)
     # 컬러바 라벨을 0, 0.5, 1.0에만 표시
     cbar.set_ticks([0, 0.5, 1.0])
     cbar.set_ticklabels(['0.0 (부정)', '0.5 (중립)', '1.0 (긍정)'])
@@ -350,8 +350,8 @@ def plot_topics_bubble(topics_data, output_path, min_bubble=100, max_bubble=8000
     # --- ▲▲▲ 컬러바 추가 완료 ▲▲▲ ---
 
     # 8. 최종 라벨 및 저장
-    ax.set_xlabel("관심도 (Interest / Log Scale)")
-    ax.set_ylabel("활동성 (Activity / Z-Score)")
+    ax.set_xlabel("관심도 (언급량 / Log Scale)")
+    ax.set_ylabel("활동성 (언급량 변위)")
     ax.set_title("전략적 토픽 맵 (Strategic Topic Map)", fontsize=16)
     ax.grid(True, linestyle='--', alpha=0.6)
 
@@ -498,20 +498,28 @@ def plot_company_network_from_json(json_path=os.path.join(ROOT_OUTPUT_DIR, "comp
         font_name = "sans-serif"
 
     # 5) 레이아웃: 가중치 반영(Spring)
-    pos = nx.spring_layout(G, weight="weight", seed=42)
+    # [수정] k=5.0: 노드 간 간격을 '매우' 넓게 설정하여 그래프 전체에 분산시킵니다.
+    # [수정] iterations=150: 레이아웃 계산을 더 많이 수행하여 안정적인 위치를 찾습니다.
+    pos = nx.spring_layout(G, weight="weight", seed=42, k=17.0, iterations=105)
 
     # 6) 엣지 스타일: rel_type별 색상
     edge_colors = []
     weights = []
+    # [신규] 엣지별 투명도 리스트
+    edge_alphas = [] 
+
     for u, v, d in G.edges(data=True):
         weights.append(float(d.get("weight", 1.0)))
         rt = d.get("rel_type", "neutral")
         if rt == "rivalry":
             edge_colors.append("#e74c3c")   # red
+            edge_alphas.append(0.7) # [신규] 진하게
         elif rt == "partnership":
             edge_colors.append("#27ae60")   # green
+            edge_alphas.append(0.7) # [신규] 진하게
         else:
-            edge_colors.append("#7a7a7a")   # gray
+            edge_colors.append("#b0b0b0")   # [수정] 옅은 회색
+            edge_alphas.append(0.3) # [신규] 연하게
 
     w_arr = np.array(weights, dtype=float)
     if w_arr.size == 0:
@@ -519,17 +527,30 @@ def plot_company_network_from_json(json_path=os.path.join(ROOT_OUTPUT_DIR, "comp
         return
     q95 = np.quantile(w_arr, 0.95)
     w_arr = np.minimum(w_arr, q95)
-    w_norm = (0.6 + 1.8 * (w_arr - w_arr.min()) / (w_arr.max() - w_arr.min() + 1e-6)).tolist()
+
+    # [수정] 선 굵기 범위 상향 (최소 1.5px, 최대 6.0px)
+    w_norm = (1.5 + 4.5 * (w_arr - w_arr.min()) / (w_arr.max() - w_arr.min() + 1e-6)).tolist()
 
     plt.figure(figsize=(11, 8))
-    nx.draw_networkx_edges(G, pos, width=w_norm, edge_color=edge_colors, alpha=0.35)
+
+    # [수정] 엣지별 투명도(edge_alphas)를 개별 적용
+    # (NetworkX 2.6 이상)
+    try:
+        nx.draw_networkx_edges(G, pos, width=w_norm, edge_color=edge_colors, alpha=edge_alphas)
+    except TypeError:
+        # (NetworkX 구버전 Fallback)
+        nx.draw_networkx_edges(G, pos, width=w_norm, edge_color=edge_colors, alpha=0.6) # alpha 0.6으로 상향
 
     # 7) 노드 스타일
-    node_colors = ["#e74c3c" if n in top_nodes else "#86b6f6" for n in G.nodes()]
-    node_sizes = [1200 if n in top_nodes else 600 for n in G.nodes()]
+    # [수정] 일반 기업 색상을 더 진한 파란색으로 변경
+    node_colors = ["#e74c3c" if n in top_nodes else "#4A90E2" for n in G.nodes()] 
+    # [수정] 노드 크기 상향
+    node_sizes = [1500 if n in top_nodes else 700 for n in G.nodes()] 
     nx.draw_networkx_nodes(G, pos, node_size=node_sizes, node_color=node_colors,
-                           edgecolors="#333", linewidths=0.6, alpha=0.95)
-    nx.draw_networkx_labels(G, pos, font_size=9, font_color="#222", font_family=font_name)
+                        edgecolors="#111", linewidths=0.7, alpha=0.95)
+    # [수정] 라벨 폰트 + 반투명 흰색 배경(alpha=0.7) 추가
+    bbox_props = dict(boxstyle="round,pad=0.3", ec="none", fc="white", alpha=0.7)
+    nx.draw_networkx_labels(G, pos, font_size=10, font_weight='bold', font_color="#000", font_family=font_name, bbox=bbox_props)
 
     # 8) 범례(간단 표기)
     legend_elements = [
@@ -656,11 +677,12 @@ def plot_heatmap(company_matrix_df, topics_data, output_path):
         linewidths=.5,
         ax=ax,
         annot=True, # 각 셀에 값 표시 (선택 사항)
-        fmt=".1f"   # 소수점 첫째 자리까지 표시
+        fmt=".1f",   # 소수점 첫째 자리까지 표시
+        cbar_kws={'label': 'Hybrid Score'} # <-- 이 줄을 추가합니다.
     )
     # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
     
-    ax.set_title('기업별 토픽 집중도 (Hybrid Score)', fontsize=16, weight='bold')
+    ax.set_title('기업별 토픽 집중도', fontsize=16, weight='bold')
     ax.set_xlabel('[토픽]', fontsize=12, weight='bold')
     ax.set_ylabel('[기업]', fontsize=12, weight='bold')
     plt.xticks(rotation=45, ha='right')
@@ -929,60 +951,43 @@ def plot_keyword_network(keywords_data, meta_items, output_path, top_n=20, min_w
         if fig:
              plt.close(fig)
 
-# --- ▼▼▼ [NEW] Function to plot Topic Mini Trends ▼▼▼ ---
-def plot_topic_mini_trends(topics_data, growth_df, meta_items, output_path, top_n=2, keyword_n=10):
-    """(Monthly) Generates ONE chart for Top 2 Rising (Solid) and Bottom 2 Falling (Dashed) topics (WEEKLY)."""
-    print(f"[INFO] Generating ACTUAL topic mini trends (Top {top_n} 상위/하위, Weekly, 1 Chart)...")
+# --- ▼▼▼ [수정됨] 토픽 미니 트렌드 (언급량 기준) ▼▼▼ ---
+def plot_topic_mini_trends(topics_data, meta_items, output_path, top_n=2, keyword_n=10):
+    """(Monthly) '언급량' 기준으로 Top 2(실선)와 Bottom 2(점선) 토픽의 주간 트렌드를 1개 차트로 생성합니다."""
+    print(f"[INFO] Generating Mention-based topic mini trends (Top {top_n} 상위/하위, Weekly, 1 Chart)...")
     
     fig = None # finally 블록용 초기화
     try:
-        if not topics_data or not topics_data.get("topics") or not meta_items or growth_df.empty:
-            print("[WARN] Insufficient data for actual topic mini trends (topics, growth, or meta missing).")
+        if not topics_data or not topics_data.get("topics") or not meta_items:
+            print("[WARN] Insufficient data for topic mini trends (topics or meta missing).")
             _create_empty_plot(output_path, "토픽 트렌드: 데이터 부족")
             return
 
-        # 1. Top/Bottom N 토픽 ID 및 이름 찾기 (growth_df 기준)
-        growth_df = growth_df.dropna(subset=['momentum_score', 'topic_id'])
-        rising_topics_df = growth_df.nlargest(top_n, 'momentum_score')
-        falling_topics_df = growth_df.nsmallest(top_n, 'momentum_score')
-        
-        target_topic_ids = set(rising_topics_df['topic_id']) | set(falling_topics_df['topic_id'])
-        
-        if not target_topic_ids:
-            print("[WARN] No rising or falling topics found from growth_df.")
-            _create_empty_plot(output_path, "토픽 트렌드: 성장률 데이터 없음")
-            return
-
-        # 2. 상위/하위 토픽의 키워드 맵 생성
+        # 1. [수정] Top/Bottom N 선정을 위해 '모든' 토픽의 키워드 맵 생성
         topic_map = {t.get("topic_id"): t for t in topics_data.get("topics", [])}
-        topic_info = {}
+        topic_info = {} # topic_id -> {"name": str, "pattern": re.Pattern}
 
-        for topic_id in target_topic_ids:
-            topic = topic_map.get(topic_id)
-            if not topic:
-                print(f"[WARN] Topic ID {topic_id} (from growth_df) not found in topics.json, skipping.")
-                continue
+        for topic_id, topic in topic_map.items():
+            if not topic: continue
                 
-            # [수정] topic_name이 없으면 topic_id 사용
             topic_name = topic.get("topic_name") or f"Topic {topic_id}"
             keywords = [w.get("word") for w in topic.get("top_words", [])[:keyword_n]]
-            if not keywords:
-                print(f"[WARN] Topic '{topic_name}' has no keywords, skipping.")
-                continue
-                
-            topic_info[topic_id] = {
-                "name": topic_name,
-                "pattern": re.compile('|'.join(re.escape(kw) for kw in keywords), re.IGNORECASE)
-            }
+            
+            # 키워드가 있는 토픽만 분석 대상에 포함
+            if keywords:
+                topic_info[topic_id] = {
+                    "name": topic_name,
+                    "pattern": re.compile('|'.join(re.escape(kw) for kw in keywords), re.IGNORECASE)
+                }
 
         if not topic_info:
             print("[WARN] No valid topics with keywords to plot.")
             _create_empty_plot(output_path, "토픽 트렌드: 키워드 없음")
             return
 
-        # 3. [수정] 30일간의 일별 기사 카운트 집계 (D-1 기준)
+        # 2. [수정] 30일간 '모든' 토픽의 일별 기사 카운트 집계 (D-1 기준)
         daily_counts = defaultdict(lambda: defaultdict(int))
-        end_date = datetime.now().date() - timedelta(days=1) # [수정] D-1
+        end_date = datetime.now().date() - timedelta(days=1) # D-1
         start_date = end_date - timedelta(days=29) # 30일치 데이터
 
         for item in meta_items:
@@ -1001,67 +1006,91 @@ def plot_topic_mini_trends(topics_data, growth_df, meta_items, output_path, top_
             if not content:
                 continue
 
-            # 각 토픽의 키워드(패턴)와 매칭
+            # '모든' 토픽의 키워드(패턴)와 매칭
             for topic_id, info in topic_info.items():
                 if info["pattern"].search(content):
                     daily_counts[item_date_str][topic_id] += 1
 
         if not daily_counts:
-            print("[WARN] No articles matched any top/bottom topics in the last 30 days.")
+            print("[WARN] No articles matched any topics in the last 30 days.")
             _create_empty_plot(output_path, "토픽 트렌드: 매칭 없음")
             return
 
-        # 4. DataFrame 변환 및 Plotting 준비
+        # 3. DataFrame 변환 및 주간 단위 리샘플링
         df_counts = pd.DataFrame(daily_counts).T.fillna(0)
         df_counts.index = pd.to_datetime(df_counts.index)
         all_dates_index = pd.to_datetime(pd.date_range(start=start_date, end=end_date, freq='D'))
         df_counts = df_counts.reindex(all_dates_index, fill_value=0)
         
-        # [수정] 주간 단위로 리샘플링
         df_weekly = df_counts.resample('W-MON', label='left', closed='left').sum()
 
-        # 5. [신규] 1x1 차트 생성
-        fig, ax = plt.subplots(1, 1, figsize=(10, 5)) # 1행 1열
+        if df_weekly.empty:
+            print("[WARN] No weekly data after resampling.")
+            _create_empty_plot(output_path, "토픽 트렌드: 데이터 없음")
+            return
+            
+        # 4. [신규] '주간 총 언급량' 기준으로 Top N / Bottom N 선정
+        total_mentions_per_topic = df_weekly.sum().sort_values(ascending=False)
+        
+        if total_mentions_per_topic.empty:
+            print("[WARN] No mentions calculated for any topic.")
+            _create_empty_plot(output_path, "토픽 트렌드: 언급량 0")
+            return
 
-        # 6. 상위 2개 그래프 (실선, 색상 지정)
+        # 4a. 언급량 상위 N개 토픽 ID
+        rising_topics_ser = total_mentions_per_topic.nlargest(top_n)
+        rising_topic_ids = rising_topics_ser.index.tolist()
+        
+        # 4b. 언급량 하위 N개 토픽 ID (단, 0이 아니어야 하며, 상위 N개와 중복되지 않아야 함)
+        non_zero_mentions = total_mentions_per_topic[total_mentions_per_topic > 0]
+        non_zero_mentions = non_zero_mentions[~non_zero_mentions.index.isin(rising_topic_ids)]
+        
+        falling_topics_ser = non_zero_mentions.nsmallest(top_n)
+        falling_topic_ids = falling_topics_ser.index.tolist()
+
+        # 5. [수정] 1x1 차트 생성 및 선택된 토픽 플로팅
+        fig, ax = plt.subplots(1, 1, figsize=(10, 5)) 
+
         colors = plt.cm.get_cmap('Dark2', 8)
-        for i, (_, row) in enumerate(rising_topics_df.iterrows()):
-            topic_id = row['topic_id']
-            if topic_id in df_weekly.columns:
-                topic_name = topic_info[topic_id]['name']
-                # [수정] 범례(label)에서 'Mom:' 제거, 색상 지정
-                ax.plot(df_weekly.index, df_weekly[topic_id], marker='.', linestyle='-', color=colors(i), label=f"[상위] {topic_name}")
         
-        # 7. 하위 2개 그래프 (점선, 다른 색상)
-        for i, (_, row) in enumerate(falling_topics_df.iterrows()):
-            topic_id = row['topic_id']
+        # 5a. [언급량 상위] 플로팅 (실선)
+        for i, topic_id in enumerate(rising_topic_ids):
             if topic_id in df_weekly.columns:
-                topic_name = topic_info[topic_id]['name']
-                # [수정] 범례(label)에서 'Mom:' 제거, 색상/스타일 지정
-                ax.plot(df_weekly.index, df_weekly[topic_id], marker='.', linestyle='--', color=colors(i + top_n), label=f"[하위] {topic_name}")
+                topic_name = topic_info.get(topic_id, {}).get('name', f"Topic {topic_id}")
+                ax.plot(df_weekly.index, df_weekly[topic_id], marker='.', linestyle='-', color=colors(i), 
+                        label=f"[언급량 상위] {topic_name}") # 범례 수정
+
+        # 5b. [언급량 하위] 플로팅 (점선)
+        for i, topic_id in enumerate(falling_topic_ids):
+            if topic_id in df_weekly.columns:
+                topic_name = topic_info.get(topic_id, {}).get('name', f"Topic {topic_id}")
+                ax.plot(df_weekly.index, df_weekly[topic_id], marker='.', linestyle='--', color=colors(i + top_n), 
+                        label=f"[언급량 하위] {topic_name}") # 범례 수정
         
-        ax.set_title(f'Top {top_n} 상위(실선) vs 하위(점선) 토픽 트렌드', fontsize=12) # [수정] 이름
+        # 6. 차트 제목 및 레이블 수정
+        ax.set_title(f'Top {top_n} 언급량 상위(실선) vs 하위(점선) 토픽 트렌드', fontsize=12) # 부제 수정
         ax.set_ylabel('Weekly Mentions')
         ax.legend(fontsize='small')
         ax.grid(True, linestyle='--', alpha=0.6)
 
-        # 8. 공통 X축 설정
         ax.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))
-        plt.xlabel('Date', fontsize=10) # [수정] X축 이름
+        plt.xlabel('Date', fontsize=10)
         
-        fig.suptitle('토픽 별 언급량 추이 (주 단위)', fontsize=16, y=1.03) # [수정] 제목
+        fig.suptitle('토픽 별 언급량 추이 (주 단위)', fontsize=16, y=1.03)
         plt.tight_layout()
+        
         _savefig(fig, output_path)
-        print(f"[INFO] ACTUAL Top/Bottom {top_n} topic trends (Weekly, 1 Chart) saved to {output_path}")
+        print(f"[INFO] Mention-based Top/Bottom {top_n} topic trends (Weekly, 1 Chart) saved to {output_path}") # 로그 수정
 
     except Exception as e:
-        print(f"[ERROR] An error occurred during actual topic trend plotting: {e}")
+        print(f"[ERROR] An error occurred during topic trend plotting (Mention-based): {e}")
         import traceback
         traceback.print_exc()
         _create_empty_plot(output_path, "토픽 트렌드: 생성 오류")
     finally:
         if fig:
-            plt.close(fig)
+             plt.close(fig)
+# --- ▲▲▲ [수정 완료] ▲▲▲ ---
 
 # --- ▼▼▼ [NEW] Function to plot Risk Keyword Network ▼▼▼ ---
 # Note: This requires defining risk keywords and calculating their co-occurrence.
@@ -1576,18 +1605,17 @@ def run_monthly_visuals():
     except Exception as e:
         print(f"[WARN] plot_keyword_network failed: {e}")
 
-    # 3. 토픽 미니 트렌드 생성 (실제 데이터 기반)
+    # 3. 토픽 미니 트렌드 생성 (언급량 기준)
     try:
-        # [수정] growth_df, meta_items_monthly를 전달, top_n=2로 변경
+        # [수정] all_data['growth'] 인자 제거
         plot_topic_mini_trends(
             all_data['topics'], 
-            all_data['growth'], 
             meta_items_monthly, 
             os.path.join(FIG_DIR, "topics_mini_trends.png"), 
             top_n=2
         )
     except Exception as e:
-        print(f"[WARN] plot_topic_mini_trends failed: {e}")
+        print(f"[WARN] plot_topic_mini_trends (Mention-based) failed: {e}")
 
     # 3. 리스크 관련 시각화 생성
     try:

@@ -201,8 +201,8 @@
   "network": {
     "whitelist_only": true,
     "use_regex_fallback": true,
-    "edge_min_weight": 2,
-    "cooccur_level": "document"
+    "edge_min_weight": 1,
+    "cooccur_level": "sentence"
   },
 
 

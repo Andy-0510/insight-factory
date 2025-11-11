@@ -133,42 +133,56 @@ def extract_orgs(text: str,
                  alias_map: Dict[str, str],
                  whitelist: set,
                  org_stop_words: set) -> List[str]:
+    """
+    [수정] spaCy(NER) 의존도를 낮추고, Whitelist 기반 토큰 매칭을 우선하는 로직
+    """
     if not text:
         return []
-    # 1) spaCy NER 우선 시도
+        
     orgs = set()
-    for v in extract_orgs_with_spacy(text):
-        orgs.add(v.strip().lower())
+    text_low = text.lower() # 텍스트 전체를 소문자로
 
-    # 2) 토큰 매칭(보완)
-    raw_toks = re.findall(r"[가-힣A-Za-z0-9\-\+\.]{2,}", text)
-    for t in raw_toks:
-        tt = t.strip().lower()
-        orgs.add(tt)
+    # 1. [신규] Whitelist 매칭 (가장 중요)
+    #    (spaCy보다 먼저, 사전에 등록된 모든 기업명을 텍스트에서 검색)
+    for w in whitelist:
+        # (w는 이미 norm_tok 처리된 소문자 상태라고 가정)
+        if w in text_low:
+            orgs.add(w)
 
-    # 3) 정규화 + 필터
-    normalized = []
-    for t in orgs:
+    # 2. [신규] spaCy NER (보조)
+    #    (Whitelist에 없는 기업을 추가로 탐지하기 위함)
+    spacy_orgs = extract_orgs_with_spacy(text)
+    for v in spacy_orgs:
+        t = v.strip().lower()
         base = alias_map.get(t, t)
         base = alias_map.get(base.lower(), base)
         base = norm_org_token(base)
-        normalized.append(base)
+        
+        if base and not is_bad_org_token(base, org_stop_words):
+             # (whitelist_only가 켜져있으면 어차피 걸러지지만,
+             #  꺼져있을 경우를 대비해 중복 추가)
+            orgs.add(base)
 
-    cand = []
-    for w in normalized:
-        if w in whitelist:
-            cand.append(w)
-            continue
-        if is_bad_org_token(w, org_stop_words):
-            continue
-        cand.append(w)
+    # 3. [신규] 브랜드 -> 회사명 변환 (최종 단계)
+    #    (예: "galaxy" -> "삼성전자")
+    brand_to_company = load_json("data/dictionaries/brand_to_company.json", {})
+    final_orgs = set()
+    for o in orgs:
+        # whitelist에 있는 이름(예: '삼성디스플레이')은 그대로 사용하고,
+        # whitelist에 없는 이름(예: 'galaxy')만 brand_to_company에서 변환 시도
+        if o in whitelist:
+            final_orgs.add(o)
+        else:
+            final_orgs.add(brand_to_company.get(o, o))
 
-    # 4) 빈도 기준 필터(너무 희박한 후보 제거)
-    cnt = Counter(cand)
-    out = [w for w, c in cnt.most_common(50) if c >= 2 and w not in whitelist]
-
-    # 최종: 화이트리스트 교집합을 앞으로 + 나머지
-    return list(whitelist.intersection(set(normalized))) + out
+    # 4. Whitelist 필터링 (config.json 설정에 따름)
+    net_cfg = CFG.get("network", {})
+    whitelist_only = bool(net_cfg.get("whitelist_only", True))
+    
+    if whitelist_only:
+        return list(final_orgs.intersection(whitelist))
+    else:
+        return list(final_orgs)
 
 # ====== 토픽 라벨 ======
 def load_topic_labels(topics_obj: dict, topn: int) -> list:
@@ -293,33 +307,14 @@ def load_meta_files(max_files=5, offset=0):
             pass
     return all_items
 
-# ====== 관계 유형 분류 ======
-def classify_relationship(context_texts: List[Dict[str, Any]]) -> str: # 1. 타입 힌트 수정
-    # 2. 딕셔너리 리스트에서 'text' 값만 추출하여 리스트 생성
-    text_snippets = [obj.get("text", "") for obj in context_texts]
-    # 3. 추출된 텍스트 스니펫을 join
-    ctx = " ".join(text_snippets).lower()
-
-    r_score = sum(1 for w in COMPETITIVE_KEYWORDS if w in ctx)
-    p_score = sum(1 for w in COOPERATIVE_KEYWORDS if w in ctx)
-    if r_score > p_score:
-        return "rivalry"
-    if p_score > r_score:
-        return "partnership"
-    return "neutral"
-
 # ===== Optimized co-occurrence builder (config-driven) =====
-# ===== Optimized co-occurrence builder (config-driven) =====
-def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[str, str, int, str, str]], List[str]]: # 반환 타입에 str 추가
-    # --- ▼▼▼ [신규] 테스트 1 로그 ▼▼▼ ---
-    print("\n\n[DEBUG TEST 1] build_cooccurrence_edges 함수가 실행되었습니다.\n\n")
-    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-    # 0) config + dictionaries
+def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[str, str, int, str, str]], List[str]]:
+    # 0) config + dictionaries (기존과 동일)
     net_cfg = CFG.get("network", {})
     whitelist_only = bool(net_cfg.get("whitelist_only", True))
     use_regex_fallback = bool(net_cfg.get("use_regex_fallback", False))
     edge_min_weight = int(net_cfg.get("edge_min_weight", 3))
-    cooccur_level = str(net_cfg.get("cooccur_level", "sentence")).lower()
+    # [수정] cooccur_level은 이제 'sentence'로 강제됨
     domain_hints = [s.lower() for s in CFG.get("domain_hints", [])]
 
     alias_map = CFG.get("alias", {})
@@ -327,138 +322,165 @@ def build_cooccurrence_edges(items: List[Dict[str, Any]]) -> Tuple[List[Tuple[st
     topic_like_entities = _load_lines("data/dictionaries/topic_like_entities.txt")
     ent_org = _load_lines("data/dictionaries/entities_org.txt")
     
-    # [수정] whitelist를 소문자로 정규화
     whitelist_base = {w.lower() for w in ent_org} - {t.lower() for t in topic_like_entities}
     whitelist = {norm_tok(alias_map.get(w, w)) for w in whitelist_base}
-    org_stop_words = set()
+    org_stop_words = set() # (기존 is_bad_org_token에서 사용)
 
-    pair_counter: Counter = Counter()
-    pair_ctx: Dict[Tuple[str, str], List[str]] = defaultdict(list)
+    # --- ▼▼▼ [신규] 1. 문장 기반 카운터 및 증거 저장소 ▼▼▼ ---
+    pair_comp_counter: Counter = Counter()
+    pair_part_counter: Counter = Counter()
+    pair_neutral_counter: Counter = Counter()
+    
+    pair_comp_evidence: Dict[Tuple[str, str], List[Dict]] = defaultdict(list)
+    pair_part_evidence: Dict[Tuple[str, str], List[Dict]] = defaultdict(list)
+    pair_neutral_evidence: Dict[Tuple[str, str], List[Dict]] = defaultdict(list)
+    
     nodes: set = set()
+    # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
     for it in items:
         title = (it.get("title") or "").strip()
         text = (it.get("body") or it.get("description") or "").strip()
+        url = it.get("url", "#") # 증거 수집용
         if not text:
             continue
 
-        # 1) 도메인 힌트 필터(선택)
+        # (Optional: 도메인 힌트 필터 - 기존 유지)
         if domain_hints:
             content_low = (title + " " + text).lower()
             if not any(h in content_low for h in domain_hints):
                 continue
 
-        # 2) ORG 추출 (소문자로 정규화됨)
-        if use_regex_fallback:
-            orgs_raw = extract_orgs(text, alias_map, whitelist, org_stop_words)
-        else:
-            orgs_raw_spacy = extract_orgs_with_spacy(text)
-            orgs_raw = [alias_map.get(o.lower(), o.lower()) for o in orgs_raw_spacy]
-            orgs_raw = [norm_org_token(o) for o in orgs_raw if o]
+        # --- ▼▼▼ [신규] 2. 문장 단위로 순회하며 로직 실행 ▼▼▼ ---
+        sentences = re.split(r"(?<=[.!?다])\s+", text)
 
-        # 3) 화이트리스트 제한
-        if whitelist_only:
-            orgs_raw = [o for o in orgs_raw if o in whitelist]
+        for sent in sentences:
+            sent_low = sent.lower()
+            
+            # A. 이 문장에 언급된 Org 찾기
+            orgs_in_sent_raw = extract_orgs(sent, alias_map, whitelist, org_stop_words)
+            orgs_in_sent = sorted(set(brand_to_company.get(o, o) for o in orgs_in_sent_raw if o))
 
-        # 4) 브랜드→회사 표준화 (소문자 유지)
-        orgs_norm = sorted(set(brand_to_company.get(o, o) for o in orgs_raw if o))
-        if len(orgs_norm) == 0:
-            continue
-
-        # 5) 동시출현 계산
-        if cooccur_level == "sentence":
-            sentences = re.split(r"(?<=[.!?])[ \t\n\r]+", text)
-            for sent in sentences:
-                s_low = sent.lower()
-                s_orgs = [o for o in orgs_norm if o.lower() in s_low]
-                s_orgs = sorted(set(s_orgs))
-                if len(s_orgs) < 2:
-                    continue
-                for i in range(len(s_orgs)):
-                    for j in range(i+1, len(s_orgs)):
-                        a, b = s_orgs[i], s_orgs[j]
-                        pair = (a, b) if a < b else (b, a)
-                        pair_counter[pair] += 1
-                        context_obj = {"title": title, "url": it.get("url"), "text": sent}
-                        pair_ctx[pair].append(context_obj)
-                        nodes.add(a); nodes.add(b)
-        else:
-            # document level
-            if len(orgs_norm) == 1:
-                nodes.add(orgs_norm[0])
+            if len(orgs_in_sent) < 2: # 문장 안에 2개 미만 기업 시 스킵
                 continue
-            for i in range(len(orgs_norm)):
-                for j in range(i+1, len(orgs_norm)):
-                    a, b = orgs_norm[i], orgs_norm[j]
+            
+            # B. 이 문장에 언급된 긍/부정 키워드 찾기
+            found_comp_kws = [kw for kw in COMPETITIVE_KEYWORDS if kw in sent_low]
+            found_part_kws = [kw for kw in COOPERATIVE_KEYWORDS if kw in sent_low]
+
+            is_comp = len(found_comp_kws) > 0
+            is_part = len(found_part_kws) > 0
+            
+            # 증거 객체 생성
+            evidence_obj = {"title": title, "url": url, "text": sent, "comp_score": len(found_comp_kws), "part_score": len(found_part_kws)}
+
+            # C. 이 문장 기준으로 카운터 증가
+            for i in range(len(orgs_in_sent)):
+                for j in range(i+1, len(orgs_in_sent)):
+                    a, b = orgs_in_sent[i], orgs_in_sent[j]
                     pair = (a, b) if a < b else (b, a)
-                    pair_counter[pair] += 1
-                    context_obj = {"title": title, "url": it.get("url"), "text": text}
-                    pair_ctx[pair].append(context_obj)
                     nodes.add(a); nodes.add(b)
 
-    # 6) 엣지 생성: 최소 가중치 + 관계 분류
+                    # 경쟁 키워드가 협력 키워드보다 우선권
+                    if is_comp:
+                        pair_comp_counter[pair] += 1
+                        pair_comp_evidence[pair].append(evidence_obj)
+                    elif is_part: # 경쟁이 아닐 때만 협력 카운트
+                        pair_part_counter[pair] += 1
+                        pair_part_evidence[pair].append(evidence_obj)
+                    else: # 둘 다 없으면 중립 카운트
+                        pair_neutral_counter[pair] += 1
+                        pair_neutral_evidence[pair].append(evidence_obj)
+        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
+
+    # 4. 엣지 생성 (최종 결과 집계)
     edges = []
-    for (a, b), w in pair_counter.items():
-        if w < edge_min_weight:
-            continue
+    all_pairs = set(pair_comp_counter.keys()) | set(pair_part_counter.keys()) | set(pair_neutral_counter.keys())
+
+    for pair in all_pairs:
+        a, b = pair
+        comp_score = pair_comp_counter.get(pair, 0)
+        part_score = pair_part_counter.get(pair, 0)
+        neutral_score = pair_neutral_counter.get(pair, 0)
         
-        # --- ▼▼▼ [수정] 규칙 기반 관계 분류 (Override) ▼▼▼ ---
-        key_a = a
-        key_b = b
+        # 총 동시언급 횟수 (문장 기준)
+        total_weight = comp_score + part_score + neutral_score
+        
+        if total_weight < edge_min_weight: # 최소 가중치 필터
+            continue
+
+        # 4a. 관계 유형(rel_type) 결정
+        tentative_rel_type = "neutral"
+        if comp_score > part_score:
+            tentative_rel_type = "rivalry"
+        elif part_score > comp_score:
+            tentative_rel_type = "partnership"
+
+        # 4b. 규칙(Rules) 오버라이드
+        key_a = a.lower()
+        key_b = b.lower()
         rule_key = f"{key_a}|{key_b}" if key_a < key_b else f"{key_b}|{key_a}"
+        final_rel_type = RELATIONSHIP_RULES.get(rule_key, tentative_rel_type)
 
-        if rule_key in RELATIONSHIP_RULES:
-            rel = RELATIONSHIP_RULES[rule_key] # 1. 규칙 파일에서 관계
-        else:
-            rel = classify_relationship(pair_ctx[(a, b)]) # 2. 규칙 없으면 텍스트 분석
-        # --- ▲▲▲ 수정 완료 ▲▲▲ ---
+        # 4c. 최종 관계 유형에 따라 근거 기사 목록(evidence) 결정
+        top_articles_for_evidence = []
+        if final_rel_type == "rivalry":
+            pair_comp_evidence[pair].sort(key=lambda x: x["comp_score"], reverse=True)
+            top_articles_for_evidence = pair_comp_evidence[pair][:3] # 경쟁 상위 3개
+        elif final_rel_type == "partnership":
+            pair_part_evidence[pair].sort(key=lambda x: x["part_score"], reverse=True)
+            top_articles_for_evidence = pair_part_evidence[pair][:3] # 협력 상위 3개
+        else: # "neutral"
+            top_articles_for_evidence = pair_neutral_evidence[pair][:3] # 중립 3개
 
-        # --- ▼▼▼ [신규] 테스트 2 로그 ▼▼▼ ---
-        print(f"[DEBUG TEST 2] Top 3 근거 기사 생성 로직 진입 (Pair: {a}-{b})")
-        # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
-
-        # --- ▼▼▼ [신규] Top 3 근거 기사 (제목+링크) 추출 ▼▼▼ ---
-        context_objs = pair_ctx.get((a, b), [])
-
-        # 경쟁/협력 키워드 셋 (전역 변수 사용)
-        keyword_set = set(COMPETITIVE_KEYWORDS) | set(COOPERATIVE_KEYWORDS)
-
-        scored_articles = []
-        for obj in context_objs:
-            text_low = obj.get("text", "").lower()
-            if not text_low:
-                continue
-            # 키워드 발생 횟수로 점수 계산
-            score = sum(1 for kw in keyword_set if kw in text_low)
-            scored_articles.append({
-                "title": obj.get("title", "N/A"),
-                "url": obj.get("url", "#"),
-                "score": score
-            })
-
-        # 점수(score)가 높은 순으로 정렬
-        scored_articles.sort(key=lambda x: x["score"], reverse=True)
-        top_3_articles = scored_articles[:3]
-
+        # 4d. 근거 기사 HTML 생성 (이전과 동일, 점수 제거)
         links = []
-        for art in top_3_articles:
-            # HTML 태그 이스케이프 처리 (제목에 < >가 있을 경우 대비)
+        for art in top_articles_for_evidence:
             title_clean = art['title'].replace('<', '&lt;').replace('>', '&gt;')
-
-            if art["score"] > 0:
-                # 경쟁/협력 키워드가 1개 이상 매칭된 기사 (굵게, 파란색)
-                links.append(f'<a href="{art["url"]}" target="_blank" style="font-weight:600; color:#0056b3;">{title_clean} (Score: {art["score"]})</a>')
-            else:
-                # 키워드는 없지만 동시 언급된 기사 (Fallback, 회색)
+            if final_rel_type == "rivalry":
+                links.append(f'<a href="{art["url"]}" target="_blank" style="font-weight:600; color:#c41e3a;">{title_clean}</a>')
+            elif final_rel_type == "partnership":
+                links.append(f'<a href="{art["url"]}" target="_blank" style="font-weight:600; color:#065f46;">{title_clean}</a>')
+            else: # "neutral"
                 links.append(f'<a href="{art["url"]}" target="_blank" style="color:#555;">{title_clean}</a>')
 
-        if not links:
-            key_evidence_html = "N/A"
-        else:
-            key_evidence_html = "<br>".join(links)
-        # --- ▲▲▲ 신규 로직 완료 ▲▲▲ ---
+        key_evidence_html = "<br>".join(links) if links else "N/A"
 
-        edges.append((a, b, int(w), rel, key_evidence_html)) # 5번째 요소로 (HTML) evidence 추가
+        edges.append((a, b, int(total_weight), final_rel_type, key_evidence_html))
+
+    # 5. 디버그 로그 (이전 단계에서 추가했던 코드)
+    try:
+        os.makedirs("outputs/debug", exist_ok=True)
+        debug_log_path = "outputs/debug/company_pair_evidence_scores.txt"
+        
+        # [수정] 엣지 리스트를 디버깅용으로 변환
+        debug_all_evidence_scores = []
+        for a, b, w, rel, ev in edges:
+             debug_all_evidence_scores.append({
+                 "pair": f"{a}|{b}",
+                 "weight": w,
+                 "rel_type": rel,
+                 "scored_articles_html": ev # (HTML을 그대로 저장)
+             })
+
+        debug_all_evidence_scores.sort(key=lambda x: x["weight"], reverse=True)
+        top_10_pairs = debug_all_evidence_scores[:10]
+
+        with open(debug_log_path, "w", encoding="utf-8") as f:
+            f.write(f"--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---\n")
+            f.write(f"Generated at: {datetime.datetime.utcnow().isoformat() + 'Z'}\n")
+            
+            for i, pair_data in enumerate(top_10_pairs, 1):
+                f.write("\n" + "="*80 + "\n")
+                f.write(f"Rank #{i}: {pair_data['pair']} (Total Sentences: {pair_data['weight']}, Type: {pair_data['rel_type']})\n")
+                f.write(f"Top 3 Evidence Links (HTML formatted):\n")
+                f.write("---------------------\n")
+                f.write(pair_data['scored_articles_html'].replace("<br>", "\n") + "\n")
+                    
+        print(f"[INFO] [module_d] Saved evidence scoring debug log to {debug_log_path}")
+        
+    except Exception as e:
+        print(f"[WARN] [module_d] Failed to write evidence scoring debug log: {e}")
 
     return edges, sorted(nodes)
 
@@ -506,7 +528,36 @@ def analyze_network(G: nx.Graph, top_n: int = 10) -> Dict[str, Any]:
     # --- ▲▲▲ 수정 완료 ▲▲▲ ---
 
     # 상위 엣지
-    top_pairs = sorted(edges, key=lambda x: (x["weight"], x["source"], x["target"]), reverse=True)[:top_n]
+    # --- ▼▼▼ [신규] 2-2-1 선별 로직 (Top 5 테이블용) ▼▼▼ ---
+    rivalry_edges = sorted([e for e in edges if e["rel_type"] == "rivalry"], key=lambda x: x["weight"], reverse=True)
+    partnership_edges = sorted([e for e in edges if e["rel_type"] == "partnership"], key=lambda x: x["weight"], reverse=True)
+    neutral_edges = sorted([e for e in edges if e["rel_type"] == "neutral"], key=lambda x: x["weight"], reverse=True)
+
+    # Top 2 Rivalry, Top 2 Partnership, 1 Neutral
+    top_pairs = []
+    top_pairs.extend(rivalry_edges[:2])
+    top_pairs.extend(partnership_edges[:2])
+    if neutral_edges:
+        top_pairs.append(neutral_edges[0])
+
+    # 만약 개수가 모자라면(5개 미만) 다른 타입에서 채움 (단, 5개 제한)
+    if len(top_pairs) < 5:
+        # 이미 추가된 엣지 (source, target) 확인
+        added_pairs = set((e['source'], e['target']) for e in top_pairs)
+
+        # 남은 엣지 풀 (중복 제외)
+        remaining_edges = [
+            e for e in (rivalry_edges[2:] + partnership_edges[2:] + neutral_edges[1:])
+            if (e['source'], e['target']) not in added_pairs
+        ]
+        remaining_edges.sort(key=lambda x: x["weight"], reverse=True)
+
+        needed = 5 - len(top_pairs)
+        top_pairs.extend(remaining_edges[:needed])
+
+    # 최종적으로 5개로 자르고, 가중치 순으로 정렬
+    top_pairs = sorted(top_pairs, key=lambda x: x["weight"], reverse=True)[:5]
+    # --- ▲▲▲ 선별 로직 완료 ▲▲▲ ---
 
     # (이하 중심성, 커뮤니티 분석 등은 기존과 동일)
     # ...
