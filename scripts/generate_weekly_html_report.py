@@ -449,15 +449,7 @@ def prepare_weekly_report_data():
         weekly_momentum = trends_df.groupby('term')['z_like'].mean()
         # --- ▼▼▼ 추가 계산 ▼▼▼ ---
         weekly_peak_momentum = trends_df.groupby('term')['z_like'].max() # 주간 최고 z_like
-        # 30일 누적 언급량 계산 (weekly_trend_details.csv 사용 가정, 없으면 trends_df 사용)
-        trends_details_df = safe_read_csv(os.path.join(DEBUG_DIR, "weekly_trend_details.csv"))
-        if not trends_details_df.empty:
-             cumulative_mentions_30d = trends_details_df.groupby('term')['cur'].sum()
-        else:
-             # Fallback: Use weekly data if details not available (less accurate for 30d)
-             cumulative_mentions_30d = trends_df.groupby('term')['cur'].sum()
-        # --- ▲▲▲▲▲▲▲▲▲▲▲ ---
-
+        
         for competitor in TARGET_COMPETITORS:
             mentions = competitor_mentions_counter.get(competitor, 0)
             if mentions == 0: continue
@@ -465,7 +457,6 @@ def prepare_weekly_report_data():
             momentum = weekly_momentum.get(competitor, 0.0)
             # --- ▼▼▼ 추가 데이터 가져오기 ▼▼▼ ---
             peak_momentum = weekly_peak_momentum.get(competitor, 0.0)
-            total_30d_mentions = cumulative_mentions_30d.get(competitor, 0)
             # --- ▲▲▲▲▲▲▲▲▲▲▲ ---
 
             trend_key = "stable"
@@ -484,7 +475,6 @@ def prepare_weekly_report_data():
                 "momentum_score": f"{momentum:+.2f}", # 주간 평균 모멘텀
                 # --- ▼▼▼ 추가 데이터 추가 ▼▼▼ ---
                 "peak_momentum_score": f"{peak_momentum:+.2f}", # 주간 최대 모멘텀
-                "total_30d_mentions": total_30d_mentions, # 30일 누적 언급량
                 # --- ▲▲▲▲▲▲▲▲▲▲▲ ---
                 "insight": llm_insight_html # <-- 변환된 HTML 저장
             })
