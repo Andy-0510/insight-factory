@@ -28,7 +28,18 @@ EXPORT_DIR = os.path.join(OUTPUT_BASE_DIR, 'export')
 FIG_DIR = os.path.join(OUTPUT_BASE_DIR, 'fig')
 DEBUG_DIR = os.path.join(OUTPUT_BASE_DIR, 'debug')
 DAILY_ARCHIVE_DIR = os.path.join(OUTPUT_BASE_DIR, "daily")
-TARGET_COMPETITORS = ["LG디스플레이", "삼성디스플레이", "BOE", "CSOT", "AUO", "Innolux", "Visionox", "Tianma", "JDI", "Sharp"] # 경쟁사 목록
+TARGET_COMPETITORS = [
+      "삼성디스플레이", "lg디스플레이", "boe", "csot", "visionox", "tianma",
+      "샤프", "truly", "jdi", "auo", "innolux", "삼성전자", "샤오미",
+      "dell", "asus", "acer", "lg전자", "애플", "하이센스", "하이얼", "미디어텍", "corning", 
+      "schott", "agc", "nitto", "sumitomo chemical", "toray",
+      "idemitsu", "merck", "lg화학", "canon tokk", "폭스바겐", "byd", "리오토", "니오", 
+      "샤오펑", "magna", "continental", "bosch", "harman", "원익ips", "한미반도체", "ap systems", 
+      "한화솔루션", "화웨이", "레노버", "tcl", "오포", "비보", "구글", "피규어ai", 
+      "한화시스템", "한화", "마이크로소프트", "현대모비스", "현대자동차", "기아자동차", 
+      "두산로보틱스", "네이버", "카카오", "소니", "선익시스템", "도우인시스", "넷플릭스", "인텔", 
+      "엔비디아", "amd", "퀄컴", "tsmc", "sk하이닉스", "퓨리오사ai", "리벨리온", "텐센트", 
+      "오픈ai", "바이두", "메타", "아마존", "벤츠", "bmw"]
 
 # --- 필요한 헬퍼 함수 ---
 from src.utils import load_json, latest
