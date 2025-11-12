@@ -1,0 +1,126 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "ai",
+        "시리즈",
+        "역대",
+        "ces"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "칼레니우스",
+        "회장은",
+        "벤츠",
+        "칼레니우스 회장은",
+        "전장"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "수능",
+        "시험",
+        "8시",
+        "모든",
+        "수험표를"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "할인",
+        "혜택을",
+        "선보인다",
+        "상품을",
+        "판매한다"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "쿠팡",
+        "가전디지털",
+        "쿠팡 가전디지털",
+        "선착순 특가",
+        "가전"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "섬유",
+        "연구팀은",
+        "유연한",
+        "디스플레이",
+        "접힘"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "트라이폴드",
+        "삼성전자는",
+        "스마트폰",
+        "출시",
+        "접는"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "게임",
+        "스팀",
+        "지스타",
+        "게이밍",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "oled",
+        "반도체",
+        "중국",
+        "로봇",
+        "소재"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "xr",
+        "ai",
+        "교육",
+        "갤럭시",
+        "삼성"
+      ]
+    }
+  ],
+  "evidence": {}
+}
