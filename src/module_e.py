@@ -83,8 +83,8 @@ def pick_evidence(idea_keywords: List[str], items: List[Dict[str,Any]], limit=3)
     candidate_sentences = []
     
     # 사업의 필요성과 연관된 가중치 키워드
-    prob_keywords = ["문제", "어려움", "한계", "비용", "수율", "부족"]
-    opp_keywords = ["기회", "요구", "필요", "성장", "가능성", "기대"]
+    prob_keywords = ["문제", "어려움", "한계", "비용", "수율", "부족", "불만"]
+    opp_keywords = ["기회", "요구", "필요", "성장", "가능성", "기대", "니즈", "기대"]
 
     for it in items:
         base = (it.get("raw_body") or it.get("body") or it.get("description") or "")
@@ -151,26 +151,28 @@ def build_schema_hint() -> Dict[str, Any]:
 def build_prompt(context: Dict[str, Any], want: int = 5) -> str:
     schema = build_schema_hint()
     
+    '''
     maturity_prompt_injection = ""
     if context.get("tech_maturity"):
         maturity_prompt_injection = (
             f"  6) 아래 '기술 성숙도' 정보를 반드시 참고하여, 각 아이디어가 어떤 기술 단계(Emerging, Growth, Maturity)에 있는지 전략적 타이밍 관점에서 언급하세요.\n"
             f"     (예: 이 아이디어는 아직 Emerging 단계인 OOO 기술에 선제적으로 진입하는 것입니다.)\n"
         )
+    '''
 
     return (
-        f"당신은 글로벌 1위 디스플레이 패널 제조 기업(B2B)의 '신사업 개발 총괄'입니다. \n"
-        f"아래 컨텍스트를 기반으로 구체적인 신사업 아이디어를 제안해 주세요. \n"
+        f"당신은 디스플레이 패널 제조 기업(B2B)의 '사업 개발 프로젝트 경험이 많은 컨설턴트'입니다. \n"
+        f"아래 컨텍스트를 기반으로 디스플레이 제조 기업의 본질에 기반한 구체적인 사업 아이디어를 제안해 주세요. \n"
         f"- 아이디어 개수: 정확히 {want}개\n"
         f"- JSON 배열 형식만 출력하세요. 설명은 필요 없습니다. \n"
         f"- 각 아이템은 아래 스키마 키를 정확히 사용하세요: {json.dumps(schema, ensure_ascii=False)}\n"
         f"- 제약 조건:\n"
-        f"  1) 아이디어는 **구체적인 '제품', '기술', '서비스', '신규 비즈니스 모델' 또는 '공정 개선 방안'**의 형태여야 합니다. 만약 '플랫폼'이나 '솔루션'을 제안한다면, **매우 구체적이고 실현 가능한 사업 모델**을 명확히 제시해야 합니다.\n"
-        f"  2) 제안하는 아이디어는 **우리 회사의 핵심 역량(예: 디스플레이 패널 제조, 디스플레이 패널 제조 인프라, 공정 기술, B2B 공급망)과 명확한 시너지**를 낼 수 있어야 합니다.\n"
+        f"  1) 아이디어는 **구체적인 '제품', '기술', '서비스', '부품 또는 기능이 내장된 디스플레이 패널', '새로운 비즈니스 모델 아이디어'**의 형태여야 합니다. '솔루션', '플랫폼', '서비스' 아이디어는 구체적으로 작성할 것\n"
+        f"  2) 제안하는 아이디어는 반드시 **수익성**을 고려해야 하며, **우리 회사의 핵심 역량(디스플레이 패널 제조, 디스플레이 패널 제조 인프라, 대면적 공정 기술, B2B 공급망)과 명확한 시너지**를 낼 수 있어야 합니다.\n"
         f"  3) 각 아이디어의 'problem' 항목에는 반드시 최신 트렌드나 'Why now' 관점을 1문장 이상 포함하여 문제의 시의성을 강조하세요.\n"
         f"  4) 'target_customer'는 '글로벌 완성차 OEM', '북미 빅테크 기업'처럼 구체적으로 명시하세요.\n"
         f"  5) 'priority_score'는 시장 잠재력, 기술 실현 가능성, 경쟁 강도를 고려하여 객관적으로 평가해주세요.\n"
-        f"{maturity_prompt_injection}"
+        #f"{maturity_prompt_injection}"
         f"컨텍스트:\n"
         f"{json.dumps(context, ensure_ascii=False)}" 
     )
@@ -427,7 +429,8 @@ def call_gemini(prompt: str) -> str:
     genai.configure(api_key=api_key)
     model_name = str(LLM.get("model", "gemini-2.0-flash-001"))
     max_tokens = int(LLM.get("max_output_tokens", 2048))
-    temperature = float(LLM.get("temperature", 0.3))
+    #temperature = float(LLM.get("temperature", 0.3))
+    temperature = 0.7
     model = genai.GenerativeModel(model_name)
     resp = model.generate_content(
         prompt,
@@ -497,8 +500,8 @@ def calculate_feasibility(idea_item: Dict[str, Any]) -> float:
 
     # 긍정 키워드 (점수 상승)
     positive_keywords = [
-        '기존 기술', '파트너십', '검증된', '양산', '자동화', '효율 개선',
-        '표준화', '레퍼런스 디자인', '공급망 확보', '상용화', '적용 사례', '기술 확보'
+        '기존 기술', '파트너십', '검증된', '양산', '자동화', '효율 개선', '통과', '혁신', '인증 획득',
+        '표준화', '레퍼런스 디자인', '공급망 확보', '상용화', '적용 사례', '기술 확보', '신기술', '개발 완료'
     ]
     for pk in positive_keywords:
         if pk in text:
@@ -506,8 +509,8 @@ def calculate_feasibility(idea_item: Dict[str, Any]) -> float:
 
     # 부정 키워드 (점수 하락)
     negative_keywords = [
-        '장기 연구', '높은 비용', '신소재', '불확실성', '규제', '개인정보',
-        '복잡한 인증', '기술 미성숙', '법적 리스크', '보안 문제', '시장 불안정'
+        '장기 연구', '높은 비용', '신소재', '불확실성', '규제', '개인정보', '지연', '포화', '경쟁 심화',
+        '복잡한 인증', '기술 미성숙', '법적 리스크', '보안 문제', '시장 불안정', '실패', '포기', '불확실'
     ]
     for nk in negative_keywords:
         if nk in text:
