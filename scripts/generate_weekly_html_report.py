@@ -492,7 +492,8 @@ def prepare_weekly_report_data():
 
         competitor_analysis_list.sort(key=lambda x: x.get('mentions', 0), reverse=True)
 
-    data['competitor_analysis'] = competitor_analysis_list
+    # 정렬된 리스트에서 상위 6개만 선택합니다.
+    data['competitor_analysis'] = competitor_analysis_list[:6]
     data['competitor_actions'] = []
     # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
