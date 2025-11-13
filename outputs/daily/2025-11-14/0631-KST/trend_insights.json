@@ -1,0 +1,126 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "배터리",
+        "반도체",
+        "나는",
+        "ai",
+        "소재"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "새로운",
+        "주행",
+        "콘셉트는",
+        "마이크로",
+        "기능을"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "메르세데스",
+        "전장",
+        "벤츠",
+        "미래",
+        "모빌리티"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "지스타",
+        "게임",
+        "지스타 2025",
+        "신작",
+        "모바일"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "할인",
+        "쿠팡",
+        "가전",
+        "매출",
+        "특가"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "접는",
+        "삼성전자는",
+        "갤럭시z",
+        "폴더블"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "수출",
+        "ict",
+        "수출이",
+        "수출은",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "디스플레이",
+        "oled",
+        "것이다",
+        "ai가"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "스마트폰",
+        "ct",
+        "검사장비를",
+        "2차전지",
+        "폴더블"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "hdr10",
+        "자동차",
+        "레디",
+        "차량",
+        "플러스"
+      ]
+    }
+  ],
+  "evidence": {}
+}
