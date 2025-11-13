@@ -558,7 +558,7 @@ def prepare_weekly_report_data():
     if not trends_df.empty:
         # ... (weekly_momentum, weekly_mentions, selected_terms 계산) ...
         weekly_momentum = trends_df.groupby('term')['z_like'].mean()
-        weekly_mentions = trends_details_df.groupby('term')['cur'].sum() if not trends_details_df.empty else pd.Series()
+        weekly_mentions = trends_df.groupby('term')['cur'].sum() if not trends_df.empty else pd.Series()#=#
         top_rising = weekly_momentum[weekly_momentum > 0].nlargest(5)
         top_falling = weekly_momentum[weekly_momentum < 0].nsmallest(5)
         selected_terms = list(top_rising.index) + list(top_falling.index)
@@ -568,8 +568,8 @@ def prepare_weekly_report_data():
         for term in selected_terms:
             momentum = weekly_momentum.get(term, 0.0)
             change_display = "변화 없음" # ... (change_display 계산) ...
-            if not trends_details_df.empty:
-                 term_daily_history = trends_details_df[trends_details_df['term'] == term].sort_values('date')
+            if not trends_df.empty:
+                 term_daily_history = trends_df[trends_df['term'] == term].sort_values('date')
                  if len(term_daily_history) >= 2:
                       # ... (change 계산) ...
                       try:
