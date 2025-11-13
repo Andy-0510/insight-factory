@@ -72,7 +72,7 @@ def _call_gemini_safe(prompt: str, default_resp: str = "AI 분석 실패") -> st
         # --- ▼▼▼ 지연 시간 추가 (예: 4.1초) ▼▼▼ ---
         # 분당 15회 제한이므로, 호출당 60/15 = 4초 이상 간격 필요
         print("[INFO] Waiting before Gemini API call to respect rate limits...")
-        time.sleep(4.1) # 4초보다 약간 길게 설정
+        time.sleep(6.1) # (수정) 6.1초로 늘려서 API 한도 초과 방지
         # --- ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ ---
 
         import google.generativeai as genai
