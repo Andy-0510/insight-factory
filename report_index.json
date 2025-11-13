@@ -1,5 +1,16 @@
 {
   "daily": {
+    "2025-11-14": [
+      {
+        "time": "0631-KST",
+        "reports": [
+          {
+            "name": "daily_report.html",
+            "path": "outputs/daily/2025-11-14/0631-KST/daily_report.html"
+          }
+        ]
+      }
+    ],
     "2025-11-13": [
       {
         "time": "0629-KST",
