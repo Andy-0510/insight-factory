@@ -554,6 +554,17 @@
     ]
   },
   "monthly": {
+    "2025-11-14": [
+      {
+        "time": "1214-KST",
+        "reports": [
+          {
+            "name": "monthly_report.html",
+            "path": "outputs/monthly/2025-11-14/1214-KST/monthly_report.html"
+          }
+        ]
+      }
+    ],
     "2025-11-12": [
       {
         "time": "0203-KST",
