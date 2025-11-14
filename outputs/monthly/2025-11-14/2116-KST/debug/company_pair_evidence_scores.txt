@@ -1,0 +1,82 @@
+--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---
+Generated at: 2025-11-14T12:14:25.191484Z
+
+================================================================================
+Rank #1: sk하이닉스|삼성전자 (Total Sentences: 707, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.g-enews.com/view.php?ud=202511011237284299fbbec65dfb_1" target="_blank" style="font-weight:600; color:#065f46;">[실리콘 디코드] 일본, 2나노 시대 '소재 패권' 선언…한국 거점에 대규...</a>
+<a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=603152" target="_blank" style="font-weight:600; color:#065f46;">삼성·SK가 미는 ' 마이크로LED  광통신'...AI 메모리 병목 해결사로 주목</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=241283" target="_blank" style="font-weight:600; color:#065f46;">자율주행차 관련주, '웃음' 앤씨앤·삼현·텔레칩스... '한숨' 켐트로닉...</a>
+
+================================================================================
+Rank #2: lg전자|삼성전자 (Total Sentences: 519, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://biz.newdaily.co.kr/site/data/html/2025/11/12/2025111200138.html" target="_blank" style="font-weight:600; color:#c41e3a;">재고털이 나선 삼성·LG … '풍전등화' TV 사업 돌파구는</a>
+<a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=392649" target="_blank" style="font-weight:600; color:#c41e3a;">"3분기 나란히 적자"…삼성·LG TV, 中 공세 속 반전 카드 있을까</a>
+<a href="https://it.chosun.com/news/articleView.html?idxno=2023092150958" target="_blank" style="font-weight:600; color:#c41e3a;">자존심 내려놓은 TV 생존전략…삼성은 OLED, LG는  LCD  강화</a>
+
+================================================================================
+Rank #3: 삼성전자|엔비디아 (Total Sentences: 335, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://ilyo.co.kr/?ac=article_view&entry_id=502342" target="_blank" style="font-weight:600; color:#065f46;">엔비디아와 '깐부 동맹'…반도체 투톱 주가 어디까지 오를까</a>
+<a href="https://www.asiatime.co.kr/article/20251031500386" target="_blank" style="font-weight:600; color:#065f46;">[31일 대학가] 삼육대·한양대·연세대</a>
+<a href="https://www.mk.co.kr/article/11462803" target="_blank" style="font-weight:600; color:#065f46;">사법리스크 털고 관료주의 타파 … JY의 삼성 'AI 대전환' 승부수</a>
+
+================================================================================
+Rank #4: lg디스플레이|lg전자 (Total Sentences: 271, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.g-enews.com/view.php?ud=2025110607481110400c8c1c064d_1" target="_blank" style="font-weight:600; color:#065f46;">LG 전자, 인도에 공장 장비 생산 이전 검토…노이다 R&D 센터에 1조4000억...</a>
+<a href="https://www.newstopkorea.com/news/articleView.html?idxno=40428" target="_blank" style="font-weight:600; color:#065f46;">中 모니터 시장도 '양보다 질'…SDC·LGD 수혜 기대</a>
+<a href="https://www.khan.co.kr/article/202511052038005" target="_blank" style="font-weight:600; color:#065f46;">LG 도 ‘팀 애플’…아이폰17 인도 생산 장비 첫 공급</a>
+
+================================================================================
+Rank #5: lg디스플레이|삼성디스플레이 (Total Sentences: 242, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.businesspost.co.kr/BP?command=article_view&num=414799" target="_blank" style="font-weight:600; color:#c41e3a;">삼성·LG 디스플레이  '미래 모빌리티'서 새 먹거리 찾아, '차량용 OLED' 각...</a>
+<a href="https://www.ddaily.co.kr/page/view/2025091813274989685" target="_blank" style="font-weight:600; color:#c41e3a;">상반기 OLED 발광재료 한국이 앞섰지만…스마트폰 시장선 중국 추월 [소...</a>
+<a href="https://www.greened.kr/news/articleView.html?idxno=331258" target="_blank" style="font-weight:600; color:#c41e3a;">中, 스마트폰 OLED 재료 구매량 선두…전체 시장은 한국 우위 지속</a>
+
+================================================================================
+Rank #6: 삼성전자|애플 (Total Sentences: 215, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.mk.co.kr/article/11448490" target="_blank" style="font-weight:600; color:#c41e3a;">헤드셋 쓰고 "파리 가자" 말하니 에펠탑 눈앞</a>
+<a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=389205" target="_blank" style="font-weight:600; color:#c41e3a;">"이유 있는 자신감"...삼성, '두 번 접는' 트라이폴드폰 실물 공개</a>
+<a href="https://biz.newdaily.co.kr/site/data/html/2025/11/08/2025110800058.html" target="_blank" style="font-weight:600; color:#c41e3a;">삼성, 또 한번의 '확장 도전' … 美서 신용카드 출시 추진</a>
+
+================================================================================
+Rank #7: 구글|애플 (Total Sentences: 195, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.itbiznews.com/news/articleView.html?idxno=184569" target="_blank" style="font-weight:600; color:#c41e3a;">美 폴더블 폰 시장은 성장세…삼성 주도 속 애플·구글 참전 '주목'</a>
+<a href="https://zdnet.co.kr/view/?no=20251015133103" target="_blank" style="font-weight:600; color:#c41e3a;">"슬림폰 경쟁 뜨겁다"…모토로라, 모토 X70 에어 공개</a>
+<a href="https://www.cstimes.com/news/articleView.html?idxno=671517" target="_blank" style="font-weight:600; color:#c41e3a;">그로쓰리서치 "AI 스마트글래스, 스마트폰 시대 대체 기대"</a>
+
+================================================================================
+Rank #8: 벤츠|삼성전자 (Total Sentences: 194, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.starnewskorea.com/business-life/2025/11/06/2025110619034144792" target="_blank" style="font-weight:600; color:#065f46;">이재용 삼성전자 회장, 다음 주 벤츠 회장 만난다... 車 전장 협력 강화...</a>
+<a href="https://www.mk.co.kr/article/11461794" target="_blank" style="font-weight:600; color:#065f46;">삼성·벤츠 수장 내주 서울 회동</a>
+<a href="https://www.newsworks.co.kr/news/articleView.html?idxno=817665" target="_blank" style="font-weight:600; color:#065f46;">이재용, 벤츠 회장과 다음주 회동…"전장사업 협력 강화될 것"</a>
+
+================================================================================
+Rank #9: 삼성디스플레이|삼성전자 (Total Sentences: 169, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.finomy.com/news/articleView.html?idxno=241471" target="_blank" style="font-weight:600; color:#065f46;">PCB·FPCB 관련주, '봄날의 햇살' 심텍·대덕전자·코리아써키트·이수페...</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=241593" target="_blank" style="font-weight:600; color:#065f46;">PCB·FPCB 관련주, '웃음꽃' 이브이첨단소재·이수페타시스·대덕전자......</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=242497" target="_blank" style="font-weight:600; color:#065f46;">PCB·FPCB 관련주, '어깨춤 으쓱으쓱' 현우산업·이수페타시스·이브이첨...</a>
+
+================================================================================
+Rank #10: 메타|애플 (Total Sentences: 168, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.fieldnews.kr/news/articleView.html?idxno=22586" target="_blank" style="font-weight:600; color:#c41e3a;">삼성, '갤럭시 XR' 출시로 애플·메타에 도전장…하드웨어·콘텐츠 생태...</a>
+<a href="https://www.mk.co.kr/article/11448490" target="_blank" style="font-weight:600; color:#c41e3a;">헤드셋 쓰고 "파리 가자" 말하니 에펠탑 눈앞</a>
+<a href="https://www.ddaily.co.kr/page/view/2025102217194513404" target="_blank" style="font-weight:600; color:#c41e3a;">[DD퇴근길] "비전 프로, 덤벼"…삼성, '갤럭시 XR'로 도전장</a>
