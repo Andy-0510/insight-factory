@@ -1,0 +1,736 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Intelligence (2025.11.08 - 2025.11.14)</title>
+    <style>
+        /* CSS 스타일은 제공해주신 내용과 동일하게 유지합니다. */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f7fa; color: #1a2332; padding: 20px; line-height: 1.6; }
+        .container { max-width: 100%; /* <- 1200px; */ margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .header { background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%); color: #ffffff; padding: 32px 40px; /*border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); */ }   
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; } /* 간격 조정 */
+        .logo { font-size: 12px; font-weight: 600; letter-spacing: 2px; color: #0066ff; text-transform: uppercase; /* display: flex; align-items: center; gap: 12px; */ } /* 일간 리포트 로고 스타일 */
+        .date-range { font-size: 13px; color: #a0aec0; } /* 일간 리포트 날짜 스타일 */
+        .title { font-size: 28px; font-weight: 700; margin-bottom: 8px; } /* 일간 리포트 제목 스타일 */
+        .subtitle { font-size: 14px; color: #cbd5e0; } /* 일간 리포트 부제목 스타일 */
+        /* --- ▲▲▲ 헤더 관련 CSS 완료 ▲▲▲ --- */
+
+        /* .nav-tabs 관련 스타일은 탭 기능 구현 시 필요, 현재는 제거 또는 주석 처리 가능 */
+        /* .nav-tabs { display: flex; ... } */
+        .section { background: white; border-radius: 12px; padding: 40px; margin-bottom: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .section-header { display: flex; align-items: center; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 3px solid #e2e8f0; }
+        .section-number { width: 48px; height: 48px; background: linear-gradient(135deg, #0066ff, #00b8a9); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; margin-right: 16px; }
+        .section-title { font-size: 28px; font-weight: 800; color: #1a2332; }
+        .section-subtitle { font-size: 14px; color: #718096; margin-left: auto; }
+        .executive-summary { background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border-left: 6px solid #0066ff; padding: 32px; border-radius: 8px; margin-bottom: 32px; }
+        .summary-title { font-size: 18px; font-weight: 700; color: #1a2332; margin-bottom: 16px; }
+        .summary-text { font-size: 15px; line-height: 1.8; color: #2d3748; margin-bottom: 12px; }
+        .key-insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px; } /* 반응형 그리드 */
+        .insight-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; transition: all 0.3s; }
+        .insight-card:hover { border-color: #0066ff; transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,102,255,0.1); }
+        .insight-icon { width: 48px; height: 48px; background: linear-gradient(135deg, #0066ff, #00b8a9); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px; }
+        .insight-label { font-size: 12px; font-weight: 700; color: #0066ff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .insight-value { font-size: 32px; font-weight: 800; color: #1a2332; margin-bottom: 8px; }
+        .insight-description { font-size: 13px; color: #718096; line-height: 1.5; }
+        .theme-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 32px; } /* 반응형 그리드 */
+        .theme-card { background: #f7fafc; border-radius: 12px; padding: 28px; border: 2px solid #e2e8f0; }
+        .theme-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .theme-name { font-size: 20px; font-weight: 700; color: #1a2332; }
+        .theme-badge { background: #0066ff; color: white; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .theme-topics { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .topic-tag { background: white; border: 1px solid #cbd5e0; padding: 6px 12px; border-radius: 6px; font-size: 13px; color: #4a5568; }
+        .theme-description { font-size: 14px; color: #4a5568; line-height: 1.6; }
+        .visualization { background: #f7fafc; border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 24px; }
+        /* 이미지 스타일 */
+        img.report-graph { max-width: 100%; height: auto; border: 1px solid #e0e0e0; border-radius: 8px; margin-top: 1em; display: block; margin-left: auto; margin-right: auto; }
+        /* .competitor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; } /* 반응형 그리드 */
+        .competitor-grid {
+            display: grid;
+            /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */ /* 기존 반응형 규칙 주석 처리 또는 삭제 */
+            grid-template-columns: repeat(2, 1fr); /* 항상 2열로 고정 */
+            gap: 20px;
+        }
+        .competitor-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; }
+        .competitor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .competitor-name { font-size: 18px; font-weight: 700; color: #1a2332; }
+        .activity-trend { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; }
+        .trend-up { color: #38a169; } /* 초록색 */
+        .trend-down { color: #e53e3e; } /* 빨간색 */
+        .trend-stable { color: #718096; } /* 회색 */
+        .competitor-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px; }
+        .metric-item { background: #f7fafc; padding: 12px; border-radius: 8px; }
+        .metric-label { font-size: 11px; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .metric-value { font-size: 20px; font-weight: 700; color: #1a2332; }
+        .competitor-insight { font-size: 13px; color: #4a5568; line-height: 1.6; padding: 12px; background: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 8px; } /* 스타일 변경 */
+        .weak-signals { display: grid; gap: 20px; }
+        .signal-card { background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%); border: 2px solid #e2e8f0; border-left: 6px solid #00b8a9; border-radius: 12px; padding: 28px; }        
+        .signal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .signal-title { font-size: 18px; font-weight: 700; color: #1a2332; flex: 1; }
+        .signal-badges { display: flex; gap: 8px; }
+        .signal-badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .badge-emerging { background: #e6f7ff; color: #0066ff; }
+        .badge-confidence { background: #fff5e6; color: #ff9500; }
+        .signal-content { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+        .signal-description { font-size: 14px; color: #4a5568; line-height: 1.7; }
+        .signal-meta { background: white; border-radius: 8px; padding: 16px; }
+        .meta-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0; }
+        .meta-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .meta-label { font-size: 11px; color: #718096; text-transform: uppercase; margin-bottom: 4px; }
+        .meta-value { font-size: 14px; font-weight: 600; color: #1a2332; }
+        .action-title { font-size: 14px; font-weight: 700; color: #0066ff; text-transform: uppercase; margin-bottom: 12px; }
+        .action-items { display: grid; gap: 12px; }
+        .action-item { display: flex; gap: 12px; align-items: baseline; }
+        .action-label { font-size: 11px; font-weight: 700; color: white; background: #0066ff; padding: 4px 8px; border-radius: 4px; min-width: 60px; text-align: center; } /* 너비 조정 */
+        .action-text { font-size: 13px; color: #2d3748; line-height: 1.5; flex: 1; }
+        .momentum-table { width: 100%; border-collapse: collapse; margin-top: 1em; } /* 테이블 상단 여백 추가 */
+        .momentum-table thead { background: #f7fafc; }
+        .momentum-table th { padding: 16px; text-align: center; font-size: 12px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0; }
+        .momentum-table td { padding: 16px; font-size: 13px; color: #2d3748; border-bottom: 1px solid #e2e8f0; vertical-align: middle; } /* 수직 정렬 추가 */
+        .momentum-table tbody tr:hover { background: #f0f9ff; } /* 호버 색상 변경 */
+        .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #0066ff; color: white; border-radius: 50%; font-weight: 700; font-size: 14px; }
+        .trend-indicator { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 12px; font-size: 13px; font-weight: 700; }        
+        .trend-up { background: #fff5e6; color: #ff9500; }        
+        .trend-stable { background: #f7fafc; color: #718096; }        
+        .trend-down { background: #e2e8f0; color: #4a5568; }
+        .footer { background: white; border-top: 1px solid #e2e8f0; padding: 32px 40px; text-align: center; margin-top: 40px; }
+        .footer-content { max-width: 1200px; margin: 0 auto; font-size: 13px; color: #718096; }
+        .footer-links { margin-top: 16px; display: flex; justify-content: center; gap: 24px; }
+        .footer-link { color: #0066ff; text-decoration: none; font-weight: 600; }
+        .article-summary {
+            font-size: 15px;
+            color: #4a5568;
+            margin-top: 8px;
+            padding-left: 40px;
+        }
+        .section-support {
+            font-size: 14px;
+            color: #535a64;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">INSIGHT FACTORY</div>
+                <div class="date">2025.11.08 - 2025.11.14</div>
+            </div>
+            <div class="title">Weekly Report</div>
+            <div class="subtitle">이번 주 트렌드 분석 및 다음 주 실행 계획 지원</div>
+        </div>
+    
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <div class="section-title">주간 트렌드 요약</div>
+            </div>
+
+            <div class="key-insights">
+                <div class="insight-card">
+                    <div class="insight-icon">📈</div>
+                    <div class="insight-label">주간 기사량</div>
+                    <div class="insight-value">3,153</div>
+                    <div class="insight-description">전주 대비 +4% (3,812건). 금주 관심 기사 비중 평균 87.9%.</div>
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-icon">🔥</div>
+                    <div class="insight-label">핵심 테마 키워드</div>
+                    <div class="insight-value">85개</div>
+                    <div class="insight-description">애플, 중국, 스마트폰, 미국, 반도체 등</div>
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-icon">⚡</div>
+                    <div class="insight-label">주요 이벤트</div>
+                    <div class="insight-value">27건</div>
+                    <div class="insight-description">LAUNCH: 23건, INVEST: 13건, CERT: 11건, PARTNERSHIP: 8건, REGUL: 6건, ORDER: 5건</div>
+                </div>
+            </div>
+
+            <div class="executive-summary">
+                <div class="summary-title">🎯 이번 주 핵심 인사이트</div>
+                <div class="article-summary"><h3>[핵심 맥락]</h3>
+<ul>
+<li><strong>미-중 기술 패권 경쟁 심화 속, 스마트폰 시장 내 애플의 입지 변화 가능성 증대</strong><ul>
+<li>주간 키워드 분석 결과, '애플', '중국', '스마트폰', '미국', '반도체'가 상위 키워드를 차지했습니다. 이는 미-중 갈등이 격화되는 상황 속에서 애플의 스마트폰 시장 전략, 특히 중국 시장 내 입지에 대한 불확실성이 커지고 있음을 시사합니다. 반도체 키워드는 이러한 지정학적 리스크가 공급망 전반에 미치는 영향에 대한 우려를 반영합니다.</li>
+<li>경쟁사 활동량 분석에서 '벤츠'가 포함된 점은 프리미엄 시장에서의 경쟁 심화를 암시하며, 디스플레이의 고사양화 및 차별화 요구가 더욱 커질 것으로 예상됩니다.</li>
+</ul>
+</li>
+</ul>
+<h3>[INSIGHT]</h3>
+<ul>
+<li><strong>프리미엄 스마트폰 시장의 불확실성 확대는 새로운 기회이자 동시에 위협 요인으로 작용 가능</strong><ul>
+<li>애플의 중국 시장 내 점유율 변동은 우리 회사의 디스플레이 공급량에 직접적인 영향을 미칠 수 있습니다. 애플의 점유율 하락 시, 경쟁사(삼성전자 등)로의 공급량 확대 기회가 생기지만, 동시에 프리미엄 디스플레이 시장 전체의 위축 가능성도 배제할 수 없습니다.</li>
+<li>'구글', 'OLED', 'postech' 키워드의 약한 신호는 차세대 디스플레이 기술 경쟁의 가능성을 암시합니다. 구글의 디스플레이 기술 투자 확대, Postech의 OLED 관련 연구 동향은 장기적인 기술 경쟁 구도 변화에 대한 선제적 대응의 필요성을 제기합니다. 특히, OLED 이후의 기술 트렌드를 주시하고, 관련 기술 개발에 대한 투자 검토가 필요합니다.</li>
+<li>엔비디아의 활동량 증가는 고성능 컴퓨팅 환경에 최적화된 디스플레이 수요 증가를 암시합니다. 이는 단순히 스마트폰 시장에 국한되지 않고, 자율주행, 메타버스 등 다양한 분야로 디스플레이 활용 영역이 확장될 수 있음을 의미합니다.</li>
+</ul>
+</li>
+</ul>
+<h3>[추천 Action Items]</h3>
+<ul>
+<li><strong>1. 애플의 중국 시장 내 점유율 변화 시나리오별 공급 전략 수립 및 유연한 생산 계획 준비:</strong> 애플의 시장 상황 변화에 따른 위험을 최소화하고, 기회를 극대화하기 위해 시나리오별 대응 전략을 수립해야 합니다. 경쟁사의 수요 변화에 신속하게 대응할 수 있도록 생산 계획을 유연하게 조정할 수 있는 체계를 구축해야 합니다.</li>
+<li><strong>2. Post-OLED 기술 동향 파악 및 선제적 R&amp;D 투자 검토:</strong> 장기적인 기술 경쟁력 확보를 위해 Post-OLED 기술에 대한 면밀한 조사 및 분석을 수행해야 합니다. Postech을 포함한 학계 및 연구기관과의 협력을 통해 기술 동향을 파악하고, 핵심 기술 확보를 위한 R&amp;D 투자 전략을 검토해야 합니다.</li>
+</ul></div>                
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <div class="section-title">주간 시장 테마</div>
+                <div class="section-subtitle">이번 주 시장을 주도한 핵심 테마가 무엇인지 분석하고 요약</div>
+            </div>
+            
+            <h4>[주간 키워드] 이번 주 디스플레이 시장의 주요 관심사</h4>
+            <img src="fig/weekly_wordcloud.png" alt="주간 키워드 워드클라우드" class="report-graph">
+            <div class="section-subtitle">단어 크기=빈도 수 x Domain 가중치</div> <br>
+
+            <h4>[주간 토픽] 시장의 큰 흐름을 살펴보고, 그 속에서 중요한 의미를 찾습니다.</h4>
+            <img src="fig/weekly_topics_barchart.png" alt="주간 토픽 막대 바 그래프" class="report-graph">
+            <div class="section-subtitle">Weight: 토픽(시장 테마) 내 해당 키워드(구성요소)의 영향력</div> <br>
+
+
+            <div class="theme-grid">
+                
+                <div class="theme-card">
+                    <div class="theme-header">
+                        <div class="theme-name">삼성 AI OLED 기술 경쟁</div>
+                        <div class="theme-badge" style="background-color: #718096">안정</div>
+                    </div>
+                    <div class="theme-topics">
+                        
+                        <span class="topic-tag">ai</span>
+                        
+                        <span class="topic-tag">기업</span>
+                        
+                        <span class="topic-tag">tv</span>
+                        
+                        <span class="topic-tag">oled</span>
+                        
+                    </div>
+                    <div class="theme-description">
+                        삼성의 AI 기반 OLED TV 기술 경쟁력 강화는 프리미엄 TV 시장에서 화질, 사용자 경험, 그리고 시장 점유율 확대를 위한 중요한 전략적 움직임으로 해석될 수 있습니다. </div>
+                </div>
+                
+                <div class="theme-card">
+                    <div class="theme-header">
+                        <div class="theme-name">삼성 갤럭시 OLED 혁신</div>
+                        <div class="theme-badge" style="background-color: #718096">안정</div>
+                    </div>
+                    <div class="theme-topics">
+                        
+                        <span class="topic-tag">갤럭시</span>
+                        
+                        <span class="topic-tag">oled</span>
+                        
+                        <span class="topic-tag">혁신상을</span>
+                        
+                        <span class="topic-tag">tv</span>
+                        
+                    </div>
+                    <div class="theme-description">
+                        삼성 갤럭시의 OLED 기술 혁신이 TV 시장에 새로운 경쟁 구도를 형성하고 있으며, 특히 혁신적인 기술력을 바탕으로 프리미엄 TV 시장에서 삼성의 입지를 강화할 것으로 예상됩니다. </div>
+                </div>
+                
+                <div class="theme-card">
+                    <div class="theme-header">
+                        <div class="theme-name">AI 기반 차세대 기술 혁신</div>
+                        <div class="theme-badge" style="background-color: #718096">안정</div>
+                    </div>
+                    <div class="theme-topics">
+                        
+                        <span class="topic-tag">ai</span>
+                        
+                        <span class="topic-tag">기술</span>
+                        
+                        <span class="topic-tag">디스플레이</span>
+                        
+                        <span class="topic-tag">통신</span>
+                        
+                    </div>
+                    <div class="theme-description">
+                        AI 기술이 디스플레이 및 통신 분야와 융합되어 혁신적인 제품과 서비스 개발을 가속화하고 있으며, 이는 관련 시장의 성장과 경쟁 심화를 예고합니다. </div>
+                </div>
+                
+                <div class="theme-card">
+                    <div class="theme-header">
+                        <div class="theme-name">벤츠-삼성 협력</div>
+                        <div class="theme-badge" style="background-color: #718096">안정</div>
+                    </div>
+                    <div class="theme-topics">
+                        
+                        <span class="topic-tag">칼레니우스</span>
+                        
+                        <span class="topic-tag">벤츠</span>
+                        
+                        <span class="topic-tag">메르세데스</span>
+                        
+                        <span class="topic-tag">전장</span>
+                        
+                    </div>
+                    <div class="theme-description">
+                        칼레니우스 벤츠 회장의 방한과 삼성과의 협력 강화 논의는, 미래차 전장 기술 경쟁 심화 속에서 프리미엄 완성차 업체의 IT 기술 내재화 및 경쟁력 확보에 대한 시장의 높은 관심을 반영합니다. </div>
+                </div>
+                
+            </div>
+
+            <!--            
+             <div class="visualization">
+                 <img src="fig/keyword_network.png" alt="주간 키워드 네트워크" class="report-graph">
+             </div>
+            -->
+        </div>
+
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <div class="section-title">시장 트렌드 가속도 분석</div>
+            </div>
+            <div class="section-support">
+                이번 주에 가장 많이 '상승한 토픽'과 '하락한 토픽'을 보여주고, "그래서 다음 주에 무엇을 해야 하는지" 구체적인 액션 아이템을 제안
+            </div> <br>
+                
+            <img src="fig/weekly_strong_signals_barchart.png" alt="주간 강한 신호 바차트" class="report-graph"> <br>
+
+            
+            <div class="action-section"> <br>
+                <div class="action-title">주요 시그널 추세에 따른 권고</div>
+                <div class="action-items">
+                     
+                     <div class="action-item">
+                         <div class="action-label">Action 1</div>
+                         <div class="action-text">AI 권고 생성 실패</div>
+                     </div>
+                     
+                </div>
+            </div>
+            
+            <br>
+
+            <table class="momentum-table">
+                <thead>
+                    <tr>
+                        <th>순위</th>
+                        <th>토픽/신호</th>
+                        <th>모멘텀 점수 <br> (z-like)</th>
+                        <th>주간 변화</th>
+                        <th>추세</th>
+                        <th>권고사항</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td><span class="rank-badge">1</span></td>
+                        <td><strong>벤츠</strong></td>
+                        <td>+3.06</td>
+                        <td>+4.3σ</td>
+                        <td><span class="trend-indicator trend-up">↑ 상승</span></td>
+                        <td>벤츠 MicroLED TV 협업 가능성 타진</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">2</span></td>
+                        <td><strong>postech</strong></td>
+                        <td>+1.12</td>
+                        <td>신규 진입</td>
+                        <td><span class="trend-indicator trend-up">↑ 상승</span></td>
+                        <td>Postech 관련 차세대 디스플레이 기술 로드맵 확보</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">3</span></td>
+                        <td><strong>필립스</strong></td>
+                        <td>+1.12</td>
+                        <td>신규 진입</td>
+                        <td><span class="trend-indicator trend-up">↑ 상승</span></td>
+                        <td>필립스 OLED TV 패널 수급 전략 점검</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">4</span></td>
+                        <td><strong>폴더블</strong></td>
+                        <td>+0.97</td>
+                        <td>+0.4σ</td>
+                        <td><span class="trend-indicator trend-up">↑ 상승</span></td>
+                        <td>폴더블 수요 급증 대비 생산 능력 확충 검토</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">5</span></td>
+                        <td><strong>sk하이닉스</strong></td>
+                        <td>+0.81</td>
+                        <td>+0.0σ</td>
+                        <td><span class="trend-indicator trend-up">↑ 상승</span></td>
+                        <td>차세대 HBM3E 개발 로드맵 점검</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">6</span></td>
+                        <td><strong>모니터</strong></td>
+                        <td>-0.51</td>
+                        <td>+1.2σ</td>
+                        <td><span class="trend-indicator trend-down">↓ 하락</span></td>
+                        <td>타겟 고객군별 니즈 재검토</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">7</span></td>
+                        <td><strong>애플</strong></td>
+                        <td>-0.70</td>
+                        <td>+2.6σ</td>
+                        <td><span class="trend-indicator trend-down">↓ 하락</span></td>
+                        <td>애플 신제품 수요 예측 모델 재검토</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">8</span></td>
+                        <td><strong>맥북</strong></td>
+                        <td>-0.79</td>
+                        <td>+0.1σ</td>
+                        <td><span class="trend-indicator trend-down">↓ 하락</span></td>
+                        <td>온라인 커뮤니티 반응 집중 모니터링</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">9</span></td>
+                        <td><strong>lg전자</strong></td>
+                        <td>-0.84</td>
+                        <td>-1.2σ</td>
+                        <td><span class="trend-indicator trend-down">↓ 하락</span></td>
+                        <td>소비자 반응 즉각 측정 시스템 구축</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">10</span></td>
+                        <td><strong>삼성전자</strong></td>
+                        <td>-0.84</td>
+                        <td>+3.8σ</td>
+                        <td><span class="trend-indicator trend-down">↓ 하락</span></td>
+                        <td>OLED 패널 수요 급증 대응 준비</td> </tr>
+                    
+                </tbody>
+            </table>
+
+        </div>
+
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <div class="section-title">주요 기업의 금주 활동 분석</div>
+                <div class="section-subtitle">언론 노출량 기반 기업 활동성 평가</div>
+            </div>
+            <div class="section-support">
+                [설명] 기사 속 기업 언급량과 변화를 정량적으로 분석함<br>
+                [역할] 일일이 추적하기 힘든 주요 기업들의 활동을 파악하여 대응 전략을 세울 수 있도록 도움
+            </div> <br>
+
+            <div class="competitor-grid">
+                
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <div class="competitor-name">벤츠</div>
+                        <div class="activity-trend trend-up">
+                            Avg. Momentum: ↑ +3.1σ
+                        </div>
+                    </div>
+
+                    <div class="competitor-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">주간 언급량</div>
+                            <div class="metric-value">92</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">주간 최고 모멘텀</div>
+                            <div class="metric-value">+6.67</div>
+                        </div>
+                        </div>
+                    <div class="competitor-insight">
+                         <p>벤츠는 지난 주 높은 인지도와 긍정적 여론을 유지하며 시장 모멘텀을 확보하는 데 집중했으며, 이번 주에도 이러한 추세를 이어가기 위한 활동 또는 새로운 시장 공략 전략을 펼칠 가능성이 높습니다.</p> </div>
+                </div>
+                
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <div class="competitor-name">삼성전자</div>
+                        <div class="activity-trend trend-down">
+                            Avg. Momentum: ↓ -0.8σ
+                        </div>
+                    </div>
+
+                    <div class="competitor-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">주간 언급량</div>
+                            <div class="metric-value">81</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">주간 최고 모멘텀</div>
+                            <div class="metric-value">+3.91</div>
+                        </div>
+                        </div>
+                    <div class="competitor-insight">
+                         <p>삼성전자는 지난 주 전반적인 언급량 감소와 모멘텀 약세 속에서, 시장 관심도를 높이고 부정적 여론을 전환하기 위한 전략적 움직임을 모색해야 할 것으로 보입니다.</p> </div>
+                </div>
+                
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <div class="competitor-name">엔비디아</div>
+                        <div class="activity-trend trend-stable">
+                            Avg. Momentum: → +0.2σ
+                        </div>
+                    </div>
+
+                    <div class="competitor-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">주간 언급량</div>
+                            <div class="metric-value">43</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">주간 최고 모멘텀</div>
+                            <div class="metric-value">+4.20</div>
+                        </div>
+                        </div>
+                    <div class="competitor-insight">
+                         <p>엔비디아는 지난 주 긍정적인 모멘텀을 유지하며 꾸준한 관심(언급량)을 받았으며, 이 추세를 기반으로 인공지능 및 GPU 시장에서의 리더십을 강화하기 위한 전략적 움직임을 보일 가능성이 높습니다.</p> </div>
+                </div>
+                
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <div class="competitor-name">애플</div>
+                        <div class="activity-trend trend-down">
+                            Avg. Momentum: ↓ -0.7σ
+                        </div>
+                    </div>
+
+                    <div class="competitor-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">주간 언급량</div>
+                            <div class="metric-value">40</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">주간 최고 모멘텀</div>
+                            <div class="metric-value">+1.06</div>
+                        </div>
+                        </div>
+                    <div class="competitor-insight">
+                         <p>애플은 지난 주 언급량이 적고 모멘텀도 하락세였으므로, <strong>시장 관심도가 낮아진 상황을 타개하기 위해 신제품 공개나 파격적인 프로모션과 같은 공격적인 마케팅 전략을 펼칠 가능성에 주목해야 합니다.</strong></p> </div>
+                </div>
+                
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <div class="competitor-name">lg전자</div>
+                        <div class="activity-trend trend-down">
+                            Avg. Momentum: ↓ -0.8σ
+                        </div>
+                    </div>
+
+                    <div class="competitor-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">주간 언급량</div>
+                            <div class="metric-value">26</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">주간 최고 모멘텀</div>
+                            <div class="metric-value">+0.96</div>
+                        </div>
+                        </div>
+                    <div class="competitor-insight">
+                         <p>LG전자는 지난 주 낮은 모멘텀 속에서 제한적인 언급량을 보이며, 시장 내 긍정적 화제성을 확보하고 전략적 반등을 모색해야 할 필요성이 보인다.</p> </div>
+                </div>
+                
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <div class="competitor-name">인텔</div>
+                        <div class="activity-trend trend-up">
+                            Avg. Momentum: ↑ +0.4σ
+                        </div>
+                    </div>
+
+                    <div class="competitor-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">주간 언급량</div>
+                            <div class="metric-value">11</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">주간 최고 모멘텀</div>
+                            <div class="metric-value">+1.42</div>
+                        </div>
+                        </div>
+                    <div class="competitor-insight">
+                         <p>인텔은 지난 주 긍정적인 모멘텀을 유지했으나 언급량이 적어, <strong>미디어 노출을 늘리고 긍정적 이슈를 확산시키는 데 주력할 것으로 예상되며, 경쟁 심화에 대비한 기술 우위 확보 전략을 주목해야 합니다.</strong></p> </div>
+                </div>
+                
+            </div>
+
+            
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <div class="section-title">미래 신호 발견</div>
+                <div class="section-subtitle">금주의 Weak Signal 분석</div>
+            </div>
+            <div class="section-support">
+                [설명] 이번 주 급등한 초기 신호(Weak Signal)를 통계적으로 분석하여, 의미/주목해야 하는 이유/잠재적 영향을 예측함<br>
+                [역할] 시장 변화의 징후를 선제적으로 탐지하고 대응 전략을 세울 수 있도록 도움
+            </div> <br>
+
+            <div class="weak-signals">
+                
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <div class="signal-title"> 💡 구글</div>
+                        <div class="signal-badges">
+                            <span class="signal-badge badge-emerging">Emerging</span>
+                            <span class="signal-badge badge-confidence">Medium Freq</span>
+                        </div>
+                        </div>
+                    <div class="signal-content">
+                        <div class="signal-main-content">
+                            <div class="signal-description">
+                               <p>구글은 AI, 클라우드, 검색 등 다양한 기술 분야에서 지속적인 혁신을 주도하며, AI 모델 Gemini 출시 및 클라우드 서비스 확장 등이 현재 주목받는 이유입니다.</p>
+                                <br><br>
+                             <p>구글의 기술 발전은 관련 산업 전반에 걸쳐 경쟁 심화 및 새로운 시장 기회 창출에 영향을 미칠 수 있습니다.</p>
+                            </div>
+                                <br>
+                             
+                            <div class="action-section"> <div class="action-title">검증 및 대응 계획</div>
+                                <div class="action-items">
+                                    <div class="action-item">
+                                        <div class="action-label">Next Step</div>
+                                        <div class="action-text"><p>구글의 신규 프로젝트 및 기술 발표 모니터링</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                             
+                        </div>
+                        <div class="signal-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">관측 빈도 (주간)</div>
+                                <div class="meta-value">최근 5회</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">모멘텀 (z-like)</div>
+                                <div class="meta-value">1.9σ</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">누적 언급량 (Total)</div>
+                                <div class="meta-value">36</div>
+                            </div>
+                            </div>
+                        </div>
+                </div>
+                
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <div class="signal-title"> 💡 올레드</div>
+                        <div class="signal-badges">
+                            <span class="signal-badge badge-emerging">Emerging</span>
+                            <span class="signal-badge badge-confidence">Medium Freq</span>
+                        </div>
+                        </div>
+                    <div class="signal-content">
+                        <div class="signal-main-content">
+                            <div class="signal-description">
+                               <p>OLED는 뛰어난 화질과 유연성을 바탕으로 디스플레이 시장에서 점유율을 확대하고 있으며, 특히 중소형 OLED 시장의 성장세가 두드러집니다.</p>
+                                <br><br>
+                             <p>OLED 기술 발전은 디스플레이 관련 부품 산업 및 새로운 폼팩터 기기 디자인에 긍정적인 영향을 미칠 수 있습니다.</p>
+                            </div>
+                                <br>
+                             
+                            <div class="action-section"> <div class="action-title">검증 및 대응 계획</div>
+                                <div class="action-items">
+                                    <div class="action-item">
+                                        <div class="action-label">Next Step</div>
+                                        <div class="action-text"><p>OLED 시장 성장 예측 및 기술 로드맵 분석</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                             
+                        </div>
+                        <div class="signal-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">관측 빈도 (주간)</div>
+                                <div class="meta-value">최근 7회</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">모멘텀 (z-like)</div>
+                                <div class="meta-value">1.3σ</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">누적 언급량 (Total)</div>
+                                <div class="meta-value">33</div>
+                            </div>
+                            </div>
+                        </div>
+                </div>
+                
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <div class="signal-title"> 💡 postech</div>
+                        <div class="signal-badges">
+                            <span class="signal-badge badge-emerging">Emerging</span>
+                            <span class="signal-badge badge-confidence">Low Freq</span>
+                        </div>
+                        </div>
+                    <div class="signal-content">
+                        <div class="signal-main-content">
+                            <div class="signal-description">
+                               <p>Postech(포항공과대학교)은 국내 최고 수준의 연구중심 대학으로, 과학 기술 분야의 혁신적인 연구 성과 및 인재 양성을 통해 주목받고 있습니다.</p>
+                                <br><br>
+                             <p>Postech의 연구 성과는 산업 기술 발전에 기여하고, 미래 기술 트렌드를 선도할 가능성이 높습니다.</p>
+                            </div>
+                                <br>
+                             
+                            <div class="action-section"> <div class="action-title">검증 및 대응 계획</div>
+                                <div class="action-items">
+                                    <div class="action-item">
+                                        <div class="action-label">Next Step</div>
+                                        <div class="action-text"><p>Postech의 주요 연구 분야 및 산학 협력 활동 조사</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                             
+                        </div>
+                        <div class="signal-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">관측 빈도 (주간)</div>
+                                <div class="meta-value">최근 2회</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">모멘텀 (z-like)</div>
+                                <div class="meta-value">1.1σ</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">누적 언급량 (Total)</div>
+                                <div class="meta-value">2</div>
+                            </div>
+                            </div>
+                        </div>
+                </div>
+                
+            </div>
+        </div>
+
+        
+    </div>
+
+    <div class="footer">
+        <div class="footer-content">
+            <div>
+                “이 보고서는 AI 기반 트렌드 분석 시스템을 통해 작성되었습니다.”<br>
+                문의:  thecki85@gmail.com | 010.5353.1145 <br>
+                - Business Development Team -
+            </div>
+            <!--
+            <div class="footer-links">
+                <a href="#" class="footer-link">월간 전략 대시보드</a>
+                <a href="#" class="footer-link">데이터 소스</a>
+                <a href="#" class="footer-link">분석 방법론</a>
+                <a href="#" class="footer-link">문의하기</a>
+            </div>
+            -->
+        </div>
+    </div>
+</body>
+</html>
