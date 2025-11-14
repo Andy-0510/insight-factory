@@ -2,11 +2,11 @@
   "daily": {
     "2025-11-14": [
       {
-        "time": "0631-KST",
+        "time": "0924-KST",
         "reports": [
           {
             "name": "daily_report.html",
-            "path": "outputs/daily/2025-11-14/0631-KST/daily_report.html"
+            "path": "outputs/daily/2025-11-14/0924-KST/daily_report.html"
           }
         ]
       }
