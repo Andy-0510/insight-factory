@@ -1,0 +1,138 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "반도체",
+        "배터리",
+        "나는",
+        "소재",
+        "2025년"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "새로운",
+        "주행",
+        "콘셉트는",
+        "바이",
+        "마이크로"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "할인",
+        "혜택을",
+        "쿠팡",
+        "인기",
+        "가전"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "수출",
+        "ict",
+        "달러로",
+        "수출이",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "hdr10",
+        "자동차",
+        "차량",
+        "레디",
+        "디자인"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "기술",
+        "oled",
+        "차세대",
+        "마이크로led"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "통신",
+        "네트워크",
+        "6g",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "게임",
+        "게이밍",
+        "지스타",
+        "모니터"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "접는",
+        "갤럭시z",
+        "중국",
+        "폴더블폰"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "벤츠",
+        "칼레니우스",
+        "메르세데스",
+        "전장",
+        "미래"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "스마트폰",
+        "개발",
+        "제품",
+        "검사장비를",
+        "친환경"
+      ]
+    }
+  ],
+  "evidence": {}
+}
