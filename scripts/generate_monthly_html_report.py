@@ -118,7 +118,7 @@ def call_gemini_for_section_summary(section_title, context_summary):
         context_str = str(context_summary)
 
     prompt = f"""
-    당신은 수석 애널리스트입니다. '{section_title}' 섹션의 핵심 데이터를 요약했습니다.
+    당신은 디스플레이 산업 분야의 수석 애널리스트입니다. '{section_title}' 섹션의 핵심 데이터를 요약했습니다.
     이 데이터를 바탕으로 해당 섹션의 **핵심 결론(Executive Summary)**을 **1~2 문장**으로 작성해주세요. (Markdown 형식)
     
     ### '{section_title}' 섹션 핵심 데이터:
@@ -149,12 +149,12 @@ def call_gemini_for_monthly_summary(context):
 def call_gemini_for_positioning_analysis(topics_context):
     """LLM 호출: 토픽 데이터를 기반으로 사분면 분석, 인사이트, 시사점을 JSON으로 생성"""
     prompt = f"""
-    당신은 최고 전략 책임자 입니다. 아래는 이번 달 시장의 핵심 토픽 데이터입니다.
+    당신은 **디스플레이 제조 기업**의 최고 전략 책임자 입니다. 아래는 이번 달 시장의 핵심 토픽 데이터입니다.
     ### 핵심 토픽 데이터:
     {json.dumps(topics_context, ensure_ascii=False, indent=2)}
 
     ### 분석 요청:
-    아래 10가지 항목에 대해 **반드시 JSON 형식으로만** 답변해주세요. (다른 설명 금지)
+    아래 10가지 항목에 대해 **디스플레이 제조 기업의 관점**으로 **반드시 JSON 형식으로만** 답변해주세요. (다른 설명 금지)
     1.  `insight` (Markdown): 데이터를 종합한 시장의 거시적 흐름 (1~2 문단)
     2.  `q1_topics` (String): '고관심/고긍정' 영역의 **핵심 토픽 1~2개**.
     3.  `q1_strategy` (String): 해당 영역의 권고 전략 (1문장).
@@ -244,7 +244,7 @@ def call_gemini_for_rd_recommendation(tech_details_context):
 def call_gemini_for_strategy_insight(company_name, topics_str):
     """LLM 호출: 기업의 토픽 집중도 기반 전략 방향성 분석 (월간용)"""
     prompt = f"""
-    당신은 B2B 기술 기업 전문 애널리스트입니다.
+    당신은 **디스플레이 제조 기업** 전문 애널리스트입니다.
     '{company_name}'라는 기업이 최근 한 달간 아래 토픽들에 집중하고 있습니다.
     이를 바탕으로 이 기업의 현재 사업 방향성과 단기 전략을 **한 문장**으로 간결하게 해석해주세요.
     ### 집중 토픽:
@@ -256,14 +256,14 @@ def call_gemini_for_strategy_insight(company_name, topics_str):
 def call_gemini_for_competition_alerts(matrix_summary, network_summary):
     """LLM 호출: 경쟁 강도 변화 경보 생성"""
     prompt = f"""
-    당신은 시장 경쟁 분석 전문가입니다. 아래는 이번 달 경쟁사 분석 요약 데이터입니다.
+    당신은 **디스플레이 시장** 경쟁 분석 전문가입니다. 아래는 이번 달 산업 내 주요 기업들의 분석 요약 데이터입니다.
     ### 기업-토픽 집중도 요약:
     {matrix_summary}
     ### 기업 관계망 요약:
     {network_summary}
 
     ### 분석 요청:
-    이 데이터를 바탕으로, 이번 달 감지된 **경쟁 강도 변화에 대한 핵심 경보** (예: 특정 영역 경쟁 심화, 신규 파트너십으로 인한 구도 변화 등)를 2~3개의 불릿포인트(-)로 요약해주세요.
+    이 데이터를 바탕으로, **디스플레이 제조 기업의 관점**에서 이번 달 감지된 **경쟁 강도 변화에 대한 핵심 경보** (예: 특정 영역 경쟁 심화, 신규 파트너십으로 인한 구도 변화 등)를 2~3개의 불릿포인트(-)로 요약해주세요.
     
     ### 경쟁 강도 변화 경보 (Markdown):
     - (경보 1)
@@ -277,7 +277,7 @@ def call_gemini_for_competition_alerts(matrix_summary, network_summary):
 def call_gemini_for_network_action_item(pair_info):
     """LLM 호출: 기업 관계망 기반 액션 아이템 제안"""
     prompt = f"""
-    당신은 전략기획팀 리더입니다. 시장 분석 결과, 아래 기업 간의 주요 관계가 포착되었습니다.
+    당신은 **디스플레이 제조 기업**의 전략기획팀 리더입니다. 시장 분석 결과, 아래 기업 간의 주요 관계가 포착되었습니다.
     ### 관계 정보:
     {pair_info}
     ### 액션 아이템 제안 (1개, 명사형 어구, 20자 내외):
@@ -393,7 +393,7 @@ def call_gemini_for_risk_analysis(risk_context):
 def call_gemini_for_risk_analysis(risk_context):
     """LLM 호출: 리스크 데이터를 기반으로 매트릭스, 즉시 대응, 종합 평가를 JSON으로 생성"""
     prompt = f"""
-    당신은 기업 리스크 관리 최고 책임자(CRO)입니다. 아래는 이번 달 탐지된 주요 리스크 목록입니다.
+    당신은 **디스플레이 제조 기업**의 리스크 관리 최고 책임자(CRO)입니다. 아래는 이번 달 탐지된 주요 리스크 목록입니다.
     ### 주요 리스크 목록:
     {json.dumps(risk_context, ensure_ascii=False, indent=2)}
 
@@ -450,14 +450,14 @@ def call_gemini_for_risk_analysis(risk_context):
 def call_gemini_for_final_recommendation(summary_context):
     """LLM 호출: 모든 섹션의 요약을 바탕으로 최종 종합 전략 권고 생성"""
     prompt = f"""
-    당신은 시장 전략 컨설턴트입니다. 아래는 이번 달 시장 분석의 모든 핵심 요약본입니다.
+    당신은 **디스플레이** 산업 분야의 전략 컨설턴트입니다. 아래는 이번 달 시장 분석의 모든 핵심 요약본입니다.
     
     ### 월간 핵심 데이터 요약:
     {json.dumps(summary_context, ensure_ascii=False, indent=2)}
 
     ### 분석 요청 (Markdown 형식):
         1. **종합 해석**: 토픽 포지셔닝 맵(버블 차트), 미니 트렌드 차트, 모멘텀 점수 데이터를 종합적으로 해석하여, 현재 시장의 **주요 동력(Driving Force)**과 **새롭게 부상하는 기회(Emerging Opportunity)** 영역이 무엇인지 설명해주세요. # 이름 변경
-        2. **전략적 제언**: 분석 결과를 바탕으로, 우리 회사가 다음 분기에 **자원을 집중해야 할 토픽 영역**과 **주의 깊게 모니터링해야 할 토픽 영역**을 각각 제안해주세요.
+        2. **전략적 제언**: 분석 결과를 바탕으로, 우리 회사(**디스플레이 제조 기업**)가 다음 분기에 **자원을 집중해야 할 토픽 영역**과 **주의 깊게 모니터링해야 할 토픽 영역**을 각각 제안해주세요.
 
     ### 분석 결과 (Markdown):
         #### 종합 시장 동향 해석

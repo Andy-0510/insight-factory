@@ -266,9 +266,13 @@ def plot_topics_bubble(topics_data, output_path, min_bubble=100, max_bubble=8000
         labels.append(label_name or label_semantic or label_id)
 
     # 2. 원 크기 정규화 (스케일링)
-    s_arr = np.array(positivity_scores)
-    if s_arr.max() - s_arr.min() > 1e-6:
-        s_norm = (s_arr - s_arr.min()) / (s_arr.max() - s_arr.min())
+    s_arr = np.array(positivity_scores) # (예: [0.48, 0.51, 0.53])
+    s_norm = np.array([0.5] * len(s_arr)) # 기본값
+    s_min, s_max = s_arr.min(), s_arr.max()
+
+    if s_max - s_min > 1e-6:
+        # 0.0 ~ 1.0 범위로 정규화된 점수 (시각화 전용)
+        s_norm = (s_arr - s_min) / (s_max - s_min) 
         ss = (s_norm * (max_bubble - min_bubble)) + min_bubble
     else:
         ss = [min_bubble] * len(s_arr)
@@ -277,10 +281,10 @@ def plot_topics_bubble(topics_data, output_path, min_bubble=100, max_bubble=8000
     fig, ax = plt.subplots(figsize=(12, 7))
     
     # 4. [수정] 스캐터 플롯 (긍정/부정 색상 및 크기 적용)
-    # c=positivity_scores: 긍정/부정 점수를 색상(c)으로 매핑
-    # cmap="RdYlGn": (부정)Red -> (중립)Yellow -> (긍정)Green 컬러맵 사용
+    # [수정] s=ss(정규화된 크기), c=s_norm(정규화된 색상) 사용
+    # [수정] vmin, vmax 제거 -> 컬러맵이 s_norm의 0.0~1.0 범위에 맞춰짐
     sc = ax.scatter(xs, ys, s=ss, 
-                    c=positivity_scores, cmap="RdYlGn", vmin=0, vmax=1, 
+                    c=s_norm, cmap="RdYlGn", 
                     alpha=0.7, edgecolors="#343a40", linewidths=0.5)
     # --- ▼▼▼ 5. [수정] 축 스케일 및 평균선 (순서 변경) ▼▼▼ ---
     # 축 스케일을 먼저 설정합니다.
@@ -342,10 +346,16 @@ def plot_topics_bubble(topics_data, output_path, min_bubble=100, max_bubble=8000
 
     # --- ▼▼▼ [신규] 5. 컬러바(범례) 추가 ▼▼▼ ---
     cbar = fig.colorbar(sc, ax=ax, orientation='vertical', pad=0.02)
-    #cbar.set_label('텍스트 긍/부정 척도', fontsize=12)
-    # 컬러바 라벨을 0, 0.5, 1.0에만 표시
-    cbar.set_ticks([0, 0.5, 1.0])
-    cbar.set_ticklabels(['0.0 (부정)', '0.5 (중립)', '1.0 (긍정)'])
+    # [수정] 컬러바 라벨을 좁은 범위의 "원본 점수"로 표시
+    cbar.set_ticks([0, 0.5, 1.0]) # 0.0, 0.5, 1.0 위치에
+    cbar.set_ticklabels([
+        f'부정', 
+        f'중립', 
+        f'긍정'
+        # f'{s_min:.2f} (부정)', 
+        # f'{(s_min + s_max) / 2.0:.2f} (중립)', 
+        # f'{s_max:.2f} (긍정)'
+    ]) # 실제 원본 점수 라벨을 표시
     cbar.ax.tick_params(labelsize=10)
     # --- ▲▲▲ 컬러바 추가 완료 ▲▲▲ ---
 

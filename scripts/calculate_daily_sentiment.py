@@ -241,13 +241,12 @@ def calculate_sentiments():
                     # 1. 기존 로직으로 0.0 ~ 1.0 사이의 기본 점수 계산
                     score_raw = result['score'] if result['label'] == 'LABEL_1' else 1 - result['score']
 
-                    # 2. [신규] 비선형(tanh) 스트레칭 로직
-                    # (소수점 3자리 차이를 증폭시키기 위해 GAIN = 100.0으로 설정)
-                    GAIN = 100.0 
-                    score_scaled = (math.tanh(GAIN * (score_raw - 0.5)) + 1) / 2.0
+                    # 2. [수정] 스트레칭 로직 제거
+                    # GAIN = 100.0 
+                    # score_scaled = (math.tanh(GAIN * (score_raw - 0.5)) + 1) / 2.0
 
-                    # 3. [기존] 0.0 ~ 1.0 범위를 벗어나는 값 보정 (Clamping)
-                    score = max(0.0, min(1.0, score_scaled))
+                    # 3. [수정] 원본 점수를 그대로 사용 (0.0 ~ 1.0 보정은 유지)
+                    score = max(0.0, min(1.0, score_raw))
                     # --- ▲▲▲ 점수 분포 확장 로직 종료 ▲▲▲ ---
                     
                     topic_sentiments[topic_id].append(score)
