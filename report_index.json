@@ -567,11 +567,11 @@
   "monthly": {
     "2025-11-14": [
       {
-        "time": "1214-KST",
+        "time": "2116-KST",
         "reports": [
           {
             "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-11-14/1214-KST/monthly_report.html"
+            "path": "outputs/monthly/2025-11-14/2116-KST/monthly_report.html"
           }
         ]
       }
