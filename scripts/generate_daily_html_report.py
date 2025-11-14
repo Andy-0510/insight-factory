@@ -50,7 +50,7 @@ def _call_gemini_for_topic_name(keywords: list) -> str:
     keywords_str = ", ".join(keywords)
     prompt = f"""
     다음은 특정 시장 토픽을 대표하는 키워드 목록입니다.
-    이 토픽의 핵심 의미를 가장 잘 나타내는 '토픽 이름'을 5단어 이내로 생성해주세요.
+    이 토픽의 핵심 의미를 가장 잘 나타내는 '토픽 이름'을 **디스플레이 제조 기업 관점**의 5단어 이내로 생성해주세요.
 
     ### 키워드:
     {keywords_str}
@@ -252,7 +252,7 @@ def call_gemini_for_signal_commentary(signal_term: str, article_titles: list, z_
 
     ### 요청:
     1.  **commentary**: 급증한 핵심 이유를 **50자 내외 한 문장**으로 요약해주세요.
-    2.  **interpretation**: 이 급등이 의미하는 바를 15자 내외로 간결하게 분석해주세요.
+    2.  **interpretation**: 이 급등이 의미하는 바를 **디스플레이 제조 기업 입장**에서 15자 내외로 간결하게 분석해주세요.
 
     ### 출력 (반드시 JSON 형식만, 다른 설명 절대 금지):
     {{
@@ -281,7 +281,7 @@ def call_gemini_for_event_analysis(event_title: str, event_type: str) -> dict:
     """LLM 호출: 이벤트의 4가지 핵심 요소(요약, 사실, 영향, 대응)를 JSON으로 반환"""
 
     prompt = f"""
-    당신은 시장 분석가입니다.
+    당신은 디스플레이 시장 분석가입니다.
     시장의 주요 사업자에서 다음과 같은 이벤트가 발생했습니다.
     - **이벤트 제목**: {event_title}
     - **이벤트 유형**: {event_type} (예: LAUNCH는 신제품 출시, INVEST는 투자)
@@ -290,8 +290,8 @@ def call_gemini_for_event_analysis(event_title: str, event_type: str) -> dict:
 
     1.  `summary_title`: 이벤트를 대표하는 10단어 이내의 핵심 요약 제목.
     2.  `fact_summary`: 이벤트의 핵심 사실(Fact) 2문장 요약.
-    3.  `impact`: 이 이벤트가 시장에 미칠 잠재적 영향 (1문장).
-    4.  `next_step`: 우리가 고려해야 할 초기 대응 방향 (1문장).
+    3.  `impact`: 이 이벤트가 디스플레이 관련 시장에 미칠 잠재적 영향 (1문장).
+    4.  `next_step`: **디스플레이 제조 기업 입장**에서 고려해야 할 초기 대응 방향 (1문장).
 
     ### 분석 결과 (JSON 형식):
     ```json
@@ -332,7 +332,7 @@ def call_gemini_for_risk_commentary(topic_name, sentiment_drop, related_titles):
 
     prompt = f"""
     디스플레이 및 연관 산업의 리스크 분석가로서, '{topic_name}' 토픽의 감성 점수가 오늘 {sentiment_drop:.2f} 만큼 급락했습니다.
-    아래 참고 기사 제목을 바탕으로, **급락 원인과 잠재적 영향을 2개의 핵심 불릿포인트(HTML `<ul><li>...</li></ul>` 태그 사용)**로 간결하게 요약 분석해주세요.
+    아래 참고 기사 제목을 바탕으로, **급락 원인과 잠재적 영향을 **디스플레이 제조 기업 관점**으로 2개의 핵심 불릿포인트(HTML `<ul><li>...</li></ul>` 태그 사용)**로 간결하게 요약 분석해주세요.
     근거 기반의 추정은 가능하지만, 절대 데이터가 부족하다거나 혹은 분석이 어렵다는 말은 하지 마세요.
 
     ### 관련 기사 제목:
