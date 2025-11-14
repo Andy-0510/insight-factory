@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-11-14T03:12:59Z",
+  "matrix_stats": {
+    "num_orgs": 82,
+    "num_topics": 11,
+    "top_org": "AMD"
+  },
+  "network_stats": {
+    "num_nodes": 79,
+    "num_edges": 748,
+    "top_pairs": [
+      {
+        "source": "sk하이닉스",
+        "target": "삼성전자",
+        "weight": 698,
+        "rel_type": "partnership",
+        "evidence": "<a href=\"https://www.g-enews.com/view.php?ud=202511011237284299fbbec65dfb_1\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">[실리콘 디코드] 일본, 2나노 시대 '소재 패권' 선언…한국 거점에 대규...</a><br><a href=\"https://www.digitaltoday.co.kr/news/articleView.html?idxno=603152\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">삼성·SK가 미는 ' 마이크로LED  광통신'...AI 메모리 병목 해결사로 주목</a><br><a href=\"http://www.finomy.com/news/articleView.html?idxno=241283\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">자율주행차 관련주, '웃음' 앤씨앤·삼현·텔레칩스... '한숨' 켐트로닉...</a>"
+      },
+      {
+        "source": "lg전자",
+        "target": "삼성전자",
+        "weight": 517,
+        "rel_type": "rivalry",
+        "evidence": "<a href=\"https://biz.newdaily.co.kr/site/data/html/2025/11/12/2025111200138.html\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">재고털이 나선 삼성·LG … '풍전등화' TV 사업 돌파구는</a><br><a href=\"https://www.pinpointnews.co.kr/news/articleView.html?idxno=392649\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">\"3분기 나란히 적자\"…삼성·LG TV, 中 공세 속 반전 카드 있을까</a><br><a href=\"https://it.chosun.com/news/articleView.html?idxno=2023092150958\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">자존심 내려놓은 TV 생존전략…삼성은  OLED , LG는 LCD 강화</a>"
+      },
+      {
+        "source": "삼성전자",
+        "target": "엔비디아",
+        "weight": 343,
+        "rel_type": "partnership",
+        "evidence": "<a href=\"https://ilyo.co.kr/?ac=article_view&entry_id=502342\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">엔비디아와 '깐부 동맹'…반도체 투톱 주가 어디까지 오를까</a><br><a href=\"https://www.asiatime.co.kr/article/20251031500386\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">[31일 대학가] 삼육대·한양대·연세대</a><br><a href=\"https://www.mk.co.kr/article/11462803\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">사법리스크 털고 관료주의 타파 … JY의 삼성 'AI 대전환' 승부수</a>"
+      },
+      {
+        "source": "lg디스플레이",
+        "target": "삼성디스플레이",
+        "weight": 241,
+        "rel_type": "rivalry",
+        "evidence": "<a href=\"https://www.businesspost.co.kr/BP?command=article_view&num=414799\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">삼성·LG 디스플레이  '미래 모빌리티'서 새 먹거리 찾아, '차량용 OLED' 각...</a><br><a href=\"https://www.ddaily.co.kr/page/view/2025091813274989685\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">상반기 OLED 발광재료 한국이 앞섰지만…스마트폰 시장선 중국 추월 [소...</a><br><a href=\"https://www.greened.kr/news/articleView.html?idxno=331258\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">中, 스마트폰 OLED 재료 구매량 선두…전체 시장은 한국 우위 지속</a>"
+      },
+      {
+        "source": "네이버",
+        "target": "카카오",
+        "weight": 123,
+        "rel_type": "neutral",
+        "evidence": "<a href=\"http://www.finomy.com/news/articleView.html?idxno=241283\" target=\"_blank\" style=\"color:#555;\">자율주행차 관련주, '웃음' 앤씨앤·삼현·텔레칩스... '한숨' 켐트로닉...</a><br><a href=\"https://magazine.hankyung.com/job-joy/article/202510225838d\" target=\"_blank\" style=\"color:#555;\">에어브릿지, 국내 본사 기업 기준 MMP 점유율 1위 기록</a><br><a href=\"https://news.tf.co.kr/read/economy/2254656.htm\" target=\"_blank\" style=\"color:#555;\">롯데하이마트, 김장철 필수 김치냉장고 할인전 연다</a>"
+      }
+    ],
+    "top_hub": "삼성전자"
+  }
+}
