@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "부문",
+        "올해의",
+        "마케팅",
+        "캠페인",
+        "올해의 소통대상"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "새로운",
+        "주행",
+        "콘셉트는",
+        "기능을",
+        "마이크로"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "할인",
+        "가전",
+        "쿠팡",
+        "혜택을",
+        "매출"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "게임",
+        "3d",
+        "모바일",
+        "최신",
+        "이벤트"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "수출",
+        "ict",
+        "수출이",
+        "수출은",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "차세대",
+        "전환이",
+        "소재"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "통신",
+        "네트워크",
+        "기술",
+        "6g"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "전장",
+        "칼레니우스",
+        "메르세데스",
+        "벤츠",
+        "미래"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "반도체",
+        "배터리",
+        "기술",
+        "oled"
+      ]
+    }
+  ],
+  "evidence": {}
+}
