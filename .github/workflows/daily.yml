@@ -16,7 +16,7 @@ jobs:
   pipeline:
     runs-on: ubuntu-latest
     env:
-      USE_PRO: 'true' # 일간 작업은 PRO 모드 비활성화 권장
+      USE_PRO: 'true'
       GEMINI_API_KEY: ${{ secrets.GEMINI_API_KEY }}
       HF_HOME: ~/.cache/huggingface
 
@@ -34,6 +34,18 @@ jobs:
           python-version: "3.11"
           cache: "pip"
           cache-dependency-path: "requirements.txt"
+
+      # --- ▼▼▼ 이 단계를 추가하세요 ▼▼▼ ---
+      - name: Free Up Runner Disk Space
+        run: |
+          echo "Freeing up disk space..."
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          echo "Disk space after cleanup:"
+          df -h
+        shell: bash
+      # --- ▲▲▲ 단계 추가 완료 ▲▲▲ --
 
       - name: Cache HuggingFace models
         uses: actions/cache@v4

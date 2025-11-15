@@ -31,6 +31,18 @@ jobs:
           cache: "pip"
           cache-dependency-path: "requirements.txt"
 
+      # --- ▼▼▼ 이 단계를 추가하세요 ▼▼▼ ---
+      - name: Free Up Runner Disk Space
+        run: |
+          echo "Freeing up disk space..."
+          sudo rm -rf /usr/share/dotnet
+          sudo rm -rf /usr/local/lib/android
+          sudo rm -rf /opt/ghc
+          echo "Disk space after cleanup:"
+          df -h
+        shell: bash
+      # --- ▲▲▲ 단계 추가 완료 ▲▲▲ --
+
       - name: Cache HuggingFace models
         uses: actions/cache@v4
         with:
