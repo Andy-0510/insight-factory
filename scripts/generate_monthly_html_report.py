@@ -433,7 +433,7 @@ def call_gemini_for_risk_analysis(risk_context):
         parsed_json = {}
 
     # 기본값 설정
-    default_matrix = {"targets": "AI 분석 중...", "strategy": "AI 분석 중..."}
+    default_matrix = {"targets": "LLM 호출 한도 초과", "strategy": "LLM 호출 한도 초과"}
     insights = {
         'risk_matrix': parsed_json.get('matrix', {
             "avoid": default_matrix,
