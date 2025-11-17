@@ -186,14 +186,15 @@ def plot_enhanced_timeseries(df_display, spike_threshold=2.0):
 
     if all_spikes_dfs:
         spikes_count = df[df.get('count_z', 0) >= spike_threshold]
-        spikes_ratio = df[df.get('signal_ratio_z', 0) >= spike_threshold]
+        # spikes_ratio = df[df.get('signal_ratio_z', 0) >= spike_threshold]
         if not spikes_count.empty:
             # [수정] marker='^' (위쪽 삼각형) 추가
-            ax1.scatter(spikes_count['date'], spikes_count['count'], color='#0b5ed7', s=100, marker='P', zorder=4, label='기사량 스파이크')
+            ax1.scatter(spikes_count['date'], spikes_count['count'], color='#dc3545', s=100, marker='X', zorder=4, label='기사량 스파이크')
+        '''
         if not spikes_ratio.empty:
             # [수정] marker='*' (별), s=150 (크기 증가) 추가
             ax2.scatter(spikes_ratio['date'], spikes_ratio['signal_ratio'], color='#dc3545', s=150, marker='X', zorder=4, label='비율 스파이크')
-
+        '''
     ax1.set_zorder(2); ax1.patch.set_visible(False)
     plt.title('일간 기사량(좌) 및 고관여 기사 비율(우) 추이', fontsize=16)
     ax1.set_xlabel('DATE'); ax1.xaxis.set_major_formatter(mdates.DateFormatter('%m-%d'))

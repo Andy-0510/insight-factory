@@ -710,92 +710,104 @@
             <br><br>
 
             <div class="section" id="risk">
-                 <div class="section-header">
+              
+                <div class="section-header">
                      <div class="section-number">3</div>
                      <div class="section-title" id="section-risk">Market Risk Management</div>
-                     <div class="section-subtitle">리스크/이슈 탐지</div>
+                     <div class="section-subtitle">리스크/이슈 탐지 및 전략적 대응</div>
+                
                  </div>
-                 <div class="section-subtitle">텍스트의 긍·부정 수준을 정량화하여 부정적 이슈의 급격한 증가를 탐지</div><br>
-
+                 <!--
+                 <div class="section-subtitle">텍스트의 긍·부정 수준을 정량화하여 부정적 이슈의 급격한 증가를 탐지하고 대응 매트릭스를 제안함</div><br>
+                 -->
                 <div class="exec-summary-box">
                     <div class="exec-summary-title">Summary</div>
-                    <div class="exec-summary-text">금월 최대 리스크는 '경쟁사의 OLEDoS 양산'입니다. SDC, BOE, SeeYa가 모두 XR 시장의 핵심 공급망에 진입하며 LGD가 차세대 시장에서 소외될(locked-out) 위험이 급증했습니다. 또한 SDC의 IT OLED 74% 독점은 Apple 수주 실패 시 LGD의 IT 사업 축소로 이어질 수 있습니다.</p></div>
+                    <div class="exec-summary-text"><p>금월 리스크 분석 결과, 가장 시급한 위협은 <strong>경쟁사(SDC)의 XR 및 IT 시장 선점</strong>입니다. SDC의 OLEDoS 양산과 8.6세대 IT 라인 가동은 LGD의 미래 성장 동력을 제한할 수 있습니다. 한편, 수익성이 낮은 <strong>LCD TV 사업의 완전 철수(Exit)</strong>와 <strong>Automotive 수주 잔고를 활용한 거시 경제 방어</strong>가 핵심 대응 전략으로 도출되었습니다.</p></div>
                 </div> 
 
-                <h3>시장 내 주요 리스크 탐지</h3>                    
+                <h3>시장 내 주요 리스크 탐지 목록</h3>                    
                     
-                         <img src="fig/risk_negative_spikes.png" alt="부정 감성 급등 토픽" class="report-graph mb-2">
+                <img src="fig/risk_negative_spikes.png" alt="부정 감성 급등 토픽" class="report-graph mb-2">
                     
-                    <div><table class="dataframe-table risk-table">
-  <thead>
-    <tr style="text-align: right;">
-      <th>토픽/분야</th>
-      <th>요약</th>
-      <th>심각도</th>
-      <th>영향 범위</th>
-      <th>완화 액션 (AI 제안)</th>
-    </tr>
-  </thead>
-  <tbody>
-    <tr>
-      <td><strong>XR (OLEDoS)</strong></td>
-      <td>SDC, BOE, SeeYa가 2025-26년 Apple/Samsung/Meta의 XR 기기 공급망 진입.</td>
-      <td><span class="risk-level risk-high">High</span><br>(0.350)</td>
-      <td>장기/전략</td>
-      <td>4세대 탠덤 기술 기반 RGB OLEDoS 개발 가속화 (R&D팀)</td>
-    </tr>
-    <tr>
-      <td><strong>IT (Notebooks)</strong></td>
-      <td>SDC가 'IT 서밋' 개최 등 74% 독점 지위 강화. LGD는 Apple의 2026년 선택에 의존.</td>
-      <td><span class="risk-level risk-medium">Medium</span><br>(0.180)</td>
-      <td>중기/재무</td>
-      <td>8.6세대 IT 라인 수율 확보 및 Apple 스펙 선제 대응 (Eng.팀)</td>
-    </tr>
-  </tbody>
-</table></div>
+                <div>
+                <table class="dataframe-table risk-table">
+                  <thead>
+                    <tr style="text-align: right;">
+                      <th style="width: 15%;">토픽/분야</th>
+                      <th style="width: 40%;">요약</th>
+                      <th style="width: 10%;">심각도</th>
+                      <th style="width: 10%;">영향 범위</th>
+                      <th style="width: 25%;">완화 액션 (AI 제안)</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr>
+                      <td><strong>XR (OLEDoS)</strong></td>
+                      <td>SDC가 '갤럭시 XR'용 패널 양산을 시작하며, 시장 초기 주도권 및 고객사(Google/Qualcomm 동맹) 선점 우려.</td>
+                      <td><span class="risk-level risk-high">High</span><br>(0.350)</td>
+                      <td>장기/전략</td>
+                      <td>4세대 탠덤 기술 기반 RGB OLEDoS 개발 가속화 및 소니/애플 공급망 협력 강화</td>
+                    </tr>
+                    <tr>
+                      <td><strong>IT (Notebooks)</strong></td>
+                      <td>SDC의 8.6세대 선제 투자로 인한 2026년 IT OLED 시장 점유율 격차 확대 및 단가 경쟁 심화.</td>
+                      <td><span class="risk-level risk-medium">Medium</span><br>(0.180)</td>
+                      <td>중기/재무</td>
+                      <td>Apple MacBook Pro(2026) 탠덤 스펙 단독 대응 및 수율 조기 확보</td>
+                    </tr>
+                    <tr>
+                      <td><strong>LCD (TV Panel)</strong></td>
+                      <td>중국 기업(BOE, CSOT)의 물량 공세로 인한 범용 패널 수익성 악화 지속.</td>
+                      <td><span class="risk-level risk-medium">Medium</span><br>(0.150)</td>
+                      <td>단기/재무</td>
+                      <td>광저우 LCD 공장 매각 마무리 및 유휴 인력의 OLED 라인 전환 배치</td>
+                    </tr>
+                  </tbody>
+                </table>
+                </div>
 
                 <div class="mb-4">
-                     <h3>리스크 대응 매트릭스</h3>
+                     <h3>리스크 대응 매트릭스 (R-Matrix)</h3>
            
-                     <div class="section-subtitle">위험 유형을 기준으로 대응 전략을 제시하고, 우선순위 결정을 지원함</div><br>
+                     <div class="section-subtitle">위험 유형을 기준으로 4가지 대응 전략(4T)을 수립하여 우선순위를 결정함</div><br>
                      <div class="risk-matrix-grid">
                          <div class="risk-matrix-card avoid">
                       
                              <h4>🔴 회피 (Avoid)</h4>
-                             <p><strong>대상:</strong> 저가형 LCD 패널 시장에서의 전면 가격 경쟁</p>
-                             <p><strong>전략:</strong> AI 권고 생성 예정</p>
+                             <p><strong>대상:</strong> 저수익 범용 LCD TV 패널 시장 경쟁</p>
+                             <p><strong>전략:</strong> <strong>사업 구조조정 완료.</strong> 광저우 LCD 공장 매각을 차질 없이 마무리하고, IT/모바일 OLED로 사업 구조를 완전히 재편하여 출혈 경쟁 시장에서 이탈함.</p>
          
                          </div>
                          <div class="risk-matrix-card mitigate">
                              <h4>🟠 완화 (Mitigate)</h4>
                 
-                             <p><strong>대상:</strong> IT OLED 시장의 SDC 독점</p>
-                             <p><strong>전략:</strong> Apple 2026년 물량 확보로 완화</p>
+                             <p><strong>대상:</strong> IT OLED 시장 내 SDC의 독점적 지위</p>
+                             <p><strong>전략:</strong> <strong>기술 차별화로 점유율 방어.</strong> LGD만의 '투 탠덤(Two-Tandem)' 수명/휘도 경쟁력을 앞세워 Apple 등 프리미엄 고객사의 2026년 물량을 선제적으로 확보.</p>
                          </div>
          
                          <div class="risk-matrix-card transfer">
                              <h4>🔵 전가 (Transfer)</h4>
-                             <p><strong>대상:</strong> 일부 레거시 공정 장비 리스크</p>
+                             <p><strong>대상:</strong> 차세대 공정(8.6세대) 초기 투자 리스크</p>
       
-                             <p><strong>전략:</strong> 협력사 공동 관리</p>
+                             <p><strong>전략:</strong> <strong>전략적 파트너십 활용.</strong> 설비 투자 부담을 줄이기 위해 주요 장비사와의 공동 개발(JDA)을 확대하고, 고객사(Apple)로부터 설비 투자비 일부를 선수금 형태로 유치.</p>
                          </div>
                          <div class="risk-matrix-card accept">
        
                              <h4>⚪ 수용 (Accept)</h4>
-                             <p><strong>대상:</strong> Automotive 시장의 계절적 수요 변동성</p>
-                             <p><strong>전략:</strong> AI 권고 생성 예정</p>
+                             <p><strong>대상:</strong> 글로벌 IT 세트 수요의 계절적 변동성</p>
+                             <p><strong>전략:</strong> <strong>수주 산업 비중 확대.</strong> 경기 변동에 민감한 IT/TV 비중을 줄이고, 장기 계약 기반의 '오토모티브(차량용)' 매출 비중을 40%까지 확대하여 기초 체력 강화.</p>
                          </div>
                      </div>
                 </div>
 
                 <div class="immediate-action-box">
      
-                     <h4>🚨 즉시 대응 필요 항목 (AI)</h4>
+                     <h4>🚨 즉시 대응 필요 항목 (Priority Action)</h4>
                      <ol>
                          
-                         <li><strong>XR (OLEDoS):</strong> SDC의 OLEDoS 양산 패널 긴급 입수 및 경쟁력 분석 착수 (담당: 경쟁전략팀, 기한: 2025-12-01)</li>
+                         <li><strong>XR 경쟁력 확보:</strong> SDC 양산 OLEDoS 패널 긴급 입수 및 픽셀 구조/휘도 벤치마킹 실시 (담당: 분석팀, 기한: 2주 이내)</li>
                          
-                         <li><strong>IT (Notebooks):</strong> 2026년형 Apple MacBook Pro 탠덤 스펙 대응을 위한 LGD 4세대 탠덤 기술 제안서 발송 (담당: Apple영업팀, 기한: 2025-11-25)</li>
+                         <li><strong>IT 수주 확정:</strong> Apple 2026년형 MacBook Pro 최종 퀄(Qual) 통과를 위한 탠덤 OLED 샘플 송부 (담당: Apple영업팀, 기한: 1주 이내)</li>
             
                      </ol>
                 </div>
