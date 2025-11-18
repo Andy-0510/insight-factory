@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "중국",
+        "세계일류상품",
+        "동기",
+        "bmw",
+        "oled"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "오디세이",
+        "게임",
+        "게이밍",
+        "3d",
+        "게임을"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "네오",
+        "인텔",
+        "주사율",
+        "ultra"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "레노버",
+        "ai",
+        "제품",
+        "pc",
+        "브랜드"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "그래핀",
+        "필름",
+        "led",
+        "소재",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "갤럭시",
+        "dell",
+        "데이터",
+        "엔비디아"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "oled",
+        "디스플레이",
+        "차량용",
+        "lcd",
+        "lg디스플레이는"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "반도체",
+        "부품",
+        "자동차",
+        "소재",
+        "기업으로"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "ai",
+        "투자",
+        "5년간",
+        "향후",
+        "반도체"
+      ]
+    }
+  ],
+  "evidence": {}
+}
