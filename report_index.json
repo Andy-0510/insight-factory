@@ -1,12 +1,23 @@
 {
   "daily": {
-    "2025-11-19": [
+    "2025-11-20": [
       {
-        "time": "2213-KST",
+        "time": "0555-KST",
         "reports": [
           {
             "name": "daily_report.html",
-            "path": "outputs/daily/2025-11-19/2213-KST/daily_report.html"
+            "path": "outputs/daily/2025-11-20/0555-KST/daily_report.html"
+          }
+        ]
+      }
+    ],
+    "2025-11-19": [
+      {
+        "time": "0812-KST",
+        "reports": [
+          {
+            "name": "daily_report.html",
+            "path": "outputs/daily/2025-11-19/0812-KST/daily_report.html"
           }
         ]
       }
