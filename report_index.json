@@ -2,11 +2,11 @@
   "daily": {
     "2025-11-19": [
       {
-        "time": "0812-KST",
+        "time": "2213-KST",
         "reports": [
           {
             "name": "daily_report.html",
-            "path": "outputs/daily/2025-11-19/0812-KST/daily_report.html"
+            "path": "outputs/daily/2025-11-19/2213-KST/daily_report.html"
           }
         ]
       }
@@ -475,17 +475,6 @@
     ]
   },
   "weekly": {
-    "2025-11-15": [
-      {
-        "time": "1148-KST",
-        "reports": [
-          {
-            "name": "weekly_report.html",
-            "path": "outputs/weekly/2025-11-15/1148-KST/weekly_report.html"
-          }
-        ]
-      }
-    ],
     "2025-11-14": [
       {
         "time": "1456-KST",
@@ -627,73 +616,6 @@
           {
             "name": "monthly_report.html",
             "path": "outputs/monthly/2025-11-14/2116-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-11-12": [
-      {
-        "time": "0203-KST",
-        "reports": [
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-11-12/0203-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-11-10": [
-      {
-        "time": "1117-KST",
-        "reports": [
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-11-10/1117-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-11-07": [
-      {
-        "time": "1047-KST",
-        "reports": [
-          {
-            "name": "monthly_commentary_report.html",
-            "path": "outputs/monthly/2025-11-07/1047-KST/monthly_commentary_report.html"
-          },
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-11-07/1047-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-11-05": [
-      {
-        "time": "1622-KST",
-        "reports": [
-          {
-            "name": "monthly_commentary_report.html",
-            "path": "outputs/monthly/2025-11-05/1622-KST/monthly_commentary_report.html"
-          },
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-11-05/1622-KST/monthly_report.html"
-          }
-        ]
-      }
-    ],
-    "2025-11-03": [
-      {
-        "time": "1823-KST",
-        "reports": [
-          {
-            "name": "monthly_commentary_report.html",
-            "path": "outputs/monthly/2025-11-03/1823-KST/monthly_commentary_report.html"
-          },
-          {
-            "name": "monthly_report.html",
-            "path": "outputs/monthly/2025-11-03/1823-KST/monthly_report.html"
           }
         ]
       }
