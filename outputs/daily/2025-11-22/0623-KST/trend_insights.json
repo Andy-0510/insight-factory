@@ -1,0 +1,138 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "라이카",
+        "e스포츠",
+        "기술",
+        "q3"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "1명",
+        "매수",
+        "크리스마스",
+        "kodex",
+        "경품"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "반도체",
+        "로봇",
+        "ai",
+        "부품",
+        "기업으로"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "메르세데스",
+        "주행",
+        "차량",
+        "기아",
+        "시트"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "삼성디스플레이",
+        "이종혁",
+        "신임",
+        "부사장",
+        "삼성벤처투자"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "관리",
+        "연동",
+        "계정",
+        "기능을"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "뷰티",
+        "led",
+        "온도",
+        "브랜드",
+        "미니"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "삼성전자",
+        "삼성전자는",
+        "갤럭시",
+        "ai",
+        "노태문"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "메모리",
+        "반도체",
+        "비용",
+        "3분기",
+        "가격"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "프로",
+        "아이패드",
+        "애플이",
+        "스마트폰",
+        "폴더블"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "oled",
+        "6세대",
+        "디스플레이",
+        "라인",
+        "노트북"
+      ]
+    }
+  ],
+  "evidence": {}
+}
