@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "메르세데스",
+        "주행",
+        "디자인",
+        "적용해",
+        "더욱"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "비스포크",
+        "비스포크 ai",
+        "ai",
+        "미국",
+        "타입"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "uae",
+        "ai",
+        "중동",
+        "산업",
+        "지역"
+      ]
+    }
+  ],
+  "evidence": {}
+}
