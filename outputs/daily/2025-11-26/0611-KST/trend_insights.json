@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "애저",
+        "클라우드",
+        "apec",
+        "dell"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "암바니",
+        "인도",
+        "ai",
+        "사장",
+        "회장은"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "부사장",
+        "상무",
+        "전문가로",
+        "ai",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "부사장은",
+        "부사장",
+        "중소형디스플레이사업부",
+        "개발을",
+        "상무"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "usb",
+        "e스포츠",
+        "갤럭시북",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "정답은",
+        "이다",
+        "문제는",
+        "브랜드",
+        "프리미엄"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "반도체",
+        "장비",
+        "기업으로",
+        "핵심",
+        "설립된"
+      ]
+    }
+  ],
+  "evidence": {}
+}
