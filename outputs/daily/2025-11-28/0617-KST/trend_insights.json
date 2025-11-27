@@ -1,0 +1,138 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "tv",
+        "ai",
+        "영상",
+        "가전",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "브랜드",
+        "정수기",
+        "공기청정기",
+        "부문",
+        "연속"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "무선",
+        "초소형",
+        "임플란트",
+        "연구팀은",
+        "작은"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "사업",
+        "사장은",
+        "lg전자",
+        "lg",
+        "류재철"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "lx세미콘",
+        "2024년",
+        "agv",
+        "선정됐다",
+        "디자인"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "부사장",
+        "기술",
+        "dx부문",
+        "부사장은",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "기여한",
+        "상무",
+        "기술",
+        "oled",
+        "최영석"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "폴더블",
+        "아이폰",
+        "애플이",
+        "eos",
+        "카메라"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "oled",
+        "아이패드",
+        "패널",
+        "디스플레이",
+        "lcd"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "반도체",
+        "장비",
+        "로봇",
+        "소재",
+        "기업으로"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "메모리",
+        "가격",
+        "ai",
+        "반도체",
+        "공급"
+      ]
+    }
+  ],
+  "evidence": {}
+}
