@@ -1,0 +1,50 @@
+{
+  "timestamp": "2025-11-28T08:32:18Z",
+  "matrix_stats": {
+    "num_orgs": 80,
+    "num_topics": 11,
+    "top_org": "AMD"
+  },
+  "network_stats": {
+    "num_nodes": 79,
+    "num_edges": 792,
+    "top_pairs": [
+      {
+        "source": "sk하이닉스",
+        "target": "삼성전자",
+        "weight": 840,
+        "rel_type": "partnership",
+        "evidence": "<a href=\"https://www.g-enews.com/view.php?ud=202511011237284299fbbec65dfb_1\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">[실리콘 디코드] 일본, 2나노 시대 '소재 패권' 선언…한국 거점에 대규...</a><br><a href=\"https://www.digitaltoday.co.kr/news/articleView.html?idxno=603152\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">삼성·SK가 미는 ' 마이크로LED  광통신'...AI 메모리 병목 해결사로 주목</a><br><a href=\"http://www.finomy.com/news/articleView.html?idxno=241899\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">반도체 장비 관련주, '껑충껑충' 유니테스트·기가레인·엑시콘... '주르...</a>"
+      },
+      {
+        "source": "lg전자",
+        "target": "삼성전자",
+        "weight": 538,
+        "rel_type": "rivalry",
+        "evidence": "<a href=\"https://biz.newdaily.co.kr/site/data/html/2025/11/12/2025111200138.html\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">재고털이 나선 삼성·LG … '풍전등화' TV 사업 돌파구는</a><br><a href=\"https://www.pinpointnews.co.kr/news/articleView.html?idxno=392649\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">\"3분기 나란히 적자\"…삼성·LG TV, 中 공세 속 반전 카드 있을까</a><br><a href=\"https://it.chosun.com/news/articleView.html?idxno=2023092150958\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">자존심 내려놓은 TV 생존전략…삼성은 OLED, LG는  LCD  강화</a>"
+      },
+      {
+        "source": "삼성전자",
+        "target": "엔비디아",
+        "weight": 398,
+        "rel_type": "partnership",
+        "evidence": "<a href=\"https://ilyo.co.kr/?ac=article_view&entry_id=502342\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">엔비디아와 '깐부 동맹'…반도체 투톱 주가 어디까지 오를까</a><br><a href=\"https://www.asiatime.co.kr/article/20251031500386\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">[31일 대학가] 삼육대·한양대·연세대</a><br><a href=\"https://www.mk.co.kr/article/11462803\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">사법리스크 털고 관료주의 타파 … JY의 삼성 'AI 대전환' 승부수</a>"
+      },
+      {
+        "source": "boe",
+        "target": "삼성디스플레이",
+        "weight": 288,
+        "rel_type": "rivalry",
+        "evidence": "<a href=\"https://biz.heraldcorp.com/article/10619179?ref=naver\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">삼성, 中 BOE와 OLED 분쟁 승리</a><br><a href=\"https://www.hankookilbo.com/News/Read/A2025111915070003585?did=NA\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">삼성디스플레이, 중국  BOE 와 OLED 특허 분쟁 승리</a><br><a href=\"https://biz.heraldcorp.com/article/10603114?ref=naver\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">아이폰 사랑에 힘입어?…패널·카메라 공급하는 LGD·LG이노텍 하반기 실...</a>"
+      },
+      {
+        "source": "구글",
+        "target": "메타",
+        "weight": 107,
+        "rel_type": "neutral",
+        "evidence": "<a href=\"https://www.laborplus.co.kr/news/articleView.html?idxno=36483\" target=\"_blank\" style=\"color:#555;\">10월 5주 주요 제조업 전망</a><br><a href=\"https://www.asiatime.co.kr/article/20251028500360\" target=\"_blank\" style=\"color:#555;\">[체험기] 낫싱 폰(3), 레트로 외관에 '에센셜' AI 담다</a><br><a href=\"https://www.hankyung.com/article/2025102879411\" target=\"_blank\" style=\"color:#555;\">삼성, 2번 접는 트라이폴드폰…현대차, 로봇·수소차 'K테크 과시'</a>"
+      }
+    ],
+    "top_hub": "삼성전자"
+  }
+}
