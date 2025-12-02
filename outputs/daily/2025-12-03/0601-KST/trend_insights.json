@@ -1,0 +1,66 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "tv",
+        "삼성물산",
+        "이재용",
+        "oled",
+        "1위를"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "폴더블",
+        "트라이폴드",
+        "삼성",
+        "갤럭시 트라이폴드"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "반도체",
+        "로봇",
+        "부품",
+        "자동차",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "사업",
+        "tv",
+        "삼성전자",
+        "부문은",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "반도체",
+        "oled",
+        "소재",
+        "디스플레이",
+        "중국"
+      ]
+    }
+  ],
+  "evidence": {}
+}
