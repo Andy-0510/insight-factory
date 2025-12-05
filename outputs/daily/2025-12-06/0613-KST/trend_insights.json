@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "oled",
+        "기술",
+        "기술개발",
+        "디스플레이",
+        "어떤"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "iii",
+        "후지필름",
+        "렌즈",
+        "필름",
+        "시뮬레이션"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "수출",
+        "수출이",
+        "대미",
+        "이어질",
+        "예상됐다"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "안전",
+        "조직",
+        "dx",
+        "투자",
+        "포스코"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "플래그십",
+        "lg전자",
+        "lg전자의",
+        "브랜드",
+        "프리미엄"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "제품이",
+        "lg전자",
+        "가장",
+        "제품",
+        "제품은"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "게임",
+        "게이밍",
+        "모바일",
+        "부스",
+        "부스를"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "qd",
+        "대한민국",
+        "qd oled",
+        "기술대상",
+        "tv용"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "반도체",
+        "로봇",
+        "자동차",
+        "부품",
+        "핵심"
+      ]
+    }
+  ],
+  "evidence": {}
+}
