@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "led",
+        "버추얼",
+        "스튜디오",
+        "프로덕션",
+        "oled"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "이다",
+        "문제는",
+        "소상공인",
+        "돌비",
+        "수출"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "할인",
+        "아이패드",
+        "롯데하이마트",
+        "연말",
+        "애플"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "개발",
+        "플랫폼",
+        "서비스",
+        "보안"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "oled",
+        "패널",
+        "디스플레이",
+        "프리미엄",
+        "스마트폰"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "반도체",
+        "미국",
+        "ai",
+        "배터리",
+        "중국"
+      ]
+    }
+  ],
+  "evidence": {}
+}
