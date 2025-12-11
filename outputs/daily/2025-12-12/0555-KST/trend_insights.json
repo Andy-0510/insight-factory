@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "pc방",
+        "브랜드",
+        "led",
+        "pc방은",
+        "종양"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "게임",
+        "크리스마스",
+        "겨울",
+        "경기",
+        "즐길"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "할인",
+        "아이패드",
+        "롯데하이마트",
+        "애플",
+        "태블릿"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "oled",
+        "중국",
+        "가격",
+        "ai",
+        "2026년"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "반도체",
+        "투자",
+        "이벤트",
+        "페이커"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "ces",
+        "캐빈",
+        "ai 캐빈",
+        "차량용"
+      ]
+    }
+  ],
+  "evidence": {}
+}
