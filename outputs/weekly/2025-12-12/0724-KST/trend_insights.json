@@ -1,0 +1,126 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 57.70335369s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 57\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "반도체 AI 솔루션",
+      "summary": "반도체, AI, 배터리, 자동차, 디스플레이 등 첨단 산업 분야에서 핵심 소재, 시스템, 개발, 생산, 자동화 솔루션을 바탕으로 경쟁력을 강화하는 사업에 대한 내용을 다룹니다.",
+      "words": [
+        "반도체",
+        "ai",
+        "핵심",
+        "배터리",
+        "개발"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "AI 반도체 패권 경쟁",
+      "summary": "AI 산업 성장에 따른 반도체 수요 증가와 함께 미국, 중국 간 기술 및 투자 경쟁이 심화되고 있습니다. 특히 삼성전자는 AI 스마트폰, TV 패널 사업을 중심으로 메모리 반도체 경쟁력을 강화하며 2025~2026년 시장 선도를 목표로 하고 있습니다. 애플의 동향 역시 주목받고 있습니다.",
+      "words": [
+        "ai",
+        "미국",
+        "중국",
+        "반도체",
+        "투자"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "LG전자 게이밍",
+      "summary": "LG전자가 게이밍 시장에 선보이는 프리미엄 노트북, 모니터 등 플래그십 제품과 관련된 소식을 다룹니다.",
+      "words": [
+        "lg전자",
+        "게이밍",
+        "브랜드",
+        "제품이",
+        "rog"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "AGF 2025 겨울 축제",
+      "summary": "AGF 2025의 겨울 축제 관련 뉴스입니다. 게임, 서브컬처, 애니메이션 등 다양한 콘텐츠를 즐길 수 있는 이벤트와 할인 정보, 신작 소개, 캐릭터 및 부스 전시, 미래 기술(돌비, LED) 활용 등의 내용을 다룹니다.",
+      "words": [
+        "게임",
+        "agf",
+        "겨울",
+        "이벤트",
+        "할인"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "포스코그룹 혁신",
+      "summary": "포스코그룹이 AI, DX 등 신기술 도입과 투자를 통해 사업 경쟁력을 강화하고 조직 혁신을 추진하는 내용을 다룹니다.",
+      "words": [
+        "안전",
+        "조직",
+        "dx",
+        "철강",
+        "투자"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "디스플레이 보안",
+      "summary": "LG디스플레이와 삼성디스플레이의 OLED, QD-OLED, LCD 디스플레이 신제품 개발 및 차량용, XR, 모니터 등 다양한 분야에서의 사이버 보안 인증, AI 기반 자동 분류 기술을 다룹니다.",
+      "words": [
+        "oled",
+        "디스플레이",
+        "보안",
+        "lg디스플레이는",
+        "차량용"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "아트-벤츠-기아-수출",
+      "summary": "아트 바젤 마이애미 비치 전시회에서 공개된 기아와 메르세데스-벤츠의 신차(GLB, 전기차 등) 및 브랜드 비전과 관련하여, 한국의 자동차 수출액 및 중국 시장에서의 무역 상황을 소상공인의 시각으로 조명하며, 80년 역사의 브랜드 가치를 시사하는 내용을 담고 있습니다.",
+      "words": [
+        "아트",
+        "수출",
+        "기아",
+        "벤츠",
+        "중국의"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "ai",
+        "xr",
+        "디스플레이",
+        "led",
+        "ces"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "정답은",
+        "이다",
+        "문제는",
+        "없이",
+        "도시"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "많이",
+        "미국",
+        "금리",
+        "어떻게",
+        "경기"
+      ]
+    }
+  ],
+  "evidence": {}
+}
