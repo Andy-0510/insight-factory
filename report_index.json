@@ -728,6 +728,17 @@
     ]
   },
   "weekly": {
+    "2025-12-12": [
+      {
+        "time": "0724-KST",
+        "reports": [
+          {
+            "name": "weekly_report.html",
+            "path": "outputs/weekly/2025-12-12/0724-KST/weekly_report.html"
+          }
+        ]
+      }
+    ],
     "2025-12-05": [
       {
         "time": "0723-KST",
