@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "대표이사",
+        "주식회사",
+        "국가",
+        "발전에",
+        "성실한"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "gaming",
+        "환경을",
+        "최신",
+        "zone"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "폴더블",
+        "아이폰",
+        "트라이폴드",
+        "출시"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "lg",
+        "rgb",
+        "tv",
+        "ces",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "lcd",
+        "삼성전자",
+        "boe의",
+        "중국",
+        "특허"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "차세대",
+        "페라리",
+        "oled",
+        "삼성디스플레이의",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "장비",
+        "실적",
+        "증착",
+        "수주"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "데이터",
+        "인프라",
+        "레노버",
+        "운영"
+      ]
+    }
+  ],
+  "evidence": {}
+}
