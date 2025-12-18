@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 39.721189923s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 39\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 반도체와 신기술",
+      "summary": "AI 시대의 핵심인 반도체 기술 발전과 함께 스마트폰, XR 기기 등 새로운 디바이스 출시 및 관련 기술 트렌드를 다룹니다.",
+      "words": [
+        "ai",
+        "문제는",
+        "이다",
+        "반도체",
+        "무엇일까요"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "AI 디스플레이 기술",
+      "summary": "CES에서 공개된 AI 기반의 차세대 OLED 디스플레이 기술과 Micro LED, RGB 기술 동향, 그리고 삼성전자, LG 등 주요 기업들의 사업 전략을 다룹니다. 차량용 디스플레이 시장과 중국, 미국 등 글로벌 시장 경쟁, 가격 변동 등도 함께 분석합니다.",
+      "words": [
+        "ai",
+        "oled",
+        "기술",
+        "디스플레이",
+        "rgb"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "갤럭시 폴더블 신제품",
+      "summary": "삼성전자가 새로운 접는 스마트폰 '갤럭시 트라이폴드'를 출시했으며, 이는 역대급 판매량을 기록하며 완판되었습니다.",
+      "words": [
+        "갤럭시",
+        "트라이폴드",
+        "갤럭시 트라이폴드",
+        "트라이폴드는",
+        "삼성"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "게이밍 모니터 신제품",
+      "summary": "에이수스 ROG, MSI 등 최신 게이밍 모니터 출시 소식과 함께 OLED, Mini LED 등 고성능 디스플레이 기술, 27인치 등 다양한 사양, PC방 환경, 유무선 기능, 팝업 매장 정보 등을 다룹니다.",
+      "words": [
+        "rog",
+        "게이밍",
+        "에이수스",
+        "oled",
+        "모니터"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "반도체 로봇 자동차 부품",
+      "summary": "반도체, 로봇, 자동차 부품 산업의 핵심 기술 개발, 공급, 솔루션 제공 기업과 관련된 사업 및 기술 동향을 다룹니다.",
+      "words": [
+        "반도체",
+        "로봇",
+        "부품",
+        "자동차",
+        "기업으로"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "지역사회 발전",
+      "summary": "기업의 대표이사가 지역경제와 사회 발전에 기여하는 활동 및 그 중요성에 대해 다룹니다.",
+      "words": [
+        "대표이사",
+        "주식회사",
+        "발전에",
+        "국가",
+        "성실한"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "아이패드",
+        "할인",
+        "롯데하이마트",
+        "혜택을",
+        "대학생"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "ict",
+        "수출은",
+        "수출이",
+        "수출",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "피부",
+        "케어",
+        "뷰티",
+        "뷰티 디바이스",
+        "전문"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "사건",
+        "청소",
+        "하나의",
+        "노출",
+        "유방암"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "드론",
+        "시민",
+        "버스",
+        "겨울철",
+        "시내버스"
+      ]
+    }
+  ],
+  "evidence": {}
+}
