@@ -1,0 +1,126 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "반도체",
+        "ai",
+        "로봇",
+        "부품",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "이건희",
+        "삼성",
+        "아트",
+        "컬렉션",
+        "이건희 컬렉션"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "카메라",
+        "차세대",
+        "udc",
+        "lg이노텍은",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "대회",
+        "장비",
+        "활동을",
+        "환경",
+        "활동"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "ssafy",
+        "인재",
+        "교육",
+        "sw"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "ces",
+        "솔루션",
+        "ai가",
+        "정보를"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "rgb",
+        "마이크로",
+        "마이크로 rgb",
+        "tv",
+        "rgb tv"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "rgb",
+        "tv",
+        "마이크로",
+        "마이크로 rgb",
+        "프리미엄"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "스마트폰",
+        "아이폰",
+        "트라이폴드",
+        "메모리"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "oled",
+        "기술",
+        "탠덤",
+        "브랜드",
+        "lg디스플레이"
+      ]
+    }
+  ],
+  "evidence": {}
+}
