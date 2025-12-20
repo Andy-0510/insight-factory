@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "공간이",
+        "공간",
+        "전용",
+        "사람이",
+        "뉴스버스"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "벤츠",
+        "메르세데스",
+        "메르세데스 벤츠",
+        "디자인",
+        "영상"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "반도체",
+        "장비",
+        "핵심",
+        "다나와",
+        "배터리"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "교육",
+        "ai",
+        "소재",
+        "산업"
+      ]
+    }
+  ],
+  "evidence": {}
+}
