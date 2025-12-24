@@ -1,0 +1,30 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "건조기",
+        "적용해",
+        "효율을",
+        "공기",
+        "실내"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "사고",
+        "삼성디스플레이",
+        "협력사",
+        "삼성디스플레이는",
+        "충남"
+      ]
+    }
+  ],
+  "evidence": {}
+}
