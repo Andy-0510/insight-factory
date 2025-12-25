@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 33.649392881s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 33\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "LG 게이밍 신기술",
+      "summary": "LG의 새로운 OLED 디스플레이 기술과 AI 기반 게이밍 콘텐츠, e스포츠, 지역 문화 접목을 통한 차세대 IP 사업 및 기업 경쟁력 강화에 대한 내용을 다룹니다.",
+      "words": [
+        "ip",
+        "브랜드",
+        "ai",
+        "도시",
+        "콘텐츠"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "삼성전자 CES 기술",
+      "summary": "삼성전자가 CES에서 선보이는 AI, OLED, 마이크로 RGB 디스플레이, 차량용 반도체 등 차세대 기술 동향과 사업 전략을 조명합니다.",
+      "words": [
+        "ai",
+        "oled",
+        "기술",
+        "rgb",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "AI 인재 양성",
+      "summary": "AI 및 SW 분야의 우수 인재를 양성하기 위한 대학, 기업, 연구기관의 교육 프로그램 및 현장 연수에 대한 내용입니다.",
+      "words": [
+        "ai",
+        "교육",
+        "인재",
+        "ssafy",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "첨단 산업 기술",
+      "summary": "반도체, 로봇, AI 분야의 핵심 부품, 소재, 장비 개발 및 공급 사업과 관련된 기업, 기술, 솔루션을 다룹니다. 자동차, 배터리 산업과의 연관성도 포함됩니다.",
+      "words": [
+        "반도체",
+        "로봇",
+        "핵심",
+        "부품",
+        "장비"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "삼성디스플레이 작업 사고",
+      "summary": "충남 아산 삼성디스플레이 협력업체에서 60대 근로자 1명이 사망하는 중대재해가 발생했으며, 경찰이 설비 보완 및 재발 방지 조치를 조사하고 있습니다.",
+      "words": [
+        "사고",
+        "삼성디스플레이",
+        "작업",
+        "60대",
+        "사고가"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "벤츠 전기차 소식",
+      "summary": "메르세데스 벤츠의 새로운 전기차(세단, SUV) 디자인, 주행, 충전 기술 및 관련 브랜드 소식(로터스, 에메야)과 더불어 팅크웨어 블랙박스, 하이브리드, 프리미엄 차량 정보까지 포함합니다.",
+      "words": [
+        "전기",
+        "벤츠",
+        "디자인",
+        "주행",
+        "충전"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "엘앤에프 신임 대표",
+      "summary": "엘앤에프가 신임 이사회 의장 및 대표이사를 선임하며 2년간의 중장기 경영 계획을 성공적으로 이끌어 이차전지 양극재 시장에서의 우위 확보를 목표로 한다.",
+      "words": [
+        "엘앤에프",
+        "이사회",
+        "신임",
+        "lfp",
+        "양극재"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "이건희 컬렉션 공개",
+      "summary": "이건희 회장의 방대한 미술품 컬렉션이 삼성전자와 국립중앙박물관 협력으로 국립아시아예술박물관 등에서 4K 고화질로 공개되었습니다.",
+      "words": [
+        "이건희",
+        "삼성",
+        "아트",
+        "컬렉션",
+        "이건희 컬렉션"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "LG 연말 나눔",
+      "summary": "LG 사업장 임직원들이 연말을 맞아 저소득 아동과 가구를 위한 성금 모금 캠페인을 진행하고, 따뜻한 선물을 전달하는 활동을 소개합니다.",
+      "words": [
+        "기부",
+        "연말",
+        "선물을",
+        "크리스마스",
+        "전달하는"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "초슬림 건조기",
+      "summary": "초슬림 디자인과 효율적인 기능을 갖춘 건조기로, 실내 공기 질 개선 및 의류 위생 관리에 도움을 주는 제품입니다.",
+      "words": [
+        "건조기",
+        "적용해",
+        "효율을",
+        "초슬림",
+        "기능을"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "교내",
+        "이스포츠",
+        "대회",
+        "로지텍",
+        "기증"
+      ]
+    }
+  ],
+  "evidence": {}
+}
