@@ -1093,6 +1093,17 @@
     ]
   },
   "monthly": {
+    "2025-12-28": [
+      {
+        "time": "0740-KST",
+        "reports": [
+          {
+            "name": "monthly_report.html",
+            "path": "outputs/monthly/2025-12-28/0740-KST/monthly_report.html"
+          }
+        ]
+      }
+    ],
     "2025-11-28": [
       {
         "time": "1734-KST",
