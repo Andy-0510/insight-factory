@@ -1,0 +1,82 @@
+--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---
+Generated at: 2025-12-27T22:38:26.913237Z
+
+================================================================================
+Rank #1: sk하이닉스|삼성전자 (Total Sentences: 856, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.laborplus.co.kr/news/articleView.html?idxno=36769" target="_blank" style="font-weight:600; color:#065f46;">12월 3주 주요 제조업 전망</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=243752" target="_blank" style="font-weight:600; color:#065f46;">반도체 장비 관련주, '봄날의 햇살' 에이팩트·리노공업·쎄크·원익홀딩...</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=243649" target="_blank" style="font-weight:600; color:#065f46;">반도체 장비 관련주, '덩실덩실' 쎄크·하나마이크론·그린광학·에이팩...</a>
+
+================================================================================
+Rank #2: lg전자|삼성전자 (Total Sentences: 670, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.ngetnews.com/news/articleView.html?idxno=542170" target="_blank" style="font-weight:600; color:#c41e3a;">삼성, TV 20년 연속 1위 눈앞… LG,  OLED  시장 선두 유지</a>
+<a href="https://www.ngetnews.com/news/articleView.html?idxno=542170" target="_blank" style="font-weight:600; color:#c41e3a;">삼성, TV 20년 연속 1위 눈앞… LG,  OLED  시장 선두 유지</a>
+<a href="https://www.mk.co.kr/article/11480667" target="_blank" style="font-weight:600; color:#c41e3a;">한국TV 세계1위 사수 … 中 도전 고민은 커져</a>
+
+================================================================================
+Rank #3: 삼성전자|애플 (Total Sentences: 341, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://biz.heraldcorp.com/article/10624380?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">“한국 10년간 압도적 1위였는데, 웬 날벼락” 믿었던 ‘삼성’마저 밀...</a>
+<a href="https://www.todayeconomic.com/news/article.html?no=28990" target="_blank" style="font-weight:600; color:#c41e3a;">애플 첫  폴더블 폰 가격 역대급?</a>
+<a href="https://www.gukjenews.com/news/articleView.html?idxno=3445312" target="_blank" style="font-weight:600; color:#c41e3a;">두 번 접는 삼성 '갤럭시Z 트라이폴드'...앱등이 마음 돌릴까?</a>
+
+================================================================================
+Rank #4: 삼성디스플레이|삼성전자 (Total Sentences: 281, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.finomy.com/news/articleView.html?idxno=243747" target="_blank" style="font-weight:600; color:#065f46;">PCB·FPCB 관련주, '함박웃음' 와이제이링크·이수페타시스·대덕전자</a>
+<a href="https://www.mk.co.kr/article/11491593" target="_blank" style="font-weight:600; color:#065f46;">현대차 GV90 신차에  삼성  대신 퀄컴 반도체</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=245742" target="_blank" style="font-weight:600; color:#065f46;">PCB(FPCB) 관련주, '봄날의 햇살' 우리바이오·네오티스·이수페타시스·...</a>
+
+================================================================================
+Rank #5: 구글|애플 (Total Sentences: 275, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.mk.co.kr/article/11491811" target="_blank" style="font-weight:600; color:#c41e3a;">“제2 쿠팡사태 또 터질텐데”…집단소송에 ‘이 제도’ 필요하다는 변...</a>
+<a href="http://www.newslock.co.kr/news/articleView.html?idxno=121460" target="_blank" style="font-weight:600; color:#c41e3a;">눈앞의  AI  비서… 스마트 안경 시장, 글로벌 빅테크 '각축전'</a>
+<a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=607923" target="_blank" style="font-weight:600; color:#c41e3a;">[데일리픽] 알트코인 3대 다크호스…BYD 양왕 U8, 물 위서도 달린다</a>
+
+================================================================================
+Rank #6: lg디스플레이|삼성디스플레이 (Total Sentences: 213, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.laborplus.co.kr/news/articleView.html?idxno=36646" target="_blank" style="font-weight:600; color:#065f46;">11월 4주 주요 제조업 전망</a>
+<a href="http://amenews.kr/news/view.php?idx=64879" target="_blank" style="font-weight:600; color:#065f46;">그래핀 상용화 선두주자 ㈜케이비엘러먼트, 산업 전방위 혁신 지원</a>
+<a href="https://www.moneys.co.kr/article/2025112716120867992" target="_blank" style="font-weight:600; color:#065f46;">호재 겹치는 K 디스플레이… 높아지는 신뢰도에 지원도 확대</a>
+
+================================================================================
+Rank #7: 구글|엔비디아 (Total Sentences: 181, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.businesspost.co.kr/BP?command=article_view&num=422733" target="_blank" style="font-weight:600; color:#c41e3a;">[12월6일자] 비즈니스포스트 아침의 주요기사</a>
+<a href="https://www.businesspost.co.kr/BP?command=article_view&num=422733" target="_blank" style="font-weight:600; color:#c41e3a;">[12월6일자] 비즈니스포스트 아침의 주요기사</a>
+<a href="https://www.sedaily.com/NewsView/2H1VO64K4T" target="_blank" style="font-weight:600; color:#c41e3a;">엔비디아, 구글 TPU 개발 주역 수혈…그로크에 29조원 베팅 [AI 프리즘*기...</a>
+
+================================================================================
+Rank #8: 구글|메타 (Total Sentences: 175, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.newslock.co.kr/news/articleView.html?idxno=121460" target="_blank" style="font-weight:600; color:#c41e3a;">눈앞의  AI  비서… 스마트 안경 시장, 글로벌 빅테크 '각축전'</a>
+<a href="https://www.g-enews.com/view.php?ud=2025112722222746639a1f309431_1" target="_blank" style="font-weight:600; color:#c41e3a;">알리바바, ‘쿼크 AI 안경’ 중국 출시…메타· 애플 과 AI 웨어러블 경쟁...</a>
+<a href="http://www.edaily.co.kr/news/newspath.asp?newsid=01961446642370312" target="_blank" style="font-weight:600; color:#c41e3a;">사피엔반도체, 스마트글래스 시장 급성장 전망…목표주가 15% 상향-현대...</a>
+
+================================================================================
+Rank #9: lg디스플레이|lg전자 (Total Sentences: 172, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.wolyo.co.kr/news/articleView.html?idxno=305999" target="_blank" style="font-weight:600; color:#065f46;">삼성전자·LG전자, RGB TV 이어 'AI 홈 경험' 전선 확장</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=243747" target="_blank" style="font-weight:600; color:#065f46;">PCB·FPCB 관련주, '함박웃음' 와이제이링크·이수페타시스·대덕전자</a>
+<a href="http://www.thelec.kr/news/articleView.html?idxno=44312" target="_blank" style="font-weight:600; color:#065f46;">LG디스플레이, 특허 로열티 年 1000억원 시대 열었다</a>
+
+================================================================================
+Rank #10: 네이버|카카오 (Total Sentences: 170, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.theguru.co.kr/news/article.html?no=95216" target="_blank" style="font-weight:600; color:#c41e3a;">스테이블코인 시대, 금융권 ‘빅테크 동맹’ 본격화</a>
+<a href="https://www.etoday.co.kr/news/view/2533457" target="_blank" style="font-weight:600; color:#c41e3a;">법인세 인상, ‘AI·반도체·R&D 투자’에 직격…글로벌 경쟁 뒤처질 우...</a>
+<a href="https://www.news1.kr/it-science/general-it/6001325" target="_blank" style="font-weight:600; color:#c41e3a;">노키아 꼴 날라… 애플  '엑소더스',  애플  실리콘 아버지까지</a>
