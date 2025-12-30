@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ip",
+        "2025년 12월",
+        "2025년",
+        "로봇",
+        "브랜드"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "반도체",
+        "로봇",
+        "ai",
+        "기업으로",
+        "기술을"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "예상",
+        "ds",
+        "삼성전자",
+        "반도체",
+        "사업부는"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "차량용",
+        "전장",
+        "엑시노스",
+        "오토",
+        "bmw의"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "이제",
+        "2025년",
+        "미국",
+        "ai",
+        "배당"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "ces",
+        "기술",
+        "공급망",
+        "기반"
+      ]
+    }
+  ],
+  "evidence": {}
+}
