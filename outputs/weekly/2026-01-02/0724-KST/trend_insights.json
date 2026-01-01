@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/usage?tab=rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 15.539361615s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 15\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 반도체 기업 동향",
+      "summary": "2025년 이후 미국, 중국 기업들의 AI, 로봇, 배터리, 스마트폰 등의 사업 핵심 기술 및 반도체 공급망 투자와 관련된 전망을 다룹니다.",
+      "words": [
+        "로봇",
+        "2025년",
+        "ai",
+        "이제",
+        "미국"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "삼성전자 디스플레이",
+      "summary": "삼성전자의 CES 참가 소식과 함께 AI, OLED, 게이밍 모니터, TV 등 차세대 디스플레이 기술 및 프리미엄 제품에 대한 내용을 다룹니다.",
+      "words": [
+        "ai",
+        "oled",
+        "게이밍",
+        "ces",
+        "삼성전자는"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "반도체·AI 로봇",
+      "summary": "반도체, AI, 로봇 기술을 핵심으로 하는 장비, 부품, 소재 사업을 영위하는 기업들의 개발, 설계, 생산, 공급, 솔루션 관련 내용을 다룹니다.",
+      "words": [
+        "반도체",
+        "로봇",
+        "핵심",
+        "ai",
+        "장비"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "지역 인사 승진",
+      "summary": "전국 주요 도시(대구, 청주, 부산, 대전, 송도, 화성, 군포, 의정부 등)에서 김삼성, 김민철, 김연순, 김재준, 최문석, 강성훈 등 주요 인물들의 승진 및 인사가 이루어졌음을 보여줍니다. 금융센터, 판교, 보라매, 남동, 청담, 논현동 등의 지역명도 등장하여 인사 발령의 지역적 범위를 나타냅니다.",
+      "words": [
+        "two",
+        "대구",
+        "청주",
+        "부산",
+        "남동"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "LG전자 전장 사업",
+      "summary": "LG전자가 뉴욕, 런던 등 전 세계를 대상으로 차량용 전장 사업 캠페인 영상을 공개하며 사업 확장 의지를 드러내고 고객 경험을 강조하는 내용을 다룹니다.",
+      "words": [
+        "전장",
+        "캠페인",
+        "lg",
+        "차량",
+        "사업의"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "K팝 디스플레이 표준",
+      "summary": "K팝 관련 디스플레이 장비 및 콘텐츠에 대한 IP 표준 인증과 중소기업 맞춤형 지원을 통해 실질적인 체험 및 브랜드 가치를 높이는 방안을 다룹니다.",
+      "words": [
+        "k팝",
+        "vesa",
+        "ip",
+        "표준",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "쿠팡 개인정보 유출",
+      "summary": "쿠팡에서 발생한 개인정보 유출 사건과 관련하여 정부의 조사 내용 및 보안 문제에 대한 내용을 다룹니다.",
+      "words": [
+        "쿠팡",
+        "쿠팡은",
+        "고객",
+        "조사",
+        "유출"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "신형 그랜드 스타일",
+      "summary": "신형 그랜드 차량의 역동적인 스타일과 LED, 전자식 서스펜션 등 적용된 편의 및 안전 기능에 대한 내용을 다룹니다.",
+      "words": [
+        "주행",
+        "경고",
+        "적재",
+        "이미지를",
+        "편의성을"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "삼성디스플레이 협력사 직원 사망",
+      "summary": "삼성디스플레이 협력사에서 발생한 설비 작업 중 60대 직원이 사망하는 사고가 발생했으며, 재발 방지 대책 마련이 시급하다.",
+      "words": [
+        "사고",
+        "삼성디스플레이",
+        "협력사",
+        "사고가",
+        "설비"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "러시아",
+        "상표권",
+        "현지",
+        "삼성",
+        "상표권을"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "천안시",
+        "도비",
+        "시는",
+        "도시",
+        "천안"
+      ]
+    }
+  ],
+  "evidence": {}
+}
