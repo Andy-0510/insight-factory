@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "tv",
+        "무선",
+        "에보",
+        "올레드",
+        "lg"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "할인",
+        "구매",
+        "혜택을",
+        "이다",
+        "할인 혜택을"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "솔루션",
+        "프로세스",
+        "solutions",
+        "마케팅",
+        "한국"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "lg",
+        "ai",
+        "lg전자는",
+        "고객의",
+        "올레드"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "러시아",
+        "중국",
+        "있어요",
+        "기업들이",
+        "해외"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "oled",
+        "ai",
+        "삼성디스플레이는",
+        "ai oled",
+        "폴더블"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "oled",
+        "디스플레이",
+        "차량용",
+        "lg디스플레이는",
+        "대형"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "컴패니언",
+        "삼성전자는",
+        "비스포크 ai",
+        "삼성전자"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "ai",
+        "ces",
+        "tv",
+        "rgb",
+        "기술"
+      ]
+    }
+  ],
+  "evidence": {}
+}
