@@ -1,0 +1,138 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "oled",
+        "rgb",
+        "lg",
+        "전장",
+        "p2p"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "회장은",
+        "현대차그룹",
+        "정의선",
+        "퀄컴",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "hdr",
+        "smartpower",
+        "노트북",
+        "고화질",
+        "전력"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "부품",
+        "반도체",
+        "자동차",
+        "소재",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "삼성전자는",
+        "tv",
+        "삼성전자",
+        "경험을"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "모니터",
+        "울트라샤프",
+        "6k",
+        "썬더볼트",
+        "블랙"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "ai",
+        "프로",
+        "라이젠",
+        "키보드"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "레노버",
+        "레노버는",
+        "레노버가",
+        "pc"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "ai",
+        "ces",
+        "중국",
+        "로봇",
+        "lg"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "oled",
+        "탈모",
+        "반도체",
+        "6세대",
+        "가격"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "oled",
+        "ai",
+        "삼성디스플레이는",
+        "ai oled",
+        "oled는"
+      ]
+    }
+  ],
+  "evidence": {}
+}
