@@ -1036,6 +1036,17 @@
     ]
   },
   "weekly": {
+    "2026-01-09": [
+      {
+        "time": "0728-KST",
+        "reports": [
+          {
+            "name": "weekly_report.html",
+            "path": "outputs/weekly/2026-01-09/0728-KST/weekly_report.html"
+          }
+        ]
+      }
+    ],
     "2026-01-02": [
       {
         "time": "0724-KST",
