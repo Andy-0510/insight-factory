@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 1.741644928s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 1\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "삼성 AI 가전",
+      "summary": "삼성전자가 CES 2026에서 선보일 AI 기반 TV, 스마트폰, 디스플레이 등 프리미엄 가전 제품의 기술과 가격 전략을 다룹니다.",
+      "words": [
+        "ai",
+        "ces",
+        "삼성전자",
+        "tv",
+        "삼성전자는"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "AI 디스플레이 기술",
+      "summary": "AI 기반의 차세대 OLED, QD 디스플레이 기술 동향과 LG, 삼성의 CES 2026 관련 신기술 및 가전, 모니터, 차량용 적용 가능성을 다룹니다.",
+      "words": [
+        "ai",
+        "oled",
+        "ces",
+        "lg",
+        "ces 2026"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "반도체·배터리 사업",
+      "summary": "반도체 및 전기차 배터리 산업에서 핵심 소재, 부품, 장비 개발 및 생산, 공급망 구축, 기업 경쟁력 확보에 대한 내용을 다룹니다. AI 기술 발전과 함께 2025년, 2026년을 목표로 한 사업 확장 및 기술 개발 동향을 살펴봅니다.",
+      "words": [
+        "반도체",
+        "메모리",
+        "부품",
+        "핵심",
+        "장비"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "한중 경제 교류",
+      "summary": "한국 대통령의 중국 방문을 계기로 한국 4대 그룹 회장들과 중국 경제계 인사들이 만나 반도체, 배터리 등 경제 협력 방안을 논의하는 내용을 다룹니다.",
+      "words": [
+        "중국",
+        "한중",
+        "방중",
+        "대통령은",
+        "경제"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "가전 할인 혜택",
+      "summary": "롯데하이마트, LG전자, 삼성전자 등에서 진행하는 새해 가전 할인 행사 및 퀴즈 이벤트를 통해 고객들이 얻을 수 있는 구매 혜택에 대한 내용입니다.",
+      "words": [
+        "할인",
+        "구매",
+        "혜택을",
+        "문제는",
+        "할인 혜택을"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "삼성전자 경영 현황",
+      "summary": "삼성전자 이재용 회장, 전영현 사장 등 경영진의 2024년 신년 경영 계획과 AI, 파운드리 등 핵심 사업 전략, 그리고 과거 이건희 회장 시대를 포함한 삼성전자 전반의 경영 동향을 다룹니다.",
+      "words": [
+        "삼성전자",
+        "반도체",
+        "이재용",
+        "사장",
+        "삼성"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "삼성 명장 선정",
+      "summary": "삼성 계열사에서 뛰어난 제조기술 전문가들이 '명장'으로 선정되었으며, 특히 삼성전기, 삼성디스플레이, 삼성SDI에서 많은 전문가들이 포함되었다.",
+      "words": [
+        "명장",
+        "삼성",
+        "1명",
+        "삼성 명장",
+        "삼성은"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "나는",
+        "것이",
+        "작은",
+        "좋은",
+        "필요합니다"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "솔루션",
+        "탈모",
+        "프로세스",
+        "solutions",
+        "마케팅"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "hdr",
+        "smartpower",
+        "고화질",
+        "소비전력을",
+        "환경에서는"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "미니",
+        "led",
+        "rgb",
+        "미니 led",
+        "tv"
+      ]
+    }
+  ],
+  "evidence": {}
+}
