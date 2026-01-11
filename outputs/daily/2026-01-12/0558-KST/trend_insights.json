@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "부품",
+        "전기차",
+        "배터리",
+        "자동차",
+        "기아"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "oled",
+        "픽셀",
+        "구조를",
+        "빛을",
+        "2배"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "lg",
+        "ces",
+        "올레드",
+        "에보",
+        "2026에서"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "여성",
+        "부장",
+        "한국",
+        "교수",
+        "의사"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "반도체",
+        "메모리",
+        "가격",
+        "ai",
+        "사장은"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "사장은",
+        "디스플레이",
+        "oled",
+        "ai",
+        "6세대"
+      ]
+    }
+  ],
+  "evidence": {}
+}
