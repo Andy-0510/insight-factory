@@ -1,0 +1,138 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "수업",
+        "전년",
+        "이제",
+        "tv",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "할인",
+        "신년",
+        "패키지",
+        "맞아",
+        "준비했다"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "피고인",
+        "id",
+        "비상계엄",
+        "비상계엄을",
+        "사건"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "교육",
+        "메디컬",
+        "4k",
+        "구축",
+        "의료"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "lg",
+        "ai",
+        "cns는",
+        "lg cns는",
+        "에이전틱 ai"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "지역",
+        "lg이노텍은",
+        "차량",
+        "반도체",
+        "ap모듈"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ces",
+        "최고의",
+        "tv",
+        "best",
+        "ces 2026에서"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "ces",
+        "로봇",
+        "기술",
+        "한국"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "oled",
+        "사장은",
+        "기술",
+        "원가",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "반도체",
+        "부품",
+        "소재",
+        "자동차",
+        "배터리"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "ai",
+        "pc",
+        "시리즈",
+        "pro",
+        "amd"
+      ]
+    }
+  ],
+  "evidence": {}
+}
