@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "스마트기기",
+        "기기를",
+        "과정을 거쳐",
+        "거쳐",
+        "학생들이"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ii",
+        "사용",
+        "김경",
+        "디바이스",
+        "확인할"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ces",
+        "기술",
+        "ces 2026",
+        "혁신",
+        "주력"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "교육",
+        "메디컬",
+        "4k",
+        "구축",
+        "수술"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "실시간",
+        "다른",
+        "교육",
+        "교수",
+        "학습"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "반도체",
+        "부품",
+        "장비",
+        "핵심",
+        "로봇"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ict",
+        "수요",
+        "수출이",
+        "수출",
+        "역대"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "pc",
+        "인텔",
+        "코어",
+        "코어 울트라"
+      ]
+    }
+  ],
+  "evidence": {}
+}
