@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 53.025998029s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 53\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 기술 경쟁",
+      "summary": "AI 기술을 둘러싼 미국과 중국의 경쟁, 특히 CES에서 선보인 삼성, 엔비디아의 TV, 로봇, 자율주행, 반도체 기술 동향과 가격, 아트 기술 적용에 대한 내용입니다.",
+      "words": [
+        "ai",
+        "중국",
+        "ces",
+        "oled",
+        "미국"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "CES 2026 기술전망",
+      "summary": "CES 2026에서 AI, OLED, 로봇, 반도체 등 삼성전자와 LG전자를 중심으로 한 차세대 기술 트렌드와 디스플레이, 메모리, 가전 제품 동향을 조망합니다.",
+      "words": [
+        "ai",
+        "ces",
+        "oled",
+        "기술",
+        "lg"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "AI 교육 혁신",
+      "summary": "AI 기반 교육 기술과 디스플레이, 반도체 등 첨단 인프라를 활용하여 수업 환경을 개선하고, e스포츠, 의료 분야 등 다양한 산업에서 AI 교육을 통한 사업 혁신과 창업을 지원하는 내용을 다룹니다.",
+      "words": [
+        "수업",
+        "교육",
+        "디스플레이",
+        "모니터",
+        "수업을"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "반도체·자동차 핵심 부품",
+      "summary": "반도체, 자동차 부품, 배터리, 로봇 등 첨단 기술 분야의 핵심 기업들이 신사업 개발 및 기술 확보를 통해 경쟁력을 강화하고, 관련 소재 및 장비 산업의 발전도 함께 다루는 토픽입니다.",
+      "words": [
+        "반도체",
+        "부품",
+        "자동차",
+        "핵심",
+        "장비"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "삼성전자 신년 이벤트",
+      "summary": "삼성전자가 새해를 맞아 할인, 스타벅스 패키지 등 풍성한 이벤트를 준비하여 소비자의 구매를 유도하고 좋은 의미를 담아 새해를 기원하는 내용을 담고 있습니다.",
+      "words": [
+        "할인",
+        "삼세페",
+        "신년",
+        "홈런",
+        "페이지에"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "기아 EV 모델 신규",
+      "summary": "기아의 신형 전기차 EV2, EV3, EV4 모델 출시와 관련된 소식으로, 주행, 충전, 디자인, 실내 기능 등에 대한 정보가 포함되어 있습니다.",
+      "words": [
+        "기아",
+        "ev2",
+        "기아는",
+        "주행",
+        "실내"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "KAIST 신규 OLED 구조",
+      "summary": "KAIST 연구팀이 효율을 2배 높인 새로운 OLED 발광 구조를 개발했으며, 이를 통해 스마트파워 및 HDR 디스플레이에 적용할 수 있는 기술을 선보였다.",
+      "words": [
+        "oled",
+        "픽셀",
+        "빛을",
+        "구조를",
+        "hdr"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "아산",
+        "산업",
+        "기술",
+        "기반",
+        "ces"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "ict",
+        "수출은",
+        "수출이",
+        "수출",
+        "수요"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "김경",
+        "경찰은",
+        "경찰",
+        "강선우",
+        "공천"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "var",
+        "피고인",
+        "이화여대",
+        "비상계엄",
+        "별세"
+      ]
+    }
+  ],
+  "evidence": {}
+}
