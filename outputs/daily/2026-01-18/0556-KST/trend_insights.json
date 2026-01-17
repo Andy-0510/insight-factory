@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "반도체",
+        "로봇",
+        "부품",
+        "자동차",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "차량",
+        "ai",
+        "서비스를",
+        "내비게이션",
+        "차량용"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "시장은",
+        "용인",
+        "반도체",
+        "40만",
+        "전국"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "디스플레이",
+        "oled",
+        "메모리",
+        "가격"
+      ]
+    }
+  ],
+  "evidence": {}
+}
