@@ -1,0 +1,30 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "계약학과",
+        "대기업",
+        "대기업 계약학과",
+        "sk하이닉스",
+        "삼성전자"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ai",
+        "반도체",
+        "핵심",
+        "소재",
+        "산업"
+      ]
+    }
+  ],
+  "evidence": {}
+}
