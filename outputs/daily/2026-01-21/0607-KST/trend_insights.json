@@ -1,0 +1,66 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "의류",
+        "스팀",
+        "보드",
+        "관리",
+        "가전"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "tv",
+        "사업",
+        "소니",
+        "사업을",
+        "tcl"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "모니터",
+        "oled",
+        "qd",
+        "qd oled",
+        "리전"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "tv",
+        "oled",
+        "최고의",
+        "최고",
+        "oled tv"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "폴더블",
+        "아이폰18",
+        "아이폰",
+        "oled",
+        "갤럭시"
+      ]
+    }
+  ],
+  "evidence": {}
+}
