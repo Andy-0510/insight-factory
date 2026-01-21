@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "ieee",
+        "ap",
+        "ai",
+        "기반"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "리전",
+        "월드컵",
+        "공식",
+        "레노버",
+        "게이밍"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "모니터",
+        "oled",
+        "화면",
+        "qd",
+        "qd oled"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "반도체",
+        "부품",
+        "자동차",
+        "장비",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "tv",
+        "최고의",
+        "oled",
+        "최고",
+        "화질과"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "oled",
+        "차량용",
+        "지커",
+        "suv",
+        "차량용 oled"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "tv",
+        "소니",
+        "tcl이",
+        "일본",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "eps",
+        "프로젝터",
+        "전용",
+        "lg",
+        "스팀"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "폴더블",
+        "아이폰",
+        "아이폰18",
+        "스마트폰"
+      ]
+    }
+  ],
+  "evidence": {}
+}
