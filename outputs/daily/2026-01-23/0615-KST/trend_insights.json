@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "혁신",
+        "100대",
+        "특허",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "코팅",
+        "표면",
+        "보호",
+        "스스로",
+        "폴더블"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "tv",
+        "소니의",
+        "tcl",
+        "중국",
+        "소니"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "터치",
+        "탑재해",
+        "온디바이스 ai",
+        "지원한다"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "브랜드",
+        "pc",
+        "hp",
+        "통합"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "oled",
+        "중국",
+        "차량용",
+        "차량",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "반도체",
+        "부품",
+        "자동차",
+        "소재",
+        "핵심"
+      ]
+    }
+  ],
+  "evidence": {}
+}
