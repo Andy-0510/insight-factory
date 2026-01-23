@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "코팅",
+        "문제는",
+        "테스트",
+        "반도체",
+        "표면"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "tiger",
+        "etf",
+        "그룹",
+        "핵심",
+        "투자하는"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "실적",
+        "장비 공급",
+        "장비",
+        "공급",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "연구개발",
+        "조직",
+        "내에",
+        "그룹",
+        "애경케미칼"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "반도체",
+        "로봇",
+        "소재",
+        "배터리",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "tv",
+        "소니의",
+        "tcl",
+        "소니",
+        "oled"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "교육",
+        "학습",
+        "갤럭시",
+        "환경을",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "oled",
+        "중국",
+        "디스플레이",
+        "가격"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "ai",
+        "터치",
+        "탑재해",
+        "애플",
+        "온디바이스 ai"
+      ]
+    }
+  ],
+  "evidence": {}
+}
