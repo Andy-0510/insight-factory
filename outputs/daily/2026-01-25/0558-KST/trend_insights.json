@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "성과급",
+        "삼성전자",
+        "호텔",
+        "과반",
+        "보조배터리"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "etf",
+        "핵심",
+        "그룹",
+        "투자하는",
+        "조선"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "로봇",
+        "부품",
+        "배터리",
+        "반도체",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "교육",
+        "ai",
+        "학습",
+        "환경을",
+        "ai 기반"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "디스플레이",
+        "가격",
+        "스마트폰",
+        "oled"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "tv",
+        "소니",
+        "tcl",
+        "oled",
+        "프리미엄"
+      ]
+    }
+  ],
+  "evidence": {}
+}
