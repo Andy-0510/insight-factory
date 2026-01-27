@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "프리미엄",
+        "디스플레이",
+        "적용해",
+        "led",
+        "기능을"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "가전",
+        "인기",
+        "혜택을",
+        "명절",
+        "유통"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "반도체",
+        "배터리",
+        "로봇",
+        "기업으로",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "tv",
+        "중국",
+        "점유율",
+        "전년",
+        "tcl이"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "oled",
+        "패널",
+        "모니터용",
+        "모니터",
+        "oled 패널"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "노트북",
+        "pc",
+        "가격",
+        "코어",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "메모리",
+        "가격",
+        "ai",
+        "반도체",
+        "가지"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "oled",
+        "디스플레이",
+        "사업",
+        "중국"
+      ]
+    }
+  ],
+  "evidence": {}
+}
