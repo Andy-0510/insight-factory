@@ -1,0 +1,82 @@
+--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---
+Generated at: 2026-01-27T22:33:34.566757Z
+
+================================================================================
+Rank #1: sk하이닉스|삼성전자 (Total Sentences: 1232, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newsworks.co.kr/news/articleView.html?idxno=824657" target="_blank" style="font-weight:600; color:#065f46;">[전자·전기 결산②] 'AI 반도체'만 웃다가 메모리까지 '슈퍼 사이클' 돌...</a>
+<a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=410719" target="_blank" style="font-weight:600; color:#065f46;">조용히 커온 로봇 강자... 반도체 공정 깊숙이 파고든 라온테크의 저력</a>
+<a href="https://www.techm.kr/news/articleView.html?idxno=148089" target="_blank" style="font-weight:600; color:#065f46;">[글로벌] PC업계, 메모리 쇼크에 전략 전면 수정..."가격·라인업·출하...</a>
+
+================================================================================
+Rank #2: lg전자|삼성전자 (Total Sentences: 966, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.ceoscoredaily.com/page/view/2025122617062004591" target="_blank" style="font-weight:600; color:#c41e3a;">삼성·LG, 게이밍 모니터 대전…프리미엄 모니터 공략 박차</a>
+<a href="https://www.newsway.co.kr/news/view?ud=2026010614591671098" target="_blank" style="font-weight:600; color:#c41e3a;">[CES 2026]CES서 다시 붙은 삼성·LG…초대형 vs 초슬림 TV 전쟁</a>
+<a href="https://www.ebn.co.kr/news/articleView.html?idxno=1696161" target="_blank" style="font-weight:600; color:#c41e3a;">백기 든 日…'소니' 이름 단 중국 TV 나온다</a>
+
+================================================================================
+Rank #3: tcl|소니 (Total Sentences: 538, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.ebn.co.kr/news/articleView.html?idxno=1696161" target="_blank" style="font-weight:600; color:#c41e3a;">백기 든 日…'소니' 이름 단 중국 TV 나온다</a>
+<a href="https://www.yna.co.kr/view/AKR20260121068100003?input=1195m" target="_blank" style="font-weight:600; color:#c41e3a;">'TCL-소니' 동맹에 TV 시장 지각변동…삼성·LG 입지 위협할까</a>
+<a href="https://www.sedaily.com/article/20000037?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">미국 AI 유니콘 독주 속 한국은 2년간 2곳뿐 [CEO 뉴스]</a>
+
+================================================================================
+Rank #4: 구글|애플 (Total Sentences: 373, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.g-enews.com/view.php?ud=202601061743362780fbbec65dfb_1" target="_blank" style="font-weight:600; color:#c41e3a;">삼성·구글, ‘반(反) 애플  AI 동맹’ 결성...“올해 8억 대 기기에 제미...</a>
+<a href="https://radio.ytn.co.kr/program/?f=2&id=106849&s_mcd=0206&s_hcd=15" target="_blank" style="font-weight:600; color:#c41e3a;">엔비디아 '알파마요' 등에 업은 현대차, '자율주행' 테슬라와 맞짱?</a>
+<a href="https://www.ytn.co.kr/_ln/0102_202601131139025055" target="_blank" style="font-weight:600; color:#c41e3a;">엔비디아 '알파마요' 등에 업은 현대차, '자율주행' 테슬라와 맞짱?</a>
+
+================================================================================
+Rank #5: tcl|삼성전자 (Total Sentences: 340, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.ebn.co.kr/news/articleView.html?idxno=1696161" target="_blank" style="font-weight:600; color:#c41e3a;">백기 든 日…'소니' 이름 단 중국 TV 나온다</a>
+<a href="https://www.yna.co.kr/view/AKR20260121068100003?input=1195m" target="_blank" style="font-weight:600; color:#c41e3a;">'TCL-소니' 동맹에 TV 시장 지각변동…삼성·LG 입지 위협할까</a>
+<a href="https://www.delighti.co.kr/news/articleView.html?idxno=110260" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 TV 점유율 17%로 세계 1위…TCL 16%로 '턱밑 추격'</a>
+
+================================================================================
+Rank #6: tcl|하이센스 (Total Sentences: 317, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://biz.heraldcorp.com/article/10647876?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">中 TCL, R 빠진 RGB TV, QD 빠진 QLED TV 논란</a>
+<a href="https://www.ajunews.com/view/20260105134849778" target="_blank" style="font-weight:600; color:#c41e3a;">[CES 2026] 삼성 '초대형', LG '초슬림'… 中 공세 제치고 프리미엄 TV 진...</a>
+<a href="https://biz.newdaily.co.kr/site/data/html/2026/01/06/2026010600125.html" target="_blank" style="font-weight:600; color:#c41e3a;">CES 대신 中으로 향한 LS 구자은 회장 … 중국 성장 가능성에 기대</a>
+
+================================================================================
+Rank #7: amd|엔비디아 (Total Sentences: 245, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.fnnews.com/news/202601240136034416" target="_blank" style="font-weight:600; color:#c41e3a;">인텔, AI 서버 수요 속 ‘재고 부족’…실적 쇼크에 16% 급락</a>
+<a href="https://view.asiae.co.kr/article/2025122414461641988" target="_blank" style="font-weight:600; color:#c41e3a;">젠슨황 또 CES를 흔들다‥혁신가들의 AI 경쟁[미리보는 CES]</a>
+<a href="https://view.asiae.co.kr/article/2025122414461641988" target="_blank" style="font-weight:600; color:#c41e3a;">젠슨황 또 CES를 흔들다‥혁신가들의 AI 경쟁[미리보는 CES]</a>
+
+================================================================================
+Rank #8: 삼성전자|애플 (Total Sentences: 229, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.g-enews.com/view.php?ud=202601061743362780fbbec65dfb_1" target="_blank" style="font-weight:600; color:#c41e3a;">삼성·구글, ‘반(反) 애플  AI 동맹’ 결성...“올해 8억 대 기기에 제미...</a>
+<a href="https://www.businesspost.co.kr/BP?command=article_view&num=425498" target="_blank" style="font-weight:600; color:#c41e3a;">[1월1일자] 비즈니스포스트 아침의 주요기사</a>
+<a href="https://www.mk.co.kr/article/11920932" target="_blank" style="font-weight:600; color:#c41e3a;">원가 부담에도…삼성, 점유율 방어 승부수</a>
+
+================================================================================
+Rank #9: amd|인텔 (Total Sentences: 208, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.enewstoday.co.kr/news/articleView.html?idxno=2377433" target="_blank" style="font-weight:600; color:#065f46;">2나노 전쟁 점화···TSMC '독주 균열'에 삼성전자 '공급망 기회'</a>
+<a href="https://zdnet.co.kr/view/?no=20260103171713" target="_blank" style="font-weight:600; color:#065f46;">글로벌 빅테크 거물들, 새해 벽두 'CES 2026' 총출동</a>
+<a href="http://www.seouleconews.com/news/articleView.html?idxno=88577" target="_blank" style="font-weight:600; color:#065f46;">CES 2026 개막,글로벌 빅테크 CEO 총출동...미래 AI 로드맵 쏟아낸다</a>
+
+================================================================================
+Rank #10: 삼성디스플레이|삼성전자 (Total Sentences: 193, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.asiatime.co.kr/article/20260120500277" target="_blank" style="font-weight:600; color:#065f46;">샤오미폰 받고 갤럭시 주고…李 대통령 ‘스마트폰 외교’</a>
+<a href="https://www.g-enews.com/view.php?ud=2026012309330959690c8c1c064d_1" target="_blank" style="font-weight:600; color:#065f46;">삼성전자  OLED  독주에 균열… 소니–TCL 동맹이 던진 도전</a>
+<a href="https://www.news1.kr/industry/general-industry/6048167" target="_blank" style="font-weight:600; color:#065f46;">"차량은 달리는  디스플레이 "…삼성·LG, SDV 시대 전장 경쟁 '총력전'</a>

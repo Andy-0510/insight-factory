@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 44.395365653s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 44\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "삼성 AI 반도체 기술",
+      "summary": "삼성전자가 CES에서 공개한 AI 기반 반도체, TV, 스마트폰, 로봇 등 혁신 기술과 미래 디스플레이 시장 전략을 중심으로 설명합니다.",
+      "words": [
+        "ai",
+        "반도체",
+        "ces",
+        "기술",
+        "tv"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "AI 반도체와 디스플레이",
+      "summary": "AI 기술 발전과 함께 OLED, 반도체, 디스플레이, 로봇, 자동차 등 다양한 분야에서 핵심 기술과 신제품 개발 동향을 다룹니다. 특히 삼성전자, LG 등의 기업들이 CES 2026을 앞두고 차세대 기술 및 사업 경쟁을 벌이고 있습니다.",
+      "words": [
+        "ai",
+        "oled",
+        "반도체",
+        "ces",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "새해 할인 퀴즈",
+      "summary": "새해를 맞아 삼성전자 비건 상품의 할인 혜택과 관련된 퀴즈를 통해 구매 정보를 제공합니다.",
+      "words": [
+        "할인",
+        "정답은",
+        "문제는",
+        "이다",
+        "구매"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "대기업, 대학, 의료",
+      "summary": "대기업이 대학과 협력하여 계약학과를 통한 교육 운영, 위탁급식 사업, 의료 솔루션 제공 등 다양한 방면에서 사업을 확장하고 있으며, 환자 치료 및 관련 산업 발전에 기여하는 내용을 다룹니다.",
+      "words": [
+        "수업",
+        "명장",
+        "대기업",
+        "계약학과",
+        "위탁급식"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "아산 반도체 산업 클러스터",
+      "summary": "아산시는 반도체 산업을 중심으로 한 대규모 국가산업단지 조성을 통해 지역 경제 활성화와 첨단 기술 발전을 도모하고 있으며, 충남 지역의 인구 증가와 문화, 재생에너지 인프라 구축에도 기여하고 있습니다.",
+      "words": [
+        "아산시",
+        "인구",
+        "지역",
+        "반도체",
+        "시장은"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "기아 EV2, 르노 SUV",
+      "summary": "기아의 새로운 전기차 EV2 모델과 르노의 SUV 차량에 대한 내용입니다. 충전, 실내 기능, 인포테인먼트 시스템 등 차량의 전반적인 특징과 함께 KG Mobility (구 쌍용)의 무쏘 GT 모델 등도 언급됩니다.",
+      "words": [
+        "주행",
+        "기아",
+        "기아는",
+        "ev2",
+        "실내"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "이재용, 삼성, 중국",
+      "summary": "이재용 삼성전자 회장이 중국 방문을 통해 경제 및 공급망 협력, AI 기술 교류 등 다양한 경제 경영 현안을 논의하는 내용을 다룹니다.",
+      "words": [
+        "중국",
+        "한중",
+        "사장",
+        "삼성전자",
+        "이재용"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "우리은행 인사/지점",
+      "summary": "우리은행의 지점장, 부장 등 인사 이동과 대구, 잠실, 청주, 부산, 송도, 판교, 화성, 대전, 속초, 원주, 김해 등 전국 각지의 지점 및 금융센터 관련 소식을 다룹니다. 김주현, 김태수, 김민철, 김민성, 김주영, 김현정 등 인물도 함께 언급됩니다.",
+      "words": [
+        "two",
+        "지점장",
+        "부장",
+        "대구",
+        "잠실"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "김경",
+        "경찰은",
+        "강선우",
+        "경찰",
+        "김병기"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "보조배터리",
+        "기내",
+        "보조배터리를",
+        "한진그룹",
+        "5개"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "tiger",
+        "etf",
+        "tiger 현대차그룹플러스",
+        "현대차그룹플러스",
+        "etf tiger"
+      ]
+    }
+  ],
+  "evidence": {}
+}
