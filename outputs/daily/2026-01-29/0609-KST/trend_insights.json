@@ -1,0 +1,126 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "투자",
+        "tv",
+        "메모리",
+        "가격",
+        "특허"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "모니터용",
+        "oled",
+        "패널",
+        "모니터용 oled",
+        "모니터"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "led",
+        "적색",
+        "효율",
+        "디스플레이",
+        "마이크로"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "opi",
+        "성과급",
+        "연봉의",
+        "사업부",
+        "지급률이"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "인텔",
+        "pc",
+        "ai pc",
+        "코어"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "반도체",
+        "로봇",
+        "부품",
+        "핵심",
+        "기업으로"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "트라이폴드",
+        "삼성전자는",
+        "아이폰",
+        "보호"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "tv",
+        "중국",
+        "tcl",
+        "프리미엄",
+        "tcl이"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "반도체",
+        "ai",
+        "미국",
+        "투자",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "6세대",
+        "oled",
+        "패널",
+        "6세대 oled",
+        "수요"
+      ]
+    }
+  ],
+  "evidence": {}
+}
