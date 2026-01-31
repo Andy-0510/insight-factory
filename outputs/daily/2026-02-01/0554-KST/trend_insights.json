@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "벤츠",
+        "새로운",
+        "주행",
+        "차량",
+        "기능을"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ai",
+        "tv",
+        "매출",
+        "메모리",
+        "영업이익"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "반도체",
+        "부품",
+        "로봇",
+        "핵심",
+        "자동차"
+      ]
+    }
+  ],
+  "evidence": {}
+}
