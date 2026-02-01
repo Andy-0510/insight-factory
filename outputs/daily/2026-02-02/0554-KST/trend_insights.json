@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "탈모",
+        "oled",
+        "세포",
+        "치료",
+        "연구팀은"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "재활용",
+        "유리",
+        "재활용 소재",
+        "삼성전자는",
+        "소재"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "반도체",
+        "ai",
+        "부품",
+        "핵심",
+        "로봇"
+      ]
+    }
+  ],
+  "evidence": {}
+}
