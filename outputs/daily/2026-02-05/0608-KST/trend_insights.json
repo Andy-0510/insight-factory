@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "패터닝",
+        "리간드",
+        "교환",
+        "qd",
+        "없이"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "게임",
+        "캐릭터",
+        "카카오",
+        "협업",
+        "요소를"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "할인",
+        "빅세일",
+        "엔터테인먼트",
+        "광고",
+        "g마켓"
+      ]
+    }
+  ],
+  "evidence": {}
+}
