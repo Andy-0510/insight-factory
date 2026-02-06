@@ -1,0 +1,30 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "더후",
+        "브랜드",
+        "ise",
+        "유럽",
+        "환유고"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ai",
+        "중국",
+        "oled",
+        "반도체",
+        "제품"
+      ]
+    }
+  ],
+  "evidence": {}
+}
