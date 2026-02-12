@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 8.288747245s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 8\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "미중 반도체 기술전",
+      "summary": "미국과 중국의 반도체 기술, 소재, 장비 분야 투자 경쟁과 그 경제적 영향에 대한 뉴스를 다룹니다. AI 기술 발전과 기업 실적도 관련되어 있습니다.",
+      "words": [
+        "ai",
+        "그래서",
+        "디스플레이",
+        "투자",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "반도체 디스플레이 사업",
+      "summary": "삼성전자를 중심으로 AI, HBM 등 첨단 기술과 OLED, LCD 디스플레이 사업의 성장, 차량용 및 PC 시장에서의 경쟁, 가격 변동 및 생산/공급 전략, 그리고 실적과 매출 추이에 대한 내용을 다룹니다.",
+      "words": [
+        "ai",
+        "메모리",
+        "중국",
+        "반도체",
+        "oled"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "삼성, 올림픽 최상위 스폰서",
+      "summary": "삼성전자 이재용 회장이 이탈리아 밀라노 코르티나 동계올림픽 관련 행사에 참석하여 국제올림픽위원회(IOC)와 스포츠 최고 기업(TOP) 스폰서로서의 역할을 강조하고, 향후 파리 올림픽 등 스포츠 분야에서의 협력 방안을 논의했습니다.",
+      "words": [
+        "올림픽",
+        "ioc",
+        "이재용",
+        "밀라노",
+        "ceo"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "브랜드 가전 할인",
+      "summary": "롯데하이마트와 11번가에서 명절을 맞아 인기 브랜드 프리미엄 가전 상품에 대한 할인 및 특별 체험 행사를 진행하며 모바일 구매 고객에게 다양한 혜택을 제공합니다.",
+      "words": [
+        "브랜드의",
+        "브랜드",
+        "인기",
+        "선보인다",
+        "구매"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "삼성전자 특허 유출 소송",
+      "summary": "삼성전자 부사장이 재판에서 특허 자료를 유출한 혐의로 징역형을 받고 미국에서 소송이 진행 중입니다.",
+      "words": [
+        "특허",
+        "징역",
+        "삼성전자",
+        "미국",
+        "특허를"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "반도체",
+        "부품",
+        "로봇",
+        "자동차",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "더후",
+        "브랜드",
+        "유럽",
+        "ise",
+        "환유고"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "페라리",
+        "전기차",
+        "byd",
+        "액티브",
+        "루체"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "가스",
+        "센서",
+        "led",
+        "에너지",
+        "전이"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "ai",
+        "무풍",
+        "비스포크",
+        "에어컨",
+        "비스포크 ai"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "학습",
+        "세대보다",
+        "박사는",
+        "낮은",
+        "인지"
+      ]
+    }
+  ],
+  "evidence": {}
+}
