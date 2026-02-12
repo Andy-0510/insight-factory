@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "비스포크",
+        "가전",
+        "폴더블",
+        "ict"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "구매",
+        "선보인다",
+        "인기",
+        "판매한다",
+        "할인"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "가스",
+        "나노",
+        "led",
+        "센서",
+        "여러"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "qd",
+        "펜타",
+        "qd oled",
+        "펜타 탠덤",
+        "탠덤"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "게임",
+        "디스플레이",
+        "모니터",
+        "지원한다"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "반도체",
+        "부품",
+        "자동차",
+        "배터리",
+        "장비"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "메모리",
+        "가격",
+        "갤럭시",
+        "ai",
+        "hbm4"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "디스플레이",
+        "데이터",
+        "산업",
+        "보안"
+      ]
+    }
+  ],
+  "evidence": {}
+}
