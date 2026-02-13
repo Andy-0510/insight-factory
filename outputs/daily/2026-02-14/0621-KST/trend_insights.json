@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "반도체",
+        "가격",
+        "장비",
+        "있어요"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "qd",
+        "펜타",
+        "oled",
+        "탠덤",
+        "펜타 탠덤"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "이벤트",
+        "이벤트를",
+        "획득할",
+        "게임",
+        "기간"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "반도체",
+        "부품",
+        "배터리",
+        "장비",
+        "기업으로"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "폴더블",
+        "갤럭시",
+        "hbm4",
+        "삼성전자는",
+        "성능"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "전년대비",
+        "매출액",
+        "2025년",
+        "연결기준 매출액",
+        "연결기준"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "fast",
+        "모니터",
+        "multi",
+        "지원한다"
+      ]
+    }
+  ],
+  "evidence": {}
+}
