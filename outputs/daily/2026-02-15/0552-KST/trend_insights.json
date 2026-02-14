@@ -1,0 +1,66 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "전년대비",
+        "2025년",
+        "매출액",
+        "연결기준",
+        "영업이익"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "모니터",
+        "게임",
+        "multi",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "이벤트를",
+        "이벤트",
+        "획득할",
+        "기간",
+        "얻을"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "반도체",
+        "장비",
+        "배터리",
+        "ai",
+        "기업으로"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "폴더블",
+        "스마트폰",
+        "갤럭시",
+        "성능",
+        "월드컵"
+      ]
+    }
+  ],
+  "evidence": {}
+}
