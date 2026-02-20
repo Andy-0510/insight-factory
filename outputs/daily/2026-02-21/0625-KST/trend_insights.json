@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "6g",
+        "다중",
+        "안테나",
+        "tv",
+        "자산"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "학교",
+        "왔다",
+        "사회적",
+        "반도체 디스플레이",
+        "30여 년간"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "led",
+        "xr",
+        "마이크로",
+        "코리아"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "할인",
+        "신학기",
+        "행사를",
+        "구매",
+        "결제"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "반도체",
+        "기업으로",
+        "배터리",
+        "사업",
+        "사업을"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "지분",
+        "전년대비",
+        "삼성디스플레이",
+        "현금",
+        "삼성sdi는"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "oled",
+        "1분기",
+        "피지컬",
+        "lg디스플레이의",
+        "휴머노이드"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "페로브스카이트",
+        "대량",
+        "디스플레이",
+        "합성",
+        "이태우"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "oled",
+        "디스플레이",
+        "6세대",
+        "마이크로",
+        "탠덤"
+      ]
+    }
+  ],
+  "evidence": {}
+}
