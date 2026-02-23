@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "반도체",
+        "ai",
+        "미국",
+        "핵심",
+        "전문"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "프로",
+        "모니터",
+        "게이밍",
+        "qd",
+        "qd oled"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "tv",
+        "마이크로",
+        "프리미엄",
+        "led",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "pc",
+        "노트북",
+        "엔비디아가",
+        "엔비디아"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "아이폰",
+        "샤오미",
+        "폴더블",
+        "메모리"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "부품",
+        "반도체",
+        "자동차",
+        "로봇",
+        "전문"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "oled",
+        "설비",
+        "디스플레이 설비",
+        "디스플레이",
+        "7세대"
+      ]
+    }
+  ],
+  "evidence": {}
+}
