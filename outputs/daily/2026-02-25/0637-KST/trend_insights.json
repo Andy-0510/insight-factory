@@ -1,0 +1,126 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "레디",
+        "주당",
+        "하만",
+        "브랜드"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "eqe",
+        "suv",
+        "주행",
+        "벤츠",
+        "메르세데스"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "리전",
+        "프로",
+        "게이밍",
+        "모니터",
+        "qd"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "pc",
+        "ai",
+        "엔비디아",
+        "노트북",
+        "엔비디아가"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "반도체",
+        "로봇",
+        "부품",
+        "핵심",
+        "자동차"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "전문",
+        "배터리",
+        "2025년",
+        "장비",
+        "소재"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "아이폰",
+        "ai",
+        "미국",
+        "오브"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "로봇",
+        "우리가",
+        "투자",
+        "기반"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "tv",
+        "프리미엄",
+        "일본",
+        "중국",
+        "브랜드"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "led",
+        "마이크로",
+        "디스플레이",
+        "마이크로 led",
+        "특허"
+      ]
+    }
+  ],
+  "evidence": {}
+}
