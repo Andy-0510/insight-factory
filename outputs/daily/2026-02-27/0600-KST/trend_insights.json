@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "실제",
+        "범프",
+        "dci",
+        "tv",
+        "테라뷰"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "ai",
+        "s26",
+        "갤럭시 s26",
+        "프라이버시"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "휘도",
+        "oled",
+        "유지율",
+        "유지율 100",
+        "휘도 유지율"
+      ]
+    }
+  ],
+  "evidence": {}
+}
