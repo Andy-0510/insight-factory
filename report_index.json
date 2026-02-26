@@ -1564,6 +1564,17 @@
     ]
   },
   "weekly": {
+    "2026-02-27": [
+      {
+        "time": "0735-KST",
+        "reports": [
+          {
+            "name": "weekly_report.html",
+            "path": "outputs/weekly/2026-02-27/0735-KST/weekly_report.html"
+          }
+        ]
+      }
+    ],
     "2026-02-20": [
       {
         "time": "0733-KST",
