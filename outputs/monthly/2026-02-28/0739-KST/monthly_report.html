@@ -1,0 +1,889 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Monthly Strategic Review (2026년 02월)</title>
+    <style>
+        /* 페이지 설정 제거됨 */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background: #f5f7fa;
+            color: #1a2332;
+            line-height: 1.6;
+            padding: 18px 0; /* 상하 여백, 좌우 0 */
+        }
+        .container {
+            max-width: 100%; /* 너비 일관성 (960px) -> 100% */
+            margin: 0 auto; /* 가운데 정렬 */
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            margin-bottom: 20px;
+            padding: 0; /* 내부 패딩은 각 섹션에서 관리 */
+        }
+        .header {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            padding: 32px 40px; /* 내부 패딩 유지 */
+            color: #ffffff;
+        }
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .logo { font-size: 12px; font-weight: 600; letter-spacing: 2px; color: #0066ff; text-transform: uppercase; }
+        .date { font-size: 13px; color: #a0aec0; }
+        .title { font-size: 28px; font-weight: 700; margin-bottom: 8px; }
+        .subtitle { font-size: 14px; color: #cbd5e0; }
+
+        /* ▼▼▼ 목차 스타일 (레퍼런스 디자인 적용) ▼▼▼ */
+        .toc-container {
+            /* padding: 24px 40px; background-color: #f8fafc; */ /* 기존 스타일 제거 */
+            padding: 60px 40px 40px 40px; /* 레퍼런스 패딩 (상단 60px) */
+            background-color: #ffffff; /* 흰색 배경 */
+            border-bottom: 1px solid #e2e8f0;
+        }
+        .toc-title {
+            font-size: 36px; /* 레퍼런스 크기 */
+            font-weight: 800;
+            margin-bottom: 48px; /* 레퍼런스 간격 */
+            color: #1a2332;
+        }
+        .toc-list { list-style: none; padding: 0; margin: 0; }
+        .toc-item {
+            display: flex;
+            align-items: baseline;
+            padding: 20px 0; /* 레퍼런스 간격 */
+            border-bottom: 1px solid #e2e8f0; /* 레퍼런스 스타일 */
+            transition: all 0.2s;
+        }
+        .toc-item:hover {
+            background: #f7fafc; /* 호버 효과 */
+            padding-left: 12px;
+        }
+        .toc-item:last-child { border-bottom: none; }
+        
+        .toc-item .toc-number { /* 레퍼런스 스타일 */
+            font-size: 24px;
+            font-weight: 800;
+            color: #0066ff;
+            min-width: 60px; /* 레퍼런스 너비 */
+            margin-right: 15px;
+        }
+        /* (신규) 목차 중앙 컨텐츠 영역 */
+        .toc-content {
+            flex: 1;
+        }
+        /* (신규) 목차 메인 제목 (링크) */
+        .toc-item a {
+            text-decoration: none;
+            color: #1a2332;
+            transition: color 0.2s;
+        }
+        .toc-item a:hover {
+            color: #0066ff;
+        }
+        .toc-item-title {
+            font-size: 20px; /* 레퍼런스 크기 */
+            font-weight: 700; /* 레퍼런스 굵기 */
+            color: #1a2332;
+            margin-bottom: 4px;
+        }
+        /* (신규) 목차 부제목 */
+        .toc-item-subtitle {
+            font-size: 14px;
+            color: #718096;
+        }
+        /* (신규) 목차 페이지 번호 (자리만) */
+        .toc-page-num {
+            font-size: 18px;
+            font-weight: 600;
+            color: #718096;
+            padding-left: 20px;
+        }
+        /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+
+        /* ▼▼▼ [수정] 테이블 스타일 (레퍼런스 디자인 적용) ▼▼▼ */
+        table.dataframe-table {
+            width: 100%;
+            border-collapse: collapse; /* 테두리 병합 */
+            margin: 1.5em 0;
+            font-size: 13px;
+            border: none; /* 테이블 전체 테두리 제거 */
+        }
+        
+        table.dataframe-table thead {
+             background: #1a2332; /* 어두운 헤더 배경 */
+             color: white; /* 헤더 글자색 */
+        }
+
+        table.dataframe-table th {
+             color: white; /* 헤더 글자색 */
+             background: #1a2332;
+             font-size: 13px; /* 헤더 폰트 크기 */
+             padding: 16px; /* 헤더 패딩 */
+             text-align: center;
+             font-weight: 700;
+             text-transform: uppercase; /* 대문자 */
+             letter-spacing: 0.5px;
+             border: none; /* 헤더 테두리 제거 */
+             border-bottom: 2px solid #1a2332; /* 헤더 하단 선 (헤더색과 동일하게) */
+        }
+
+        table.dataframe-table td {
+             padding: 16px; /* 셀 패딩 */
+             font-size: 13px; /* 셀 폰트 크기 */
+             color: #2d3748;
+             border: none; /* 셀 테두리 제거 */
+             border-bottom: 1px solid #e2e8f0; /* 행(row) 구분선만 유지 */
+             vertical-align: top;
+             word-break: break-word;
+             white-space: pre-wrap; /* 완화 액션 등 줄바꿈 적용 */
+        }
+        
+        /* 테이블 짝수 행 배경색 제거 (이미지처럼 모두 흰색) */
+        /*
+        table.dataframe-table tbody tr:nth-child(even) {
+            background-color: #ffffff;
+        }
+        */
+        
+
+        table.dataframe-table tbody tr:hover {
+            background-color: #f0f9ff; /* 호버 효과 */
+        }
+
+        /* 기존 .risk-table th, .risk-table td 등 개별 테이블 스타일은
+           위 .dataframe-table th, .dataframe-table td 에 통합되었으므로
+           삭제해도 됩니다.
+        */
+
+        /* ▼▼▼ 리스크 레벨 배지 (이미지 참고) ▼▼▼ */
+        .risk-level { 
+             display: inline-block; padding: 3px 9px; border-radius: 12px; 
+             font-size: 11px; font-weight: 700; white-space: nowrap; 
+        }
+        .risk-high { background: #ffe6e6; color: #c41e3a; } /* Pink/Red */
+        .risk-medium { background: #fffbeb; color: #b45309; } /* Yellow/Orange */
+        .risk-low { background: #eff6ff; color: #1d4ed8; } /* Blue */
+        /* ▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲▲ */
+        
+
+        /* 콘텐츠 영역 스타일 */
+        .content-padding { padding: 24px 40px; }
+        .section { margin-bottom: 40px; }
+        .section-header { display: flex; align-items: center; margin-bottom: 10px; padding-bottom: 20px; border-bottom: 3px solid #e2e8f0; }
+        .section-number { width: 40px; height: 40px; background: linear-gradient(135deg, #0066ff, #00b8a9); color: white; border-radius: 8px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 18px; margin-right: 16px; }
+        .section-title { font-size: 24px; font-weight: 800; color: #1a2332; }
+        .section-subtitle { font-size: 14px; color: #718096; margin-left: auto; }
+        .exec-summary-box { background: #eff2f5; border-left: 5px solid #e5e8eb; padding: 24px; border-radius: 8px; margin-bottom: 32px; font-size: 14px; line-height: 1.7; }
+        .exec-summary-title { font-size: 16px; font-weight: 700; color: #000000; margin-bottom: 12px; text-transform: uppercase; letter-spacing: 0.5px; }
+        .exec-summary-text { color: #2d3748; margin-bottom: 10px; }
+        .exec-summary-text strong { color: #1a2332; font-weight: 600; }
+        .viz-container { background: #f8fafc; border-radius: 12px; padding: 24px; margin-bottom: 32px; border: 1px solid #e2e8f0; }
+        .viz-title { font-size: 16px; font-weight: 700; color: #1a2332; margin-bottom: 16px; text-align: center; }
+        img.report-graph { max-width: 100%; height: auto; border: 1px solid #e0e0e0; border-radius: 8px; display: block; margin: 1em auto; }
+        table { width: 100%; border-collapse: collapse; margin: 1.5em 0; font-size: 13px; }
+        th, td { border: 1px solid #ddd; padding: 10px; text-align: left; vertical-align: top; word-break: break-word; }
+        th { background: #f8fafc; font-weight: 600; color: #475569; }
+        tbody tr:nth-child(even) { background-color: #f8fafc; }
+        tbody tr:hover { background-color: #f0f9ff; }
+        h3 { font-size: 1.25em; font-weight: 700; margin-top: 1.5em; margin-bottom: 0.8em; color: #1a2332; padding-bottom: 0.3em; border-bottom: 1px solid #eee;}
+        h4 { font-size: 1.1em; font-weight: 700; margin-top: 1.2em; margin-bottom: 0.6em; color: #1a2332;}
+        ul, ol { padding-left: 20px; margin-bottom: 1em; font-size: 13px; color: #334155;}
+        li { margin-bottom: 0.5em; }
+
+        /* KPI 카드 스타일 */
+        .kpi-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 20px; margin-bottom: 40px; margin-top: 32px; }
+        .kpi-card { background: white; border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; text-align: center; box-shadow: 0 1px 3px rgba(0,0,0,0.04); transition: transform 0.2s, box-shadow 0.2s; }
+        .kpi-card:hover { transform: translateY(-3px); box-shadow: 0 4px 10px rgba(0,0,0,0.08); }
+        .kpi-icon { font-size: 28px; margin-bottom: 12px; color: #0066ff; }
+        .kpi-label { font-size: 11px; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 8px; font-weight: 600; }
+        .kpi-value { font-size: 32px; font-weight: 800; color: #1a2332; margin-bottom: 4px; line-height: 1.2; }
+        .kpi-change { font-size: 13px; font-weight: 600; }
+        .change-positive { color: #2F855A; }
+        .change-negative { color: #C53030; }
+        .change-neutral { color: #718096; }
+
+        /* 사분면 그리드 스타일 */
+        .quadrant-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 20px; margin-bottom: 32px; }
+        .quadrant-card { border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; }
+        .quadrant-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 12px; margin-top: 0; border-bottom: none; padding-bottom: 0;}
+        .quadrant-card p { font-size: 13px; color: #2d3748; line-height: 1.6; margin-bottom: 8px;}
+        .quadrant-card strong { font-weight: 600; }
+        .quadrant-card.q1 { border-color: #00b8a9; background: #f0fdfa; } .quadrant-card.q1 h4 { color: #00b8a9; }
+        .quadrant-card.q2 { border-color: #0066ff; background: #f0f9ff; } .quadrant-card.q2 h4 { color: #0066ff; }
+        .quadrant-card.q3 { border-color: #ff9500; background: #fffbeb; } .quadrant-card.q3 h4 { color: #ff9500; }
+        .quadrant-card.q4 { border-color: #718096; background: #f8fafc; } .quadrant-card.q4 h4 { color: #718096; }
+
+        /* 전략적 시사점 박스 스타일 */
+        .implication-box { background: #f8fafc; border-left: 4px solid #0066ff; padding: 24px; border-radius: 8px; margin-top: 24px;}
+        .implication-box h4 { margin-top: 0; border-bottom: none; padding-bottom: 0; font-size: 16px; color: #0066ff; margin-bottom: 12px;}
+
+        /* Maturity Grid 스타일 */
+        .maturity-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 20px; margin-bottom: 32px; }
+        .maturity-card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; background: white; box-shadow: 0 1px 3px rgba(0,0,0,0.04); }
+        .maturity-stage { display: inline-block; padding: 4px 12px; border-radius: 12px; font-size: 11px; font-weight: 700; margin-bottom: 12px; }
+        .stage-emerging { background: #fffbeb; color: #d97706; }
+        .stage-growth { background: #eff6ff; color: #1d4ed8; }
+        .stage-maturity { background: #ecfdf5; color: #065f46; }
+        .maturity-tech { font-size: 16px; font-weight: 700; color: #1a2332; margin-bottom: 8px; }
+        .maturity-description { font-size: 13px; color: #4a5568; line-height: 1.6; margin-bottom: 12px; }
+        .maturity-recommendation { background: #f8fafc; border-left: 3px solid #6366f1; padding: 10px; border-radius: 4px; font-size: 12px; color: #334155; margin-top: 12px;}
+        .maturity-recommendation strong { color: #4338ca; font-weight: 600;}
+
+        /* 경쟁사 포지셔닝 카드 스타일 */
+        .competitor-positioning-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 24px; }
+        .competitor-positioning-card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 24px; background: white; }
+        .competitor-positioning-card h4 { font-size: 18px; font-weight: 700; margin-bottom: 16px; margin-top: 0; border: none; padding: 0;}
+        .competitor-positioning-badge { background: #e0e7ff; color: #4338ca; padding: 4px 12px; border-radius: 12px; font-size: 12px; font-weight: 700; float: right; }
+        .competitor-metrics-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; margin-bottom: 16px; font-size: 12px; }
+        .competitor-metric-label { color: #64748b; margin-bottom: 2px; }
+        .competitor-metric-value { font-size: 18px; font-weight: 700; color: #1a2332; }
+        .competitor-positioning-insight { font-size: 13px; color: #334155; line-height: 1.6; }
+        .competitor-positioning-insight strong { font-weight: 600; color: #1a2332;}
+
+        /* 경쟁 강도 경보 박스 스타일 */
+        .alert-box { background: #fffbeb; border-left: 4px solid #f59e0b; padding: 24px; border-radius: 8px; margin-top: 24px;}
+        .alert-box h4 { margin-top: 0; border-bottom: none; padding-bottom: 0; font-size: 16px; color: #d97706; margin-bottom: 12px;}
+        .alert-box p { margin-bottom: 8px; font-size: 13px; }
+
+        /* 리스크 관련 스타일 */
+        .risk-table th { font-size: 11px; padding: 10px 12px; }
+        .risk-table td { font-size: 12px; padding: 10px 12px; }
+        .risk-level { display: inline-block; padding: 3px 9px; border-radius: 12px; font-size: 11px; font-weight: 700; white-space: nowrap; }
+        .risk-high { background: #fef2f2; color: #991b1b; } .risk-medium { background: #fffbeb; color: #92400e; } .risk-low { background: #eff6ff; color: #1d4ed8; }
+        .risk-matrix-grid { display: grid; grid-template-columns: repeat(2, 1fr); gap: 20px; margin-bottom: 24px; }
+        .risk-matrix-card { border: 1px solid #e2e8f0; border-radius: 12px; padding: 20px; }
+        .risk-matrix-card h4 { font-size: 16px; font-weight: 700; margin-bottom: 12px; margin-top: 0; border: none; padding: 0;}
+        .risk-matrix-card p { font-size: 13px; color: #334155; line-height: 1.6;}
+        .risk-matrix-card strong { font-weight: 600; color: #1a2332; }
+        .risk-matrix-card.avoid { border-color: #c41e3a; background: #fff5f5; } .risk-matrix-card.avoid h4 { color: #c41e3a; }
+        .risk-matrix-card.mitigate { border-color: #f59e0b; background: #fffbeb; } .risk-matrix-card.mitigate h4 { color: #d97706; }
+        .risk-matrix-card.transfer { border-color: #3b82f6; background: #eff6ff; } .risk-matrix-card.transfer h4 { color: #1d4ed8; }
+        .risk-matrix-card.accept { border-color: #64748b; background: #f8fafc; } .risk-matrix-card.accept h4 { color: #475569; }
+        .immediate-action-box { background: #fef2f2; border-left: 4px solid #c41e3a; padding: 24px; border-radius: 8px; margin-top: 24px;}
+        .immediate-action-box h4 { margin-top: 0; border-bottom: none; padding-bottom: 0; font-size: 16px; color: #991b1b; margin-bottom: 12px;}
+
+        /* Opportunity Card 스타일 */
+        .opportunity-card { border: 1px solid #e2e8f0; border-left: 4px solid #10b981; border-radius: 8px; padding: 20px; margin-bottom: 16px; background: white; }
+        .opportunity-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 8px; }
+        .opportunity-rank { background: #10b981; color: white; width: 28px; height: 28px; border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 14px; flex-shrink: 0; }
+        .opportunity-title { font-size: 16px; font-weight: 700; color: #1a2332; flex: 1; margin-left: 12px; }
+        .opportunity-score { font-size: 13px; color: #10b981; font-weight: 600; white-space: nowrap; }
+        .opportunity-label { font-size: 11px; font-weight: 600; color: #64748b; margin-top: 8px; margin-bottom: 4px; }
+        .opportunity-text { font-size: 13px; color: #334155; }
+
+        /* Action Plan Table 스타일 */
+        .action-plan-table th { font-size: 11px; padding: 8px; }
+        .action-plan-table td { font-size: 12px; padding: 8px; }
+
+        .text-center { text-align: center; }
+        .mt-2 { margin-top: 0.5rem; }
+        .mb-2 { margin-bottom: 0.5rem; }
+        .mb-4 { margin-bottom: 1rem; }
+
+        .footer { padding: 24px 40px; text-align: center; font-size: 12px; color: #718096; border-top: 1px solid #e2e8f0; margin-top: 40px; background: #f8fafc; }
+        .footer-links { margin-top: 12px; }
+        .footer-link { color: #0066ff; text-decoration: none; margin: 0 8px; font-weight: 600; }
+
+        @media print {
+            body { padding: 1cm; background: white; }
+            .container { box-shadow: none; border-radius: 0; margin: 0; max-width: none; border: none;}
+            .header { background: none; color: #1a2332; padding: 20px 0; }
+            .header-top .logo { color: #1a2332; } .header-top .date { color: #475569; }
+            .title, .subtitle { color: #1a2332; }
+            .toc-container { display: none; }
+            .footer { display: none; }
+            img.report-graph { max-width: 90%; page-break-inside: avoid;}
+            .section, table, .exec-summary-box, .kpi-grid, .quadrant-grid, .maturity-grid, .competitor-positioning-grid, .risk-matrix-grid { page-break-inside: avoid; }
+        }
+        .article-summary {
+            font-size: 15px;
+            color: #4a5568;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        .section-support {
+            font-size: 14px;
+            color: #535a64;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">INSIGHT FACTORY</div>
+                <div class="date">2026.01.30 - 2026.02.28</div>
+            </div>
+            <div class="title">Monthly Strategic Review</div>
+            <div class="subtitle">전략 방향성 점검 & 신사업 기회 탐색</div>
+        </div>
+
+        <div class="toc-container">
+            <div class="toc-title">Contents</div>
+            <ul class="toc-list">
+                
+                <li class="toc-item">
+                    <div class="toc-number">📄</div>
+                    <div class="toc-content">
+                        <a href="#summary">
+                            <div class="toc-item-title">Executive Summary</div>
+                        </a>
+                        <div class="toc-item-subtitle">월간 전략 요약 및 핵심 KPI</div>
+                    </div>
+                    <div class="toc-page-num">03</div>
+                </li>
+                
+                <li class="toc-item">
+                    <div class="toc-number">1</div>
+                    <div class="toc-content">
+                        <a href="#positioning">
+                            <div class="toc-item-title">전략적 시장 포지셔닝 맵</div>
+                        </a>
+                        <div class="toc-item-subtitle">시장 거시 환경 분석 · Topic Bubble Map</div>
+                    </div>
+                    <div class="toc-page-num">04</div>
+                </li>
+                
+                <li class="toc-item">
+                    <div class="toc-number">2</div>
+                    <div class="toc-content">
+                        <a href="#competitors">
+                            <div class="toc-item-title">주요 기업의 전략적 의도 분석</div>
+                        </a>
+                        <div class="toc-item-subtitle">경쟁 구도 분석 · Company Network</div>
+                    </div>
+                    <div class="toc-page-num">05</div>
+                </li>
+                
+                <li class="toc-item">
+                    <div class="toc-number">3</div>
+                    <div class="toc-content">
+                        <a href="#risk">
+                            <div class="toc-item-title">Market Risk Management</div>
+                        </a>
+                        <div class="toc-item-subtitle">리스크/이슈 탐지 · Mitigation Plan</div>
+                    </div>
+                    <div class="toc-page-num">06</div>
+                </li>
+                
+                <li class="toc-item">
+                    <div class="toc-number">4</div>
+                    <div class="toc-content">
+                        <a href="#actionplan">
+                            <div class="toc-item-title">전략 방향성 및 실행 방안 제안</div>
+                        </a>
+                        <div class="toc-item-subtitle">중장기 전략 제안 · Resource Allocation</div>
+                    </div>
+                    <div class="toc-page-num">07</div>
+                </li>
+                
+                <li class="toc-item">
+                    <div class="toc-number">🔍</div>
+                    <div class="toc-content">
+                        <a href="#opportunities">
+                            <div class="toc-item-title">잠재 사업 기회</div>
+                        </a>
+                        <div class="toc-item-subtitle">데이터 기반 아이디어 제안 · Top 5 Opportunities</div>
+                    </div>
+                    <div class="toc-page-num">08</div>
+                </li>
+                
+            </ul>
+        </div>
+        <br><br>
+
+        <div class="content-padding">
+
+            <div class="section" id="summary">
+
+                <div class="section-header">
+                    <div class="section-number">📄</div>
+                    <div class="section-title" id="section-summary">Executive Summary</div>
+                </div>
+
+                <div class="kpi-grid">
+                    <div class="kpi-card">
+                        <div class="kpi-icon">📈</div>
+                        <div class="kpi-label">월간 기사량</div>
+                        <div class="kpi-value">11,509</div>
+                        <div class="kpi-change change-neutral">+0% MoM</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon">🎯</div>
+                        <div class="kpi-label">핵심 토픽 수</div>
+                        <div class="kpi-value">11</div>
+                        <div class="kpi-change change-neutral">+0 MoM</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon">🌐</div>
+                        <div class="kpi-label">소스 다양성</div>
+                        <div class="kpi-value">544</div>
+                        <div class="kpi-change change-neutral">+0 MoM</div>
+                    </div>
+                    <div class="kpi-card">
+                        <div class="kpi-icon">💡</div>
+                        <div class="kpi-label">약한 신호 발견</div>
+                        <div class="kpi-value">4</div>
+                        <div class="kpi-change change-neutral">+0 MoM</div>
+                    </div>
+                </div>
+
+                <div class="exec-summary-box">
+                    <!--
+                    <div class="exec-summary-title">월간 전략 요약</div>
+                    -->
+                    <div class="exec-summary-text"><p>AI 분석 실패 (API 요청 한도 초과)</p></div>
+                </div>
+            </div>
+            <br><br>
+
+            <div class="section" id="positioning">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <div class="section-title" id="section-positioning">주요 트렌드의 시장 포지셔닝</div>
+                    <div class="section-subtitle">핵심 트렌드의 지형 파악을 통한 거시 환경 분석</div>
+                </div>
+
+                <div class="section-support">
+                    [설명] 트렌드의 관계와 영향력을 분석해 거시적 관점에서 시장 환경을 이해함<br>
+                    [역할] 포지션별 분석을 통해 입체적인 전략을 세울 수 있도록 도움
+                </div> <br>
+
+                <div class="exec-summary-box">
+                    <div class="exec-summary-title">Summary</div>
+                    <div class="exec-summary-text"><p>AI 분석 실패 (API 요청 한도 초과)</p></div>
+                </div>
+
+                <h3>이달의 핵심 트렌드 추이</h3>
+                    <img src="fig/topics_mini_trends.png" alt="토픽 미니 트렌드" class="report-graph">
+
+                    <h4>토픽 상세 정보</h4>
+                    <div><table class="dataframe dataframe-table topics-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>토픽</th>
+      <th>요약</th>
+      <th>핵심 키워드</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>삼성 AI 디스플레이</td>
+      <td>삼성전자의 AI 기술 기반 갤럭시 스마트폰 및 TV 디스플레이(OLED) 소재, 반도체 사업과 관련된 미국, 중국 시장에서의 투자, 실적, 검사, 기업 경쟁 및 기술 동향을 다룹니다.</td>
+      <td>ai, 갤럭시, 디스플레이</td>
+    </tr>
+    <tr>
+      <td>AI 반도체 경쟁</td>
+      <td>AI 반도체, OLED, 메모리 등 첨단 기술 및 부품 사업을 중심으로 삼성전자, 미국, 중국 등 글로벌 기업들의 경쟁 현황과 차세대 기술 동향을 다룹니다.</td>
+      <td>ai, 반도체, oled</td>
+    </tr>
+    <tr>
+      <td>명절·신학기 특가</td>
+      <td>명절 및 신학기를 앞두고 이마트에서 인기 브랜드 상품을 특가에 할인 판매하며 다양한 혜택을 제공하는 행사</td>
+      <td>할인, 명절, 판매한다</td>
+    </tr>
+    <tr>
+      <td>신차 동향</td>
+      <td>벤츠 EQE, BYD 돌핀 등 신규 전기차 및 SUV, 픽업트럭 등 다양한 브랜드의 신규 자동차 모델 출시와 디자인, 기능에 대한 소식을 다룹니다.</td>
+      <td>주행, suv, 벤츠</td>
+    </tr>
+    <tr>
+      <td>롯데하이마트 플래그십</td>
+      <td>롯데하이마트 잠실점이 유럽 라이프스타일 체험 공간으로 리뉴얼 오픈하며 프리미엄 가전 및 상품을 선보인다.</td>
+      <td>브랜드, 브랜드의, 더후</td>
+    </tr>
+    <tr>
+      <td>스마트폰, 세대 통증</td>
+      <td>스마트폰 사용이 증가하면서 다음 세대는 학업 및 학습 능력 저하뿐만 아니라 경추 디스크, 어깨 통증 등 다양한 신체 증상을 겪을 수 있다는 우려를 담고 있습니다.</td>
+      <td>학습, 배드, 스마트폰</td>
+    </tr>
+    <tr>
+      <td>반도체 기술상</td>
+      <td>30여 년간 반도체 기술 개발을 이끈 APS 회장이 엑시머 레이저 기술상 수상자로 선정되었으며, 이와 관련하여 브라질과의 협력 및 이재용 회장의 기여 등이 언급되었습니다.</td>
+      <td>브라질, 곡률, 룰라</td>
+    </tr>
+    <tr>
+      <td>천안아산 인구 급감</td>
+      <td>충남 천안과 아산 지역에서 젊은 인구 유출과 일자리 부족으로 인해 주거 단지의 분양 및 평균 전용 면적에 영향을 미치고 있다는 내용입니다.</td>
+      <td>천안, 전국, 인구</td>
+    </tr>
+    <tr>
+      <td>퀴즈 보상 앱</td>
+      <td>스마트폰 앱을 통해 퀴즈, 출석체크, 걷기 등의 활동을 수행하면 금전적 보상을 얻을 수 있는 재테크 방법에 대한 내용입니다.</td>
+      <td>퀴즈, 정답은, 것입니다</td>
+    </tr>
+    <tr>
+      <td>쿠팡 개인정보 유출</td>
+      <td>쿠팡의 개인정보 유출 사건과 관련하여 경찰 조사, 재산 보유, 주식 신고 등에 대한 내용을 다루고 있습니다.</td>
+      <td>쿠팡, 로저스, 주식</td>
+    </tr>
+    <tr>
+      <td>Topic #10</td>
+      <td>(LLM 해석 실패)</td>
+      <td>등록을, 의대, 서울대</td>
+    </tr>
+  </tbody>
+</table></div>
+
+                    <div class="implication-box">
+                        <h4>💡 전략적 시사점</h4>
+                        <ul>
+                            
+                            <li>AI 기술은 디스플레이 제품의 성능 향상뿐만 아니라 새로운 사용자 경험을 창출하는 핵심 동력이 될 것이므로, 관련 기술 개발에 적극적으로 투자해야 합니다.</li>
+                            
+                            <li>사용자 건강 및 웰빙에 대한 관심 증가는 디스플레이 제품 설계 시 인체 공학 및 시력 보호 기능 강화의 중요성을 부각시키므로, 관련 기술 R&amp;D 및 제품 개발에 우선순위를 두어야 합니다.</li>
+                            
+                        </ul>
+                    </div>
+
+                <h3>주요 트렌드의 포지셔닝 분석</h3>
+                    <img src="fig/topics_bubble.png" alt="토픽 버블 맵" class="report-graph">
+                    <div class="section-subtitle"> 한 달간 (X축)무엇에 가장 관심이 많았고, (Y축)최근 얼마나 뜨고 있는지(모멘텀), (색상/크기)얼마나 긍정적/부정적으로 반응했는지 시각화</div>
+                    <div class="mb-4">
+                        <h4>사분면별 전략 권고</h4>
+                        <div class="quadrant-grid">
+                            <div class="quadrant-card q1">
+                                <h4>🎯 고관심 · 고활동 (Short-term Win)</h4>
+                                <p><strong>해당 토픽:</strong> AI 반도체 경쟁, 삼성 AI 디스플레이</p>
+                                <p><strong>권고 전략:</strong> AI 기술 기반 디스플레이 및 반도체 분야에서의 경쟁 우위 확보를 위한 R&amp;D 투자 및 전략적 파트너십 강화가 필요합니다.</p>
+                            </div>
+                            <div class="quadrant-card q2">
+                                <h4>💡 고관심 · 저활동 (Market Building)</h4>
+                                <p><strong>해당 토픽:</strong> 스마트폰, 세대 통증</p>
+                                <p><strong>권고 전략:</strong> 사용자 건강을 고려한 차세대 디스플레이 기술 개발 및 인체 공학적 디자인 혁신을 통해 시장 트렌드를 선도해야 합니다.</p>
+                            </div>
+                            <div class="quadrant-card q3">
+                                <h4>🔬 고긍정 · 저활동 (Long-term R&D)</h4>
+                                <p><strong>해당 토픽:</strong> 명절·신학기 특가, 롯데하이마트 플래그십</p>
+                                <p><strong>권고 전략:</strong> 소비 심리 변화 및 유통 채널 트렌드를 파악하여 맞춤형 마케팅 전략 및 프리미엄 디스플레이 경험 제공 방안을 모색해야 합니다.</p>
+                            </div>
+                            <div class="quadrant-card q4">
+                                <h4>⏸️ 저관심 · 저활동 (Watch & Wait)</h4>
+                                <p><strong>해당 토픽:</strong> 신차 동향, 반도체 기술상</p>
+                                <p><strong>권고 전략:</strong> 잠재적 신규 시장(예: 차량용 디스플레이)에 대한 기술적 타당성을 검토하고, 핵심 기술력 확보를 위한 장기적인 연구 개발 투자를 지속해야 합니다.</p>
+                            </div>
+                        </div>
+                    </div>
+            </div>
+            <br><br>
+
+            <div class="section" id="competitors">
+                <div class="section-header">
+                     <div class="section-number">2</div>
+                     <div class="section-title" id="section-competitors">주요 기업의 전략 의도 분석</div>
+                     <div class="section-subtitle">기업 X 토픽 분석</div>
+                 </div>
+
+                <div class="exec-summary-box">
+                    <div class="exec-summary-title">Summary</div>
+                    <div class="exec-summary-text"><p>AI 분석 실패 (API 요청 한도 초과)</p></div>
+                </div> 
+
+                <h3>기업-토픽 매트릭스</h3>
+                    <div class="section-subtitle">매트릭스를 활용하여 특정 기업이 특정 주제에 얼마나 집중하고 있는지 분석하고, 이를 기반으로 전략 의도를 예측함</div>
+                    <img src="fig/matrix_heatmap.png" alt="기업-토픽 히트맵" class="report-graph">
+                    <div class="section-subtitle">※ Hybrid Score: 토픽-기업 관련성 x 기업의 최근 주목도 가중치</div> 
+                    <div class="competitor-positioning-grid">
+                        
+                        <div class="competitor-positioning-card">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                                <h4>삼성전자</h4>
+                                <span class="competitor-positioning-badge">Very High Focus</span>
+                            </div>
+                            <div class="competitor-metrics-grid">
+                                <div><div class="competitor-metric-label">Topic Share</div><div class="competitor-metric-value">21.9%</div></div>
+                                <div><div class="competitor-metric-label">Company Focus</div><div class="competitor-metric-value">Very High</div></div>
+                            </div>
+                            <div class="competitor-positioning-insight">
+                                <strong>전략적 의도 (AI):</strong> AI 분석 실패 (API 요청 한도 초과)
+                            </div>
+                        </div>
+                        
+                        <div class="competitor-positioning-card">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                                <h4>LG전자</h4>
+                                <span class="competitor-positioning-badge">Very High Focus</span>
+                            </div>
+                            <div class="competitor-metrics-grid">
+                                <div><div class="competitor-metric-label">Topic Share</div><div class="competitor-metric-value">6.5%</div></div>
+                                <div><div class="competitor-metric-label">Company Focus</div><div class="competitor-metric-value">Very High</div></div>
+                            </div>
+                            <div class="competitor-positioning-insight">
+                                <strong>전략적 의도 (AI):</strong> AI 분석 실패 (API 요청 한도 초과)
+                            </div>
+                        </div>
+                        
+                        <div class="competitor-positioning-card">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                                <h4>애플</h4>
+                                <span class="competitor-positioning-badge">Very High Focus</span>
+                            </div>
+                            <div class="competitor-metrics-grid">
+                                <div><div class="competitor-metric-label">Topic Share</div><div class="competitor-metric-value">5.5%</div></div>
+                                <div><div class="competitor-metric-label">Company Focus</div><div class="competitor-metric-value">Very High</div></div>
+                            </div>
+                            <div class="competitor-positioning-insight">
+                                <strong>전략적 의도 (AI):</strong> 애플은 AI 기술을 활용한 차세대 디스플레이 및 반도체 경쟁에 박차를 가하며, 특히 스마트폰 시장에서의 혁신과 &#39;세대 통증&#39;으로 대표되는 소비자 니즈 변화에 적극적으로 대응하여 시장 리더십을 강화하려는 단기 전략을 펼치고 있습니다.
+                            </div>
+                        </div>
+                        
+                        <div class="competitor-positioning-card">
+                            <div style="display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px;">
+                                <h4>SK하이닉스</h4>
+                                <span class="competitor-positioning-badge">Very High Focus</span>
+                            </div>
+                            <div class="competitor-metrics-grid">
+                                <div><div class="competitor-metric-label">Topic Share</div><div class="competitor-metric-value">5.3%</div></div>
+                                <div><div class="competitor-metric-label">Company Focus</div><div class="competitor-metric-value">Very High</div></div>
+                            </div>
+                            <div class="competitor-positioning-insight">
+                                <strong>전략적 의도 (AI):</strong> AI 분석 실패 (API 요청 한도 초과)
+                            </div>
+                        </div>
+                        
+                    </div>
+
+                <h3>기업 간 경쟁-협력 네트워크 분석</h3>
+                <div class="section-subtitle">다수 기업 간 관계를 시각화하여 산업 내 경쟁·협력 구조를 조망하고 전략 수립을 지원함 </div>
+                    <img src="fig/company_network.png" alt="기업 관계망" class="report-graph">
+
+                    <h4>주요 기업 관계 Top 5</h4>
+                    <div><table class="dataframe dataframe-table actions-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>관계</th>
+      <th>유형</th>
+      <th>강도(언급빈도)</th>
+      <th>주요 연관 근거</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>sk하이닉스 ↔ 삼성전자</td>
+      <td>partnership</td>
+      <td>1341</td>
+      <td><a href="http://www.finomy.com/news/articleView.html?idxno=248426" target="_blank" style="font-weight:600; color:#065f46;">반도체 장비 관련주, '봄꽃만개' HPSP·원익홀딩스·SFA반도체·서진시스...</a><br><a href="https://www.ggilbo.com/news/articleView.html?idxno=1138197" target="_blank" style="font-weight:600; color:#065f46;">[주식마감] 코스닥 1000선 돌파·사상 최고 시총… 유일로보틱스·리브스...</a><br><a href="http://www.finomy.com/news/articleView.html?idxno=248632" target="_blank" style="font-weight:600; color:#065f46;">자율주행차 관련주, '룰루랄라 콧노래' KG모빌리티·MDS테크·캠시스... ...</a></td>
+    </tr>
+    <tr>
+      <td>lg전자 ↔ 삼성전자</td>
+      <td>rivalry</td>
+      <td>605</td>
+      <td><a href="https://www.newsway.co.kr/news/view?ud=2026021215465470056" target="_blank" style="font-weight:600; color:#c41e3a;">중·일 TV 동맹, 삼성·LG '긴장'</a><br><a href="http://www.press9.kr/news/articleView.html?idxno=71513" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자, TV 출하 감소에도 글로벌 1위 수성</a><br><a href="https://www.electimes.com/news/articleView.html?idxno=364522" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자, TV 점유율 1% 차로 1위 지켰다…TCL에 소니 더하면?</a></td>
+    </tr>
+    <tr>
+      <td>tcl ↔ 소니</td>
+      <td>rivalry</td>
+      <td>300</td>
+      <td><a href="https://www.newsway.co.kr/news/view?ud=2026021215465470056" target="_blank" style="font-weight:600; color:#c41e3a;">중·일 TV 동맹, 삼성·LG '긴장'</a><br><a href="https://www.dongponews.net/news/articleView.html?idxno=55841" target="_blank" style="font-weight:600; color:#c41e3a;">中 TCL, 소니와 손잡고, '삼성 아성'에 도전하다</a><br><a href="https://it.chosun.com/news/articleView.html?idxno=2023092155670" target="_blank" style="font-weight:600; color:#c41e3a;">소니TV 집어삼킨 中…LCD 넘어 韓&nbsp;&nbsp;OLED&nbsp;&nbsp;생태계도 '흔들'</a></td>
+    </tr>
+    <tr>
+      <td>삼성전자 ↔ 엔비디아</td>
+      <td>partnership</td>
+      <td>216</td>
+      <td><a href="http://www.edaily.co.kr/news/newspath.asp?newsid=05828566645352160" target="_blank" style="font-weight:600; color:#065f46;">[미리보는 이데일리 신문]온라인 역직구 첫 3조 돌파…K커머스 세계공략...</a><br><a href="http://www.newstnt.com/news/articleView.html?idxno=581537" target="_blank" style="font-weight:600; color:#065f46;">[브리핑] 신라젠·SNT에너지 급등… 외인·기관 '두산에너빌리티' 동반 ...</a><br><a href="http://www.newstnt.com/news/articleView.html?idxno=581537" target="_blank" style="font-weight:600; color:#065f46;">[브리핑] 신라젠·SNT에너지 급등… 외인·기관 '두산에너빌리티' 동반 ...</a></td>
+    </tr>
+    <tr>
+      <td>lg디스플레이 ↔ ul</td>
+      <td>neutral</td>
+      <td>39</td>
+      <td><a href="https://www.businesspost.co.kr/BP?command=article_view&num=428743" target="_blank" style="color:#555;">LG디스플레이 흑자전환 성공, 정철동 모바일 OELD로 올해 영업이익 1조 ...</a><br><a href="https://www.ddaily.co.kr/page/view/2026021911171576126" target="_blank" style="color:#555;">'좋은 화면'의 정의를 中이 내린다?…자연광 표준 던진 BOE, '룰 체인저'...</a><br><a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=432576" target="_blank" style="color:#555;">LG디스플레이, 글로벌 인증기관서 OLED '휘도 유지율 100%' 입증</a></td>
+    </tr>
+  </tbody>
+</table></div>
+
+                    <div class="alert-box">
+                        <h4>⚠️ 경쟁 강도 변화 경보 (AI)</h4>
+                        <ul><li><p>AI 분석 실패 또는 특이사항 없음.</p></li></ul>
+                    </div>
+                    <!--
+                    <h4>#참고. 산업 내 관계 영향력</h4>
+                    <div><table class="dataframe dataframe-table centrality-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>기업 (허브)</th>
+      <th>연결 중심성</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>삼성전자</td>
+      <td>0.6883</td>
+    </tr>
+    <tr>
+      <td>lg전자</td>
+      <td>0.5714</td>
+    </tr>
+    <tr>
+      <td>애플</td>
+      <td>0.5455</td>
+    </tr>
+    <tr>
+      <td>엔비디아</td>
+      <td>0.5455</td>
+    </tr>
+    <tr>
+      <td>sk하이닉스</td>
+      <td>0.5065</td>
+    </tr>
+  </tbody>
+</table></div>
+                    -->                    
+            </div>
+            <br><br>
+
+            <div class="section" id="risk">
+                 <div class="section-header">
+                     <div class="section-number">3</div>
+                     <div class="section-title" id="section-risk">Market Risk Management</div>
+                     <div class="section-subtitle">리스크/이슈 탐지</div>
+                 </div>
+                 <div class="section-subtitle">텍스트의 긍·부정 수준을 정량화하여 부정적 이슈의 급격한 증가를 탐지</div><br>
+
+                <div class="exec-summary-box">
+                    <div class="exec-summary-title">Summary</div>
+                    <div class="exec-summary-text"><p>AI 분석 실패 (API 요청 한도 초과)</p></div>
+                </div> 
+
+                <h3>시장 내 주요 리스크 탐지</h3>                    
+                    
+                        <img src="fig/risk_negative_spikes.png" alt="부정 감성 급등 토픽" class="report-graph mb-2">
+                    
+
+                    <div><p> </p></div>
+
+                <!--
+                <h3>리스크 분석: 리스크 네트워크</h3>                
+                    <img src="fig/risk_keyword_network.png" alt="리스크 키워드 네트워크" class="report-graph">
+                -->
+
+                <div class="mb-4">
+                     <h3>리스크 대응 매트릭스</h3>
+                     <div class="section-subtitle">위험 유형을 기준으로 대응 전략을 제시하고, 우선순위 결정을 지원함</div><br>
+                     <div class="risk-matrix-grid">
+                         <div class="risk-matrix-card avoid">
+                             <h4>🔴 회피 (Avoid)</h4>
+                             <p><strong>대상:</strong> AI 분석 중...</p>
+                             <p><strong>전략:</strong> AI 분석 중...</p>
+                         </div>
+                         <div class="risk-matrix-card mitigate">
+                             <h4>🟠 완화 (Mitigate)</h4>
+                             <p><strong>대상:</strong> AI 분석 중...</p>
+                             <p><strong>전략:</strong> AI 분석 중...</p>
+                         </div>
+                         <div class="risk-matrix-card transfer">
+                             <h4>🔵 전가 (Transfer)</h4>
+                             <p><strong>대상:</strong> AI 분석 중...</p>
+                             <p><strong>전략:</strong> AI 분석 중...</p>
+                         </div>
+                         <div class="risk-matrix-card accept">
+                             <h4>⚪ 수용 (Accept)</h4>
+                             <p><strong>대상:</strong> AI 분석 중...</p>
+                             <p><strong>전략:</strong> AI 분석 중...</p>
+                         </div>
+                     </div>
+                </div>
+
+                <div class="immediate-action-box">
+                     <h4>🚨 즉시 대응 필요 항목 (AI)</h4>
+                     <ol>
+                         
+                         <li>이번 달 즉시 대응 필요 항목 없음.</li>
+                         
+                     </ol>
+                </div>
+            </div>
+            <br><br>
+            
+            <div class="section" id="actionplan">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <div class="section-title" id="section-actionplan">전략 방향성 및 실행 방안</div>
+                </div>
+                <div class="exec-summary-box mt-2">
+                    <div class="exec-summary-text"><p>AI 분석 실패 (API 요청 한도 초과)</p></div>
+                </div>
+            </div>
+            <br><br>
+
+            <div class="section" id="opportunities">
+                 <div class="section-header">
+                     <div class="section-number">NEW</div>
+                     <div class="section-title" id="section-opportunities">잠재 사업 기회</div>
+                     <div class="section-subtitle">데이터 기반 Top 5 아이디어</div>
+                 </div>
+                 <div class="section-subtitle">수집된 데이터(키워드, 토픽, 트렌드 변화, 주요 이벤트)를 LLM에게 제공해 잠재적인 사업기회를 발굴하고, 검증을 위한 실행 계획을 도출함</div> <br>
+
+                <div class="exec-summary-box">
+                    <div class="exec-summary-title">Summary</div>
+                    <div class="exec-summary-text"><p>AI 분석 실패 (API 요청 한도 초과)</p></div>
+                </div>
+
+                <h3>Top 5 신사업 아이디어</h3>
+                    <div><table class="dataframe dataframe-table opps-table">
+  <thead>
+    <tr style="text-align: right;">
+      <th>idea</th>
+      <th>value_prop</th>
+      <th>score</th>
+      <th>target_customer</th>
+    </tr>
+  </thead>
+  <tbody>
+    <tr>
+      <td>AI 기반 맞춤형 스마트 모니터 패널</td>
+      <td>사용자의 작업 효율성과 시각적 편안함을 극대화하는 AI 기반 지능형 모니터 패널입니다. 사용자의 행동을 학습하여 자동으로 최적의 화면 설정을 제공하며, 생산성 향상과 눈의 피로 감소를 동시에 지원합니다.</td>
+      <td>6.5</td>
+      <td>북미 빅테크 기업 (PC 및 모니터 제조사)</td>
+    </tr>
+    <tr>
+      <td>에너지 효율 극대화 스마트 윈도우 패널</td>
+      <td>건물 에너지 소비를 획기적으로 절감하고 쾌적한 실내 환경을 조성하는 스마트 윈도우 패널입니다. 외부 환경 변화에 능동적으로 반응하여 단열 성능과 빛 투과율을 최적화합니다.</td>
+      <td>3.4</td>
+      <td>글로벌 건설사, 스마트 빌딩 솔루션 제공업체</td>
+    </tr>
+    <tr>
+      <td>차세대 3D 홀로그램 디스플레이 모듈</td>
+      <td>별도의 착용 장비 없이도 현실감 넘치는 3D 홀로그램 콘텐츠를 구현하는 혁신적인 디스플레이 모듈입니다. 시공간의 제약을 넘어선 새로운 차원의 시각 경험을 제공합니다.</td>
+      <td>3.4</td>
+      <td>글로벌 엔터테인먼트 콘텐츠 제작사, 교육용 VR/AR 솔루션 기업</td>
+    </tr>
+    <tr>
+      <td>차량용 투명 디스플레이 통합 솔루션</td>
+      <td>차량 내부 디자인을 해치지 않으면서 몰입감 있는 정보 제공 및 사용자 경험을 극대화하는 럭셔리 투명 디스플레이 솔루션입니다. 차량의 미관을 살리면서도 최첨단 기술을 구현하여 프리미엄 가치를 더합니다.</td>
+      <td>3.3</td>
+      <td>글로벌 완성차 OEM (차량 인포테인먼트 시스템 개발 부서)</td>
+    </tr>
+    <tr>
+      <td>B2B 맞춤형 디스플레이 공정 최적화 서비스</td>
+      <td>고객의 특정 요구사항에 최적화된 디스플레이 패널을 맞춤 설계 및 생산하여, 제품 혁신과 시장 출시 기간 단축을 지원합니다. 당사의 전문성을 통해 고객은 디스플레이 제조의 복잡성을 해소하고 핵심 역량에 집중할 수 있습니다.</td>
+      <td>3.3</td>
+      <td>의료기기 제조사, 산업용 장비 개발사, 특수 목적 디스플레이 요구 기업 (중견/대기업)</td>
+    </tr>
+  </tbody>
+</table></div>
+                    <img src="fig/idea_score_distribution.png" alt="아이디어 점수 분포" class="report-graph">
+    
+                    <h3 style="margin-top: 32px;">아이디어 검증 (2주 Action Plan)</h3>
+                    <div><p>(데이터 없음)</p></div>
+            </div>
+            <br>
+
+        </div>
+    </div>
+
+        <div class="footer">
+            <div>
+                “이 보고서는 AI 기반 트렌드 분석 시스템을 통해 작성되었습니다.”<br>
+                문의:  thecki85@gmail.com | 010.5353.1145 <br>
+                - Business Development Team -
+            </div> 
+        </div>
+    </body>
+</html>

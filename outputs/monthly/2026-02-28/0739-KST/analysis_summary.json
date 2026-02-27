@@ -1,0 +1,46 @@
+{
+  "timestamp": "2026-02-27T22:37:55Z",
+  "matrix_stats": {},
+  "network_stats": {
+    "num_nodes": 78,
+    "num_edges": 656,
+    "top_pairs": [
+      {
+        "source": "sk하이닉스",
+        "target": "삼성전자",
+        "weight": 1341,
+        "rel_type": "partnership",
+        "evidence": "<a href=\"http://www.finomy.com/news/articleView.html?idxno=248426\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">반도체 장비 관련주, '봄꽃만개' HPSP·원익홀딩스·SFA반도체·서진시스...</a><br><a href=\"https://www.ggilbo.com/news/articleView.html?idxno=1138197\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">[주식마감] 코스닥 1000선 돌파·사상 최고 시총… 유일로보틱스·리브스...</a><br><a href=\"http://www.finomy.com/news/articleView.html?idxno=248632\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">자율주행차 관련주, '룰루랄라 콧노래' KG모빌리티·MDS테크·캠시스... ...</a>"
+      },
+      {
+        "source": "lg전자",
+        "target": "삼성전자",
+        "weight": 605,
+        "rel_type": "rivalry",
+        "evidence": "<a href=\"https://www.newsway.co.kr/news/view?ud=2026021215465470056\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">중·일 TV 동맹, 삼성·LG '긴장'</a><br><a href=\"http://www.press9.kr/news/articleView.html?idxno=71513\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">삼성전자, TV 출하 감소에도 글로벌 1위 수성</a><br><a href=\"https://www.electimes.com/news/articleView.html?idxno=364522\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">삼성전자, TV 점유율 1% 차로 1위 지켰다…TCL에 소니 더하면?</a>"
+      },
+      {
+        "source": "tcl",
+        "target": "소니",
+        "weight": 300,
+        "rel_type": "rivalry",
+        "evidence": "<a href=\"https://www.newsway.co.kr/news/view?ud=2026021215465470056\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">중·일 TV 동맹, 삼성·LG '긴장'</a><br><a href=\"https://www.dongponews.net/news/articleView.html?idxno=55841\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">中 TCL, 소니와 손잡고, '삼성 아성'에 도전하다</a><br><a href=\"https://it.chosun.com/news/articleView.html?idxno=2023092155670\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">소니TV 집어삼킨 中…LCD 넘어 韓  OLED  생태계도 '흔들'</a>"
+      },
+      {
+        "source": "삼성전자",
+        "target": "엔비디아",
+        "weight": 216,
+        "rel_type": "partnership",
+        "evidence": "<a href=\"http://www.edaily.co.kr/news/newspath.asp?newsid=05828566645352160\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">[미리보는 이데일리 신문]온라인 역직구 첫 3조 돌파…K커머스 세계공략...</a><br><a href=\"http://www.newstnt.com/news/articleView.html?idxno=581537\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">[브리핑] 신라젠·SNT에너지 급등… 외인·기관 '두산에너빌리티' 동반 ...</a><br><a href=\"http://www.newstnt.com/news/articleView.html?idxno=581537\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">[브리핑] 신라젠·SNT에너지 급등… 외인·기관 '두산에너빌리티' 동반 ...</a>"
+      },
+      {
+        "source": "lg디스플레이",
+        "target": "ul",
+        "weight": 39,
+        "rel_type": "neutral",
+        "evidence": "<a href=\"https://www.businesspost.co.kr/BP?command=article_view&num=428743\" target=\"_blank\" style=\"color:#555;\">LG디스플레이 흑자전환 성공, 정철동 모바일 OELD로 올해 영업이익 1조 ...</a><br><a href=\"https://www.ddaily.co.kr/page/view/2026021911171576126\" target=\"_blank\" style=\"color:#555;\">'좋은 화면'의 정의를 中이 내린다?…자연광 표준 던진 BOE, '룰 체인저'...</a><br><a href=\"https://www.pinpointnews.co.kr/news/articleView.html?idxno=432576\" target=\"_blank\" style=\"color:#555;\">LG디스플레이, 글로벌 인증기관서 OLED '휘도 유지율 100%' 입증</a>"
+      }
+    ],
+    "top_hub": "삼성전자"
+  }
+}

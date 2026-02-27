@@ -1,0 +1,82 @@
+--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---
+Generated at: 2026-02-27T22:37:55.950559Z
+
+================================================================================
+Rank #1: sk하이닉스|삼성전자 (Total Sentences: 1341, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.finomy.com/news/articleView.html?idxno=248426" target="_blank" style="font-weight:600; color:#065f46;">반도체 장비 관련주, '봄꽃만개' HPSP·원익홀딩스·SFA반도체·서진시스...</a>
+<a href="https://www.ggilbo.com/news/articleView.html?idxno=1138197" target="_blank" style="font-weight:600; color:#065f46;">[주식마감] 코스닥 1000선 돌파·사상 최고 시총… 유일로보틱스·리브스...</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=248632" target="_blank" style="font-weight:600; color:#065f46;">자율주행차 관련주, '룰루랄라 콧노래' KG모빌리티·MDS테크·캠시스... ...</a>
+
+================================================================================
+Rank #2: lg전자|삼성전자 (Total Sentences: 605, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newsway.co.kr/news/view?ud=2026021215465470056" target="_blank" style="font-weight:600; color:#c41e3a;">중·일 TV 동맹, 삼성·LG '긴장'</a>
+<a href="http://www.press9.kr/news/articleView.html?idxno=71513" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자, TV 출하 감소에도 글로벌 1위 수성</a>
+<a href="https://www.electimes.com/news/articleView.html?idxno=364522" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자, TV 점유율 1% 차로 1위 지켰다…TCL에 소니 더하면?</a>
+
+================================================================================
+Rank #3: tcl|소니 (Total Sentences: 300, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newsway.co.kr/news/view?ud=2026021215465470056" target="_blank" style="font-weight:600; color:#c41e3a;">중·일 TV 동맹, 삼성·LG '긴장'</a>
+<a href="https://www.dongponews.net/news/articleView.html?idxno=55841" target="_blank" style="font-weight:600; color:#c41e3a;">中 TCL, 소니와 손잡고, '삼성 아성'에 도전하다</a>
+<a href="https://it.chosun.com/news/articleView.html?idxno=2023092155670" target="_blank" style="font-weight:600; color:#c41e3a;">소니TV 집어삼킨 中…LCD 넘어 韓  OLED  생태계도 '흔들'</a>
+
+================================================================================
+Rank #4: tcl|삼성전자 (Total Sentences: 277, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newsway.co.kr/news/view?ud=2026021215465470056" target="_blank" style="font-weight:600; color:#c41e3a;">중·일 TV 동맹, 삼성·LG '긴장'</a>
+<a href="https://www.dt.co.kr/article/12047398?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">中  TCL , 삼성 또 제쳤다…12월 TV 점유율 1위</a>
+<a href="http://www.press9.kr/news/articleView.html?idxno=71513" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자, TV 출하 감소에도 글로벌 1위 수성</a>
+
+================================================================================
+Rank #5: 구글|애플 (Total Sentences: 243, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.chosun.com/economy/tech_it/2026/02/20/QVG327SY5BH6FISUSF2EV73SSY/?utm_source=naver&utm_medium=referral&utm_campaign=naver-news" target="_blank" style="font-weight:600; color:#c41e3a;">아마존, 직원들에게 앤스로픽 코딩 AI 사용 금지령</a>
+<a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=625265" target="_blank" style="font-weight:600; color:#c41e3a;">애플 , 이스라엘 오디오 AI 스타트업 Q.AI 인수..."20억달러 베팅"</a>
+<a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=625483" target="_blank" style="font-weight:600; color:#c41e3a;">[데일리픽] 미국발 '급진적 통화 리셋' 가설…테슬라, 전기차 넘어 로봇...</a>
+
+================================================================================
+Rank #6: 삼성전자|애플 (Total Sentences: 219, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.popcornnews.net/news/articleView.html?idxno=110908" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 '트라이폴드',  폴더블 폰 2차 혁신 견인...애플 변수는 '여전'</a>
+<a href="https://www.chosun.com/economy/tech_it/2026/01/30/WF5XHXVW5NG4JMOBXCEGY2N5OQ/?utm_source=naver&utm_medium=referral&utm_campaign=naver-news" target="_blank" style="font-weight:600; color:#c41e3a;">TSMC 여력 없어… 인텔이 애플·엔비디아 칩 생산</a>
+<a href="https://www.dailian.co.kr/news/view/1604071/?sc=Naver" target="_blank" style="font-weight:600; color:#c41e3a;">잘 팔렸지만 더 비싸질까…삼성 S26 시리즈 '승부수'는</a>
+
+================================================================================
+Rank #7: 삼성전자|엔비디아 (Total Sentences: 216, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.edaily.co.kr/news/newspath.asp?newsid=05828566645352160" target="_blank" style="font-weight:600; color:#065f46;">[미리보는 이데일리 신문]온라인 역직구 첫 3조 돌파…K커머스 세계공략...</a>
+<a href="http://www.newstnt.com/news/articleView.html?idxno=581537" target="_blank" style="font-weight:600; color:#065f46;">[브리핑] 신라젠·SNT에너지 급등… 외인·기관 '두산에너빌리티' 동반 ...</a>
+<a href="http://www.newstnt.com/news/articleView.html?idxno=581537" target="_blank" style="font-weight:600; color:#065f46;">[브리핑] 신라젠·SNT에너지 급등… 외인·기관 '두산에너빌리티' 동반 ...</a>
+
+================================================================================
+Rank #8: 삼성디스플레이|삼성전자 (Total Sentences: 198, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.ggilbo.com/news/articleView.html?idxno=1138197" target="_blank" style="font-weight:600; color:#065f46;">[주식마감] 코스닥 1000선 돌파·사상 최고 시총… 유일로보틱스·리브스...</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=248629" target="_blank" style="font-weight:600; color:#065f46;">PCB·FPCB 관련주, '봄바람 살랑살랑' 시노펙스·대덕전자·이수페타시스...</a>
+<a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=429748" target="_blank" style="font-weight:600; color:#065f46;">매출 85%가 장비… 원익IPS, 미세공정 핵심 기업 부상</a>
+
+================================================================================
+Rank #9: tcl|하이센스 (Total Sentences: 181, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newsway.co.kr/news/view?ud=2026021215465470056" target="_blank" style="font-weight:600; color:#c41e3a;">중·일 TV 동맹, 삼성·LG '긴장'</a>
+<a href="http://www.press9.kr/news/articleView.html?idxno=71513" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자, TV 출하 감소에도 글로벌 1위 수성</a>
+<a href="http://www.press9.kr/news/articleView.html?idxno=71513" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자, TV 출하 감소에도 글로벌 1위 수성</a>
+
+================================================================================
+Rank #10: lg디스플레이|삼성디스플레이 (Total Sentences: 175, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.finomy.com/news/articleView.html?idxno=248426" target="_blank" style="font-weight:600; color:#065f46;">반도체 장비 관련주, '봄꽃만개' HPSP·원익홀딩스·SFA반도체·서진시스...</a>
+<a href="https://www.ggilbo.com/news/articleView.html?idxno=1138197" target="_blank" style="font-weight:600; color:#065f46;">[주식마감] 코스닥 1000선 돌파·사상 최고 시총… 유일로보틱스·리브스...</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=248628" target="_blank" style="font-weight:600; color:#065f46;">반도체 장비 관련주, '웃음꽃' 네오셈·라온로보틱스·에이팩트·SFA반도...</a>
