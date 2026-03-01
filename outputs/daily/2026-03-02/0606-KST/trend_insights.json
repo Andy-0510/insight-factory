@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "수출",
+        "미니",
+        "se",
+        "생산",
+        "suv"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ai",
+        "풀스택",
+        "모델",
+        "풀스택 ai",
+        "dc"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "샤오미",
+        "샤오미는",
+        "샤오미 17",
+        "라이카",
+        "카메라"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "네트워크",
+        "통신",
+        "인프라",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "전문",
+        "반도체",
+        "장비",
+        "부품",
+        "로봇"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "중동",
+        "이란",
+        "호르무즈",
+        "안전",
+        "안전을"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "프라이버시",
+        "디스플레이",
+        "부사장은",
+        "스마트폰",
+        "s26"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "로봇",
+        "전기차",
+        "결제",
+        "작업"
+      ]
+    }
+  ],
+  "evidence": {}
+}
