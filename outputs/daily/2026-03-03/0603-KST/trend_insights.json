@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "2026년형",
+        "신제품은",
+        "고온",
+        "삼성전자는"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "oled",
+        "ai",
+        "픽셀",
+        "삼성디스플레이는",
+        "사생활"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "반도체",
+        "갤럭시",
+        "기술",
+        "모델"
+      ]
+    }
+  ],
+  "evidence": {}
+}
