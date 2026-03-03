@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "디자인",
+        "xr",
+        "파우제",
+        "휴대전화",
+        "서비스"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "액체",
+        "금속",
+        "밝기를",
+        "kaist",
+        "전극"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "m5",
+        "맥북",
+        "애플",
+        "아이폰",
+        "갤럭시"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "반도체",
+        "ai",
+        "사업",
+        "핵심",
+        "장비"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "oled",
+        "픽셀",
+        "폴더블",
+        "엣지"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "네트워크",
+        "6g",
+        "통신",
+        "중국"
+      ]
+    }
+  ],
+  "evidence": {}
+}
