@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 52.214349425s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 52\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 반도체 경쟁",
+      "summary": "AI 기술을 기반으로 한 반도체, 특히 스마트폰 디스플레이와 모바일 ran 분야에서 중국, 미국 기업들의 기술 경쟁과 인듐 가격 상승 동향을 다룹니다.",
+      "words": [
+        "ai",
+        "전문",
+        "반도체",
+        "기술",
+        "기반"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "갤럭시 S26 AI",
+      "summary": "삼성전자 갤럭시 S26 시리즈의 AI 기반 차세대 디스플레이 기술과 모바일 경쟁력을 다룹니다.",
+      "words": [
+        "ai",
+        "갤럭시",
+        "디스플레이",
+        "oled",
+        "s26"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "OLED 휘도 유지율",
+      "summary": "LG디스플레이의 대형 OLED 패널 휘도 및 유지율 테스트 결과를 설명하는 내용입니다.",
+      "words": [
+        "oled",
+        "휘도",
+        "유지율",
+        "유지율 100",
+        "휘도 유지율"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "반도체·첨단부품",
+      "summary": "반도체, 부품, 소재, 장비 등 첨단 기술 분야의 기업들이 로봇, 자동차, 배터리 사업과 연계하여 핵심 기술 개발 및 생산, 공급 사업을 영위하고 있습니다.",
+      "words": [
+        "반도체",
+        "부품",
+        "전문",
+        "핵심",
+        "장비"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "갤럭시 S26 사전예약",
+      "summary": "갤럭시 S26 시리즈의 사전예약 혜택과 구매 시점에 대한 정보를 제공하며, AI 기능 등 새로운 점에 대해 다룹니다.",
+      "words": [
+        "정답은",
+        "문제는",
+        "갤럭시",
+        "이다",
+        "s26"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "호르무즈 해협 위기",
+      "summary": "이란과 UAE 등 중동 지역의 긴장 고조 및 호르무즈 해협 봉쇄 가능성이 원유 공급과 유가에 미치는 영향 및 이에 따른 에너지 시장의 불안정성을 다루고 있습니다.",
+      "words": [
+        "중동",
+        "이란",
+        "호르무즈",
+        "경우",
+        "에너지"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "lg",
+        "ai",
+        "박사",
+        "과정",
+        "산업"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "스미스",
+        "미니",
+        "mini",
+        "suv",
+        "에디션"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "비스포크 ai",
+        "비스포크",
+        "ai",
+        "2026년형 비스포크",
+        "2026년형"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "천안 아이파크 분양",
+      "summary": "충남 천안시에 들어서는 아이파크 브랜드 단지의 역세권 입지, 규모, 청약 일정 및 당첨자 정보에 대한 뉴스입니다.",
+      "words": [
+        "천안",
+        "아이파크",
+        "시티",
+        "청약",
+        "브랜드"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "디자인",
+        "디자인 어워드",
+        "어워드",
+        "파우제",
+        "수상"
+      ]
+    }
+  ],
+  "evidence": {}
+}
