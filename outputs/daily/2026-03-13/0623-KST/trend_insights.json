@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "삼성전자는",
+        "갤럭시",
+        "삼성전자",
+        "메모리"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "반도체",
+        "장비",
+        "부품",
+        "로봇",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "기술",
+        "구축",
+        "첨단",
+        "첨단 디스플레이"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "리전탭",
+        "y700",
+        "5세대",
+        "리전탭 y700",
+        "게임"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "맥북",
+        "애플",
+        "아이폰",
+        "맥북 네오는",
+        "네오는"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "rtx",
+        "dlss",
+        "게이밍",
+        "usb",
+        "프레임"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "메모리",
+        "디스플레이",
+        "oled",
+        "가격"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "oled",
+        "생산능력",
+        "lcd",
+        "중국의",
+        "연평균"
+      ]
+    }
+  ],
+  "evidence": {}
+}
