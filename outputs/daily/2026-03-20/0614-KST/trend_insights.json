@@ -1,0 +1,66 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "기업과",
+        "참여",
+        "15개",
+        "환경",
+        "기관"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "반도체",
+        "부품",
+        "자동차",
+        "기업으로",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "sid",
+        "스트레처블",
+        "페르디난드",
+        "브라운상"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "이청",
+        "기술",
+        "폴더블"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "tv",
+        "슬로바키아",
+        "생산",
+        "유럽",
+        "삼성전자는"
+      ]
+    }
+  ],
+  "evidence": {}
+}
