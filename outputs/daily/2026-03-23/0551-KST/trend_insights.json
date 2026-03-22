@@ -1,0 +1,30 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "영어",
+        "ai 인프라",
+        "업무",
+        "인프라",
+        "sk하이닉스"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "패널",
+        "lg디스플레이는",
+        "전력",
+        "oled",
+        "패널을"
+      ]
+    }
+  ],
+  "evidence": {}
+}
