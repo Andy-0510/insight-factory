@@ -1,0 +1,126 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "히트펌프",
+        "유럽",
+        "에너지",
+        "삼성전자는"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "삼성디스플레이",
+        "노사",
+        "5년",
+        "무분규",
+        "임금협약"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "아트",
+        "바젤",
+        "아트 바젤",
+        "홍콩",
+        "삼성"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "프로",
+        "로크",
+        "모니터",
+        "pro",
+        "게이밍"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "문제는",
+        "이다",
+        "최신",
+        "교수는",
+        "체험"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "보안",
+        "대만",
+        "기업",
+        "b2b",
+        "퀘이사"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "이사회",
+        "사외이사",
+        "가결",
+        "증권",
+        "사업"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "폴더블",
+        "애플",
+        "애플이",
+        "맥북"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "반도체",
+        "로봇",
+        "기업으로",
+        "개발",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "상승",
+        "장비",
+        "역시",
+        "반도체",
+        "전문"
+      ]
+    }
+  ],
+  "evidence": {}
+}
