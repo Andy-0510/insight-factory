@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 14.072484663s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 14\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 디스플레이 반도체",
+      "summary": "AI 기술 기반의 차세대 OLED 디스플레이 패널 및 반도체 사업에 대한 한국, 중국, 미국, 애플, 삼성(갤럭시)의 경쟁 현황과 2025년 전망을 다룹니다.",
+      "words": [
+        "ai",
+        "oled",
+        "디스플레이",
+        "반도체",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "삼성 AI 디스플레이",
+      "summary": "삼성전자의 AI 기반 디스플레이 기술, 특히 OLED와 차세대 갤럭시 S26 스마트폰 및 TV에 적용되는 핵심 기술과 메모리, 반도체 분야를 다룹니다. LG, 중국 기업과의 경쟁 구도와 프리미엄 제품 가격, 폴더블 기술도 포함됩니다.",
+      "words": [
+        "ai",
+        "oled",
+        "갤럭시",
+        "디스플레이",
+        "tv"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "반도체 핵심 부품 사업",
+      "summary": "반도체 산업에서 핵심 부품 개발, 생산, 공급 및 관련 기술, 장비, 소재 사업을 다루는 기업들을 중심으로 AI, 로봇, 자동차, 배터리 분야와의 연관성을 설명합니다.",
+      "words": [
+        "반도체",
+        "기업으로",
+        "핵심",
+        "부품",
+        "사업"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "천안 디스플레이 단지",
+      "summary": "충남 천안 지역에 첨단 디스플레이 산업 단지가 구축되며, 관련 기업 유치와 주거 시설(아이파크, 푸르지오) 분양 및 청약, AI 기술 기반 투자가 이루어지는 내용을 다룹니다.",
+      "words": [
+        "지역",
+        "천안",
+        "디스플레이",
+        "교육",
+        "단지는"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "게이밍 PC방 혜택",
+      "summary": "갤럭시 S26 출시와 함께 PC방에서 게이밍 환경을 위한 레드포스, 제우스 브랜드 모니터 등 최신 제품 구매 시 할인 및 특별 혜택을 제공하는 이벤트 관련 뉴스입니다.",
+      "words": [
+        "게이밍",
+        "pc방",
+        "게임",
+        "브랜드",
+        "레드포스"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "삼성 AI 인재 채용",
+      "summary": "삼성그룹이 AI 분야 핵심 인재 확보를 위해 상반기 채용 및 성과급 지급 등 경영 전반에 걸쳐 적극적인 움직임을 보이고 있으며, 이는 반도체, 디스플레이 등 주요 사업 경쟁력 강화와 노사 관계, 미래 브랜드 가치 제고와도 연관됩니다.",
+      "words": [
+        "lg",
+        "채용",
+        "ai",
+        "인재",
+        "삼성디스플레이"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "주행",
+        "suv",
+        "eqe",
+        "스미스",
+        "실내"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "qled",
+        "보안",
+        "tcl",
+        "tv",
+        "qled tv로"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "슬로바키아",
+        "tv",
+        "삼성전자는",
+        "트라이폴드",
+        "갤럭시"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "중동",
+        "호르무즈",
+        "이란",
+        "원유",
+        "경우"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "정답은",
+        "문제는",
+        "이다",
+        "무엇일까요",
+        "퀴즈"
+      ]
+    }
+  ],
+  "evidence": {}
+}

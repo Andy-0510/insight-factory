@@ -1,0 +1,82 @@
+--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---
+Generated at: 2026-03-27T22:56:03.430799Z
+
+================================================================================
+Rank #1: sk하이닉스|삼성전자 (Total Sentences: 1219, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.kmib.co.kr/article/view.asp?arcid=1774177802&code=11151400&cp=nv" target="_blank" style="font-weight:600; color:#065f46;">150조 칼 뺐다… 반도체 투톱 ‘쩐쟁’</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=250213" target="_blank" style="font-weight:600; color:#065f46;">반도체 장비 관련주, '함박웃음' 에이치엠넥스·저스템·네오셈·기가레...</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=250295" target="_blank" style="font-weight:600; color:#065f46;">자율주행차 관련주, '맑고 쾌청' KG모빌리티·슈어소프트테크·라닉스·...</a>
+
+================================================================================
+Rank #2: lg전자|삼성전자 (Total Sentences: 429, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.sedaily.com/article/20011726?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">[트럼프 스톡커] ‘피지컬 AI 날개’ LG, 美주방 ‘3대 B2B’도 조준</a>
+<a href="https://www.newscj.com/news/articleView.html?idxno=3379582" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 전자 , 美텍사스주 TV 데이터 수집 소송 '합의'</a>
+<a href="http://www.4th.kr/news/articleView.html?idxno=2108736" target="_blank" style="font-weight:600; color:#c41e3a;">LG전자, B2C·B2B 맞춤형으로 중남미 공략 가속..삼성과 격돌</a>
+
+================================================================================
+Rank #3: 삼성전자|애플 (Total Sentences: 394, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.etoday.co.kr/news/view/2560506" target="_blank" style="font-weight:600; color:#c41e3a;">메모리 가격 130% 급등… PC·스마트폰 출하 감소로 저가형 직격탄</a>
+<a href="https://www.g-enews.com/view.php?ud=2026030314543917456ed0c62d49_1" target="_blank" style="font-weight:600; color:#c41e3a;">갤럭시 S26 맞서 아이폰 17e 애플…가격동결로 승부수 걸었다</a>
+<a href="https://news.tf.co.kr/read/economy/2297837.htm" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 이어 샤오미·애플도 신제품 내놨다…불붙은 스마트폰 경쟁</a>
+
+================================================================================
+Rank #4: 삼성전자|엔비디아 (Total Sentences: 324, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.kmib.co.kr/article/view.asp?arcid=1774177802&code=11151400&cp=nv" target="_blank" style="font-weight:600; color:#065f46;">150조 칼 뺐다… 반도체 투톱 ‘쩐쟁’</a>
+<a href="http://www.opinionnews.co.kr/news/articleView.html?idxno=133862" target="_blank" style="font-weight:600; color:#065f46;">'트럼프 관세' 위법 판결, 코스피 영향은 제한적...더 중요한 건 엔비디...</a>
+<a href="https://www.g-enews.com/view.php?ud=2026031420580075739a1f309431_1" target="_blank" style="font-weight:600; color:#065f46;">엔비디아, 공급계약 앞두고  삼성  등 협력사에 ‘이례적 혹평’</a>
+
+================================================================================
+Rank #5: 구글|애플 (Total Sentences: 250, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.pointdaily.co.kr/news/articleView.html?idxno=295237" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자 노태문 "AI 기업과 전략적 협업 확대…갤럭시 AI 선택권 강화"</a>
+<a href="https://www.datanet.co.kr/news/articleView.html?idxno=210158" target="_blank" style="font-weight:600; color:#c41e3a;">애플,  폴더블  스마트폰 시장 진입 초읽기 ··· 주도권 다툼 격화</a>
+<a href="https://www.mk.co.kr/article/11997196" target="_blank" style="font-weight:600; color:#c41e3a;">구글 손잡은 애플, 아이폰 속 AI 갤럭시 따라잡나</a>
+
+================================================================================
+Rank #6: 삼성디스플레이|삼성전자 (Total Sentences: 216, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://dealsite.co.kr/articles/157773" target="_blank" style="font-weight:600; color:#065f46;">[피지컬 AI 시대  디스플레이 ] 삼성D, 모바일·IT OLED 기술 휴머노이드로...</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=250135" target="_blank" style="font-weight:600; color:#065f46;">PCB·FPCB 관련주, '룰루랄라 콧노래' 에이엔피·이수페타시스·대덕전자...</a>
+<a href="http://www.finomy.com/news/articleView.html?idxno=251115" target="_blank" style="font-weight:600; color:#065f46;">PCB·FPCB 관련주, '봄바람 살랑살랑' 에이엔피·우리바이오·이수페타시...</a>
+
+================================================================================
+Rank #7: 네이버|카카오 (Total Sentences: 177, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.donga.com/news/Politics/article/all/20260227/133440033/2" target="_blank" style="font-weight:600; color:#c41e3a;">네이버-카카오-티맵 ‘내비 3강’ 지각변동 예고</a>
+<a href="https://www.donga.com/news/Opinion/article/all/20260227/133439996/2" target="_blank" style="font-weight:600; color:#c41e3a;">[사설]고정밀 지도 국외 반출 허가… 생존 시험대 오른 韓 기업</a>
+<a href="https://www.hankyung.com/article/2026022705381" target="_blank" style="font-weight:600; color:#c41e3a;">"구글에 플랫폼 주도권 뺏기나" 네카오 초긴장…관광업계는 반색</a>
+
+================================================================================
+Rank #8: 애플|엔비디아 (Total Sentences: 170, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://magazine.hankyung.com/business/article/202602240243b" target="_blank" style="font-weight:600; color:#065f46;">엔비디아, 이제는 노트북까지?...CPU·GPU를 하나의 칩으로</a>
+<a href="https://www.sedaily.com/article/20011591?ref=naver" target="_blank" style="font-weight:600; color:#065f46;">AI 판 더 커진다…엔비디아 노트북 칩 개발</a>
+<a href="http://www.itdaily.kr/news/articleView.html?idxno=238116" target="_blank" style="font-weight:600; color:#065f46;">레드햇-엔비디아, '레드햇 AI 팩토리 위드 엔비디아' 공개</a>
+
+================================================================================
+Rank #9: lg디스플레이|삼성디스플레이 (Total Sentences: 162, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.finomy.com/news/articleView.html?idxno=250213" target="_blank" style="font-weight:600; color:#065f46;">반도체 장비 관련주, '함박웃음' 에이치엠넥스·저스템·네오셈·기가레...</a>
+<a href="https://zdnet.co.kr/view/?no=20260223160612" target="_blank" style="font-weight:600; color:#065f46;">올해 디스플레이 투자 OLED에 집중…8.7세대 패널 양산 가시화</a>
+<a href="https://www.sedaily.com/article/20012188?ref=naver" target="_blank" style="font-weight:600; color:#065f46;">LX세미콘, 삼성디스플레이에 DDI 공급한다 [biz-플러스]</a>
+
+================================================================================
+Rank #10: tcl|삼성전자 (Total Sentences: 161, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.munhwa.com/article/11572326?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">“中 TCL,  QLED  허위 광고”… 獨 법원, 삼성 손들어줬다</a>
+<a href="https://www.ceoscoredaily.com/page/view/2026022417154755471" target="_blank" style="font-weight:600; color:#c41e3a;">“스포츠 특수 기대했지만”…삼성·LG TV, 원가 상승·中 추격 ‘이중고...</a>
+<a href="https://www.meconomynews.com/news/articleView.html?idxno=128032" target="_blank" style="font-weight:600; color:#c41e3a;">중국산 TV, 출하량서 韓 역전... "물량 공세에 밀렸다"</a>
