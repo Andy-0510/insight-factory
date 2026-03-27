@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "프레임",
+        "아트",
+        "삼성",
+        "라이프스타일",
+        "모니터"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "삼성전자는",
+        "상생협력",
+        "esg",
+        "ai",
+        "삼성전자"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "블랙",
+        "퀀텀",
+        "qd",
+        "퀀텀 블랙",
+        "저반사"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "사외이사",
+        "또는",
+        "관한",
+        "변경",
+        "이사회"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "oled",
+        "장비",
+        "중국",
+        "투자",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "tv",
+        "올레드",
+        "lg",
+        "ai",
+        "lg전자는"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "문제는",
+        "게임",
+        "매장",
+        "이다",
+        "게이밍"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "pc",
+        "가격",
+        "반도체",
+        "메모리",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "폴더블",
+        "애플",
+        "갤럭시z",
+        "와이드"
+      ]
+    }
+  ],
+  "evidence": {}
+}
