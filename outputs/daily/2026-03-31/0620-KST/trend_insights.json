@@ -1,0 +1,66 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "ai",
+        "계획",
+        "기업가치",
+        "삼성전자는"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "소재",
+        "반도체",
+        "lg화학은",
+        "전장",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "사업",
+        "모듈",
+        "디스플레이",
+        "사업부",
+        "법인"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "프로",
+        "ai",
+        "pro",
+        "노트북",
+        "모니터"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "oled",
+        "패널",
+        "lcd",
+        "lg디스플레이는",
+        "lg디스플레이가"
+      ]
+    }
+  ],
+  "evidence": {}
+}
