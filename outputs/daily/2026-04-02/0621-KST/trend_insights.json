@@ -1,0 +1,66 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "etri",
+        "뷰티",
+        "tdx",
+        "디바이스",
+        "원장"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "안전",
+        "모터",
+        "트윈",
+        "전기",
+        "볼보"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "하만",
+        "레디",
+        "차량용",
+        "자동차",
+        "차량"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ar",
+        "할인",
+        "눈의",
+        "혜택을",
+        "히어로"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "전종석",
+        "상공의",
+        "대통령",
+        "lg디스플레이",
+        "상무는"
+      ]
+    }
+  ],
+  "evidence": {}
+}
