@@ -1938,6 +1938,17 @@
     ]
   },
   "weekly": {
+    "2026-04-03": [
+      {
+        "time": "0734-KST",
+        "reports": [
+          {
+            "name": "weekly_report.html",
+            "path": "outputs/weekly/2026-04-03/0734-KST/weekly_report.html"
+          }
+        ]
+      }
+    ],
     "2026-03-27": [
       {
         "time": "0729-KST",
