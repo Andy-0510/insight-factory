@@ -1,0 +1,126 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "가격",
+        "북미",
+        "문제는",
+        "가전",
+        "기아"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "안전",
+        "모터",
+        "사운드",
+        "트윈",
+        "전기"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "모니터",
+        "오디세이",
+        "게이밍 모니터",
+        "연속"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "산업",
+        "전종석",
+        "상공의",
+        "경영",
+        "대통령"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "하만",
+        "레디",
+        "차량용",
+        "자동차",
+        "차량"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "폴더블",
+        "아이폰",
+        "애플이",
+        "애플",
+        "애플의"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "프레임",
+        "에이전트",
+        "엔비디아",
+        "기반"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "주가",
+        "오른",
+        "사업",
+        "중이다",
+        "전기차"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "tv",
+        "소니",
+        "프리미엄",
+        "tcl",
+        "소니의"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "oled",
+        "중대형",
+        "디스플레이",
+        "가격",
+        "성장"
+      ]
+    }
+  ],
+  "evidence": {}
+}
