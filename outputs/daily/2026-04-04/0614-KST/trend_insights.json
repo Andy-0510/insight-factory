@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "디스플레이",
+        "문제는",
+        "가격",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "게임",
+        "공식",
+        "오는",
+        "이용자",
+        "출시"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "기술",
+        "반도체",
+        "상생협력",
+        "삼성전자",
+        "esg"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "oled",
+        "tv",
+        "가격",
+        "가전",
+        "프리미엄"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "거래일",
+        "위성",
+        "미국",
+        "주가",
+        "스페이스x가"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "모니터",
+        "게이밍",
+        "oled",
+        "오디세이",
+        "게이밍 모니터"
+      ]
+    }
+  ],
+  "evidence": {}
+}
