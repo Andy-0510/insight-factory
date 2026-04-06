@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "반도체",
+        "ai",
+        "자동차",
+        "가격"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "에너지",
+        "차량",
+        "절감",
+        "사업장",
+        "정부의"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "폴더블",
+        "갤럭시",
+        "화면",
+        "아이폰",
+        "애플의"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "에어리어",
+        "ai",
+        "신제품",
+        "노트북"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "lg",
+        "보안",
+        "경량화",
+        "인재"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "아주",
+        "1분기",
+        "매출",
+        "실적",
+        "영업이익"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "oled",
+        "양산",
+        "ddi",
+        "스마트폰",
+        "구동칩"
+      ]
+    }
+  ],
+  "evidence": {}
+}
