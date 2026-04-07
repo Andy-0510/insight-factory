@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "문제는",
+        "이다",
+        "oled",
+        "기술",
+        "들어갈"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "게임",
+        "조기",
+        "현장",
+        "led",
+        "그림자"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "ai",
+        "신제품",
+        "성능을",
+        "산업"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "영업이익",
+        "1분기",
+        "반도체",
+        "메모리",
+        "분기"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "고기능성",
+        "폴리우레탄",
+        "첨단",
+        "고순도",
+        "일본"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "중국",
+        "boe",
+        "탑런토탈솔루션",
+        "현지"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "전문",
+        "반도체",
+        "장비",
+        "기업으로",
+        "소재"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "폴더블",
+        "아이폰",
+        "스마트폰",
+        "애플의",
+        "기술"
+      ]
+    }
+  ],
+  "evidence": {}
+}
