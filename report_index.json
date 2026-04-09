@@ -2015,6 +2015,17 @@
     ]
   },
   "weekly": {
+    "2026-04-10": [
+      {
+        "time": "0742-KST",
+        "reports": [
+          {
+            "name": "weekly_report.html",
+            "path": "outputs/weekly/2026-04-10/0742-KST/weekly_report.html"
+          }
+        ]
+      }
+    ],
     "2026-04-03": [
       {
         "time": "0734-KST",
