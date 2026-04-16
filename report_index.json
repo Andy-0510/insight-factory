@@ -2092,6 +2092,17 @@
     ]
   },
   "weekly": {
+    "2026-04-17": [
+      {
+        "time": "0741-KST",
+        "reports": [
+          {
+            "name": "weekly_report.html",
+            "path": "outputs/weekly/2026-04-17/0741-KST/weekly_report.html"
+          }
+        ]
+      }
+    ],
     "2026-04-10": [
       {
         "time": "0742-KST",
