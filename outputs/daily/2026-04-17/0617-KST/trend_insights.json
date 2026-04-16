@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "aio",
+        "ai",
+        "엔비디아",
+        "pc",
+        "온디바이스"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ai",
+        "유럽",
+        "테크",
+        "유럽 테크",
+        "삼성전자는"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "tv",
+        "oled",
+        "기술",
+        "디스플레이"
+      ]
+    }
+  ],
+  "evidence": {}
+}
