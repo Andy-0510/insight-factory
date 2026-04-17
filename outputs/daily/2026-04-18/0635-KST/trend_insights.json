@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "브랜드",
+        "ar",
+        "중국",
+        "제품",
+        "tv"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "스트레칭",
+        "비렉스",
+        "수면",
+        "허리",
+        "모션베드"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "위원장은",
+        "노조는",
+        "삼성전자",
+        "성과급",
+        "조합원이"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ax",
+        "산업",
+        "장관은",
+        "디스플레이",
+        "전환"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "협력사",
+        "혁신",
+        "삼성디스플레이",
+        "oled",
+        "상생협력"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "tv",
+        "삼성전자는",
+        "프리미엄",
+        "rgb"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "삼성전자는",
+        "유럽",
+        "테크",
+        "삼성전자"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "oled",
+        "패널",
+        "울트라",
+        "게이밍",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "장비",
+        "하이브리드",
+        "통합",
+        "플렉시블"
+      ]
+    }
+  ],
+  "evidence": {}
+}
