@@ -1,0 +1,30 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "스트레칭",
+        "비렉스",
+        "수면",
+        "허리",
+        "모션베드"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "삼성전자",
+        "위원장은",
+        "노조는",
+        "성과급",
+        "조합원이"
+      ]
+    }
+  ],
+  "evidence": {}
+}
