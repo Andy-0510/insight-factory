@@ -1,0 +1,175 @@
+{
+  "metadata": {
+    "date": "2026-04-19",
+    "assigned_count": 2,
+    "uncategorized_count": 0,
+    "embedding_model": "sentence-transformers/paraphrase-multilingual-MiniLM-L12-v2"
+  },
+  "matching_process_log": [
+    "[WIN] Topic 1 -> 'Set_Manufacturer' (Score: 0.4239)",
+    "[SKIP] Key 'Set_Manufacturer'는 이미 선점됨. (Topic 0가 0.3836점으로 입찰 시도)",
+    "[WIN] Topic 0 -> 'Panel_Manufacturer' (Score: 0.2897)"
+  ],
+  "topic_similarity_scores": {
+    "0": [
+      [
+        "Set_Manufacturer",
+        0.3835887908935547
+      ],
+      [
+        "Panel_Manufacturer",
+        0.2896697521209717
+      ],
+      [
+        "Material_Supplier",
+        0.21667414903640747
+      ],
+      [
+        "Automotive_Display_Topic",
+        0.20958375930786133
+      ],
+      [
+        "OLED_Topic",
+        0.18324625492095947
+      ],
+      [
+        "Foldable_Display_Topic",
+        0.17978888750076294
+      ],
+      [
+        "IT_OLED_Topic",
+        0.16620060801506042
+      ],
+      [
+        "Quantum_Dot_Topic",
+        0.15334099531173706
+      ],
+      [
+        "Flexible_Display_Topic",
+        0.1451312005519867
+      ],
+      [
+        "Gaming_Monitor_Topic",
+        0.10962682962417603
+      ],
+      [
+        "Equipment_Maker",
+        0.10664871335029602
+      ],
+      [
+        "Transparent_Display_Topic",
+        0.10395742207765579
+      ],
+      [
+        "XR_Device_Topic",
+        0.09766121953725815
+      ],
+      [
+        "Smartphone_Display_Topic",
+        0.09583020210266113
+      ],
+      [
+        "MicroLED_Topic",
+        0.09333197772502899
+      ],
+      [
+        "TV_Display_Topic",
+        0.0674092024564743
+      ],
+      [
+        "Apple_Display_Topic",
+        0.06271275877952576
+      ],
+      [
+        "Display_Materials_Topic",
+        0.039443936198949814
+      ],
+      [
+        "Platform_Company",
+        0.01766899973154068
+      ]
+    ],
+    "1": [
+      [
+        "Set_Manufacturer",
+        0.42388221621513367
+      ],
+      [
+        "Panel_Manufacturer",
+        0.4054276943206787
+      ],
+      [
+        "Flexible_Display_Topic",
+        0.3534201383590698
+      ],
+      [
+        "Foldable_Display_Topic",
+        0.35108882188796997
+      ],
+      [
+        "Smartphone_Display_Topic",
+        0.30791598558425903
+      ],
+      [
+        "Apple_Display_Topic",
+        0.2758675515651703
+      ],
+      [
+        "Display_Materials_Topic",
+        0.25210854411125183
+      ],
+      [
+        "Platform_Company",
+        0.23895764350891113
+      ],
+      [
+        "OLED_Topic",
+        0.23704573512077332
+      ],
+      [
+        "Gaming_Monitor_Topic",
+        0.2351701706647873
+      ],
+      [
+        "MicroLED_Topic",
+        0.2293384075164795
+      ],
+      [
+        "Equipment_Maker",
+        0.20325151085853577
+      ],
+      [
+        "TV_Display_Topic",
+        0.18817132711410522
+      ],
+      [
+        "Automotive_Display_Topic",
+        0.17842578887939453
+      ],
+      [
+        "Quantum_Dot_Topic",
+        0.17191043496131897
+      ],
+      [
+        "IT_OLED_Topic",
+        0.16857649385929108
+      ],
+      [
+        "XR_Device_Topic",
+        0.1681622564792633
+      ],
+      [
+        "Material_Supplier",
+        0.11347619444131851
+      ],
+      [
+        "Transparent_Display_Topic",
+        0.08638028055429459
+      ]
+    ]
+  },
+  "final_mapping": {
+    "1": "Set_Manufacturer",
+    "0": "Panel_Manufacturer"
+  }
+}
