@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "파워샷",
+        "30주년",
+        "g7",
+        "mark",
+        "g7 mark"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "아우디",
+        "라인",
+        "한국",
+        "메르세데스",
+        "주행"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "애플",
+        "ai",
+        "하드웨어",
+        "ceo",
+        "애플이"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "배터리",
+        "전기차",
+        "벤츠",
+        "공급",
+        "배터리를"
+      ]
+    }
+  ],
+  "evidence": {}
+}
