@@ -1,0 +1,138 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "포토",
+        "ai",
+        "월드it쇼",
+        "월드it쇼 참가",
+        "참가"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "qd",
+        "oled",
+        "qd oled",
+        "시야각",
+        "퀀텀뷰"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "전장",
+        "오디오",
+        "하만",
+        "하만은",
+        "하만의"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "소재",
+        "고부가",
+        "디스플레이",
+        "매출",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "애플",
+        "아이폰",
+        "폴더블",
+        "애플의",
+        "애플이"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "3d",
+        "교수는",
+        "영상을",
+        "안경",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "가격",
+        "메모리",
+        "스마트폰",
+        "pc",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "ai",
+        "시리즈",
+        "삼성전자는",
+        "차세대"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "장비",
+        "상승",
+        "문제는",
+        "장을",
+        "이다"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "oled",
+        "lg디스플레이는",
+        "투자",
+        "기술",
+        "lg디스플레이"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "ai",
+        "수면",
+        "교육",
+        "기업",
+        "기술"
+      ]
+    }
+  ],
+  "evidence": {}
+}
