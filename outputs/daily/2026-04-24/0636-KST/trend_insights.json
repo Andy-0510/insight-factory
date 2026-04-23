@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "엔비디아",
+        "삼성전자",
+        "생성",
+        "패스",
+        "장비"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "재판부는",
+        "과징금",
+        "삼성전자",
+        "삼성",
+        "계열사"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "qd",
+        "qd oled",
+        "oled",
+        "시야각",
+        "퀀텀뷰"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "퀀텀닷",
+        "xr",
+        "마이크로",
+        "연구팀은",
+        "led"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "3d",
+        "2d",
+        "디스플레이",
+        "2d 3d",
+        "광학"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "oled",
+        "사업",
+        "lg디스플레이는",
+        "1분기",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "ai가",
+        "기술",
+        "lg",
+        "핵심"
+      ]
+    }
+  ],
+  "evidence": {}
+}
