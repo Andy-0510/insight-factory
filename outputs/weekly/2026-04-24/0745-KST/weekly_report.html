@@ -1,0 +1,758 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Weekly Intelligence (2026.04.18 - 2026.04.24)</title>
+    <style>
+        /* CSS 스타일은 제공해주신 내용과 동일하게 유지합니다. */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; background: #f5f7fa; color: #1a2332; padding: 20px; line-height: 1.6; }
+        .container { max-width: 100%; /* <- 1200px; */ margin: 0 auto; background: #ffffff; border-radius: 8px; overflow: hidden; box-shadow: 0 2px 8px rgba(0,0,0,0.08); }
+        .header { background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%); color: #ffffff; padding: 32px 40px; /*border-radius: 8px; box-shadow: 0 4px 12px rgba(0,0,0,0.1); */ }   
+        .header-top { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; } /* 간격 조정 */
+        .logo { font-size: 12px; font-weight: 600; letter-spacing: 2px; color: #0066ff; text-transform: uppercase; /* display: flex; align-items: center; gap: 12px; */ } /* 일간 리포트 로고 스타일 */
+        .date-range { font-size: 13px; color: #a0aec0; } /* 일간 리포트 날짜 스타일 */
+        .title { font-size: 28px; font-weight: 700; margin-bottom: 8px; } /* 일간 리포트 제목 스타일 */
+        .subtitle { font-size: 14px; color: #cbd5e0; } /* 일간 리포트 부제목 스타일 */
+        /* --- ▲▲▲ 헤더 관련 CSS 완료 ▲▲▲ --- */
+
+        /* .nav-tabs 관련 스타일은 탭 기능 구현 시 필요, 현재는 제거 또는 주석 처리 가능 */
+        /* .nav-tabs { display: flex; ... } */
+        .section { background: white; border-radius: 12px; padding: 40px; margin-bottom: 32px; box-shadow: 0 2px 8px rgba(0,0,0,0.06); }
+        .section-header { display: flex; align-items: center; margin-bottom: 32px; padding-bottom: 20px; border-bottom: 3px solid #e2e8f0; }
+        .section-number { width: 48px; height: 48px; background: linear-gradient(135deg, #0066ff, #00b8a9); color: white; border-radius: 12px; display: flex; align-items: center; justify-content: center; font-weight: 800; font-size: 20px; margin-right: 16px; }
+        .section-title { font-size: 28px; font-weight: 800; color: #1a2332; }
+        .section-subtitle { font-size: 14px; color: #718096; margin-left: auto; }
+        .executive-summary { background: linear-gradient(135deg, #f7fafc 0%, #edf2f7 100%); border-left: 6px solid #0066ff; padding: 32px; border-radius: 8px; margin-bottom: 32px; }
+        .summary-title { font-size: 18px; font-weight: 700; color: #1a2332; margin-bottom: 16px; }
+        .summary-text { font-size: 15px; line-height: 1.8; color: #2d3748; margin-bottom: 12px; }
+        .key-insights { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); gap: 20px; margin-bottom: 32px; } /* 반응형 그리드 */
+        .insight-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; transition: all 0.3s; }
+        .insight-card:hover { border-color: #0066ff; transform: translateY(-4px); box-shadow: 0 8px 16px rgba(0,102,255,0.1); }
+        .insight-icon { width: 48px; height: 48px; background: linear-gradient(135deg, #0066ff, #00b8a9); border-radius: 12px; display: flex; align-items: center; justify-content: center; font-size: 24px; margin-bottom: 16px; }
+        .insight-label { font-size: 12px; font-weight: 700; color: #0066ff; text-transform: uppercase; letter-spacing: 1px; margin-bottom: 8px; }
+        .insight-value { font-size: 32px; font-weight: 800; color: #1a2332; margin-bottom: 8px; }
+        .insight-description { font-size: 13px; color: #718096; line-height: 1.5; }
+        .theme-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 24px; margin-bottom: 32px; } /* 반응형 그리드 */
+        .theme-card { background: #f7fafc; border-radius: 12px; padding: 28px; border: 2px solid #e2e8f0; }
+        .theme-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .theme-name { font-size: 20px; font-weight: 700; color: #1a2332; }
+        .theme-badge { background: #0066ff; color: white; padding: 6px 14px; border-radius: 20px; font-size: 12px; font-weight: 700; }
+        .theme-topics { display: flex; flex-wrap: wrap; gap: 8px; margin-bottom: 16px; }
+        .topic-tag { background: white; border: 1px solid #cbd5e0; padding: 6px 12px; border-radius: 6px; font-size: 13px; color: #4a5568; }
+        .theme-description { font-size: 14px; color: #4a5568; line-height: 1.6; }
+        .visualization { background: #f7fafc; border-radius: 12px; padding: 32px; text-align: center; margin-bottom: 24px; }
+        /* 이미지 스타일 */
+        img.report-graph { max-width: 100%; height: auto; border: 1px solid #e0e0e0; border-radius: 8px; margin-top: 1em; display: block; margin-left: auto; margin-right: auto; }
+        /* .competitor-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 20px; } /* 반응형 그리드 */
+        .competitor-grid {
+            display: grid;
+            /* grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); */ /* 기존 반응형 규칙 주석 처리 또는 삭제 */
+            grid-template-columns: repeat(2, 1fr); /* 항상 2열로 고정 */
+            gap: 20px;
+        }
+        .competitor-card { background: white; border: 2px solid #e2e8f0; border-radius: 12px; padding: 24px; }
+        .competitor-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px; }
+        .competitor-name { font-size: 18px; font-weight: 700; color: #1a2332; }
+        .activity-trend { display: flex; align-items: center; gap: 8px; font-size: 14px; font-weight: 700; }
+        .trend-up { color: #38a169; } /* 초록색 */
+        .trend-down { color: #e53e3e; } /* 빨간색 */
+        .trend-stable { color: #718096; } /* 회색 */
+        .competitor-metrics { display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 16px; }
+        .metric-item { background: #f7fafc; padding: 12px; border-radius: 8px; }
+        .metric-label { font-size: 11px; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; margin-bottom: 4px; }
+        .metric-value { font-size: 20px; font-weight: 700; color: #1a2332; }
+        .competitor-insight { font-size: 13px; color: #4a5568; line-height: 1.6; padding: 12px; background: #f0f9ff; border-left: 4px solid #3b82f6; border-radius: 8px; } /* 스타일 변경 */
+        .weak-signals { display: grid; gap: 20px; }
+        .signal-card { background: linear-gradient(135deg, #f7fafc 0%, #ffffff 100%); border: 2px solid #e2e8f0; border-left: 6px solid #00b8a9; border-radius: 12px; padding: 28px; }        
+        .signal-header { display: flex; justify-content: space-between; align-items: flex-start; margin-bottom: 16px; }
+        .signal-title { font-size: 18px; font-weight: 700; color: #1a2332; flex: 1; }
+        .signal-badges { display: flex; gap: 8px; }
+        .signal-badge { padding: 4px 10px; border-radius: 12px; font-size: 11px; font-weight: 700; text-transform: uppercase; }
+        .badge-emerging { background: #e6f7ff; color: #0066ff; }
+        .badge-confidence { background: #fff5e6; color: #ff9500; }
+        .signal-content { display: grid; grid-template-columns: 2fr 1fr; gap: 24px; }
+        .signal-description { font-size: 14px; color: #4a5568; line-height: 1.7; }
+        .signal-meta { background: white; border-radius: 8px; padding: 16px; }
+        .meta-item { margin-bottom: 12px; padding-bottom: 12px; border-bottom: 1px solid #e2e8f0; }
+        .meta-item:last-child { margin-bottom: 0; padding-bottom: 0; border-bottom: none; }
+        .meta-label { font-size: 11px; color: #718096; text-transform: uppercase; margin-bottom: 4px; }
+        .meta-value { font-size: 14px; font-weight: 600; color: #1a2332; }
+        .action-title { font-size: 14px; font-weight: 700; color: #0066ff; text-transform: uppercase; margin-bottom: 12px; }
+        .action-items { display: grid; gap: 12px; }
+        .action-item { display: flex; gap: 12px; align-items: baseline; }
+        .action-label { font-size: 11px; font-weight: 700; color: white; background: #0066ff; padding: 4px 8px; border-radius: 4px; min-width: 60px; text-align: center; } /* 너비 조정 */
+        .action-text { font-size: 13px; color: #2d3748; line-height: 1.5; flex: 1; }
+        .momentum-table { width: 100%; border-collapse: collapse; margin-top: 1em; } /* 테이블 상단 여백 추가 */
+        .momentum-table thead { background: #f7fafc; }
+        .momentum-table th { padding: 16px; text-align: center; font-size: 12px; font-weight: 700; color: #718096; text-transform: uppercase; letter-spacing: 0.5px; border-bottom: 2px solid #e2e8f0; }
+        .momentum-table td { padding: 16px; font-size: 13px; color: #2d3748; border-bottom: 1px solid #e2e8f0; vertical-align: middle; } /* 수직 정렬 추가 */
+        .momentum-table tbody tr:hover { background: #f0f9ff; } /* 호버 색상 변경 */
+        .rank-badge { display: inline-flex; align-items: center; justify-content: center; width: 32px; height: 32px; background: #0066ff; color: white; border-radius: 50%; font-weight: 700; font-size: 14px; }
+        .trend-indicator { display: inline-flex; align-items: center; gap: 6px; padding: 4px 10px; border-radius: 12px; font-size: 13px; font-weight: 700; }        
+        .trend-up { background: #fff5e6; color: #ff9500; }        
+        .trend-stable { background: #f7fafc; color: #718096; }        
+        .trend-down { background: #e2e8f0; color: #4a5568; }
+        .footer { background: white; border-top: 1px solid #e2e8f0; padding: 32px 40px; text-align: center; margin-top: 40px; }
+        .footer-content { max-width: 1200px; margin: 0 auto; font-size: 13px; color: #718096; }
+        .footer-links { margin-top: 16px; display: flex; justify-content: center; gap: 24px; }
+        .footer-link { color: #0066ff; text-decoration: none; font-weight: 600; }
+        .article-summary {
+            font-size: 15px;
+            color: #4a5568;
+            margin-top: 8px;
+            padding-left: 40px;
+        }
+        .section-support {
+            font-size: 14px;
+            color: #535a64;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">INSIGHT FACTORY</div>
+                <div class="date">2026.04.18 - 2026.04.24</div>
+            </div>
+            <div class="title">Weekly Report</div>
+            <div class="subtitle">이번 주 트렌드 분석 및 다음 주 실행 계획 지원</div>
+        </div>
+    
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">1</div>
+                <div class="section-title">주간 트렌드 요약</div>
+            </div>
+
+            <div class="key-insights">
+                <div class="insight-card">
+                    <div class="insight-icon">📈</div>
+                    <div class="insight-label">주간 기사량</div>
+                    <div class="insight-value">2,826</div>
+                    <div class="insight-description">전주 대비 +7% (3,465건). 금주 관심 기사 비중 평균 93.0%.</div>
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-icon">🔥</div>
+                    <div class="insight-label">핵심 테마 키워드</div>
+                    <div class="insight-value">77개</div>
+                    <div class="insight-description">애플, 스마트폰, 폴더블, 미국, 모니터 등</div>
+                </div>
+
+                <div class="insight-card">
+                    <div class="insight-icon">⚡</div>
+                    <div class="insight-label">주요 이벤트</div>
+                    <div class="insight-value">23건</div>
+                    <div class="insight-description">LAUNCH: 22건, INVEST: 13건, CERT: 7건, ORDER: 4건, REGUL: 4건, PARTNERSHIP: 2건</div>
+                </div>
+            </div>
+
+            <div class="executive-summary">
+                <div class="summary-title">🎯 이번 주 핵심 인사이트</div>
+                <div class="article-summary"><h3>[핵심 맥락]</h3>
+<ul>
+<li>
+<p><strong>프리미엄 스마트폰 시장의 차별화 전략과 폴더블 기술의 부상:</strong></p>
+<ul>
+<li>애플을 중심으로 한 프리미엄 스마트폰 시장에서 기술적 차별화에 대한 수요가 꾸준히 존재하며, 이는 디스플레이 기술의 중요성을 더욱 부각시키고 있습니다. 특히, 최신 스마트폰 관련 키워드에 '애플', '스마트폰', '폴더블'이 동시에 노출된 점은 이러한 트렌드를 명확히 보여줍니다.</li>
+<li>스마트폰 시장의 성장이 둔화되는 가운데, 폴더블 디스플레이는 새로운 성장 동력으로 주목받고 있으며, 소비자의 시선을 사로잡는 혁신적인 폼팩터로 자리매김하고 있습니다.</li>
+</ul>
+</li>
+<li>
+<p><strong>미국 시장의 영향력 확대와 고성능 모니터 수요 증가:</strong></p>
+<ul>
+<li>'미국'과 '모니터' 키워드의 동시 출현은 북미 시장의 디스플레이 수요가 단순히 스마트폰에 국한되지 않고, 고성능 모니터 부문에서도 견조한 성장세를 보이고 있음을 시사합니다. 이는 고해상도, 고주사율, 그리고 전문적인 작업 환경에 최적화된 디스플레이 솔루션에 대한 니즈가 반영된 결과로 해석됩니다.</li>
+</ul>
+</li>
+</ul>
+<h3>[INSIGHT]</h3>
+<ul>
+<li>
+<p><strong>폴더블 디스플레이 기술 선도 및 차세대 폼팩터 경쟁 우위 확보:</strong></p>
+<ul>
+<li>폴더블 디스플레이는 단순히 새로운 폼팩터를 넘어, 제품의 디자인, 사용성, 그리고 브랜드 이미지를 혁신할 수 있는 잠재력을 지닙니다. 삼성전자 및 삼성디스플레이와 같은 선도 기업들은 이 분야에서의 기술적 우위를 바탕으로 프리미엄 시장에서의 영향력을 더욱 강화할 수 있습니다.</li>
+<li>다만, '시야각'과 같은 약한 신호는 폴더블 디스플레이의 근본적인 기술적 과제 중 하나가 여전히 해결해야 할 숙제임을 나타냅니다. 이 부분에 대한 지속적인 연구개발은 사용자 경험을 한층 끌어올리고 경쟁사 대비 차별화된 가치를 제공하는 데 필수적입니다.</li>
+</ul>
+</li>
+<li>
+<p><strong>고부가가치 모니터 시장 공략 및 북미 시장 확장 기회:</strong></p>
+<ul>
+<li>미국 시장의 고성능 모니터 수요 증가는 우리의 기술력을 선보일 수 있는 중요한 기회입니다. 특히, 전문가용, 게이밍용, 또는 콘텐츠 제작용 모니터와 같이 특정 니즈를 충족시키는 고부가가치 제품 라인업 강화는 수익성 증대에 기여할 수 있습니다.</li>
+<li>'화웨이'와 같은 신흥 강자들의 움직임은 시장 경쟁의 심화 가능성을 시사합니다. 이에 대비하여 기술 혁신뿐만 아니라, 유통 채널 다각화 및 현지화된 마케팅 전략을 통해 북미 시장에서의 입지를 더욱 공고히 할 필요가 있습니다.</li>
+</ul>
+</li>
+</ul>
+<h3>[추천 Action Items]</h3>
+<ul>
+<li><strong>폴더블 디스플레이 차세대 기술 로드맵 구체화 및 시야각 개선 연구 집중:</strong><ul>
+<li>차세대 폴더블 디스플레이의 폼팩터 혁신(예: 롤러블, 확장형)에 대한 연구 개발 속도를 높이고, 동시에 '시야각' 개선을 위한 핵심 기술 확보에 집중합니다. 경쟁사 대비 기술적 완성도를 높여 시장 선도 이미지를 더욱 확고히 합니다.</li>
+</ul>
+</li>
+<li><strong>미국 시장 타겟 고부가가치 모니터 솔루션 개발 및 파트너십 강화:</strong><ul>
+<li>미국 시장의 니즈를 면밀히 분석하여 전문가용, 고성능 게이밍 등 특정 시장을 겨냥한 프리미엄 모니터 라인업을 강화하고, 관련 유통 채널 및 B2B 파트너십 확대를 모색합니다.</li>
+</ul>
+</li>
+</ul></div>                
+            </div>
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">2</div>
+                <div class="section-title">주간 시장 테마</div>
+                <div class="section-subtitle">이번 주 시장을 주도한 핵심 테마가 무엇인지 분석하고 요약</div>
+            </div>
+            
+            <h4>[주간 키워드] 이번 주 디스플레이 시장의 주요 관심사</h4>
+            <img src="fig/weekly_wordcloud.png" alt="주간 키워드 워드클라우드" class="report-graph">
+            <div class="section-subtitle">단어 크기=빈도 수 x Domain 가중치</div> <br>
+
+            <h4>[주간 토픽] 시장의 큰 흐름을 살펴보고, 그 속에서 중요한 의미를 찾습니다.</h4>
+            <img src="fig/weekly_topics_barchart.png" alt="주간 토픽 막대 바 그래프" class="report-graph">
+            <div class="section-subtitle">Weight: 토픽(시장 테마) 내 해당 키워드(구성요소)의 영향력</div> <br>
+
+
+            <div class="theme-grid">
+                
+                <div class="theme-card">
+                    <div class="theme-header">
+                        <div class="theme-name">IT쇼 AI 기술 전망</div>
+                        <div class="theme-badge" style="background-color: #718096">안정</div>
+                    </div>
+                    <div class="theme-topics">
+                        
+                        <span class="topic-tag">포토</span>
+                        
+                        <span class="topic-tag">ai</span>
+                        
+                        <span class="topic-tag">월드it쇼</span>
+                        
+                        <span class="topic-tag">기반</span>
+                        
+                    </div>
+                    <div class="theme-description">
+                        AI 분석 실패 (ResourceExhausted) </div>
+                </div>
+                
+                <div class="theme-card">
+                    <div class="theme-header">
+                        <div class="theme-name">차세대 디스플레이 기술</div>
+                        <div class="theme-badge" style="background-color: #718096">안정</div>
+                    </div>
+                    <div class="theme-topics">
+                        
+                        <span class="topic-tag">oled</span>
+                        
+                        <span class="topic-tag">디스플레이</span>
+                        
+                        <span class="topic-tag">반도체</span>
+                        
+                        <span class="topic-tag">기술</span>
+                        
+                    </div>
+                    <div class="theme-description">
+                        AI 분석 실패 (ResourceExhausted) </div>
+                </div>
+                
+                <div class="theme-card">
+                    <div class="theme-header">
+                        <div class="theme-name">삼성 AI TV 신제품</div>
+                        <div class="theme-badge" style="background-color: #718096">안정</div>
+                    </div>
+                    <div class="theme-topics">
+                        
+                        <span class="topic-tag">ai</span>
+                        
+                        <span class="topic-tag">tv</span>
+                        
+                        <span class="topic-tag">삼성전자는</span>
+                        
+                        <span class="topic-tag">삼성전자</span>
+                        
+                    </div>
+                    <div class="theme-description">
+                        AI 분석 실패 (ResourceExhausted) </div>
+                </div>
+                
+                <div class="theme-card">
+                    <div class="theme-header">
+                        <div class="theme-name">Topic #3</div>
+                        <div class="theme-badge" style="background-color: #718096">안정</div>
+                    </div>
+                    <div class="theme-topics">
+                        
+                        <span class="topic-tag">아우디</span>
+                        
+                        <span class="topic-tag">a6</span>
+                        
+                        <span class="topic-tag">아우디 a6</span>
+                        
+                        <span class="topic-tag">tfsi</span>
+                        
+                    </div>
+                    <div class="theme-description">
+                        AI 분석 실패 (ResourceExhausted) </div>
+                </div>
+                
+            </div>
+
+            <!--            
+             <div class="visualization">
+                 <img src="fig/keyword_network.png" alt="주간 키워드 네트워크" class="report-graph">
+             </div>
+            -->
+        </div>
+
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">3</div>
+                <div class="section-title">시장 트렌드 가속도 분석</div>
+            </div>
+            <div class="section-support">
+                이번 주에 가장 많이 '상승한 토픽'과 '하락한 토픽'을 보여주고, "그래서 다음 주에 무엇을 해야 하는지" 구체적인 액션 아이템을 제안
+            </div> <br>
+                
+            <img src="fig/weekly_strong_signals_barchart.png" alt="주간 강한 신호 바차트" class="report-graph"> <br>
+
+            
+            <div class="action-section"> <br>
+                <div class="action-title">주요 시그널 추세에 따른 권고</div>
+                <div class="action-items">
+                     
+                     <div class="action-item">
+                         <div class="action-label">Action 1</div>
+                         <div class="action-text">AI 권고 생성 실패</div>
+                     </div>
+                     
+                </div>
+            </div>
+            
+            <br>
+
+            <table class="momentum-table">
+                <thead>
+                    <tr>
+                        <th>순위</th>
+                        <th>토픽/신호</th>
+                        <th>모멘텀 점수 <br> (z-like)</th>
+                        <th>주간 변화</th>
+                        <th>추세</th>
+                        <th>권고사항</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                    <tr>
+                        <td><span class="rank-badge">1</span></td>
+                        <td><strong>시야각</strong></td>
+                        <td>+5.46</td>
+                        <td>신규 진입</td>
+                        <td><span class="trend-indicator trend-up">↑ 상승</span></td>
+                        <td>AI 분석 실패 (ResourceExhausted)</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">2</span></td>
+                        <td><strong>ul</strong></td>
+                        <td>+3.62</td>
+                        <td>신규 진입</td>
+                        <td><span class="trend-indicator trend-up">↑ 상승</span></td>
+                        <td>AI 분석 실패 (ResourceExhausted)</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">3</span></td>
+                        <td><strong>벤츠</strong></td>
+                        <td>+2.24</td>
+                        <td>-1.9σ</td>
+                        <td><span class="trend-indicator trend-up">↑ 상승</span></td>
+                        <td>AI 분석 실패 (ResourceExhausted)</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">4</span></td>
+                        <td><strong>삼성디스플레이</strong></td>
+                        <td>+1.79</td>
+                        <td>-1.3σ</td>
+                        <td><span class="trend-indicator trend-up">↑ 상승</span></td>
+                        <td>AI 분석 실패 (ResourceExhausted)</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">5</span></td>
+                        <td><strong>oled</strong></td>
+                        <td>+1.56</td>
+                        <td>+8.3σ</td>
+                        <td><span class="trend-indicator trend-up">↑ 상승</span></td>
+                        <td>AI 분석 실패 (ResourceExhausted)</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">6</span></td>
+                        <td><strong>아이폰</strong></td>
+                        <td>-0.08</td>
+                        <td>+0.9σ</td>
+                        <td><span class="trend-indicator trend-stable">→ 안정</span></td>
+                        <td>AI 분석 실패 (ResourceExhausted)</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">7</span></td>
+                        <td><strong>모니터</strong></td>
+                        <td>-0.14</td>
+                        <td>+0.7σ</td>
+                        <td><span class="trend-indicator trend-stable">→ 안정</span></td>
+                        <td>AI 분석 실패 (ResourceExhausted)</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">8</span></td>
+                        <td><strong>노트북</strong></td>
+                        <td>-0.20</td>
+                        <td>+0.9σ</td>
+                        <td><span class="trend-indicator trend-stable">→ 안정</span></td>
+                        <td>AI 분석 실패 (ResourceExhausted)</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">9</span></td>
+                        <td><strong>엔비디아</strong></td>
+                        <td>-0.72</td>
+                        <td>-0.9σ</td>
+                        <td><span class="trend-indicator trend-down">↓ 하락</span></td>
+                        <td>AI 분석 실패 (ResourceExhausted)</td> </tr>
+                    
+                    <tr>
+                        <td><span class="rank-badge">10</span></td>
+                        <td><strong>tv</strong></td>
+                        <td>-1.20</td>
+                        <td>-5.6σ</td>
+                        <td><span class="trend-indicator trend-down">↓ 하락</span></td>
+                        <td>AI 분석 실패 (ResourceExhausted)</td> </tr>
+                    
+                </tbody>
+            </table>
+
+        </div>
+
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">4</div>
+                <div class="section-title">주요 기업의 금주 활동 분석</div>
+                <div class="section-subtitle">언론 노출량 기반 기업 활동성 평가</div>
+            </div>
+            <div class="section-support">
+                [설명] 기사 속 기업 언급량과 변화를 정량적으로 분석함<br>
+                [역할] 일일이 추적하기 힘든 주요 기업들의 활동을 파악하여 대응 전략을 세울 수 있도록 도움
+            </div> <br>
+
+            <div class="competitor-grid">
+                
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <div class="competitor-name">삼성전자</div>
+                        <div class="activity-trend trend-stable">
+                            Avg. Momentum: → +0.2σ
+                        </div>
+                    </div>
+
+                    <div class="competitor-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">주간 언급량</div>
+                            <div class="metric-value">161</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">주간 최고 모멘텀</div>
+                            <div class="metric-value">+4.29</div>
+                        </div>
+                        </div>
+                    <div class="competitor-insight">
+                         <p>AI 분석 실패 (ResourceExhausted)</p> </div>
+                </div>
+                
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <div class="competitor-name">애플</div>
+                        <div class="activity-trend trend-stable">
+                            Avg. Momentum: → +0.3σ
+                        </div>
+                    </div>
+
+                    <div class="competitor-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">주간 언급량</div>
+                            <div class="metric-value">62</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">주간 최고 모멘텀</div>
+                            <div class="metric-value">+3.54</div>
+                        </div>
+                        </div>
+                    <div class="competitor-insight">
+                         <p>AI 분석 실패 (ResourceExhausted)</p> </div>
+                </div>
+                
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <div class="competitor-name">삼성디스플레이</div>
+                        <div class="activity-trend trend-up">
+                            Avg. Momentum: ↑ +1.8σ
+                        </div>
+                    </div>
+
+                    <div class="competitor-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">주간 언급량</div>
+                            <div class="metric-value">51</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">주간 최고 모멘텀</div>
+                            <div class="metric-value">+5.59</div>
+                        </div>
+                        </div>
+                    <div class="competitor-insight">
+                         <p>AI 분석 실패 (ResourceExhausted)</p> </div>
+                </div>
+                
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <div class="competitor-name">lg전자</div>
+                        <div class="activity-trend trend-up">
+                            Avg. Momentum: ↑ +0.4σ
+                        </div>
+                    </div>
+
+                    <div class="competitor-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">주간 언급량</div>
+                            <div class="metric-value">45</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">주간 최고 모멘텀</div>
+                            <div class="metric-value">+4.12</div>
+                        </div>
+                        </div>
+                    <div class="competitor-insight">
+                         <p>AI 분석 실패 (ResourceExhausted)</p> </div>
+                </div>
+                
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <div class="competitor-name">벤츠</div>
+                        <div class="activity-trend trend-up">
+                            Avg. Momentum: ↑ +2.2σ
+                        </div>
+                    </div>
+
+                    <div class="competitor-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">주간 언급량</div>
+                            <div class="metric-value">45</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">주간 최고 모멘텀</div>
+                            <div class="metric-value">+7.40</div>
+                        </div>
+                        </div>
+                    <div class="competitor-insight">
+                         <p>AI 분석 실패 (ResourceExhausted)</p> </div>
+                </div>
+                
+                <div class="competitor-card">
+                    <div class="competitor-header">
+                        <div class="competitor-name">lg디스플레이</div>
+                        <div class="activity-trend trend-up">
+                            Avg. Momentum: ↑ +1.0σ
+                        </div>
+                    </div>
+
+                    <div class="competitor-metrics">
+                        <div class="metric-item">
+                            <div class="metric-label">주간 언급량</div>
+                            <div class="metric-value">25</div>
+                        </div>
+                        <div class="metric-item">
+                            <div class="metric-label">주간 최고 모멘텀</div>
+                            <div class="metric-value">+3.61</div>
+                        </div>
+                        </div>
+                    <div class="competitor-insight">
+                         <p>AI 분석 실패 (ResourceExhausted)</p> </div>
+                </div>
+                
+            </div>
+
+            
+        </div>
+
+        <div class="section">
+            <div class="section-header">
+                <div class="section-number">5</div>
+                <div class="section-title">미래 신호 발견</div>
+                <div class="section-subtitle">금주의 Weak Signal 분석</div>
+            </div>
+            <div class="section-support">
+                [설명] 이번 주 급등한 초기 신호(Weak Signal)를 통계적으로 분석하여, 의미/주목해야 하는 이유/잠재적 영향을 예측함<br>
+                [역할] 시장 변화의 징후를 선제적으로 탐지하고 대응 전략을 세울 수 있도록 도움
+            </div> <br>
+
+            <div class="weak-signals">
+                
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <div class="signal-title"> 💡 시야각</div>
+                        <div class="signal-badges">
+                            <span class="signal-badge badge-emerging">Emerging</span>
+                            <span class="signal-badge badge-confidence">Low Freq</span>
+                        </div>
+                        </div>
+                    <div class="signal-content">
+                        <div class="signal-main-content">
+                            <div class="signal-description">
+                               <p>LLM 분석 실패</p>
+                                <br><br>
+                             <p>...</p>
+                            </div>
+                                <br>
+                             
+                            <div class="action-section"> <div class="action-title">검증 및 대응 계획</div>
+                                <div class="action-items">
+                                    <div class="action-item">
+                                        <div class="action-label">Next Step</div>
+                                        <div class="action-text"><p>...</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                             
+                        </div>
+                        <div class="signal-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">관측 빈도 (주간)</div>
+                                <div class="meta-value">최근 16회</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">모멘텀 (z-like)</div>
+                                <div class="meta-value">5.5σ</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">누적 언급량 (Total)</div>
+                                <div class="meta-value">16</div>
+                            </div>
+                            </div>
+                        </div>
+                </div>
+                
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <div class="signal-title"> 💡 ul</div>
+                        <div class="signal-badges">
+                            <span class="signal-badge badge-emerging">Emerging</span>
+                            <span class="signal-badge badge-confidence">Low Freq</span>
+                        </div>
+                        </div>
+                    <div class="signal-content">
+                        <div class="signal-main-content">
+                            <div class="signal-description">
+                               <p>LLM 분석 실패</p>
+                                <br><br>
+                             <p>...</p>
+                            </div>
+                                <br>
+                             
+                            <div class="action-section"> <div class="action-title">검증 및 대응 계획</div>
+                                <div class="action-items">
+                                    <div class="action-item">
+                                        <div class="action-label">Next Step</div>
+                                        <div class="action-text"><p>...</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                             
+                        </div>
+                        <div class="signal-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">관측 빈도 (주간)</div>
+                                <div class="meta-value">최근 9회</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">모멘텀 (z-like)</div>
+                                <div class="meta-value">3.6σ</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">누적 언급량 (Total)</div>
+                                <div class="meta-value">10</div>
+                            </div>
+                            </div>
+                        </div>
+                </div>
+                
+                <div class="signal-card">
+                    <div class="signal-header">
+                        <div class="signal-title"> 💡 화웨이</div>
+                        <div class="signal-badges">
+                            <span class="signal-badge badge-emerging">Emerging</span>
+                            <span class="signal-badge badge-confidence">Medium Freq</span>
+                        </div>
+                        </div>
+                    <div class="signal-content">
+                        <div class="signal-main-content">
+                            <div class="signal-description">
+                               <p>LLM 분석 실패</p>
+                                <br><br>
+                             <p>...</p>
+                            </div>
+                                <br>
+                             
+                            <div class="action-section"> <div class="action-title">검증 및 대응 계획</div>
+                                <div class="action-items">
+                                    <div class="action-item">
+                                        <div class="action-label">Next Step</div>
+                                        <div class="action-text"><p>...</p></div>
+                                    </div>
+                                </div>
+                            </div>
+                             
+                        </div>
+                        <div class="signal-meta">
+                            <div class="meta-item">
+                                <div class="meta-label">관측 빈도 (주간)</div>
+                                <div class="meta-value">최근 11회</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">모멘텀 (z-like)</div>
+                                <div class="meta-value">3.6σ</div>
+                            </div>
+                            <div class="meta-item">
+                                <div class="meta-label">누적 언급량 (Total)</div>
+                                <div class="meta-value">34</div>
+                            </div>
+                            </div>
+                        </div>
+                </div>
+                
+            </div>
+        </div>
+
+        
+    </div>
+
+    <div class="footer">
+        <div class="footer-content">
+            <div>
+                “이 보고서는 AI 기반 트렌드 분석 시스템을 통해 작성되었습니다.”<br>
+                문의:  thecki85@gmail.com | 010.5353.1145 <br>
+                - Business Development Team -
+            </div>
+            <!--
+            <div class="footer-links">
+                <a href="#" class="footer-link">월간 전략 대시보드</a>
+                <a href="#" class="footer-link">데이터 소스</a>
+                <a href="#" class="footer-link">분석 방법론</a>
+                <a href="#" class="footer-link">문의하기</a>
+            </div>
+            -->
+        </div>
+    </div>
+</body>
+</html>

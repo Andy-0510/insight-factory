@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 1.938491863s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 1\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "IT쇼 AI 기술 전망",
+      "summary": "월드IT쇼 참가 기업들의 AI 기반 차세대 디스플레이, 반도체, XR 기술 및 사업 전망을 다루는 뉴스입니다.",
+      "words": [
+        "포토",
+        "ai",
+        "월드it쇼",
+        "기반",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "차세대 디스플레이 기술",
+      "summary": "삼성디스플레이의 QD-OLED 패널 기술을 중심으로 한 차세대 디스플레이 소재, 장비, 반도체, 배터리 산업의 투자 및 사업 현황과 실적, 가격, 수요, 공급망 동향을 다룹니다. AI 기술과의 연계 가능성도 함께 살펴봅니다.",
+      "words": [
+        "oled",
+        "디스플레이",
+        "반도체",
+        "기술",
+        "qd"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "삼성 AI TV 신제품",
+      "summary": "삼성전자가 AI 기술을 적용한 2026년형 프리미엄 AI TV 신제품을 유럽 시장에 출시하며, 마이크로 RGB 기술과 갤럭시 연동 경험을 강조합니다.",
+      "words": [
+        "ai",
+        "tv",
+        "삼성전자는",
+        "삼성전자",
+        "갤럭시"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "아우디",
+        "a6",
+        "아우디 a6",
+        "tfsi",
+        "주행"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "폴더블",
+        "주름",
+        "연구팀은",
+        "3d",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "인도",
+        "베트남",
+        "ax",
+        "현지",
+        "산업"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "kosdaq",
+        "회사는",
+        "공시했다",
+        "코스피",
+        "보였다"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "애플",
+        "하드웨어",
+        "ai",
+        "애플은",
+        "애플이"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "전장",
+        "오디오",
+        "하만",
+        "하만은",
+        "하만의"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "단지",
+        "청주",
+        "충남",
+        "지상",
+        "지하"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "스트레칭",
+        "비렉스",
+        "수면",
+        "허리",
+        "모션베드"
+      ]
+    }
+  ],
+  "evidence": {}
+}
