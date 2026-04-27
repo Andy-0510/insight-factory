@@ -1,0 +1,82 @@
+--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---
+Generated at: 2026-04-27T23:08:29.961955Z
+
+================================================================================
+Rank #1: sk하이닉스|삼성전자 (Total Sentences: 803, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.g-enews.com/view.php?ud=202603281924143803fbbec65dfb_1" target="_blank" style="font-weight:600; color:#065f46;">AI 데이터센터 9조 달러 투자, 수익 회수 가능한가 [AI 데이터센터 투자...</a>
+<a href="https://www.seoul.co.kr/news/economy/IT/2026/03/30/20260330030004?wlog_tag3=naver" target="_blank" style="font-weight:600; color:#065f46;">구글 ‘터보퀀트’ 반도체 저승사자냐 시장 키울 촉진제냐</a>
+<a href="https://www.g-enews.com/view.php?ud=202603311908115339fbbec65dfb_1" target="_blank" style="font-weight:600; color:#065f46;">이란 사이버 부대, 미국·이스라엘 기간망 정조준…"키보드 전쟁" 전면...</a>
+
+================================================================================
+Rank #2: lg전자|삼성전자 (Total Sentences: 580, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.newstomato.com/ReadNews.aspx?no=1298257&inflow=N" target="_blank" style="font-weight:600; color:#c41e3a;">플랫폼으로 진화한 TV…중국도 ‘맹추격’</a>
+<a href="http://www.ftoday.co.kr/news/articleView.html?idxno=356899" target="_blank" style="font-weight:600; color:#c41e3a;">"빛 반사 지우고 AI 입혔다"…LG전자, 프리미엄 TV 라인업 공개</a>
+<a href="https://www.news2day.co.kr/article/20260326500078" target="_blank" style="font-weight:600; color:#c41e3a;">[현장] LG전자 '더 넥스트 올레드' 선언…삼성전자 도전에도 자신감 드...</a>
+
+================================================================================
+Rank #3: 구글|애플 (Total Sentences: 335, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.joongang.co.kr/article/25417177" target="_blank" style="font-weight:600; color:#c41e3a;">[심재훈의 마켓 나우] 인천 해사법원, 허브의 꿈 이루려면</a>
+<a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=658275" target="_blank" style="font-weight:600; color:#c41e3a;">AI가 부른 가격 폭등 공포…PC 시장 '선구매 러시'</a>
+<a href="https://www.yna.co.kr/view/AKR20260328005900091?input=1195m" target="_blank" style="font-weight:600; color:#c41e3a;">애플 , 구글서 AI 마케팅 임원 영입…'시리' 개편에 박차</a>
+
+================================================================================
+Rank #4: 삼성전자|애플 (Total Sentences: 315, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.kizmom.com/news/articleView.html?idxno=109179" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자,  애플  꺾었다…스마트폰 1위 탈환</a>
+<a href="https://www.dt.co.kr/article/12056764?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">삼성,  애플  밀어내고 스마트폰 ‘왕좌 탈환’… ‘S26’ 흥행이 견인</a>
+<a href="http://www.ftoday.co.kr/news/articleView.html?idxno=357813" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자, 차세대 '와이드 폼팩터'로 승부수… 폴더블  시장 수성 정조준</a>
+
+================================================================================
+Rank #5: 구글|마이크로소프트 (Total Sentences: 243, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.cbci.co.kr/news/articleView.html?idxno=564439" target="_blank" style="font-weight:600; color:#c41e3a;">[기업家] 아이폰 ㅣ AI·보안·폴더블 등…기술·시장 동시 공략</a>
+<a href="https://www.khan.co.kr/article/202604022106025" target="_blank" style="font-weight:600; color:#c41e3a;">이란, 아마존 데이터센터 공격…‘안보 리스크’ 된 중동 AI 인프라</a>
+<a href="https://www.chosun.com/international/international_general/2026/04/04/G35SKIRWXZFM7CKCG2AXMYSCNQ/?utm_source=naver&utm_medium=referral&utm_campaign=naver-news" target="_blank" style="font-weight:600; color:#c41e3a;">대형 교량 끊었다, 美 ‘석기시대’ 대공세</a>
+
+================================================================================
+Rank #6: 애플|엔비디아 (Total Sentences: 235, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.itbiznews.com/news/articleView.html?idxno=208857" target="_blank" style="font-weight:600; color:#065f46;">레노버 , 산업 현장 최적화 팬리스 솔루션 '싱크엣지' 2종 공개</a>
+<a href="https://www.mk.co.kr/article/12001505" target="_blank" style="font-weight:600; color:#065f46;">인간 흉내낸 AI, 1500억 가치 인정받았다…시장분석·예측 판바꾼 이 회...</a>
+<a href="https://www.g-enews.com/view.php?ud=202603301404365146fbbec65dfb_1" target="_blank" style="font-weight:600; color:#065f46;">이란발 ‘호르무즈 봉쇄’ 공포, 대만 해협 정조준… AI 포트폴리오 ‘...</a>
+
+================================================================================
+Rank #7: 마이크로소프트|애플 (Total Sentences: 222, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.cbci.co.kr/news/articleView.html?idxno=564439" target="_blank" style="font-weight:600; color:#c41e3a;">[기업家] 아이폰 ㅣ AI·보안·폴더블 등…기술·시장 동시 공략</a>
+<a href="https://m.skyedaily.com/news_view.html?ID=301493" target="_blank" style="font-weight:600; color:#c41e3a;">[스카이 View] 픽셀에서 지능으로… AI의 모태 게임산업의 역설</a>
+<a href="https://www.khan.co.kr/article/202604022106025" target="_blank" style="font-weight:600; color:#c41e3a;">이란, 아마존 데이터센터 공격…‘안보 리스크’ 된 중동 AI 인프라</a>
+
+================================================================================
+Rank #8: tcl|소니 (Total Sentences: 220, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.nocutnews.co.kr/news/6491771?utm_source=naver&utm_medium=article&utm_campaign=20260326041641" target="_blank" style="font-weight:600; color:#c41e3a;">LG전자, 초고화질에 AI 탑재한 '올레드TV' 출시…"프리미엄 시장 선도"</a>
+<a href="http://www.ftoday.co.kr/news/articleView.html?idxno=356899" target="_blank" style="font-weight:600; color:#c41e3a;">"빛 반사 지우고 AI 입혔다"…LG전자, 프리미엄 TV 라인업 공개</a>
+<a href="http://www.ftoday.co.kr/news/articleView.html?idxno=356899" target="_blank" style="font-weight:600; color:#c41e3a;">"빛 반사 지우고 AI 입혔다"…LG전자, 프리미엄 TV 라인업 공개</a>
+
+================================================================================
+Rank #9: 삼성디스플레이|삼성전자 (Total Sentences: 196, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://biz.newdaily.co.kr/site/data/html/2026/04/09/2026040900054.html" target="_blank" style="font-weight:600; color:#065f46;">LCD 저물고 QD-OLED 뜬다 … 삼성D, 모니터 패널 500만대 돌파</a>
+<a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=655101" target="_blank" style="font-weight:600; color:#065f46;">삼성디스플레이, QD-OLED 500만 대 출하…프리미엄 모니터 주도</a>
+<a href="https://zdnet.co.kr/view/?no=20260413160945" target="_blank" style="font-weight:600; color:#065f46;">삼성D, 애플 폴더블 패널 6월 하순 양산 돌입</a>
+
+================================================================================
+Rank #10: 구글|메타 (Total Sentences: 192, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.nocutnews.co.kr/news/6504081?utm_source=naver&utm_medium=article&utm_campaign=20260417114338" target="_blank" style="font-weight:600; color:#c41e3a;">세금에 캐디피까지…매킬로이 '그린 재킷'의 비용[오늘점심]</a>
+<a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=646085" target="_blank" style="font-weight:600; color:#c41e3a;">[데일리픽] 구글 압축 알고리즘 '터보퀀트' 공개…XRP 보유해야 하는 이...</a>
+<a href="https://www.cbci.co.kr/news/articleView.html?idxno=564439" target="_blank" style="font-weight:600; color:#c41e3a;">[기업家] 아이폰 ㅣ AI·보안·폴더블 등…기술·시장 동시 공략</a>
