@@ -2589,6 +2589,17 @@
     ]
   },
   "monthly": {
+    "2026-04-28": [
+      {
+        "time": "0809-KST",
+        "reports": [
+          {
+            "name": "monthly_report.html",
+            "path": "outputs/monthly/2026-04-28/0809-KST/monthly_report.html"
+          }
+        ]
+      }
+    ],
     "2026-03-28": [
       {
         "time": "0757-KST",
