@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "디자인",
+        "tv",
+        "디스플레이",
+        "올레드"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "oled",
+        "점유율",
+        "2025년",
+        "기술",
+        "6세대"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "배터리",
+        "ess",
+        "삼성sdi",
+        "미국",
+        "수요"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "신작",
+        "pc",
+        "게임",
+        "시연",
+        "게임을"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "hp",
+        "pc",
+        "업무",
+        "기반"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "3d",
+        "사이니지",
+        "폴더블폰",
+        "디스플레이",
+        "와이드"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "노트북",
+        "뉴스",
+        "코어",
+        "mx",
+        "인텔"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "중국",
+        "가전",
+        "tv",
+        "삼성전자",
+        "사업"
+      ]
+    }
+  ],
+  "evidence": {}
+}
