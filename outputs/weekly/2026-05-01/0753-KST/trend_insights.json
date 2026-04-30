@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 10, model: gemini-2.5-flash-lite\nPlease retry in 51.509972282s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 10\n}\n, retry_delay {\n  seconds: 51\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 반도체와 신규 산업",
+      "summary": "AI 및 반도체 기술 경쟁 심화 속에서 OLED TV, 스마트폰 등 프리미엄 제품과 메모리 반도체 투자가 핵심이며, 2026년까지 신규 산업 및 서비스 분야의 성장이 예상됩니다.",
+      "words": [
+        "ai",
+        "반도체",
+        "탄소",
+        "tv",
+        "올레드"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "LG디스플레이 신기술",
+      "summary": "LG디스플레이가 OLED, QD 등 차세대 디스플레이 기술과 AI, 반도체 사업을 중심으로 1분기 매출 증대 및 프리미엄 제품 생산에 주력하고 있습니다.",
+      "words": [
+        "oled",
+        "디스플레이",
+        "ai",
+        "기술",
+        "사업"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "삼성전자 사업 동향",
+      "summary": "삼성전자의 가전, 반도체, 스마트폰 등 주요 사업 부문의 실적, 생산, 판매, 가격, 성과급, 파업 등 다양한 현지 사업 현황과 동향을 다룹니다.",
+      "words": [
+        "삼성전자",
+        "중국",
+        "가전",
+        "반도체",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "AI 기술 동향",
+      "summary": "AI 기술이 교육, 업무, 보안 등 다양한 산업과 기업에서 핵심적인 역할을 하며, 특히 온디바이스 AI와 구글, HP 등 주요 기업의 기술 개발 및 플랫폼 구축에 대한 내용을 다룹니다.",
+      "words": [
+        "ai",
+        "hp",
+        "ai가",
+        "기반",
+        "교육"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "쿠팡 어린이날 특가",
+      "summary": "쿠팡에서 어린이날을 맞아 인기 브랜드의 가정용품, 가전 등을 할인된 가격으로 판매하는 행사입니다. 매일 새로운 상품과 캐릭터 상품도 선보이며, 결제 시 추가 혜택도 제공합니다.",
+      "words": [
+        "할인",
+        "쿠팡",
+        "브랜드",
+        "가정의",
+        "상품을"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "삼성 GSAT 채용",
+      "summary": "삼성의 상반기 공개 채용에서 GSAT 시험을 통해 인재를 선발하며, 이틀간 진행되는 시험 및 건강검진 등 채용 절차에 대한 내용입니다.",
+      "words": [
+        "삼성은",
+        "gsat",
+        "채용",
+        "공채",
+        "상반기"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "삼성, 공정위 과징금 취소",
+      "summary": "삼성전자 계열사가 공정위의 과징금 부과 처분에 대해 제기한 소송에서 재판부가 공정위의 판단을 취소하고 삼성 측에 유리한 판결을 내린 사건을 다룹니다.",
+      "words": [
+        "재판부는",
+        "과징금",
+        "공정위는",
+        "삼성전자",
+        "취소"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "중국",
+        "베이징",
+        "현대차",
+        "주행",
+        "충전"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "라인게임즈 신작 PC 게임",
+      "summary": "라인게임즈가 플레이엑스포에서 PC 신작 4종을 시연하며, 엠버 블레이드를 포함한 다양한 장르의 게임과 고사양 게이밍 브랜드 '레노버 게이밍'을 선보입니다.",
+      "words": [
+        "신작",
+        "pc",
+        "플레이엑스포",
+        "라인게임즈",
+        "pc 신작"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "소폭",
+        "1분기",
+        "경기",
+        "충청권",
+        "후보"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "디자인",
+        "비스포크",
+        "비스포크 ai",
+        "레드닷",
+        "레드닷 디자인"
+      ]
+    }
+  ],
+  "evidence": {}
+}
