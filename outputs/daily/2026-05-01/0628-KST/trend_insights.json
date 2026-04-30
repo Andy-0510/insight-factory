@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "미디어아트",
+        "콘텐츠를",
+        "아트",
+        "전시",
+        "온실가스"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "차량",
+        "ai",
+        "기능을",
+        "인포테인먼트",
+        "음성"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "1분기",
+        "영업이익",
+        "전장",
+        "유럽",
+        "lg전자"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "애플",
+        "아이패드",
+        "애플은",
+        "애플이"
+      ]
+    }
+  ],
+  "evidence": {}
+}
