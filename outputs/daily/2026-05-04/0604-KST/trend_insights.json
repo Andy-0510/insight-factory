@@ -1,0 +1,30 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "축제",
+        "tv",
+        "지역",
+        "차량"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "문제는",
+        "이다",
+        "전시",
+        "전시는",
+        "무엇일까요"
+      ]
+    }
+  ],
+  "evidence": {}
+}
