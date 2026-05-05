@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "디스플레이",
+        "oled",
+        "동시에",
+        "뉴스"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "tv",
+        "삼성전자",
+        "사업",
+        "중국",
+        "서비스"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "애플",
+        "반도체",
+        "공급망",
+        "애플이",
+        "생산"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "장비",
+        "수요",
+        "상승",
+        "반도체",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "oled",
+        "탠덤",
+        "3세대",
+        "3세대 탠덤",
+        "탠덤 oled"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "할인",
+        "이다",
+        "선물",
+        "문제는",
+        "레노버"
+      ]
+    }
+  ],
+  "evidence": {}
+}
