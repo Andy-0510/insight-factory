@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "천안",
+        "백석동",
+        "단지는",
+        "백석시그니처자이",
+        "브랜드"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "채용",
+        "인재",
+        "기술",
+        "미국",
+        "테크"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "중국",
+        "tv",
+        "가전",
+        "삼성전자는",
+        "사업"
+      ]
+    }
+  ],
+  "evidence": {}
+}
