@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 10, model: gemini-2.5-flash-lite\nPlease retry in 31.877351834s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 10\n}\n, retry_delay {\n  seconds: 31\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 반도체 전쟁",
+      "summary": "AI 기술 발전에 따른 반도체 산업의 경쟁 심화와 관련 기업들의 사업 전략, 특히 한국, 중국, 미국 간의 기술 및 수출 동향을 다룹니다.",
+      "words": [
+        "ai",
+        "반도체",
+        "중국",
+        "디스플레이",
+        "tv"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "차세대 OLED 기술",
+      "summary": "LG디스플레이와 삼성디스플레이가 애플 등 주요 기업을 대상으로 3세대 탠덤 OLED 기술을 기반으로 한 차량용 및 스마트폰용 패널 개발에 집중하고 있다는 내용입니다.",
+      "words": [
+        "oled",
+        "디스플레이",
+        "ai",
+        "탠덤",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "삼성전자 실적 전망",
+      "summary": "삼성전자의 1분기 실적, 특히 메모리 반도체와 가전 사업의 매출 및 영업이익, AI 신제품 판매 동향과 중국 시장 수요, 수익성 변화를 중심으로 다룹니다.",
+      "words": [
+        "tv",
+        "사업",
+        "삼성전자는",
+        "중국",
+        "메모리"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "AI TV 쇼핑",
+      "summary": "삼성 AI TV를 어린이날, 2026년형 신제품 출시 및 프로모션, 할인 등과 연계하여 구매, 시청, 게이밍, 스포츠 등 다양한 경험을 중심으로 다룹니다.",
+      "words": [
+        "ai",
+        "tv",
+        "게이밍",
+        "축구",
+        "구매"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "반도체 실적 AI 기대",
+      "summary": "AI 수요 증가로 인한 반도체 기업들의 실적 성장과 투자 확대, 특히 애플의 실적 개선 및 2026년까지의 성장 기대감을 다루는 내용입니다.",
+      "words": [
+        "상승",
+        "실적",
+        "반도체",
+        "투자",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "현대차 AI 커넥트",
+      "summary": "현대차그룹의 AI 기반 인포테인먼트 및 주행 관련 소프트웨어 서비스, 특히 SDV(Software Defined Vehicle)를 통해 차량 경험을 혁신하는 내용을 다룹니다.",
+      "words": [
+        "차량",
+        "ai",
+        "주행",
+        "인포테인먼트",
+        "기능을"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "호암상 & 삼성 기부",
+      "summary": "삼성과 이재용 회장이 호암재단에 기부하며 학술, 예술, 과학, 공학, 의학 분야 발전에 기여하는 내용입니다.",
+      "words": [
+        "호암재단에",
+        "삼성",
+        "호암재단은",
+        "호암상",
+        "기부"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "삼성전자 성과급 논란",
+      "summary": "삼성전자 노조가 반도체 부문 성과급을 두고 회사를 상대로 파업 및 보상을 요구하며 노사 갈등을 겪고 있습니다.",
+      "words": [
+        "삼성전자",
+        "성과급",
+        "반도체",
+        "노조는",
+        "노조가"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "아산 천안 지역 축제",
+      "summary": "아산과 천안 지역에서 열리는 축제에 대한 내용으로, 특히 백석동, 불당동과 같은 지역 및 삼성디스플레이와 같은 기업, 그리고 백석시그니처자이 아파트 단지와 관련된 축제 및 지역 플랫폼에 대한 정보를 다루고 있습니다.",
+      "words": [
+        "아산",
+        "축제",
+        "천안",
+        "지역",
+        "백석동"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "부산",
+        "전시",
+        "전시는",
+        "작가",
+        "미디어아트"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "문제는",
+        "정답은",
+        "이다",
+        "들어갈",
+        "무엇일까요"
+      ]
+    }
+  ],
+  "evidence": {}
+}
