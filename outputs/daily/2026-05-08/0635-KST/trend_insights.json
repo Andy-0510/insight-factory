@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "텐서",
+        "광학",
+        "led",
+        "적용해",
+        "현대차"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "시리즈",
+        "할인",
+        "삼성전자",
+        "행사"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "중국",
+        "tv",
+        "가전",
+        "삼성전자는",
+        "현지"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "삼성전자",
+        "성과급",
+        "읽는",
+        "노조는",
+        "성과"
+      ]
+    }
+  ],
+  "evidence": {}
+}
