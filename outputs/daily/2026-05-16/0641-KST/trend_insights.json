@@ -1,0 +1,66 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "하이브리드",
+        "차량",
+        "sdv",
+        "주행",
+        "소프트웨어"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "월드컵",
+        "fifa",
+        "차량",
+        "디스플레이",
+        "fifa 월드컵"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "남선알미늄",
+        "최고",
+        "이용할",
+        "커뮤니티",
+        "천안"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "문제는",
+        "이다",
+        "할인",
+        "들어갈",
+        "혜택을"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "디스플레이",
+        "반도체",
+        "tv",
+        "삼성전자"
+      ]
+    }
+  ],
+  "evidence": {}
+}
