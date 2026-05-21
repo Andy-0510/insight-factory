@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 8.037200225s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 8\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 반도체 한국 경쟁",
+      "summary": "AI 시대 핵심인 반도체 및 디스플레이 산업에서 한국 기업들이 미국, 중국 등 경쟁국과 차세대 기술 및 투자 경쟁을 벌이며 1분기 실적 또한 주목받고 있다.",
+      "words": [
+        "ai",
+        "반도체",
+        "oled",
+        "디스플레이",
+        "스마트폰"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "삼성 게이밍 OLED",
+      "summary": "삼성전자가 AI 기반의 마이크로 RGB 기술을 적용한 프리미엄 게이밍 모니터 '오디세이 G8'을 출시하며, 안드로이드 TV와 연동된 새로운 게이밍 경험을 제공합니다.",
+      "words": [
+        "ai",
+        "게이밍",
+        "oled",
+        "오디세이",
+        "모니터"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "반도체 AI 사업 성과",
+      "summary": "삼성전자 등 국내외 반도체 기업들이 AI, 로봇 분야 투자를 늘리며 1분기 실적 및 매출 성장에 집중하고 있습니다. 메모리, 소재, 장비 등 공급망 전반에서 기술 경쟁이 치열하며, 한국과 미국은 생산 및 기술력 강화에, 중국은 파업 등 변수에 주목하고 있습니다.",
+      "words": [
+        "반도체",
+        "ai",
+        "삼성전자",
+        "사업",
+        "실적"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "현대차 신형 그랜저",
+      "summary": "현대차가 신형 그랜저에 SDV와 AI 기술을 최초로 적용하여 주행 경험을 혁신하고, FIFA 월드컵 테마 인포테인먼트 시스템 '커넥트'를 선보입니다.",
+      "words": [
+        "차량",
+        "현대차",
+        "하이브리드",
+        "현대차는",
+        "주행"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "아산 원도심 개발",
+      "summary": "아산 원도심 지역의 주거 단지 분양 및 교통, 커뮤니티 시설 개발과 관련된 내용으로, 지역 발전과 후보들의 공약이 담겨 있습니다.",
+      "words": [
+        "아산",
+        "원도심",
+        "충남",
+        "후보는",
+        "저는"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "11번가 블루투스 특가",
+      "summary": "11번가에서 블루투스 관련 가전제품의 상반기 할인 및 특별 혜택에 대한 정보를 제공합니다.",
+      "words": [
+        "문제는",
+        "정답은",
+        "이다",
+        "들어갈",
+        "블루투스"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "문화예술 활동",
+      "summary": "영화, 게임, 음악 밴드, 유튜브 등 다양한 분야의 아티스트 및 배우들의 활동과 관련 서브컬처 이슈를 다룹니다.",
+      "words": [
+        "영화",
+        "게임",
+        "게임을",
+        "밴드",
+        "라며"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "공급망 탄소 감축",
+      "summary": "현대차, 기아 등 8개 기업이 공급망 내 탄소 감축을 위한 컨소시엄을 구축하고 관련 설비 투자를 결정했습니다. 중견 및 중소기업과의 협력을 통해 탄소 발자국을 줄이고 사회적 책임을 다하는 것을 목표로 합니다.",
+      "words": [
+        "공급망",
+        "탄소",
+        "감축",
+        "규모",
+        "컨소시엄"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "반도체 기술 유출",
+      "summary": "중국으로 반도체 초순수 제조 기술을 유출한 혐의로 전직 컨설턴트 A씨에게 징역형이 선고된 사건입니다.",
+      "words": [
+        "초순수",
+        "위반",
+        "유출",
+        "징역",
+        "첨단기술"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "프랑크푸르트 공항 LG LED",
+      "summary": "LG전자가 독일 프랑크푸르트 공항에 115제곱미터 규모의 대형 LED 사이니지를 설치하고 상업용 디스플레이 시장을 공략하는 내용입니다.",
+      "words": [
+        "공항",
+        "상업용",
+        "프랑크푸르트",
+        "led",
+        "사이니지"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "회로",
+        "커패시터",
+        "amoled",
+        "연구팀은",
+        "디스플레이"
+      ]
+    }
+  ],
+  "evidence": {}
+}
