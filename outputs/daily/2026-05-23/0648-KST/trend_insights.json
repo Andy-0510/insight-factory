@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "스포츠",
+        "tv",
+        "1분기",
+        "lg",
+        "led"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "게임",
+        "게이밍",
+        "플레이엑스포",
+        "신작",
+        "게임 플랫폼"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "가전",
+        "2인",
+        "냉장고",
+        "고객",
+        "론칭"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "스마트폰",
+        "미국",
+        "기능",
+        "소비자",
+        "공동"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "oled",
+        "게이밍",
+        "모니터",
+        "오디세이",
+        "게이밍 모니터"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "성과급",
+        "삼성전자",
+        "노사",
+        "반도체",
+        "dx"
+      ]
+    }
+  ],
+  "evidence": {}
+}
