@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "문제는",
+        "게임",
+        "oled",
+        "웨어러블",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "가능성이",
+        "폴더블",
+        "울트라",
+        "카메라"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "성과급",
+        "삼성전자",
+        "보상",
+        "노사",
+        "삼성"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "반도체",
+        "ai",
+        "투자",
+        "메모리",
+        "코스피"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "게이밍",
+        "pc",
+        "영상",
+        "엣지"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "oled",
+        "패널",
+        "삼성디스플레이는",
+        "페라리",
+        "드라이버"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "실리콘",
+        "광학",
+        "기술",
+        "ai",
+        "기술은"
+      ]
+    }
+  ],
+  "evidence": {}
+}
