@@ -1,0 +1,82 @@
+--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---
+Generated at: 2026-05-27T23:43:31.885327Z
+
+================================================================================
+Rank #1: sk하이닉스|삼성전자 (Total Sentences: 1177, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.segye.com/newsView/20260504512139?OutUrl=naver" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 TV사업 수장 전격 교체… 中 추격 뿌리치고 부활 승부수</a>
+<a href="https://www.betanews.net/article/view/beta202605170021" target="_blank" style="font-weight:600; color:#c41e3a;">삼성은 2023년처럼 해외자금을 다시 끌어올 수 있을까?</a>
+<a href="http://www.the-biz.co.kr/news/articleView.html?idxno=720685" target="_blank" style="font-weight:600; color:#c41e3a;">[특허괴물의 습격①] 'HBM 황금광산'  삼성전자 ·SK하이닉스 노린다</a>
+
+================================================================================
+Rank #2: lg전자|삼성전자 (Total Sentences: 449, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://zdnet.co.kr/view/?no=20260524162954" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 TV 35만대 더 팔 때, TCL은 78만대 더 팔았다</a>
+<a href="https://www.newscj.com/news/articleView.html?idxno=3403611" target="_blank" style="font-weight:600; color:#c41e3a;">글로벌 침체·중국 공세 뚫었다… 삼성·LG '글로벌 1위' 독주</a>
+<a href="https://www.hankyung.com/article/2026050454291" target="_blank" style="font-weight:600; color:#c41e3a;">다이아 스마트폰·로켓 스포츠카…초고가 시장 공략 나선 中 가전업체</a>
+
+================================================================================
+Rank #3: 삼성전자|애플 (Total Sentences: 434, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.thescoop.co.kr/news/articleView.html?idxno=310071" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 AI폰 기선제압했지만… 새 CEO 발탁한 애플이 숨겨놓은 패 [視리즈...</a>
+<a href="https://www.thescoop.co.kr/news/articleView.html?idxno=310071" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 AI폰 기선제압했지만… 새 CEO 발탁한 애플이 숨겨놓은 패 [視리즈...</a>
+<a href="https://www.smartbizn.com/news/articleView.html?idxno=144547" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자, 美 소비자 만족도서 애플 제쳤다···AI 기능 호평 속 '1조달...</a>
+
+================================================================================
+Rank #4: 구글|삼성전자 (Total Sentences: 299, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.00news.co.kr/news/articleView.html?idxno=103509" target="_blank" style="font-weight:600; color:#065f46;">韓 4대그룹 총수 만난 구글 딥마인드 노림수</a>
+<a href="http://www.00news.co.kr/news/articleView.html?idxno=103509" target="_blank" style="font-weight:600; color:#065f46;">韓 4대그룹 총수 만난 구글 딥마인드 노림수</a>
+<a href="https://www.sidae.com/article/2026043014435654585" target="_blank" style="font-weight:600; color:#065f46;">삼성전자  노조 총파업…AI생태계 확장·빅테크 협력 제동 걸리나</a>
+
+================================================================================
+Rank #5: 애플|인텔 (Total Sentences: 242, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.mk.co.kr/article/12036115" target="_blank" style="font-weight:600; color:#065f46;">애플, 삼성 파운드리에 주문 검토나서</a>
+<a href="https://www.mk.co.kr/article/12036115" target="_blank" style="font-weight:600; color:#065f46;">애플, 삼성 파운드리에 주문 검토나서</a>
+<a href="http://www.wowtv.co.kr/NewsCenter/News/Read?articleId=A202605060176&t=NN" target="_blank" style="font-weight:600; color:#065f46;">뉴욕증시, '기름값 안정'에 축제 분위기… AMD·인텔 등 반도체주 훈풍...</a>
+
+================================================================================
+Rank #6: 구글|애플 (Total Sentences: 215, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.segye.com/newsView/20260513515840?OutUrl=naver" target="_blank" style="font-weight:600; color:#c41e3a;">“내 폰에 지능이 들어왔다”… 실생활 AI 비서 시대 본격화</a>
+<a href="https://www.joongang.co.kr/article/25423505" target="_blank" style="font-weight:600; color:#c41e3a;">“삼전·하닉 3년내 1000조 이익…반도체, 파업없는 군대 돼야” [이익 ...</a>
+<a href="https://www.gamechosun.co.kr/webzine/article/view.php?no=221647" target="_blank" style="font-weight:600; color:#c41e3a;">그야말로 눈부시게 빛났다… '승리의 여신 니케', 3.5주년 흥행에 양대...</a>
+
+================================================================================
+Rank #7: lg디스플레이|삼성디스플레이 (Total Sentences: 213, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.sisajournal-e.com/news/articleView.html?idxno=420824" target="_blank" style="font-weight:600; color:#c41e3a;">삼성D·LGD,  OLED  핵심 격전지서 '최고 혁신' 기술 입증</a>
+<a href="https://www.sisajournal-e.com/news/articleView.html?idxno=420824" target="_blank" style="font-weight:600; color:#c41e3a;">삼성D·LGD,  OLED  핵심 격전지서 '최고 혁신' 기술 입증</a>
+<a href="https://www.news2day.co.kr/article/20260422500126" target="_blank" style="font-weight:600; color:#c41e3a;">[투데이 Pick] 삼성·LG디스플레이, 실적 호조에도 웃지 못하는 이유</a>
+
+================================================================================
+Rank #8: 삼성디스플레이|삼성전자 (Total Sentences: 207, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.viva100.com/article/20260519500688" target="_blank" style="font-weight:600; color:#065f46;">정부, 대·중기 탄소감축 설비 구축 지원</a>
+<a href="https://zdnet.co.kr/view/?no=20260519111551" target="_blank" style="font-weight:600; color:#065f46;">앵커-협력기업 ‘원팀’으로 저탄소 산업공급망 구축</a>
+<a href="https://zdnet.co.kr/view/?no=20260514111401" target="_blank" style="font-weight:600; color:#065f46;">씨유테크, 1분기 매출 16% 감소...삼성D 中스마트폰  OLED  사업 영향 풀이</a>
+
+================================================================================
+Rank #9: tcl|하이센스 (Total Sentences: 201, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.segye.com/newsView/20260504512139?OutUrl=naver" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 TV사업 수장 전격 교체… 中 추격 뿌리치고 부활 승부수</a>
+<a href="https://www.mk.co.kr/article/12028929" target="_blank" style="font-weight:600; color:#c41e3a;">"삼성전자, 연내 중국서 TV·가전사업 철수계획"</a>
+<a href="https://www.joongang.co.kr/article/25424180" target="_blank" style="font-weight:600; color:#c41e3a;">“식세기·전자레인지는 외주”…삼성의 선택과 집중</a>
+
+================================================================================
+Rank #10: 애플|엔비디아 (Total Sentences: 194, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.kmib.co.kr/article/view.asp?arcid=1778402438&code=11151400&cp=nv" target="_blank" style="font-weight:600; color:#065f46;">美 정부 ‘인텔 구하기’…  애플 도 칩 생산 맡긴다</a>
+<a href="https://www.etoday.co.kr/news/view/2579238" target="_blank" style="font-weight:600; color:#065f46;">'보이지 않는 피해' 더 치명적⋯‘노동 정당성’ vs ‘국가 경제’ 충돌...</a>
+<a href="https://biz.chosun.com/it-science/ict/2026/04/28/QIOJL7K6CZDBFFJ5AZWBWI73NA/?utm_source=naver&utm_medium=original&utm_campaign=biz" target="_blank" style="font-weight:600; color:#065f46;">[비즈톡톡] “삼성 독점 깨지나” 인텔, 테슬라 AI6 수주 가능성… 파운...</a>

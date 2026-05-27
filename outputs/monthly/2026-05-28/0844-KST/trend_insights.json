@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 10, model: gemini-2.5-flash-lite\nPlease retry in 4.619363603s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 10\n}\n, retry_delay {\n  seconds: 4\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "반도체·디스플레이 기술",
+      "summary": "삼성전자를 중심으로 한국 기업들이 AI, OLED 등 차세대 기술과 스마트폰, 메모리 사업에서 거둔 성과와 미래 전략을 다룹니다. 중국 및 인도 시장과의 경쟁 및 협력도 조명합니다.",
+      "words": [
+        "ai",
+        "반도체",
+        "디스플레이",
+        "삼성전자",
+        "oled"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "삼성전자 AI·OLED 사업",
+      "summary": "삼성전자가 AI 및 OLED 기술을 활용한 반도체, TV, 스마트폰 등 핵심 사업 전반의 1분기 실적과 향후 사업 전략을 다루는 뉴스입니다.",
+      "words": [
+        "ai",
+        "oled",
+        "반도체",
+        "삼성전자",
+        "tv"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "AI 기업의 미래",
+      "summary": "구글의 제미나이 AI 기술을 기반으로 로봇, 안드로이드 등 다양한 기업에서 AI를 활용한 새로운 플랫폼과 에이전트 개발, 업무 효율성 증대, 보안 강화 등의 미래를 조망합니다.",
+      "words": [
+        "ai",
+        "로봇",
+        "제미나이",
+        "기반",
+        "구글"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "현대차 SDV 기술",
+      "summary": "현대자동차가 플레오스 커넥트 인포테인먼트 시스템을 기반으로 AI, 소프트웨어 기술을 적용한 차세대 SUV 차량의 주행 경험과 기능을 소개합니다.",
+      "words": [
+        "차량",
+        "주행",
+        "플레오스",
+        "현대차",
+        "인포테인먼트"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "퀴즈/게임",
+      "summary": "주어진 키워드를 활용하여 문제의 정답을 맞추는 퀴즈 또는 게임에 대한 내용입니다. 블루투스 브랜드, 할인 정보, 여행 관련 힌트 등이 포함될 수 있습니다.",
+      "words": [
+        "문제는",
+        "정답은",
+        "이다",
+        "들어갈",
+        "무엇일까요"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "아산 선거구 경쟁",
+      "summary": "아산 지역 국회의원 선거 후보들이 충남 원도심, 주거, 교통 등 지역 현안을 중심으로 경쟁하는 내용을 다룹니다.",
+      "words": [
+        "아산",
+        "후보는",
+        "충남",
+        "원도심",
+        "아산을"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "플레이엑스포 신작 게임",
+      "summary": "플레이엑스포에서 라인게임즈 등 여러 업체가 PC방, e스포츠 등에서 선보일 신작 게임들을 직접 시연하는 내용을 다룹니다.",
+      "words": [
+        "게임",
+        "pc방",
+        "신작",
+        "플레이엑스포",
+        "pc"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "삼성 채용/감축",
+      "summary": "삼성의 채용 및 인재 감축, 특히 기술, AI, 공급망, 디스플레이 분야에서의 동향과 청년 취업에 미치는 영향, 그리고 ESG 경영과 관련된 온실가스 배출량 감축 노력을 다룹니다.",
+      "words": [
+        "채용",
+        "인재",
+        "삼성은",
+        "gsat",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "LG 올레드 TV",
+      "summary": "LG 올레드 TV의 뛰어난 화질, AI 기능, 디자인, 에보 라인업 등 프리미엄 TV에 대한 소비자 매체의 평가 및 인증 내용을 담고 있습니다.",
+      "words": [
+        "올레드",
+        "lg",
+        "lg 올레드",
+        "tv",
+        "소비자매체"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "닌텐도 스위치 가격 인상",
+      "summary": "닌텐도 스위치 게임기 본체 및 관련 서비스의 가격 인상 소식과 그 배경에 대한 뉴스 토픽입니다.",
+      "words": [
+        "닌텐도",
+        "스위치",
+        "가격",
+        "닌텐도 스위치",
+        "인상"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "환자",
+        "치료",
+        "수술",
+        "의료",
+        "임상"
+      ]
+    }
+  ],
+  "evidence": {}
+}
