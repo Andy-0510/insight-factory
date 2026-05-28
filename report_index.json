@@ -2532,6 +2532,17 @@
     ]
   },
   "weekly": {
+    "2026-05-29": [
+      {
+        "time": "0819-KST",
+        "reports": [
+          {
+            "name": "weekly_report.html",
+            "path": "outputs/weekly/2026-05-29/0819-KST/weekly_report.html"
+          }
+        ]
+      }
+    ],
     "2026-05-22": [
       {
         "time": "0810-KST",
