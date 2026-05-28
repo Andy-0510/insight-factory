@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "게임",
+        "이페이퍼",
+        "ai",
+        "전자"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "광학",
+        "실리콘",
+        "소재",
+        "기술",
+        "기술은"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "oled",
+        "rgb",
+        "모니터",
+        "스트라이프",
+        "rgb 스트라이프"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "360hz",
+        "4k",
+        "qd",
+        "qd oled",
+        "주사율을"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "오디세이",
+        "게이밍",
+        "게이밍 모니터",
+        "6k",
+        "g8"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "반도체",
+        "기업",
+        "매출",
+        "핵심"
+      ]
+    }
+  ],
+  "evidence": {}
+}
