@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "디스플레이",
+        "주행",
+        "반도체",
+        "현대차"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "아트",
+        "삼성 아트",
+        "삼성",
+        "뭉크",
+        "미술관"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "폴더블",
+        "갤럭시",
+        "카메라",
+        "프로"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "장비",
+        "oled",
+        "진공",
+        "잉크젯",
+        "6세대"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "문제는",
+        "이다",
+        "할인",
+        "브랜드",
+        "선보인다"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "소프트웨어",
+        "자동차",
+        "차량용",
+        "디스플레이",
+        "lg디스플레이는"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "외국인",
+        "코스피",
+        "오른",
+        "반면",
+        "삼성전기"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "삼성전자는",
+        "메모리",
+        "기술",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "oled",
+        "게이밍",
+        "qd",
+        "컴퓨텍스",
+        "최신"
+      ]
+    }
+  ],
+  "evidence": {}
+}
