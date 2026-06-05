@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "요가",
+        "pc",
+        "월드컵",
+        "코어"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "tv",
+        "매출",
+        "삼성전자는",
+        "점유율을",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "반도체",
+        "코스피",
+        "미국",
+        "하락했다",
+        "급락"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "oled",
+        "게이밍",
+        "모니터",
+        "게이밍 oled",
+        "lg디스플레이는"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "장비",
+        "배터리",
+        "매출",
+        "투자",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "젠슨",
+        "ceo는",
+        "한국",
+        "엔비디아의"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "컴퓨텍스",
+        "게이밍",
+        "컴퓨텍스 2026",
+        "엔비디아"
+      ]
+    }
+  ],
+  "evidence": {}
+}
