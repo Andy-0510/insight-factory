@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "시장은",
+        "아주",
+        "훌륭한",
+        "산업",
+        "문화"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "문제는",
+        "정답은",
+        "브랜드",
+        "이다",
+        "상품을"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "삼성전자",
+        "삼성",
+        "삼성디스플레이",
+        "전자",
+        "지난달"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "tv",
+        "디스플레이",
+        "기술",
+        "한국"
+      ]
+    }
+  ],
+  "evidence": {}
+}
