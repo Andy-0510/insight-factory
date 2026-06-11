@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "xr",
+        "헌혈",
+        "갤럭시",
+        "게임",
+        "삼성전자"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "접합",
+        "디스플레이",
+        "etri",
+        "마이크로",
+        "led"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "할인",
+        "문제는",
+        "정답은",
+        "월드컵",
+        "이다"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "하반기",
+        "사업",
+        "반도체",
+        "상무"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "oled",
+        "로봇",
+        "디스플레이",
+        "중국",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "차량",
+        "구독",
+        "실내",
+        "가전",
+        "현대차"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "oled",
+        "맥북",
+        "갤럭시",
+        "울트라",
+        "갤럭시z"
+      ]
+    }
+  ],
+  "evidence": {}
+}
