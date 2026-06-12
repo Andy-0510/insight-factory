@@ -1,0 +1,709 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Briefing (2026-06-13)</title>
+    <style>
+        /* CSS 스타일은 제공해주신 내용과 동일하게 유지합니다. */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #f5f7fa;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .email-container {
+            max-width: 100%; /* 960px -> 100%로 변경 */
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .header {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            padding: 32px 40px;
+            color: #ffffff;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .logo {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #0066ff; /* 로고 색상 유지 또는 변경 가능 */
+            text-transform: uppercase;
+        }
+        .date {
+            font-size: 13px;
+            color: #a0aec0;
+        }
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #cbd5e0;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .section-number {
+            width: 32px;
+            height: 32px;
+            background: #0066ff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            margin-right: 12px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        .section-subtitle { 
+            font-size: 14px;
+            color: #718096;
+            margin-left: auto;
+        }
+        /* 그래프 이미지를 위한 스타일 추가 (선택 사항) */
+        img.report-graph {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #e2e8f0;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            display: block; /* 가운데 정렬 등을 위해 block으로 설정 */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .metric-box {
+            background: #f7fafc;
+            border-left: 4px solid #0066ff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            align-items: baseline; /* 값과 레이블 정렬 */
+        }
+        .metric-label {
+            font-size: 13px;
+            color: #718096;
+            font-weight: 500;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        .metric-change {
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .change-up { color: #38a169; } /* 초록색으로 변경 */
+        .change-down { color: #e53e3e; } /* 빨간색으로 변경 */
+        .change-neutral { color: #718096; }
+        .spike-alert {
+            background: #fff5e6;
+            border: 1px solid #ff9500; /* 테두리 약간 얇게 */
+            border-left: 4px solid #ff9500; /* 왼쪽 강조 */
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .alert-icon {
+            font-size: 20px;
+            margin-right: 12px;
+            color: #ff9500; /* 아이콘 색상 */
+        }
+        .alert-text {
+            font-size: 14px;
+            color: #744210;
+            line-height: 1.5;
+        }
+        .topic-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .topic-rank {
+            background: #0066ff;
+            color: white;
+            min-width: 28px; /* 최소 너비 보장 */
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 0 4px; /* 내용 길어질 경우 대비 */
+        }
+        .topic-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a2332;
+            flex: 1;
+            margin-left: 12px;
+        }
+        .topic-score {
+            font-size: 13px;
+            color: #718096;
+            background: #f7fafc;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+        .topic-description {
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+        .action-block {
+            background: #f7fafc;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .action-item { margin-bottom: 12px; }
+        .action-item:last-child { margin-bottom: 0; }
+        .action-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0066ff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .action-text {
+            font-size: 13px;
+            color: #2d3748;
+            line-height: 1.5;
+        }
+        .event-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #00b8a9;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .event-meta {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #718096;
+        }
+        .event-type {
+            background: #00b8a9;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-right: 8px;
+            text-transform: uppercase; /* 이벤트 타입 대문자 */
+        }
+        .event-company {
+            font-weight: 600;
+            color: #1a2332;
+        }
+        .event-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 8px;
+        }
+        .event-impact {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+        .article-link {
+            display: block;
+            background: #f7fafc;
+            border-left: 3px solid #0066ff;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: inherit;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .article-link:hover {
+            background: #edf2f7;
+            border-left-color: #00b8a9;
+        }
+        .article-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 4px;
+        }
+        /* 기사 요약 스타일 추가 */
+        .article-summary {
+            font-size: 13px;
+            color: #4a5568;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        .article-meta {
+            font-size: 12px;
+            color: #718096;
+        }
+        .footer {
+            background: #f7fafc;
+            padding: 24px 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #718096;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer-links { margin-top: 12px; }
+        .footer-link {
+            color: #0066ff;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        /* --- ▼▼▼ Spike Action Item CSS ▼▼▼ --- */
+        .alert-action-list {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #ffc966; /* 주황색 구분선 */
+            list-style-type: none; /* 기본 불릿 제거 */
+            padding-left: 0;
+        }
+        .alert-action-item {
+            font-size: 13px;
+            font-weight: 600;
+            color: #744210; /* 어두운 주황색 계열 텍스트 */
+            position: relative;
+            padding-left: 20px; /* 아이콘을 위한 공간 */
+            margin-bottom: 6px;
+        }
+        .alert-action-item::before {
+            content: '➡️'; /* 액션 아이콘 */
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #ff9500; /* 아이콘 색상 */
+        }
+        .action-label-interpretation {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0066ff; /* 테마 파란색 */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .action-text-interpretation {
+            font-size: 13px;
+            color: #0066ff; /* 테마 파란색 */
+            font-weight: 600; /* 굵게 */
+            line-height: 1.5;
+        }
+        /* --- ▼▼▼ 2xN Grid CSS (신호용) ▼▼▼ --- */
+        .signal-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+            align-items: start;
+        }
+        /* 화면이 600px보다 작아지면 1줄로 변경 */
+        @media (max-width: 600px) {
+            .signal-grid-2col { grid-template-columns: 1fr; }
+        }
+        /* --- ▼▼▼ Event Fact Summary CSS ▼▼▼ --- */
+        .event-fact-summary {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.5;
+            margin-top: 10px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        .section-support {
+            font-size: 14px;
+            color: #535a64;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        /* --- ▲▲▲ CSS 추가 완료 ▲▲▲ --- */
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">Insight Factory</div>
+                <div class="date">2026.06.13 (토)</div>
+            </div>
+            <div class="title">Daily Briefing</div>
+            <div class="subtitle">오늘의 시장 트렌드 한눈에 보기</div>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <div class="section-title">시장 활동 지표</div>
+                    <div class="section-subtitle">기사량 추세 & 이상 징후 탐지</div>
+                </div>
+                <div class="section-support">
+                시장의 '전체 기사량'이 평소보다 비정상적으로 급증했는지(Spike)를 차트로 확인하고, LLM이 분석한 급등의 핵심 원인을 파악할 수 있음
+                </div> <br>
+
+                <img src="fig/timeseries.png" alt="시장 활동량 시계열 그래프" class="report-graph">
+                <div class="section-subtitle">고관여 기사란? 산업 연관 키워드로 수집된 기사들 중 디스플레이 키워드에 가중치를 반영하여 도출된 관련성 높은 기사</div>
+
+                <div class="metric-box">
+                    <div class="metric-row">
+                        <div class="metric-label">수집된 기사 수 (2026-06-12)</div>
+                        <div>
+                            <span class="metric-value">376</span>
+                            <span class="metric-change change-down">-6% WoW</span>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">기사량 변동 수준 (7일 이동평균 대비)</div>
+                        <div>
+                            <span class="metric-value">±6.7% 이하</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+            <br><br>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <div class="section-title">오늘의 키워드</div>
+                    <div class="section-subtitle">급격한 관심 ↑, 주목해야 할 키워드</div>
+                </div>
+
+                <div class="signal-grid-2col">
+
+                    
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">1</div>
+                            <div class="topic-name">tcl</div>
+                            <div class="topic-score">+1.8σ</div>
+                        </div>
+                        <div class="topic-description">
+                            TCL, 쿠팡과 국가대표 응원 연계 프로모션 진행으로 소비자 관심 증폭.
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 4, 전일 대비: +4</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">온라인 판매채널 강화 효과</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">&#39;tcl&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">2</div>
+                            <div class="topic-name">기아</div>
+                            <div class="topic-score">+1.6σ</div>
+                        </div>
+                        <div class="topic-description">
+                            기아가 장애인 문화 접근성 확대를 위한 사회공헌 활동 강화로 긍정적 관심 증대.
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 3, 전일 대비: +3</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">ESG 경영 성과 부각</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">&#39;기아&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
+                            </div>
+                        </div>
+                    </div>
+                         </div>
+                    </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <div class="section-title">실시간 Risk 키워드</div>
+                    <div class="section-subtitle">경계해야 할 시그널 탐지</div>                    
+                </div>
+                <div class="section-support">
+                특정 토픽의 부정 감성 점수가 급등할 때 이를 즉시 탐지하고, "근거 기사" 링크를 통해 리스크의 실체를 빠르게 파악할 수 있음
+                </div> <br>
+                
+                
+                    <p>키워드 분석 결과, 오늘은 걱정할 만한 하락 신호가 없습니다. (부정 언급량 변화: +1.5σ 이내)</p>
+                
+            </div>
+
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <div class="section-title">주요 이벤트 모니터링</div>
+                    <div class="section-subtitle">실시간 산업 동향 파악을 위한 주요 활동</div>
+                </div>
+                <div class="section-support">
+                최근 발생한 주요 기업들의 신제품 출시, 투자 등 주요 이벤트를 제공하여 매일 경쟁사 동향을 확인할 수 있음
+                </div> <br>
+
+                
+                <div class="event-item" style="border-left-color: #10b981;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #10b981;">INVEST</span>
+                        <span> · 2026-06-12</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=459716" target="_blank" style="color: inherit; text-decoration: none;">
+                            OLED 가치사슬, 장기 성장 국면 진입: 디스플레이 시장 패러다임 전환
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        글로벌 디스플레이 시장에서 OLED 가치사슬이 장기 성장 국면에 진입하며 시장의 패러다임 전환을 예고하고 있습니다. 이는 OLED 기술의 지속적인 발전과 적용 확대에 기반한 것으로 분석됩니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">OLED 기술의 우위가 더욱 강화되어 LCD와의 격차가 벌어지고, 관련 부품 및 소재 시장에도 긍정적인 영향을 미치며 전반적인 디스플레이 산업의 고부가가치화가 가속화될 것입니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">OLED 생산 역량 강화, 차세대 OLED 기술 개발 투자 확대, 그리고 OLED 생태계 내 파트너십 강화를 통해 시장 주도권을 확보해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #6366f1;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #6366f1;">CERT</span>
+                        <span> · 2026-06-12</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="http://dream.kotra.or.kr/kotranews/cms/news/actionKotraBoardDetail.do?SITE_NO=3&amp;MENU_ID=100&amp;CONTENTS_NO=1&amp;bbsGbn=322&amp;bbsSn=322&amp;pNttSn=241988" target="_blank" style="color: inherit; text-decoration: none;">
+                            쓰촨성, 한국 중간재 기업 투자 기회 모색
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        중국 서부 최대 경제권인 쓰촨성이 한국의 중간재 기업에 대한 투자 기회를 적극적으로 모색하고 있습니다. 이는 쓰촨성의 경제 발전 전략과 한국 기업의 경쟁력을 결합하려는 움직임입니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">쓰촨성 내 디스플레이 중간재 관련 기업들의 생산 능력 확대 및 기술 이전 가능성을 높여, 중국 내 디스플레이 공급망 강화에 기여할 수 있습니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">잠재적 투자 기회를 평가하고, 쓰촨성 정부와의 협력 가능성 및 현지 시장 진출 전략을 검토합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #6366f1;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #6366f1;">CERT</span>
+                        <span> · 2026-06-12</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.cbci.co.kr/news/articleView.html?idxno=581590" target="_blank" style="color: inherit; text-decoration: none;">
+                            삼성전자, AI·반도체 초격차 위한 레인보우로보틱스 투자
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        삼성전자가 AI 및 반도체 초격차 전략의 일환으로 레인보우로보틱스 투자를 가속화하고 있습니다. 이는 미래 기술 경쟁력 확보를 위한 전략적 움직임입니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">이 투자는 AI와 반도체 기술의 융합을 촉진하여, 향후 디스플레이 기술 발전 방향에 AI 기반의 새로운 인터페이스 및 스마트 기능 통합을 가속화할 수 있습니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">디스플레이 제조 기업은 AI 기술과의 접목을 통해 사용자 경험을 향상시키고, 스마트 디스플레이 시장에서의 경쟁 우위를 확보하기 위한 기술 개발 및 전략을 모색해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #3b82f6;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #3b82f6;">LAUNCH</span>
+                        <span> · 2026-06-12</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.ddaily.co.kr/page/view/2026060916361642165" target="_blank" style="color: inherit; text-decoration: none;">
+                            인텔 하이브리드 CPU, HP·레노버·델·네이버 등 시장 확대
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        인텔이 하이브리드 CPU를 HP, 레노버, 델 등 주요 PC 제조사뿐만 아니라 한국의 네이버까지 공급하며 시장 확대를 꾀하고 있습니다. 이는 다양한 기기에서의 인텔 CPU 채택 증가를 의미합니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">인텔 하이브리드 CPU의 광범위한 채택은 PC 및 기타 IT 기기의 성능 향상과 전력 효율성 개선을 가져와, 해당 기기에 탑재되는 디스플레이 패널의 수요 및 기술 요구사항에 영향을 미칠 수 있습니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">디스플레이 제조 기업은 인텔 하이브리드 CPU 기반 기기들의 구체적인 성능 및 전력 효율 특성을 파악하여, 이에 최적화된 고성능·고효율 디스플레이 솔루션 개발 및 제안을 준비해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                 </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">5</div>
+                    <div class="section-title">지금 주목해야 할 뉴스 TOP 3</div>
+                </div>
+
+                
+                <a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=459712" class="article-link" target="_blank"> <div class="article-title">
+                        기업가치 제고 지표 가시화에 수급 폭발…코리아 밸류업 지수 테마, 사...
+                    </div>
+                    <div class="article-meta">핀포인트뉴스 · 2026-06-12</div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+                <a href="https://www.cbci.co.kr/news/articleView.html?idxno=581590" class="article-link" target="_blank"> <div class="article-title">
+                        [기업家] 삼성전자 ⑭ㅣAI·반도체 초격차 전략 가속…레인보우로보틱스...
+                    </div>
+                    <div class="article-meta">CBC뉴스 | CBCNEWS · 2026-06-12</div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+                <a href="https://www.ddaily.co.kr/page/view/2026060916361642165" class="article-link" target="_blank"> <div class="article-title">
+                        [인텔 어게인 CPU] ④ HP·레노버·델부터 韓 네이버까지…‘인텔 하이브...
+                    </div>
+                    <div class="article-meta">디지털데일리 · </div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>
+                “이 보고서는 AI 기반 트렌드 분석 시스템을 통해 작성되었습니다.”<br>
+                문의:  thecki85@gmail.com | 010.5353.1145 <br>
+                - Business Development Team -
+            </div>
+            <!--
+            <div class="footer-links">
+                <a href="#" class="footer-link">대시보드 보기</a> |
+                <a href="#" class="footer-link">설정 변경</a> |
+                <a href="#" class="footer-link">수신거부</a>
+            </div>
+            -->
+        </div>
+    </div>
+</body>
+</html>
