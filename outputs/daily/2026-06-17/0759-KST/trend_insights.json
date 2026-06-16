@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "비스포크",
+        "ict",
+        "비스포크 ai",
+        "브랜드"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "수도권",
+        "충남",
+        "태안",
+        "연결하는",
+        "고속도로"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "tv",
+        "월드컵",
+        "북미",
+        "미니",
+        "미니 led"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "호텔",
+        "호텔용",
+        "프레임",
+        "tv",
+        "아트"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "oled",
+        "실적",
+        "2분기",
+        "lg디스플레이의",
+        "일회성"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "사업",
+        "하반기",
+        "반도체",
+        "삼성전자는"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "시험",
+        "전장",
+        "자동화",
+        "부품",
+        "전장 부품"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "토요타",
+        "차량",
+        "포토",
+        "전기차",
+        "하이브리드"
+      ]
+    }
+  ],
+  "evidence": {}
+}
