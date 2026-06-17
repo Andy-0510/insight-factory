@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Briefing (2026-06-18)</title>
+    <style>
+        /* CSS 스타일은 제공해주신 내용과 동일하게 유지합니다. */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #f5f7fa;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .email-container {
+            max-width: 100%; /* 960px -> 100%로 변경 */
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .header {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            padding: 32px 40px;
+            color: #ffffff;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .logo {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #0066ff; /* 로고 색상 유지 또는 변경 가능 */
+            text-transform: uppercase;
+        }
+        .date {
+            font-size: 13px;
+            color: #a0aec0;
+        }
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #cbd5e0;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .section-number {
+            width: 32px;
+            height: 32px;
+            background: #0066ff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            margin-right: 12px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        .section-subtitle { 
+            font-size: 14px;
+            color: #718096;
+            margin-left: auto;
+        }
+        /* 그래프 이미지를 위한 스타일 추가 (선택 사항) */
+        img.report-graph {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #e2e8f0;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            display: block; /* 가운데 정렬 등을 위해 block으로 설정 */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .metric-box {
+            background: #f7fafc;
+            border-left: 4px solid #0066ff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            align-items: baseline; /* 값과 레이블 정렬 */
+        }
+        .metric-label {
+            font-size: 13px;
+            color: #718096;
+            font-weight: 500;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        .metric-change {
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .change-up { color: #38a169; } /* 초록색으로 변경 */
+        .change-down { color: #e53e3e; } /* 빨간색으로 변경 */
+        .change-neutral { color: #718096; }
+        .spike-alert {
+            background: #fff5e6;
+            border: 1px solid #ff9500; /* 테두리 약간 얇게 */
+            border-left: 4px solid #ff9500; /* 왼쪽 강조 */
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .alert-icon {
+            font-size: 20px;
+            margin-right: 12px;
+            color: #ff9500; /* 아이콘 색상 */
+        }
+        .alert-text {
+            font-size: 14px;
+            color: #744210;
+            line-height: 1.5;
+        }
+        .topic-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .topic-rank {
+            background: #0066ff;
+            color: white;
+            min-width: 28px; /* 최소 너비 보장 */
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 0 4px; /* 내용 길어질 경우 대비 */
+        }
+        .topic-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a2332;
+            flex: 1;
+            margin-left: 12px;
+        }
+        .topic-score {
+            font-size: 13px;
+            color: #718096;
+            background: #f7fafc;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+        .topic-description {
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+        .action-block {
+            background: #f7fafc;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .action-item { margin-bottom: 12px; }
+        .action-item:last-child { margin-bottom: 0; }
+        .action-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0066ff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .action-text {
+            font-size: 13px;
+            color: #2d3748;
+            line-height: 1.5;
+        }
+        .event-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #00b8a9;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .event-meta {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #718096;
+        }
+        .event-type {
+            background: #00b8a9;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-right: 8px;
+            text-transform: uppercase; /* 이벤트 타입 대문자 */
+        }
+        .event-company {
+            font-weight: 600;
+            color: #1a2332;
+        }
+        .event-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 8px;
+        }
+        .event-impact {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+        .article-link {
+            display: block;
+            background: #f7fafc;
+            border-left: 3px solid #0066ff;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: inherit;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .article-link:hover {
+            background: #edf2f7;
+            border-left-color: #00b8a9;
+        }
+        .article-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 4px;
+        }
+        /* 기사 요약 스타일 추가 */
+        .article-summary {
+            font-size: 13px;
+            color: #4a5568;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        .article-meta {
+            font-size: 12px;
+            color: #718096;
+        }
+        .footer {
+            background: #f7fafc;
+            padding: 24px 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #718096;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer-links { margin-top: 12px; }
+        .footer-link {
+            color: #0066ff;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        /* --- ▼▼▼ Spike Action Item CSS ▼▼▼ --- */
+        .alert-action-list {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #ffc966; /* 주황색 구분선 */
+            list-style-type: none; /* 기본 불릿 제거 */
+            padding-left: 0;
+        }
+        .alert-action-item {
+            font-size: 13px;
+            font-weight: 600;
+            color: #744210; /* 어두운 주황색 계열 텍스트 */
+            position: relative;
+            padding-left: 20px; /* 아이콘을 위한 공간 */
+            margin-bottom: 6px;
+        }
+        .alert-action-item::before {
+            content: '➡️'; /* 액션 아이콘 */
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #ff9500; /* 아이콘 색상 */
+        }
+        .action-label-interpretation {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0066ff; /* 테마 파란색 */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .action-text-interpretation {
+            font-size: 13px;
+            color: #0066ff; /* 테마 파란색 */
+            font-weight: 600; /* 굵게 */
+            line-height: 1.5;
+        }
+        /* --- ▼▼▼ 2xN Grid CSS (신호용) ▼▼▼ --- */
+        .signal-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+            align-items: start;
+        }
+        /* 화면이 600px보다 작아지면 1줄로 변경 */
+        @media (max-width: 600px) {
+            .signal-grid-2col { grid-template-columns: 1fr; }
+        }
+        /* --- ▼▼▼ Event Fact Summary CSS ▼▼▼ --- */
+        .event-fact-summary {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.5;
+            margin-top: 10px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        .section-support {
+            font-size: 14px;
+            color: #535a64;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        /* --- ▲▲▲ CSS 추가 완료 ▲▲▲ --- */
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">Insight Factory</div>
+                <div class="date">2026.06.18 (목)</div>
+            </div>
+            <div class="title">Daily Briefing</div>
+            <div class="subtitle">오늘의 시장 트렌드 한눈에 보기</div>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <div class="section-title">시장 활동 지표</div>
+                    <div class="section-subtitle">기사량 추세 & 이상 징후 탐지</div>
+                </div>
+                <div class="section-support">
+                시장의 '전체 기사량'이 평소보다 비정상적으로 급증했는지(Spike)를 차트로 확인하고, LLM이 분석한 급등의 핵심 원인을 파악할 수 있음
+                </div> <br>
+
+                <img src="fig/timeseries.png" alt="시장 활동량 시계열 그래프" class="report-graph">
+                <div class="section-subtitle">고관여 기사란? 산업 연관 키워드로 수집된 기사들 중 디스플레이 키워드에 가중치를 반영하여 도출된 관련성 높은 기사</div>
+
+                <div class="metric-box">
+                    <div class="metric-row">
+                        <div class="metric-label">수집된 기사 수 (2026-06-17)</div>
+                        <div>
+                            <span class="metric-value">502</span>
+                            <span class="metric-change change-up">+22% WoW</span>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">기사량 변동 수준 (7일 이동평균 대비)</div>
+                        <div>
+                            <span class="metric-value">±6.7% 이하</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+            <br><br>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <div class="section-title">오늘의 키워드</div>
+                    <div class="section-subtitle">급격한 관심 ↑, 주목해야 할 키워드</div>
+                </div>
+
+                <div class="signal-grid-2col">
+
+                    
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">1</div>
+                            <div class="topic-name">xr</div>
+                            <div class="topic-score">+6.6σ</div>
+                        </div>
+                        <div class="topic-description">
+                            삼성디스플레이의 차세대 XR 디스플레이 기술 발표로 관련주 동반 급등
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 38, 전일 대비: +33</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">XR 시장 선점 경쟁 심화</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">&#39;xr&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">2</div>
+                            <div class="topic-name">하이센스</div>
+                            <div class="topic-score">+6.1σ</div>
+                        </div>
+                        <div class="topic-description">
+                            삼성전자와의 북미 AI 및 미니 LED TV 시장 경쟁 심화로 하이센스가 주목받고 있습니다.
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 26, 전일 대비: +18</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">기술 경쟁 촉진</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">&#39;하이센스&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">3</div>
+                            <div class="topic-name">삼성디스플레이</div>
+                            <div class="topic-score">+5.5σ</div>
+                        </div>
+                        <div class="topic-description">
+                            삼성디스플레이, 차세대 XR 기기 핵심 부품인 고휘도 RGB 올레도스 공개하며 시장 선점 나서
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 17, 전일 대비: +17</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">XR 부품 시장 선도</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">주요 기업 &#39;삼성디스플레이&#39;의 이벤트가 감지되었습니다. 4번 섹션(주요 기업 EVENTS)에서 상세 내용을 확인하세요.</div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">4</div>
+                            <div class="topic-name">서피스</div>
+                            <div class="topic-score">+3.6σ</div>
+                        </div>
+                        <div class="topic-description">
+                            마이크로소프트가 AI 성능 강화한 신형 서피스 라인업을 출시하며 AI PC 시장 경쟁을 주도했습니다.
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 9, 전일 대비: +9</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">AI PC 수요 증가 예상</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">&#39;서피스&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
+                            </div>
+                        </div>
+                    </div>
+                         </div>
+                    </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <div class="section-title">실시간 Risk 키워드</div>
+                    <div class="section-subtitle">경계해야 할 시그널 탐지</div>                    
+                </div>
+                <div class="section-support">
+                특정 토픽의 부정 감성 점수가 급등할 때 이를 즉시 탐지하고, "근거 기사" 링크를 통해 리스크의 실체를 빠르게 파악할 수 있음
+                </div> <br>
+                
+                
+                    <p>키워드 분석 결과, 오늘은 걱정할 만한 하락 신호가 없습니다. (부정 언급량 변화: +1.5σ 이내)</p>
+                
+            </div>
+
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <div class="section-title">주요 이벤트 모니터링</div>
+                    <div class="section-subtitle">실시간 산업 동향 파악을 위한 주요 활동</div>
+                </div>
+                <div class="section-support">
+                최근 발생한 주요 기업들의 신제품 출시, 투자 등 주요 이벤트를 제공하여 매일 경쟁사 동향을 확인할 수 있음
+                </div> <br>
+
+                
+                <div class="event-item" style="border-left-color: #6366f1;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #6366f1;">CERT</span>
+                        <span> · 2026-06-17</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.econovill.com/news/articleView.html?idxno=742676" target="_blank" style="color: inherit; text-decoration: none;">
+                            BOE, 저수율 8.6세대 OLED 양산 강행, 삼성D는 실리적 대응
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        BOE는 낮은 수율에도 불구하고 8.6세대 OLED 양산을 시작했으며, 이는 삼성디스플레이가 수익성을 고려한 실리적 대응을 취하도록 압박하고 있습니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">BOE의 8.6세대 OLED 양산 강행은 IT용 OLED 패널 시장의 공급 확대와 가격 경쟁 심화를 야기하여 삼성디스플레이의 시장 점유율 및 수익성에 영향을 줄 수 있습니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">삼성디스플레이는 BOE의 저가 공세에 대응하여 고부가가치 제품 라인업 강화 및 차세대 기술 개발 투자로 경쟁 우위를 확보해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #3b82f6;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #3b82f6;">LAUNCH</span>
+                        <span> · 2026-06-17</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.inven.co.kr/webzine/news/?news=317544" target="_blank" style="color: inherit; text-decoration: none;">
+                            MS, 스냅드래곤 X 탑재 신형 서피스 프로/랩탑 국내 출시
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        마이크로소프트가 퀄컴의 스냅드래곤 X 엘리트 및 X 플러스 칩을 탑재한 새로운 서피스 프로와 서피스 랩탑을 국내 시장에 공식 출시했습니다. 이번 신제품들은 AI 기능 강화와 함께 향상된 성능 및 배터리 효율성을 특징으로 합니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">ARM 기반 고성능 노트북 시장의 성장을 가속화하고, 디스플레이 패널 업계에서는 고해상도, 고주사율, OLED 등 프리미엄 디스플레이 채택률 증가에 긍정적인 영향을 줄 수 있습니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">고성능, 고효율 디스플레이 기술 개발 및 생산 능력 확보에 집중하여 MS와 같은 주요 OEM사의 차세대 디바이스 수요에 적극적으로 대응해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #6366f1;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #6366f1;">CERT</span>
+                        <span> · 2026-06-17</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="http://www.4th.kr/news/articleView.html?idxno=2113271" target="_blank" style="color: inherit; text-decoration: none;">
+                            이마트 17주년 기념 할인 행사, 가전 구매 촉진 가능성
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        이마트가 창립 17주년을 맞아 대규모 할인 행사를 진행한다. 이번 행사는 다양한 상품군에 걸쳐 할인이 적용될 예정으로, 소비자들의 구매 심리를 자극할 것으로 보인다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">이마트의 할인 행사는 TV 및 기타 디스플레이를 포함한 가전제품 판매량 증가를 유도하여 단기적으로는 디스플레이 제조사들의 매출 증대에 긍정적인 영향을 줄 수 있다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">행사 대상 디스플레이 제품의 재고 관리 및 판촉 프로모션 강화 방안을 검토해야 한다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #3b82f6;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #3b82f6;">LAUNCH</span>
+                        <span> · 2026-06-17</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.ddaily.co.kr/page/view/2026061709575627742" target="_blank" style="color: inherit; text-decoration: none;">
+                            삼성D, 초고휘도 RGB 올레도스로 차세대 XR 시장 공략
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        삼성디스플레이가 차세대 XR 시장을 겨냥하여 초고휘도 &#39;RGB 올레도스&#39;를 출시했습니다. 이는 기존 기술 대비 월등한 성능으로 XR 기기의 몰입감을 극대화할 것으로 기대됩니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">이번 삼성디스플레이의 신제품 출시는 XR 기기의 핵심 부품 경쟁력을 강화하고, 관련 디스플레이 기술 발전을 가속화하여 XR 시장의 성장을 견인할 것입니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">경쟁사들은 고휘도 및 고해상도 올레도스 기술 개발에 집중하고, XR 기기 제조사들과의 협력을 통해 차세대 XR 디스플레이 시장에서의 경쟁 우위를 확보해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                 </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">5</div>
+                    <div class="section-title">지금 주목해야 할 뉴스 TOP 3</div>
+                </div>
+
+                
+                <a href="http://www.4th.kr/news/articleView.html?idxno=2113271" class="article-link" target="_blank"> <div class="article-title">
+                        [유통소식] 이마트, 창립 17주년 맞이 할인 행사
+                    </div>
+                    <div class="article-meta">포쓰저널 · 2026-06-17</div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+                <a href="https://www.ddaily.co.kr/page/view/2026061709575627742" class="article-link" target="_blank"> <div class="article-title">
+                        삼성D, 초고휘도 &#39;RGB 올레도스&#39; 출격…차세대 XR 시장 정조준
+                    </div>
+                    <div class="article-meta">디지털데일리 · </div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+                <a href="http://www.fnnews.com/news/202606171008305443" class="article-link" target="_blank"> <div class="article-title">
+                        XR 승부수 띄운 삼성디스플레이…RGB 올레도스로 시장 선점 나선다
+                    </div>
+                    <div class="article-meta">None · </div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>
+                “이 보고서는 AI 기반 트렌드 분석 시스템을 통해 작성되었습니다.”<br>
+                문의:  thecki85@gmail.com | 010.5353.1145 <br>
+                - Business Development Team -
+            </div>
+            <!--
+            <div class="footer-links">
+                <a href="#" class="footer-link">대시보드 보기</a> |
+                <a href="#" class="footer-link">설정 변경</a> |
+                <a href="#" class="footer-link">수신거부</a>
+            </div>
+            -->
+        </div>
+    </div>
+</body>
+</html>
