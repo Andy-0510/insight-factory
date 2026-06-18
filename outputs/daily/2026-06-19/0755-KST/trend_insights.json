@@ -1,0 +1,126 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "oled",
+        "ai",
+        "6세대",
+        "중국",
+        "한국"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "에일리언웨어",
+        "xps",
+        "게이밍",
+        "노트북",
+        "oled"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "채용",
+        "학력",
+        "제한을",
+        "있어요",
+        "블라인드"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "올레드",
+        "lg 올레드",
+        "lg",
+        "화질",
+        "영상"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "문제는",
+        "쿠팡",
+        "이다",
+        "할인",
+        "하이센스"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "브랜드",
+        "게이밍",
+        "게이밍 디스플레이",
+        "디스플레이",
+        "새로운"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "차량",
+        "주행",
+        "차량용",
+        "현지",
+        "자동차"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "피지컬",
+        "lg",
+        "실제",
+        "lg전자"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "tv",
+        "미니 led",
+        "미니",
+        "led",
+        "북미"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "rgb",
+        "xr",
+        "삼성디스플레이는",
+        "차세대",
+        "디스플레이"
+      ]
+    }
+  ],
+  "evidence": {}
+}
