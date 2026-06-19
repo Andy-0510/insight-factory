@@ -1,0 +1,14 @@
+﻿date,semantic_key,topic_id,avg_sentiment,article_count
+2026-06-18,Set_Manufacturer,0,0.4903,534
+2026-06-18,IT_OLED_Topic,1,0.4895,438
+2026-06-18,Foldable_Display_Topic,2,0.4899,478
+2026-06-18,TV_Display_Topic,3,0.489,353
+2026-06-18,Gaming_Monitor_Topic,4,0.4888,454
+2026-06-18,Platform_Company,5,0.4885,457
+2026-06-18,Automotive_Display_Topic,6,0.4885,441
+2026-06-18,XR_Device_Topic,7,0.4896,488
+2026-06-18,Panel_Manufacturer,8,0.49,493
+2026-06-18,Flexible_Display_Topic,9,0.4906,515
+2026-06-19,Flexible_Display_Topic,0,0.456,443
+2026-06-19,Automotive_Display_Topic,1,0.4551,411
+2026-06-19,Display_Materials_Topic,2,0.456,506
