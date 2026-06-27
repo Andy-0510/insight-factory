@@ -3337,6 +3337,17 @@
     ]
   },
   "monthly": {
+    "2026-06-28": [
+      {
+        "time": "0817-KST",
+        "reports": [
+          {
+            "name": "monthly_report.html",
+            "path": "outputs/monthly/2026-06-28/0817-KST/monthly_report.html"
+          }
+        ]
+      }
+    ],
     "2026-05-28": [
       {
         "time": "0844-KST",
