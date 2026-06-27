@@ -1,0 +1,82 @@
+--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---
+Generated at: 2026-06-27T23:16:16.511479Z
+
+================================================================================
+Rank #1: sk하이닉스|삼성전자 (Total Sentences: 1935, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.fnnews.com/news/202605282222265082" target="_blank" style="font-weight:600; color:#065f46;">젠슨 황 다음 주 한국 오나…'제2 깐부회동' 기대감</a>
+<a href="https://biz.newdaily.co.kr/site/data/html/2026/05/29/2026052900090.html" target="_blank" style="font-weight:600; color:#065f46;">글로벌 AI 거두 한자리에 … K 반도체·로보틱스 기술력 뽐낸다 [컴퓨텍...</a>
+<a href="https://biz.newdaily.co.kr/site/data/html/2026/05/29/2026052900090.html" target="_blank" style="font-weight:600; color:#065f46;">글로벌 AI 거두 한자리에 … K 반도체·로보틱스 기술력 뽐낸다 [컴퓨텍...</a>
+
+================================================================================
+Rank #2: lg전자|삼성전자 (Total Sentences: 597, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.etnews.com/20260526000279" target="_blank" style="font-weight:600; color:#c41e3a;">[단독] 中 TCL 한국 수장 바꾸고 종합가전 안방 공략 ...“프리미엄 정면...</a>
+<a href="http://www.popcornnews.net/news/articleView.html?idxno=122488" target="_blank" style="font-weight:600; color:#c41e3a;">TV보다 모니터… OLED ·게이밍 업고 디스플레이 시장 '고수익 다크호스' ...</a>
+<a href="https://theviewers.co.kr/View.aspx?No=4094376" target="_blank" style="font-weight:600; color:#c41e3a;">[Tech 뷰] LG전자, 초저전력 ‘이페이퍼 디스플레이’ 출시</a>
+
+================================================================================
+Rank #3: 구글|애플 (Total Sentences: 280, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://biz.sbs.co.kr/article_hub/20000316718?division=NAVER" target="_blank" style="font-weight:600; color:#c41e3a;">[글로벌 비즈 브리핑] 스페이스X 주가급등에 공모주 추가배정 外</a>
+<a href="https://biz.sbs.co.kr/article_hub/20000316717?division=NAVER" target="_blank" style="font-weight:600; color:#c41e3a;">머독의 폭스, 로쿠 품는다…30조원대 인수</a>
+<a href="https://news.kbs.co.kr/news/pc/view/view.do?ncd=8587048&ref=A" target="_blank" style="font-weight:600; color:#c41e3a;">머독의 폭스, TV 스트리밍 플랫폼 ‘로쿠’ 30조원대 인수</a>
+
+================================================================================
+Rank #4: 마이크로소프트|엔비디아 (Total Sentences: 276, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newdaily.co.kr/site/data/html/2026/06/19/2026061900019.html" target="_blank" style="font-weight:600; color:#065f46;">인텔 10% 뛰자 반도체주 들썩 … 뉴욕증시 일제 상승</a>
+<a href="https://www.news2day.co.kr/article/20260530500017" target="_blank" style="font-weight:600; color:#065f46;">[N2 모닝 경제 브리핑-6월 1일] 美 증시, 또 신고가…중동 완화 기대에 ...</a>
+<a href="https://www.pointdaily.co.kr/news/articleView.html?idxno=306593" target="_blank" style="font-weight:600; color:#065f46;">[출근길 포인트] 'AI 반도체 독점' 엔비디아, PC CPU 시장까지 넘보나</a>
+
+================================================================================
+Rank #5: 애플|엔비디아 (Total Sentences: 270, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.slist.kr/news/articleView.html?idxno=743389" target="_blank" style="font-weight:600; color:#065f46;">젠슨 황, 오늘 최태원·정의선·구광모·이해진과 '삼겹살+소주' 회동</a>
+<a href="http://www.beyondpost.co.kr/view.php?ud=2026060505514812382aaae0046f_30" target="_blank" style="font-weight:600; color:#065f46;">젠슨 황 CEO, 이번엔 '삼소(삼겹살+소주) 회동 가질 듯...오늘 7개월만에...</a>
+<a href="https://www.yna.co.kr/view/AKR20260604182200003?input=1195m" target="_blank" style="font-weight:600; color:#065f46;">젠슨 황 오늘 최태원·정의선·구광모·이해진과 '삼소회동'</a>
+
+================================================================================
+Rank #6: sk하이닉스|엔비디아 (Total Sentences: 259, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.g-enews.com/view.php?ud=2026060918360249522bd56fbc3c_1" target="_blank" style="font-weight:600; color:#065f46;">엔비디아, 한국에 기가와트급 AI 공장 짓는다… 6개 그룹 동시 빅딜</a>
+<a href="https://biz.newdaily.co.kr/site/data/html/2026/05/29/2026052900090.html" target="_blank" style="font-weight:600; color:#065f46;">글로벌 AI 거두 한자리에 … K 반도체·로보틱스 기술력 뽐낸다 [컴퓨텍...</a>
+<a href="https://biz.newdaily.co.kr/site/data/html/2026/05/29/2026052900090.html" target="_blank" style="font-weight:600; color:#065f46;">글로벌 AI 거두 한자리에 … K 반도체·로보틱스 기술력 뽐낸다 [컴퓨텍...</a>
+
+================================================================================
+Rank #7: 삼성디스플레이|삼성전자 (Total Sentences: 249, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newspim.com/news/view/20260625001053" target="_blank" style="font-weight:600; color:#065f46;">이재용 회장, 이 대통령과 만찬 회동...반도체 지방투자 막판 조율</a>
+<a href="https://www.newsis.com/view/NISX20260614_0003668215" target="_blank" style="font-weight:600; color:#065f46;">이재용·조현준의 오랜 인연이 '슈퍼카 동맹'으로…삼성·효성, 伊 페라...</a>
+<a href="https://zdnet.co.kr/view/?no=20260616012606" target="_blank" style="font-weight:600; color:#065f46;">삼성전자, 내년 갤럭시S27에 BOE  OLED  적용 가능성 낮아져</a>
+
+================================================================================
+Rank #8: 네이버|엔비디아 (Total Sentences: 243, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.ytn.co.kr/_ln/0102_202606010112130140" target="_blank" style="font-weight:600; color:#065f46;">젠슨 황, 이번 주 방한...'제2의 깐부회동' 기대감</a>
+<a href="https://www.joongangenews.com/news/articleView.html?idxno=522759" target="_blank" style="font-weight:600; color:#065f46;">젠슨황, 최태원·정의선·구광모·이해진 만난다...'2차 깐부회동' 관전...</a>
+<a href="https://www.ceoscoredaily.com/page/view/2026060114154314394" target="_blank" style="font-weight:600; color:#065f46;">최태원·구광모 만나는 젠슨 황…성수동 ‘삼겹살 회동’, 어떤 선물 나...</a>
+
+================================================================================
+Rank #9: 삼성전자|애플 (Total Sentences: 239, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://theviewers.co.kr/View.aspx?No=4094376" target="_blank" style="font-weight:600; color:#c41e3a;">[Tech 뷰] LG전자, 초저전력 ‘이페이퍼 디스플레이’ 출시</a>
+<a href="https://www.kyeonggi.com/article/20260607580199" target="_blank" style="font-weight:600; color:#c41e3a;">[이슈&경제] 오너·합의 중심 경영의 승패</a>
+<a href="http://www.opinionnews.co.kr/news/articleView.html?idxno=140255" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 스마트폰, 메모리·애플·중국 '3중 압박' 직면...반격할 카드는</a>
+
+================================================================================
+Rank #10: 삼성전자|엔비디아 (Total Sentences: 236, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://biz.newdaily.co.kr/site/data/html/2026/05/29/2026052900090.html" target="_blank" style="font-weight:600; color:#065f46;">글로벌 AI 거두 한자리에 … K 반도체·로보틱스 기술력 뽐낸다 [컴퓨텍...</a>
+<a href="https://biz.newdaily.co.kr/site/data/html/2026/05/29/2026052900090.html" target="_blank" style="font-weight:600; color:#065f46;">글로벌 AI 거두 한자리에 … K 반도체·로보틱스 기술력 뽐낸다 [컴퓨텍...</a>
+<a href="https://www.newsverse.kr/news/articleView.html?idxno=10617" target="_blank" style="font-weight:600; color:#065f46;">[오늘의 경제뉴스] 이미 날고 있는 삼전·닉스, 젠슨황 '베라 루빈' 로켓...</a>

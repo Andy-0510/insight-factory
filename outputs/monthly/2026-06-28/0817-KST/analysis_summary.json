@@ -1,0 +1,46 @@
+{
+  "timestamp": "2026-06-27T23:16:16Z",
+  "matrix_stats": {},
+  "network_stats": {
+    "num_nodes": 80,
+    "num_edges": 700,
+    "top_pairs": [
+      {
+        "source": "sk하이닉스",
+        "target": "삼성전자",
+        "weight": 1935,
+        "rel_type": "partnership",
+        "evidence": "<a href=\"http://www.fnnews.com/news/202605282222265082\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">젠슨 황 다음 주 한국 오나…'제2 깐부회동' 기대감</a><br><a href=\"https://biz.newdaily.co.kr/site/data/html/2026/05/29/2026052900090.html\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">글로벌 AI 거두 한자리에 … K 반도체·로보틱스 기술력 뽐낸다 [컴퓨텍...</a><br><a href=\"https://biz.newdaily.co.kr/site/data/html/2026/05/29/2026052900090.html\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">글로벌 AI 거두 한자리에 … K 반도체·로보틱스 기술력 뽐낸다 [컴퓨텍...</a>"
+      },
+      {
+        "source": "lg전자",
+        "target": "삼성전자",
+        "weight": 597,
+        "rel_type": "rivalry",
+        "evidence": "<a href=\"https://www.etnews.com/20260526000279\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">[단독] 中 TCL 한국 수장 바꾸고 종합가전 안방 공략 ...“프리미엄 정면...</a><br><a href=\"http://www.popcornnews.net/news/articleView.html?idxno=122488\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">TV보다 모니터… OLED ·게이밍 업고 디스플레이 시장 '고수익 다크호스' ...</a><br><a href=\"https://theviewers.co.kr/View.aspx?No=4094376\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">[Tech 뷰] LG전자, 초저전력 ‘이페이퍼 디스플레이’ 출시</a>"
+      },
+      {
+        "source": "구글",
+        "target": "애플",
+        "weight": 280,
+        "rel_type": "rivalry",
+        "evidence": "<a href=\"https://biz.sbs.co.kr/article_hub/20000316718?division=NAVER\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">[글로벌 비즈 브리핑] 스페이스X 주가급등에 공모주 추가배정 外</a><br><a href=\"https://biz.sbs.co.kr/article_hub/20000316717?division=NAVER\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">머독의 폭스, 로쿠 품는다…30조원대 인수</a><br><a href=\"https://news.kbs.co.kr/news/pc/view/view.do?ncd=8587048&ref=A\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">머독의 폭스, TV 스트리밍 플랫폼 ‘로쿠’ 30조원대 인수</a>"
+      },
+      {
+        "source": "마이크로소프트",
+        "target": "엔비디아",
+        "weight": 276,
+        "rel_type": "partnership",
+        "evidence": "<a href=\"https://www.newdaily.co.kr/site/data/html/2026/06/19/2026061900019.html\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">인텔 10% 뛰자 반도체주 들썩 … 뉴욕증시 일제 상승</a><br><a href=\"https://www.news2day.co.kr/article/20260530500017\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">[N2 모닝 경제 브리핑-6월 1일] 美 증시, 또 신고가…중동 완화 기대에 ...</a><br><a href=\"https://www.pointdaily.co.kr/news/articleView.html?idxno=306593\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">[출근길 포인트] 'AI 반도체 독점' 엔비디아, PC CPU 시장까지 넘보나</a>"
+      },
+      {
+        "source": "마이크로소프트",
+        "target": "알파벳",
+        "weight": 141,
+        "rel_type": "neutral",
+        "evidence": "<a href=\"https://www.news2day.co.kr/article/20260528500016\" target=\"_blank\" style=\"color:#555;\">뉴욕증시, 종전 기대감에 유가 급락…3대 지수 사상 최고치 경신</a><br><a href=\"https://www.seoulfn.com/news/articleView.html?idxno=629783\" target=\"_blank\" style=\"color:#555;\">[뉴욕증시] \"호르무즈 연다\" '강보합' 최고치…마이크론 4%↑·ZS 31%↓</a><br><a href=\"https://www.newsworks.co.kr/news/articleView.html?idxno=842070\" target=\"_blank\" style=\"color:#555;\">뉴욕증시, 유가 급락에 일제히 '상승'…다우·S&P·나스닥 '사상 최고'</a>"
+      }
+    ],
+    "top_hub": "삼성전자"
+  }
+}
