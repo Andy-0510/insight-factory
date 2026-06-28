@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "실시간",
+        "시스템",
+        "현장",
+        "새로",
+        "전력"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "수출",
+        "3분기",
+        "중동",
+        "가격",
+        "품목"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "반도체",
+        "투자",
+        "ai",
+        "3대",
+        "대규모"
+      ]
+    }
+  ],
+  "evidence": {}
+}
