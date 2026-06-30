@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "tv",
+        "있어요",
+        "프리미엄",
+        "ai",
+        "ess"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "민선",
+        "시장은",
+        "민선 9기",
+        "9기",
+        "오세현"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "갤럭시",
+        "프로",
+        "울트라",
+        "애플"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "선익시스템은",
+        "선익시스템",
+        "증권",
+        "증착장비",
+        "차세대"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "20주년",
+        "에디션",
+        "게이밍",
+        "한정판",
+        "레노버"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "메모리",
+        "중국",
+        "가격",
+        "d램"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "oled",
+        "ai",
+        "장비",
+        "사업",
+        "디스플레이"
+      ]
+    }
+  ],
+  "evidence": {}
+}
