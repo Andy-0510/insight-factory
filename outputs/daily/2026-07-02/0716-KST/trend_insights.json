@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "반도체",
+        "삼성전자",
+        "삼성전자는",
+        "미래"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "lg",
+        "스탠바이미",
+        "게이밍",
+        "lg 스탠바이미",
+        "이동식"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "성과급",
+        "사장은",
+        "창립",
+        "실적",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "선익시스템은",
+        "선익시스템",
+        "증착장비",
+        "oled",
+        "차세대"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "폴더블",
+        "갤럭시",
+        "새로운",
+        "삼성전자는",
+        "8세대"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "반도체",
+        "장비",
+        "ai",
+        "핵심"
+      ]
+    }
+  ],
+  "evidence": {}
+}
