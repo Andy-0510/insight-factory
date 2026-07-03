@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "lg",
+        "pc",
+        "게이밍",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "대통령은",
+        "투자",
+        "충청권",
+        "반도체",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "영남권",
+        "우주",
+        "반도체",
+        "투자"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "하반기",
+        "전망됐다",
+        "수출",
+        "으로",
+        "대체로"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "qd",
+        "oled",
+        "qd oled",
+        "기판",
+        "패널"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "중이다",
+        "디스플레이",
+        "핵심",
+        "장비",
+        "역시"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "모바일",
+        "정답은",
+        "문제는",
+        "이다",
+        "게임"
+      ]
+    }
+  ],
+  "evidence": {}
+}
