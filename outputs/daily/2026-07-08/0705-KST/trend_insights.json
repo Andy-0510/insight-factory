@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "특허",
+        "oled",
+        "소재",
+        "주식",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "협력사",
+        "2차",
+        "lg",
+        "1차",
+        "2차 이하"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "붉은사막",
+        "게임",
+        "게임스컴",
+        "게이밍",
+        "오디세이"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "폴더블",
+        "패널",
+        "아이폰",
+        "스마트폰",
+        "폴더블폰"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "매출",
+        "문제는",
+        "실적",
+        "가전",
+        "2분기"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "장비",
+        "디스플레이",
+        "중국",
+        "oled",
+        "디스플레이 장비"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "메모리",
+        "반도체",
+        "2분기",
+        "ai",
+        "영업이익"
+      ]
+    }
+  ],
+  "evidence": {}
+}
