@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "대출",
+        "주택",
+        "면적",
+        "전자",
+        "제도를"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "상반기",
+        "ict",
+        "수출은",
+        "수출",
+        "수출이"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "사업",
+        "소재",
+        "매각",
+        "mou",
+        "양도"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "반도체",
+        "가격",
+        "메모리",
+        "스마트폰"
+      ]
+    }
+  ],
+  "evidence": {}
+}
