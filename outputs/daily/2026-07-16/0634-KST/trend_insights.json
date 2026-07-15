@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "공급망",
+        "기술",
+        "oled",
+        "유비리서치"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ict",
+        "상반기",
+        "수출은",
+        "수출",
+        "수출이"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "첨단산업",
+        "충남",
+        "투자",
+        "기업",
+        "천안"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "투자",
+        "지분을",
+        "지분",
+        "1년",
+        "기업에"
+      ]
+    }
+  ],
+  "evidence": {}
+}
