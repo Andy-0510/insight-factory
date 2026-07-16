@@ -1,0 +1,66 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "기술",
+        "공급망",
+        "가격"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "열화",
+        "oled",
+        "교수",
+        "차세대",
+        "분석"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oledos",
+        "oled",
+        "국내외",
+        "페로브스카이트"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "정답은",
+        "문제는",
+        "할인",
+        "이다"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "티타늄",
+        "폴더블",
+        "갤럭시",
+        "화면",
+        "oled"
+      ]
+    }
+  ],
+  "evidence": {}
+}
