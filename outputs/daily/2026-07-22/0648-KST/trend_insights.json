@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "게임",
+        "디스플레이",
+        "기술",
+        "스팀"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "아트",
+        "삼성",
+        "삼성 아트",
+        "루브르",
+        "프랑스"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "폴더블",
+        "ai",
+        "폴드8",
+        "런던"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "oled",
+        "트루블랙",
+        "노트북용",
+        "트루블랙 1400",
+        "탠덤"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "로봇",
+        "삼성전자는",
+        "삼성전자",
+        "미국",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "탠덤",
+        "디스플레이",
+        "oled",
+        "ai",
+        "전력"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "led",
+        "거래를",
+        "마쳤다",
+        "거래일",
+        "오른"
+      ]
+    }
+  ],
+  "evidence": {}
+}
