@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "맥북",
+        "ai",
+        "애플",
+        "문제는",
+        "애플은"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "구매",
+        "혜택을",
+        "사전",
+        "z8 시리즈",
+        "예약"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "국민성장펀드",
+        "oled",
+        "기술",
+        "lg디스플레이에",
+        "자금을"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "폴더블",
+        "폴드8",
+        "ai",
+        "삼성전자는"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "차량",
+        "현대차",
+        "주행",
+        "sdv",
+        "ux"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "반도체",
+        "투자",
+        "소부장",
+        "아산"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "사장은",
+        "가격",
+        "하반기",
+        "디스플레이",
+        "oled"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "2분기",
+        "oled",
+        "일회성",
+        "상반기",
+        "사업"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "ai",
+        "디스플레이",
+        "로봇",
+        "기술",
+        "새로운"
+      ]
+    }
+  ],
+  "evidence": {}
+}
