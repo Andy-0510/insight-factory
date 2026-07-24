@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "게임",
+        "스페셜",
+        "폴드8",
+        "테마를"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "투자",
+        "첨단산업",
+        "종합",
+        "기업",
+        "충남"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "차량",
+        "주행",
+        "애플",
+        "소프트웨어",
+        "ux"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "oled",
+        "디스플레이",
+        "갤럭시",
+        "제품"
+      ]
+    }
+  ],
+  "evidence": {}
+}
