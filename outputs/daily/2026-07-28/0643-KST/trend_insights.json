@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "아이패드",
+        "촬영",
+        "oled",
+        "방수"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "ai",
+        "배터리",
+        "실리콘",
+        "폴더블"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "잉크젯",
+        "전년동기대비",
+        "소재",
+        "차세대",
+        "oled"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "엣지",
+        "모델",
+        "데이터센터",
+        "보안"
+      ]
+    }
+  ],
+  "evidence": {}
+}
