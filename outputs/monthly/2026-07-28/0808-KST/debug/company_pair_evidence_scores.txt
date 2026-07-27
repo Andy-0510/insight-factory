@@ -1,0 +1,82 @@
+--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---
+Generated at: 2026-07-27T23:06:32.816524Z
+
+================================================================================
+Rank #1: sk하이닉스|삼성전자 (Total Sentences: 1773, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.sedaily.com/article/20061221?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">외국인 ‘셀 코리아’에 무너진 원화…환율 1500원 돌파</a>
+<a href="https://www.womaneconomy.co.kr/news/articleView.html?idxno=255562" target="_blank" style="font-weight:600; color:#c41e3a;">애플 '메모리 식민지' 덫으로?···中 수입론, 9기가 D램이 나오기까지</a>
+<a href="http://www.kgnews.co.kr/news/article.html?no=903352" target="_blank" style="font-weight:600; color:#c41e3a;">[엄태윤의 마켓인텔리전스] SK하이닉스의 나스닥 상장과 미래전략</a>
+
+================================================================================
+Rank #2: 삼성전자|애플 (Total Sentences: 449, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.mk.co.kr/article/12093425" target="_blank" style="font-weight:600; color:#c41e3a;">‘ 폴더블  아이폰’ 오기 전에 승부수…삼성 ‘비장의 라인업’ 꺼냈다</a>
+<a href="https://www.ceoscoredaily.com/page/view/2026071416574120707" target="_blank" style="font-weight:600; color:#c41e3a;">삼성, ‘갤S26’ 앞세워 스마트폰 1위 수성…“칩플레이션 지속, 삼성·...</a>
+<a href="https://www.insightkorea.co.kr/news/articleView.html?idxno=249417" target="_blank" style="font-weight:600; color:#c41e3a;">삼성, 애플 첫  폴더블 폰 맞서 라인업 재편…'와이드형' 카드 꺼냈다</a>
+
+================================================================================
+Rank #3: 삼성디스플레이|삼성전자 (Total Sentences: 388, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newspim.com/news/view/20260625001053" target="_blank" style="font-weight:600; color:#065f46;">이재용 회장, 이 대통령과 만찬 회동...반도체 지방투자 막판 조율</a>
+<a href="https://www.chosun.com/economy/economy_general/2026/06/30/UNRDOZ4M5FDPNE7WB5BVRE5WNU/?utm_source=naver&utm_medium=referral&utm_campaign=naver-news" target="_blank" style="font-weight:600; color:#065f46;">삼성  12개 계열사, 협력사들과 상생협약 체결</a>
+<a href="https://weekly.donga.com/3/all/11/6283279/1" target="_blank" style="font-weight:600; color:#065f46;">테슬라 생태계 핵심 파트너로 부상한 LG에너지솔루션·삼성전기</a>
+
+================================================================================
+Rank #4: lg전자|삼성전자 (Total Sentences: 361, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.autodaily.co.kr/news/articleView.html?idxno=545193" target="_blank" style="font-weight:600; color:#c41e3a;">"중국 못따라오네!" 삼성 OLED TV, 컨슈머리포트 평가 최상위권 휩쓸어</a>
+<a href="https://www.wolyo.co.kr/news/articleView.html?idxno=314178" target="_blank" style="font-weight:600; color:#c41e3a;">OLED  TV도 할인전 전격 돌입…프리미엄 TV 시장의 두 얼굴</a>
+<a href="https://www.mk.co.kr/article/12085642" target="_blank" style="font-weight:600; color:#c41e3a;">“무조건 크다고 좋은건 아냐”…65인치 프리미엄 패널이 거실 왕좌 지...</a>
+
+================================================================================
+Rank #5: lg디스플레이|삼성디스플레이 (Total Sentences: 275, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.businesspost.co.kr/BP?command=article_view&num=441959" target="_blank" style="font-weight:600; color:#c41e3a;">이청 삼성 디스플레이  ' 폴더블 OLED' 지배력 유지 어떻게? LG 디스플레이  '...</a>
+<a href="https://www.sisajournal-e.com/news/articleView.html?idxno=422576" target="_blank" style="font-weight:600; color:#c41e3a;">삼성D·LGD, 차세대 모바일용 OLED 신기술 경쟁 격화</a>
+<a href="https://www.huffingtonpost.kr/article/258953" target="_blank" style="font-weight:600; color:#c41e3a;">LG디스플레이  상반기 5년 만의 실적 턴어라운드에도 걷히지 않은 '칩플...</a>
+
+================================================================================
+Rank #6: 애플|엔비디아 (Total Sentences: 239, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newspim.com/news/view/20260707000864" target="_blank" style="font-weight:600; color:#c41e3a;">깊이가 다른 글로벌 투자 정보 GAM - 맛보기편 (7/7)</a>
+<a href="http://www.beyondpost.co.kr/view.php?ud=2026072505500370292aaae0046f_30" target="_blank" style="font-weight:600; color:#c41e3a;">필라델피아반도체지수 4.25%, 마이크론 7%, SK하이닉스 ADR 8.9%↓...반도...</a>
+<a href="http://www.impacton.net/news/articleView.html?idxno=19317" target="_blank" style="font-weight:600; color:#c41e3a;">【리스크 모니터링】LG 디스플레이  공급망에도 침투…국제인증 뚫은 '반...</a>
+
+================================================================================
+Rank #7: 삼성전자|인텔 (Total Sentences: 205, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.ceoscoredaily.com/page/view/2026072223504041136" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자, 미래형  폴더블 폰 ‘갤Z8’ 출격…“애플  폴더블 폰 도전에 ‘...</a>
+<a href="https://news.mtn.co.kr/news-detail/2026072408325515305" target="_blank" style="font-weight:600; color:#c41e3a;">CPU 업고 부할한 인텔, 파운드리도 자신감..국내 반도체 영향은</a>
+<a href="https://www.joongangenews.com/news/articleView.html?idxno=535210" target="_blank" style="font-weight:600; color:#c41e3a;">메타가 움켜쥔 AI 스마트 안경 글로벌 점유율 84%…삼성·구글 연합군, ...</a>
+
+================================================================================
+Rank #8: 구글|삼성전자 (Total Sentences: 203, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.donga.com/news/Economy/article/all/20260704/134234987/2" target="_blank" style="font-weight:600; color:#065f46;">자체 AI칩 개발 뛰어든 앤스로픽, 파운드리 파트너로 삼성 낙점</a>
+<a href="https://www.dnews.co.kr/uhtml/view.jsp?idxno=202607130955108730862" target="_blank" style="font-weight:600; color:#065f46;">[기업용 에이전틱 AI 큰 장] ①구글,  삼성  DX 전세계 임직원에 ‘제미나...</a>
+<a href="https://www.businesskorea.co.kr/news/articleView.html?idxno=273036" target="_blank" style="font-weight:600; color:#065f46;">[반도체 전쟁] 인텔 18A '웨이퍼 변동성' 극복… 요동치는 파운드리 판도...</a>
+
+================================================================================
+Rank #9: 마이크로소프트|아마존 (Total Sentences: 190, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.etnews.com/20260625000107" target="_blank" style="font-weight:600; color:#065f46;">케이시스, 자체  LED 디스플레이 미국 TAA 시장 공략</a>
+<a href="https://www.hankookilbo.com/news/article/A2026062909290004187?did=NA" target="_blank" style="font-weight:600; color:#065f46;">AI 메모리 품귀에 마이크론 '질주'… '제2의 엔비디아' 되나</a>
+<a href="https://www.g-enews.com/view.php?ud=202606290614427478e250e8e188_1" target="_blank" style="font-weight:600; color:#065f46;">월가가 마이크론을 ‘제2의 엔비디아’로 낙점한 이유?</a>
+
+================================================================================
+Rank #10: 구글|애플 (Total Sentences: 188, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.wikitree.co.kr/articles/1145471" target="_blank" style="font-weight:600; color:#c41e3a;">구글포토 비디오 리믹스, 탭 몇 번으로 영상 편집 끝</a>
+<a href="https://www.g-enews.com/view.php?ud=2026072101010381089a1f309431_1" target="_blank" style="font-weight:600; color:#c41e3a;">페이팔, 어쩌다 ‘월가 총아’서 ‘인수 표적’으로 몰렸나</a>
+<a href="http://www.beyondpost.co.kr/view.php?ud=2026072505500370292aaae0046f_30" target="_blank" style="font-weight:600; color:#c41e3a;">필라델피아반도체지수 4.25%, 마이크론 7%, SK하이닉스 ADR 8.9%↓...반도...</a>

@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 15.037694715s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 15\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "삼성 AI 반도체 투자",
+      "summary": "삼성전자가 AI 시대를 맞아 반도체, 디스플레이, 스마트폰 등 핵심 기술 분야에 대한 투자를 강화하고 있습니다.",
+      "words": [
+        "ai",
+        "반도체",
+        "갤럭시",
+        "투자",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "삼성전자의 미래 기술",
+      "summary": "삼성전자가 AI, OLED, 폴더블 등 차세대 디스플레이 및 반도체 기술을 활용하여 갤럭시 스마트폰, TV 등 신규 제품 출시와 가격 경쟁력을 확보하는 전략을 2분기와 하반기 시장에 집중하고 있음을 보여줍니다.",
+      "words": [
+        "ai",
+        "oled",
+        "디스플레이",
+        "메모리",
+        "가격"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "AI 반도체 투자",
+      "summary": "삼성전자 등 국내 첨단 산업 기업들이 AI 반도체, 로봇, 디스플레이 등 차세대 기술 분야에 대규모 투자를 통해 미래 성장 동력을 확보하고 대한민국 경제를 이끌어갈 전략을 다루는 내용입니다.",
+      "words": [
+        "ai",
+        "반도체",
+        "투자",
+        "산업",
+        "첨단산업"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "반도체 AI 투자",
+      "summary": "미국 AI 사업 투자와 한국 반도체 기업(SK하이닉스, 삼성전자) 주식, 코스닥/코스피 상장, 메모리, 소재, ADR, 외국인 지분 동향 등을 중심으로 분석합니다.",
+      "words": [
+        "반도체",
+        "미국",
+        "투자",
+        "ai",
+        "사업"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "붉은사막 게임스컴",
+      "summary": "펄어비스가 독일 게임스컴 2026에서 신작 '붉은사막'을 전시하고 e스포츠, 모바일 등 다양한 게이밍 경험을 선보일 예정입니다. 삼성 브랜드와 협력하여 6k 모니터 등도 주목받을 것으로 예상됩니다.",
+      "words": [
+        "게임",
+        "게임스컴",
+        "게이밍",
+        "붉은사막",
+        "아트"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "현대차 신형 하이브리드",
+      "summary": "현대자동차의 신형 하이브리드 차량, 특히 플레오스 모델에 대한 내용으로, 소프트웨어 중심 자동차(SDV) 기술이 적용된 인포테인먼트 시스템과 실내 기능, 하이브리드 및 전기차 옵션 등을 다룹니다.",
+      "words": [
+        "차량",
+        "주행",
+        "플레오스",
+        "현대차",
+        "하이브리드"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "퀴즈 게임",
+      "summary": "힌트와 초성을 바탕으로 문제를 풀어 정답을 맞추는 퀴즈 게임에 대한 내용입니다. 휴대용 무선 블루투스 기기 할인 정보와 관련된 문제도 포함될 수 있습니다.",
+      "words": [
+        "문제는",
+        "정답은",
+        "이다",
+        "픽스",
+        "무엇일까요"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "특허",
+        "oled",
+        "lg화학의",
+        "기술",
+        "핵심기술"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "대출",
+        "사내",
+        "85m2",
+        "주택",
+        "면적"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "나는",
+        "내가",
+        "것이",
+        "수술",
+        "두통"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "천안",
+        "분양",
+        "푸르지오",
+        "주거",
+        "두정역"
+      ]
+    }
+  ],
+  "evidence": {}
+}

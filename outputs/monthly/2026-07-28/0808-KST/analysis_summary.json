@@ -1,0 +1,46 @@
+{
+  "timestamp": "2026-07-27T23:06:32Z",
+  "matrix_stats": {},
+  "network_stats": {
+    "num_nodes": 76,
+    "num_edges": 702,
+    "top_pairs": [
+      {
+        "source": "sk하이닉스",
+        "target": "삼성전자",
+        "weight": 1773,
+        "rel_type": "rivalry",
+        "evidence": "<a href=\"https://www.sedaily.com/article/20061221?ref=naver\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">외국인 ‘셀 코리아’에 무너진 원화…환율 1500원 돌파</a><br><a href=\"https://www.womaneconomy.co.kr/news/articleView.html?idxno=255562\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">애플 '메모리 식민지' 덫으로?···中 수입론, 9기가 D램이 나오기까지</a><br><a href=\"http://www.kgnews.co.kr/news/article.html?no=903352\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">[엄태윤의 마켓인텔리전스] SK하이닉스의 나스닥 상장과 미래전략</a>"
+      },
+      {
+        "source": "삼성전자",
+        "target": "애플",
+        "weight": 449,
+        "rel_type": "rivalry",
+        "evidence": "<a href=\"https://www.mk.co.kr/article/12093425\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">‘ 폴더블  아이폰’ 오기 전에 승부수…삼성 ‘비장의 라인업’ 꺼냈다</a><br><a href=\"https://www.ceoscoredaily.com/page/view/2026071416574120707\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">삼성, ‘갤S26’ 앞세워 스마트폰 1위 수성…“칩플레이션 지속, 삼성·...</a><br><a href=\"https://www.insightkorea.co.kr/news/articleView.html?idxno=249417\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">삼성, 애플 첫  폴더블 폰 맞서 라인업 재편…'와이드형' 카드 꺼냈다</a>"
+      },
+      {
+        "source": "삼성디스플레이",
+        "target": "삼성전자",
+        "weight": 388,
+        "rel_type": "partnership",
+        "evidence": "<a href=\"https://www.newspim.com/news/view/20260625001053\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">이재용 회장, 이 대통령과 만찬 회동...반도체 지방투자 막판 조율</a><br><a href=\"https://www.chosun.com/economy/economy_general/2026/06/30/UNRDOZ4M5FDPNE7WB5BVRE5WNU/?utm_source=naver&utm_medium=referral&utm_campaign=naver-news\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">삼성  12개 계열사, 협력사들과 상생협약 체결</a><br><a href=\"https://weekly.donga.com/3/all/11/6283279/1\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">테슬라 생태계 핵심 파트너로 부상한 LG에너지솔루션·삼성전기</a>"
+      },
+      {
+        "source": "구글",
+        "target": "삼성전자",
+        "weight": 203,
+        "rel_type": "partnership",
+        "evidence": "<a href=\"https://www.donga.com/news/Economy/article/all/20260704/134234987/2\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">자체 AI칩 개발 뛰어든 앤스로픽, 파운드리 파트너로 삼성 낙점</a><br><a href=\"https://www.dnews.co.kr/uhtml/view.jsp?idxno=202607130955108730862\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">[기업용 에이전틱 AI 큰 장] ①구글,  삼성  DX 전세계 임직원에 ‘제미나...</a><br><a href=\"https://www.businesskorea.co.kr/news/articleView.html?idxno=273036\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">[반도체 전쟁] 인텔 18A '웨이퍼 변동성' 극복… 요동치는 파운드리 판도...</a>"
+      },
+      {
+        "source": "구글",
+        "target": "엔비디아",
+        "weight": 85,
+        "rel_type": "neutral",
+        "evidence": "<a href=\"http://www.choicenews.co.kr/news/articleView.html?idxno=167177\" target=\"_blank\" style=\"color:#555;\">美 반도체주 '급락' 속...미국증시 3대 지수 '하락'</a><br><a href=\"http://www.beyondpost.co.kr/view.php?ud=2026062705272289802aaae0046f_30\" target=\"_blank\" style=\"color:#555;\">엔비디아 1.6%, 필라델피아반도체지수 5.3%, 마이크론 6.7%↓...엔비디아...</a><br><a href=\"https://it.donga.com/109094/\" target=\"_blank\" style=\"color:#555;\">프로젝트 글래스윙? 네모트론 연합? 생존 위한 AI 동맹 확산</a>"
+      }
+    ],
+    "top_hub": "삼성전자"
+  }
+}
