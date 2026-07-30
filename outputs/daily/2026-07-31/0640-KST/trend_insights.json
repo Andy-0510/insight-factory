@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "배터리",
+        "ess",
+        "고출력",
+        "ups",
+        "미국"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "매출",
+        "2분기",
+        "사업",
+        "영업이익",
+        "lg전자"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "충청권",
+        "투자",
+        "기업",
+        "첨단산업",
+        "충남"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "oled",
+        "기술",
+        "반도체",
+        "디스플레이"
+      ]
+    }
+  ],
+  "evidence": {}
+}
