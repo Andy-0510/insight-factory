@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "수면",
+        "후공정",
+        "hdr10",
+        "양산",
+        "프라임"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "리전",
+        "e스포츠",
+        "ewc",
+        "레노버",
+        "방송"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "3대",
+        "산업",
+        "반도체",
+        "산업부는",
+        "지원한다"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "폴드8",
+        "갤럭시 폴드8",
+        "고객",
+        "사전예약"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "문제는",
+        "이다",
+        "무선",
+        "xbx",
+        "들어갈"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "메모리",
+        "반도체",
+        "보안",
+        "중국"
+      ]
+    }
+  ],
+  "evidence": {}
+}
