@@ -1,0 +1,745 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Briefing (2026-08-06)</title>
+    <style>
+        /* CSS 스타일은 제공해주신 내용과 동일하게 유지합니다. */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #f5f7fa;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .email-container {
+            max-width: 100%; /* 960px -> 100%로 변경 */
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .header {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            padding: 32px 40px;
+            color: #ffffff;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .logo {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #0066ff; /* 로고 색상 유지 또는 변경 가능 */
+            text-transform: uppercase;
+        }
+        .date {
+            font-size: 13px;
+            color: #a0aec0;
+        }
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #cbd5e0;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .section-number {
+            width: 32px;
+            height: 32px;
+            background: #0066ff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            margin-right: 12px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        .section-subtitle { 
+            font-size: 14px;
+            color: #718096;
+            margin-left: auto;
+        }
+        /* 그래프 이미지를 위한 스타일 추가 (선택 사항) */
+        img.report-graph {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #e2e8f0;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            display: block; /* 가운데 정렬 등을 위해 block으로 설정 */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .metric-box {
+            background: #f7fafc;
+            border-left: 4px solid #0066ff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            align-items: baseline; /* 값과 레이블 정렬 */
+        }
+        .metric-label {
+            font-size: 13px;
+            color: #718096;
+            font-weight: 500;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        .metric-change {
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .change-up { color: #38a169; } /* 초록색으로 변경 */
+        .change-down { color: #e53e3e; } /* 빨간색으로 변경 */
+        .change-neutral { color: #718096; }
+        .spike-alert {
+            background: #fff5e6;
+            border: 1px solid #ff9500; /* 테두리 약간 얇게 */
+            border-left: 4px solid #ff9500; /* 왼쪽 강조 */
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .alert-icon {
+            font-size: 20px;
+            margin-right: 12px;
+            color: #ff9500; /* 아이콘 색상 */
+        }
+        .alert-text {
+            font-size: 14px;
+            color: #744210;
+            line-height: 1.5;
+        }
+        .topic-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .topic-rank {
+            background: #0066ff;
+            color: white;
+            min-width: 28px; /* 최소 너비 보장 */
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 0 4px; /* 내용 길어질 경우 대비 */
+        }
+        .topic-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a2332;
+            flex: 1;
+            margin-left: 12px;
+        }
+        .topic-score {
+            font-size: 13px;
+            color: #718096;
+            background: #f7fafc;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+        .topic-description {
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+        .action-block {
+            background: #f7fafc;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .action-item { margin-bottom: 12px; }
+        .action-item:last-child { margin-bottom: 0; }
+        .action-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0066ff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .action-text {
+            font-size: 13px;
+            color: #2d3748;
+            line-height: 1.5;
+        }
+        .event-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #00b8a9;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .event-meta {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #718096;
+        }
+        .event-type {
+            background: #00b8a9;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-right: 8px;
+            text-transform: uppercase; /* 이벤트 타입 대문자 */
+        }
+        .event-company {
+            font-weight: 600;
+            color: #1a2332;
+        }
+        .event-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 8px;
+        }
+        .event-impact {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+        .article-link {
+            display: block;
+            background: #f7fafc;
+            border-left: 3px solid #0066ff;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: inherit;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .article-link:hover {
+            background: #edf2f7;
+            border-left-color: #00b8a9;
+        }
+        .article-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 4px;
+        }
+        /* 기사 요약 스타일 추가 */
+        .article-summary {
+            font-size: 13px;
+            color: #4a5568;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        .article-meta {
+            font-size: 12px;
+            color: #718096;
+        }
+        .footer {
+            background: #f7fafc;
+            padding: 24px 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #718096;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer-links { margin-top: 12px; }
+        .footer-link {
+            color: #0066ff;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        /* --- ▼▼▼ Spike Action Item CSS ▼▼▼ --- */
+        .alert-action-list {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #ffc966; /* 주황색 구분선 */
+            list-style-type: none; /* 기본 불릿 제거 */
+            padding-left: 0;
+        }
+        .alert-action-item {
+            font-size: 13px;
+            font-weight: 600;
+            color: #744210; /* 어두운 주황색 계열 텍스트 */
+            position: relative;
+            padding-left: 20px; /* 아이콘을 위한 공간 */
+            margin-bottom: 6px;
+        }
+        .alert-action-item::before {
+            content: '➡️'; /* 액션 아이콘 */
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #ff9500; /* 아이콘 색상 */
+        }
+        .action-label-interpretation {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0066ff; /* 테마 파란색 */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .action-text-interpretation {
+            font-size: 13px;
+            color: #0066ff; /* 테마 파란색 */
+            font-weight: 600; /* 굵게 */
+            line-height: 1.5;
+        }
+        /* --- ▼▼▼ 2xN Grid CSS (신호용) ▼▼▼ --- */
+        .signal-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+            align-items: start;
+        }
+        /* 화면이 600px보다 작아지면 1줄로 변경 */
+        @media (max-width: 600px) {
+            .signal-grid-2col { grid-template-columns: 1fr; }
+        }
+        /* --- ▼▼▼ Event Fact Summary CSS ▼▼▼ --- */
+        .event-fact-summary {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.5;
+            margin-top: 10px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        .section-support {
+            font-size: 14px;
+            color: #535a64;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        /* --- ▲▲▲ CSS 추가 완료 ▲▲▲ --- */
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">Insight Factory</div>
+                <div class="date">2026.08.06 (목)</div>
+            </div>
+            <div class="title">Daily Briefing</div>
+            <div class="subtitle">오늘의 시장 트렌드 한눈에 보기</div>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <div class="section-title">시장 활동 지표</div>
+                    <div class="section-subtitle">기사량 추세 & 이상 징후 탐지</div>
+                </div>
+                <div class="section-support">
+                시장의 '전체 기사량'이 평소보다 비정상적으로 급증했는지(Spike)를 차트로 확인하고, LLM이 분석한 급등의 핵심 원인을 파악할 수 있음
+                </div> <br>
+
+                <img src="fig/timeseries.png" alt="시장 활동량 시계열 그래프" class="report-graph">
+                <div class="section-subtitle">고관여 기사란? 산업 연관 키워드로 수집된 기사들 중 디스플레이 키워드에 가중치를 반영하여 도출된 관련성 높은 기사</div>
+
+                <div class="metric-box">
+                    <div class="metric-row">
+                        <div class="metric-label">수집된 기사 수 (2026-08-05)</div>
+                        <div>
+                            <span class="metric-value">404</span>
+                            <span class="metric-change change-neutral">+1% WoW</span>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">기사량 변동 수준 (7일 이동평균 대비)</div>
+                        <div>
+                            <span class="metric-value">±6.7% 이하</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+            <br><br>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <div class="section-title">오늘의 키워드</div>
+                    <div class="section-subtitle">급격한 관심 ↑, 주목해야 할 키워드</div>
+                </div>
+
+                <div class="signal-grid-2col">
+
+                    
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">1</div>
+                            <div class="topic-name">hp</div>
+                            <div class="topic-score">+2.4σ</div>
+                        </div>
+                        <div class="topic-description">
+                            HP 등 글로벌 PC 업체가 중국 창신메모리 D램을 채택하며 공급망 다변화 움직임이 부각되었습니다.
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 8, 전일 대비: +3</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">패널 공급망 경쟁 심화</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">&#39;hp&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">2</div>
+                            <div class="topic-name">구글</div>
+                            <div class="topic-score">+1.8σ</div>
+                        </div>
+                        <div class="topic-description">
+                            구글 폴더블폰 신제품 출시 루머와 관련 기사, 어시스턴트 서비스 변경 영향이 복합적으로 작용한 것으로 보입니다.
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 8, 전일 대비: +5</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">폴더블폰 시장 경쟁 심화</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">핵심 토픽 &#39;Set_Manufacturer&#39; 관련 신호입니다. 3번 섹션(키워드 감성분석)에서 해당 토픽의 감성 변동을 교차 확인하세요.</div>
+                            </div>
+                        </div>
+                    </div>
+                         </div>
+                    </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <div class="section-title">실시간 Risk 키워드</div>
+                    <div class="section-subtitle">경계해야 할 시그널 탐지</div>                    
+                </div>
+                <div class="section-support">
+                특정 토픽의 부정 감성 점수가 급등할 때 이를 즉시 탐지하고, "근거 기사" 링크를 통해 리스크의 실체를 빠르게 파악할 수 있음
+                </div> <br>
+                
+                
+                    <p>키워드 분석 결과, 오늘은 걱정할 만한 하락 신호가 없습니다. (부정 언급량 변화: +1.5σ 이내)</p>
+                
+            </div>
+
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <div class="section-title">주요 이벤트 모니터링</div>
+                    <div class="section-subtitle">실시간 산업 동향 파악을 위한 주요 활동</div>
+                </div>
+                <div class="section-support">
+                최근 발생한 주요 기업들의 신제품 출시, 투자 등 주요 이벤트를 제공하여 매일 경쟁사 동향을 확인할 수 있음
+                </div> <br>
+
+                
+                <div class="event-item" style="border-left-color: #3b82f6;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #3b82f6;">LAUNCH</span>
+                        <span> · 2026-08-05</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.wikitree.co.kr/articles/1150683" target="_blank" style="color: inherit; text-decoration: none;">
+                            화웨이, 스타일러스 지원 메이트북 폴드 2세대 출시
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        화웨이가 스타일러스 펜을 지원하는 새로운 메이트북 폴드 2세대를 출시했습니다. 이는 폴더블 노트북 시장에서 스타일러스 기능의 중요성을 부각하는 이벤트입니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">스타일러스 지원은 폴더블 노트북의 생산성 및 사용자 경험 향상을 통해 해당 시장의 성장을 촉진하고, 관련 디스플레이 기술 개발에 대한 경쟁을 심화시킬 수 있습니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">디스플레이 제조 기업은 스타일러스 호환성을 높이고 필기감을 개선하는 차세대 폴더블 디스플레이 기술 개발에 집중해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #10b981;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #10b981;">INVEST</span>
+                        <span> · 2026-08-05</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.sisajournal-e.com/news/articleView.html?idxno=422879" target="_blank" style="color: inherit; text-decoration: none;">
+                            OLED 노트북/태블릿 비중 확대, 삼성디스플레이 수혜 전망
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        삼성디스플레이는 노트북 및 태블릿 시장에서 OLED 패널 채택 비중이 확대됨에 따라 반사이익을 얻을 것으로 예상됩니다. 이는 OLED 기술 경쟁력을 가진 디스플레이 제조 기업들에게 긍정적인 신호입니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">노트북 및 태블릿 시장에서 OLED 채택이 증가함에 따라 LCD 패널의 시장 점유율 감소 및 OLED 패널의 수요 증대가 가속화될 것으로 예상됩니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">OLED 기술력 강화 및 생산 능력 확대를 통해 노트북/태블릿 시장에서의 점유율을 확보하고, LCD 대비 OLED의 가격 경쟁력을 높이는 방안을 모색해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #3b82f6;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #3b82f6;">LAUNCH</span>
+                        <span> · 2026-08-05</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.etnews.com/20260805000199" target="_blank" style="color: inherit; text-decoration: none;">
+                            삼성-LG, 유럽 &#39;게이밍위크&#39;서 TV·모니터 신제품 경쟁
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        삼성전자와 LG전자가 유럽 &#39;게이밍위크&#39;에서 고성능 TV와 모니터 신제품을 선보이며 치열한 경쟁을 펼쳤다. 이번 행사는 게이머를 타겟으로 한 디스플레이 기술력 과시의 장이 되었다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">이번 경쟁은 유럽 게이밍 디스플레이 시장의 기술 혁신을 가속화하고, 관련 제품의 성능 및 가격 경쟁을 심화시킬 것으로 예상된다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">타사 신제품의 구체적인 성능 및 마케팅 전략을 파악하고, 자사 제품의 차별화된 강점을 부각하는 전략을 수립해야 한다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #3b82f6;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #3b82f6;">LAUNCH</span>
+                        <span> · 2026-08-05</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=474577" target="_blank" style="color: inherit; text-decoration: none;">
+                            광전자, 광반도체/센서 기술로 차세대 디스플레이 주도권 확보
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        광전자 기업이 광반도체 및 센서 기술에서 독보적인 입지를 구축하며 차세대 디스플레이 시장의 주도권 확보에 나섰습니다. 이는 기존 디스플레이 기술의 한계를 극복하고 새로운 가능성을 열 것으로 기대됩니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">이 이벤트는 디스플레이 시장에 새로운 기술 트렌드를 제시하고, 기존 디스플레이 패널 제조사들의 기술 개발 및 사업 전략 재편을 촉진할 수 있습니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">디스플레이 제조 기업은 광전자 기술의 적용 가능성을 면밀히 검토하고, 관련 기술 확보 및 협력을 위한 전략을 수립해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #3b82f6;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #3b82f6;">LAUNCH</span>
+                        <span> · 2026-08-05</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.wikitree.co.kr/articles/1150434" target="_blank" style="color: inherit; text-decoration: none;">
+                            픽셀워치5 위성 SOS, 2년 무료 후 유료 전환
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        구글 픽셀워치5의 위성 SOS 기능은 구매 후 2년간 무료로 제공되며, 이후 유료 서비스로 전환될 예정이다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">이러한 구독 기반의 프리미엄 기능 제공은 스마트워치 디스플레이를 단순 정보 표시를 넘어선 서비스 제공 플랫폼으로 인식하게 하여, 사용자 경험 향상 및 추가 수익 모델 발굴의 중요성을 부각시킬 수 있다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">스마트워치 디스플레이 제조 기업은 위성 통신 등 차별화된 부가 기능 연동을 위한 디스플레이 기술 개발 및 파트너십 확보를 검토해야 한다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                 </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">5</div>
+                    <div class="section-title">지금 주목해야 할 뉴스 TOP 3</div>
+                </div>
+
+                
+                <a href="https://www.wikitree.co.kr/articles/1150683" class="article-link" target="_blank"> <div class="article-title">
+                        화웨이, 스타일러스 첫 지원한 메이트북 폴드 2세대 출시
+                    </div>
+                    <div class="article-meta">위키트리 · 2026-08-06</div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+                <a href="https://www.newsis.com/view/NISX20260805_0003737040" class="article-link" target="_blank"> <div class="article-title">
+                        삼성 144만대 신기록 쐈다…구글·애플 가세 &#39;폴더블 대전&#39; 열린다
+                    </div>
+                    <div class="article-meta">뉴시스 · 2026-08-06</div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+                <a href="https://zdnet.co.kr/view/?no=20260805083201" class="article-link" target="_blank"> <div class="article-title">
+                        [영상] 구글 &#39;픽셀11 프로 폴드&#39; 디자인 공개…뭐가 달라졌나
+                    </div>
+                    <div class="article-meta"> · 2026-08-05</div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>
+                “이 보고서는 AI 기반 트렌드 분석 시스템을 통해 작성되었습니다.”<br>
+                문의:  thecki85@gmail.com | 010.5353.1145 <br>
+                - Business Development Team -
+            </div>
+            <!--
+            <div class="footer-links">
+                <a href="#" class="footer-link">대시보드 보기</a> |
+                <a href="#" class="footer-link">설정 변경</a> |
+                <a href="#" class="footer-link">수신거부</a>
+            </div>
+            -->
+        </div>
+    </div>
+</body>
+</html>
