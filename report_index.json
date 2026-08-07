@@ -1,5 +1,16 @@
 {
   "daily": {
+    "2026-08-08": [
+      {
+        "time": "0606-KST",
+        "reports": [
+          {
+            "name": "daily_report.html",
+            "path": "outputs/daily/2026-08-08/0606-KST/daily_report.html"
+          }
+        ]
+      }
+    ],
     "2026-08-07": [
       {
         "time": "1013-KST",
