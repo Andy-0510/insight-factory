@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "케이블",
+        "전력",
+        "소재",
+        "친환경"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "투자",
+        "대규모",
+        "지역",
+        "충남",
+        "충청권"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "차량용",
+        "현대차",
+        "차량",
+        "모터",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "폴더블",
+        "스토리",
+        "폴드8",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "게임",
+        "게이밍",
+        "오디세이",
+        "모바일",
+        "게임스컴"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "제품",
+        "tv",
+        "갤럭시",
+        "2026년"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "hbm",
+        "반도체",
+        "메모리",
+        "하반기"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "메모리",
+        "중국",
+        "반도체",
+        "애플",
+        "cxmt"
+      ]
+    }
+  ],
+  "evidence": {}
+}
