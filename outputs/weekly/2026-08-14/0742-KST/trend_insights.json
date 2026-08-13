@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 7.784347954s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 7\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 로봇 디스플레이",
+      "summary": "AI 및 로봇 기술 발전과 함께 디스플레이 산업의 최신 동향, 특히 OLED, LED, 스마트폰, 모니터 부품 및 소재 시장의 2분기 실적, 매출, 사업 전망을 다루는 내용입니다.",
+      "words": [
+        "ai",
+        "로봇",
+        "사업",
+        "디스플레이",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "폴드8 신작 출시",
+      "summary": "삼성전자의 차세대 폴더블 스마트폰 '갤럭시 폴드8' 출시 관련 소식으로, 특히 게이밍 및 울트라 모델, 화면 크기, 모니터/TV 연결성, 사전예약, 워치 등 다양한 제품 정보와 관련된 내용을 다룹니다.",
+      "words": [
+        "갤럭시",
+        "폴드8",
+        "폴더블",
+        "게이밍",
+        "게임"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "애플, AI 반도체 경쟁",
+      "summary": "애플이 AI 반도체 시장에서 중국 CXMT와의 경쟁 및 HBM 기술 확보, SK하이닉스와 삼성전자와의 협력, 그리고 미국과의 관계 등을 종합적으로 다룹니다.",
+      "words": [
+        "메모리",
+        "ai",
+        "중국",
+        "반도체",
+        "cxmt"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "OLED 기술 발전",
+      "summary": "LG디스플레이의 차세대 OLED 디스플레이 패널 기술, 소재, 장비, 부품, 양산 및 프리미엄 TV 시장 경쟁에 대한 내용을 다룹니다.",
+      "words": [
+        "oled",
+        "디스플레이",
+        "패널",
+        "차세대",
+        "장비"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "반도체 메가프로젝트",
+      "summary": "정부 주도, 삼성전자 등 기업 참여 대규모 반도체 생산 단지 조성 및 관련 인프라 구축을 위한 '광주 군공항 이전' 메가프로젝트 착공 내용.",
+      "words": [
+        "투자",
+        "반도체",
+        "메가프로젝트",
+        "규모의",
+        "광주"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "반도체 AI 실적 상승",
+      "summary": "AI 기술 발전으로 반도체 수요와 실적이 상승했으며, 특히 메모리 반도체 가격 및 주가 강세가 두드러지고 삼성전자 실적에 대한 기대감이 높아지고 있다.",
+      "words": [
+        "반도체",
+        "상승했다",
+        "ai",
+        "미국",
+        "실적"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "AI 기반 OLED 기술",
+      "summary": "AI 기술을 활용한 OLED 디스플레이 연구, 사업화, 소부장 산업 육성에 대한 내용입니다.",
+      "words": [
+        "ai",
+        "기술",
+        "기반",
+        "연구",
+        "인재"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "차량용 반도체 국산화",
+      "summary": "현대차, 기아 등 완성차 업계에서 LX세미콘이 개발한 차량용 MCU 및 전력 반도체의 국산화 및 공급, 친환경 소재 재활용, AI 기능 구현에 대한 내용을 다룹니다.",
+      "words": [
+        "차량용",
+        "mcu",
+        "현대차",
+        "차량용 mcu",
+        "케이블"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "볼보 대형 전기 SUV",
+      "summary": "볼보의 최신 대형 전기 SUV 차량인 T8 모델의 주행 성능, 실내 공간, 안전 기능, 트윈 모터의 특유의 퍼포먼스 등을 중점적으로 다룹니다.",
+      "words": [
+        "주행",
+        "볼보",
+        "전기",
+        "suv",
+        "퍼포먼스"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "퀴즈",
+        "정답은",
+        "정답을",
+        "신한",
+        "보상을"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "아반떼",
+        "가솔린",
+        "신형",
+        "기본",
+        "현대차는"
+      ]
+    }
+  ],
+  "evidence": {}
+}
