@@ -3368,6 +3368,17 @@
     ]
   },
   "weekly": {
+    "2026-08-14": [
+      {
+        "time": "0742-KST",
+        "reports": [
+          {
+            "name": "weekly_report.html",
+            "path": "outputs/weekly/2026-08-14/0742-KST/weekly_report.html"
+          }
+        ]
+      }
+    ],
     "2026-08-07": [
       {
         "time": "1040-KST",
