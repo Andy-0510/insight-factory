@@ -1,0 +1,102 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "디스플레이",
+        "oled",
+        "lg",
+        "미국"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "dx",
+        "양산",
+        "ai",
+        "dx m1",
+        "m1"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "캐릭터명",
+        "제우스",
+        "공식",
+        "오만의",
+        "제우스 오만의"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "상반기",
+        "상여",
+        "정철동",
+        "lg디스플레이",
+        "급여"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "중국",
+        "반도체",
+        "d램",
+        "cxmt는",
+        "cxmt"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "상반기",
+        "반도체",
+        "메모리",
+        "삼성전자",
+        "역대"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "기술",
+        "ai",
+        "디스플레이",
+        "활용해",
+        "맞춤형"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "마이크",
+        "ai",
+        "게이밍",
+        "없이",
+        "usb"
+      ]
+    }
+  ],
+  "evidence": {}
+}
