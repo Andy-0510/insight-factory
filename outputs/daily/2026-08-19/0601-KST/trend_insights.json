@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "배터리",
+        "소형",
+        "기아",
+        "로봇",
+        "미래"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "아트",
+        "삼성",
+        "삼성 아트",
+        "미술사",
+        "박물관"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "철도",
+        "ai",
+        "실시간",
+        "인식",
+        "이용"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "tv",
+        "oled",
+        "lcd",
+        "oled tv",
+        "2분기"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "메르세데스",
+        "벤츠",
+        "lg유플러스는",
+        "차량",
+        "메르세데스 벤츠"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "게임",
+        "오브",
+        "듀티",
+        "오브 듀티"
+      ]
+    }
+  ],
+  "evidence": {}
+}
