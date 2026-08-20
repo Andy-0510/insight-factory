@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "기술",
+        "tv",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "플래그십",
+        "배터리",
+        "주행",
+        "듀얼",
+        "최초로"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "레노버",
+        "요가",
+        "ai",
+        "레노버 ai",
+        "팝업스토어"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "기능을",
+        "게이밍",
+        "에이수스",
+        "3d",
+        "ar"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "2분기",
+        "소형",
+        "oled",
+        "스마트폰",
+        "패널"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "폴더블폰",
+        "애플이",
+        "s26",
+        "폴더블"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "반도체",
+        "아산",
+        "oled",
+        "투자",
+        "공장"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "반도체",
+        "피지컬",
+        "기업",
+        "메모리"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "폴더블",
+        "와이드뷰",
+        "삼성디스플레이는",
+        "oled"
+      ]
+    }
+  ],
+  "evidence": {}
+}
