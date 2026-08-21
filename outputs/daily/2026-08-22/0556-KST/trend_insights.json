@@ -1,0 +1,66 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "tv",
+        "삼성전자",
+        "glare free",
+        "glare",
+        "초록"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "삼성디스플레이",
+        "지분",
+        "투자",
+        "배터리",
+        "주식"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "gv90",
+        "플래그십",
+        "현대차그룹",
+        "최초로",
+        "차량"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "레노버",
+        "요가",
+        "ai",
+        "레노버 ai",
+        "팝업스토어"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "디자인",
+        "lg",
+        "브랜드",
+        "삼성전자는",
+        "패키지"
+      ]
+    }
+  ],
+  "evidence": {}
+}
