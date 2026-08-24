@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "주행",
+        "전기",
+        "제네시스",
+        "전기차",
+        "차량"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "디자인",
+        "비데",
+        "제품",
+        "idea",
+        "디자인 어워드"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "기술",
+        "oled",
+        "중국",
+        "갤럭시"
+      ]
+    }
+  ],
+  "evidence": {}
+}
