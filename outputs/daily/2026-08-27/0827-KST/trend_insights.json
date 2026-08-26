@@ -1,0 +1,66 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "리전",
+        "노트북",
+        "갤럭시",
+        "게이밍",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "산업",
+        "반도체",
+        "성장엔진",
+        "디스플레이",
+        "국가"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "oled",
+        "디스플레이",
+        "ai",
+        "중국",
+        "led"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "게임스컴",
+        "게임",
+        "오디세이",
+        "삼성전자는"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "폴더블",
+        "애플이",
+        "애플",
+        "프로"
+      ]
+    }
+  ],
+  "evidence": {}
+}
