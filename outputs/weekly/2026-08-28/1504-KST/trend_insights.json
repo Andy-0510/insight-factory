@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 5.872001611s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 5\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 반도체 경쟁",
+      "summary": "AI 기술을 활용한 반도체, 스마트폰, 디스플레이, OLED, 폴더블 제품 시장에서 삼성전자와 중국, 미국 간의 경쟁 및 새로운 기술 개발에 대한 내용입니다.",
+      "words": [
+        "ai",
+        "반도체",
+        "기술",
+        "스마트폰",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "삼성 게이밍 신기술",
+      "summary": "삼성전자의 갤럭시, 오디세이 라인업을 중심으로 OLED, 폴더블, AI 기술이 적용된 차세대 게이밍 모니터, TV, 스마트폰 제품 및 게임스컴 관련 신제품을 다룹니다.",
+      "words": [
+        "게이밍",
+        "oled",
+        "갤럭시",
+        "모니터",
+        "오디세이"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "gv90",
+        "네오룬",
+        "제네시스",
+        "럭셔리",
+        "주행"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "지분",
+        "삼성디스플레이",
+        "삼성sdi는",
+        "배터리",
+        "투자"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "반도체",
+        "중국",
+        "메모리",
+        "산업",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "ai",
+        "ai가",
+        "클로드",
+        "공정",
+        "마이크로"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "디자인",
+        "idea",
+        "레드닷",
+        "디자인 어워드",
+        "레드닷 디자인"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "게임스컴",
+        "게임",
+        "붉은사막",
+        "신작",
+        "pc"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "정답은",
+        "문제는",
+        "kb",
+        "pay",
+        "결제"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "피해",
+        "삼성은",
+        "긴급",
+        "피해를",
+        "경남"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "dx",
+        "반납",
+        "파손",
+        "노트북",
+        "업무용"
+      ]
+    }
+  ],
+  "evidence": {}
+}
