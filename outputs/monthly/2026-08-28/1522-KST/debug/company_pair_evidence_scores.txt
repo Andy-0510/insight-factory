@@ -1,0 +1,82 @@
+--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---
+Generated at: 2026-08-28T06:21:30.851341Z
+
+================================================================================
+Rank #1: sk하이닉스|삼성전자 (Total Sentences: 1874, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.donga.com/news/Economy/article/all/20260813/134468692/2" target="_blank" style="font-weight:600; color:#065f46;">“반도체 산단 전력공급 지자체 협조” 못박아… 행정절차 단축</a>
+<a href="https://www.donga.com/news/Economy/article/all/20260813/134468984/2" target="_blank" style="font-weight:600; color:#065f46;">“광주-용인 반도체산단에 2000만kW 전력 공급”</a>
+<a href="https://www.jnilbo.com/news/articleView.html?idxno=90000057195" target="_blank" style="font-weight:600; color:#065f46;">호남 반도체 필요전력 6GW 확보…남은 과제는 '값싼 전기'</a>
+
+================================================================================
+Rank #2: 삼성전자|애플 (Total Sentences: 410, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.mk.co.kr/article/12120962" target="_blank" style="font-weight:600; color:#c41e3a;">144만대 잭팟 ‘갤Z8’ 시리즈…‘ 폴더블 ’ 전쟁은 이제 시작이라는데</a>
+<a href="https://www.dt.co.kr/article/12076732?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">애플, 내달 9일 첫  폴더블 폰 공개 유력… 삼성과 맞대결 예고</a>
+<a href="https://www.mk.co.kr/article/12120962" target="_blank" style="font-weight:600; color:#c41e3a;">144만대 잭팟 ‘갤Z8’ 시리즈…‘ 폴더블 ’ 전쟁은 이제 시작이라는데</a>
+
+================================================================================
+Rank #3: lg전자|삼성전자 (Total Sentences: 375, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://sports.hankooki.com/news/articleView.html?idxno=6937003" target="_blank" style="font-weight:600; color:#c41e3a;">삼성·LG, 게이밍 모니터 '화질·속도·AI' 격돌…프리미엄 시장 경쟁 가...</a>
+<a href="http://www.press9.kr/news/articleView.html?idxno=80656" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자· LG 전자, OLED TV서 손잡나</a>
+<a href="https://www.obsnews.co.kr/news/articleView.html?idxno=1533087" target="_blank" style="font-weight:600; color:#c41e3a;">중소기업도 로봇 전쟁…푸드테크 대격돌</a>
+
+================================================================================
+Rank #4: 삼성디스플레이|삼성전자 (Total Sentences: 295, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://zdnet.co.kr/view/?no=20260729005226" target="_blank" style="font-weight:600; color:#065f46;">삼성 시스템LSI, 애플 OLED 아이패드 미니용 DDI 공급...TED 방식</a>
+<a href="https://www.irobotnews.com/news/articleView.html?idxno=47857" target="_blank" style="font-weight:600; color:#065f46;">대신증권 "비에이치,  삼성 전자 로봇 사업 참여 추진"</a>
+<a href="http://www.segyebiz.com/newsView/20260819522506?OutUrl=naver" target="_blank" style="font-weight:600; color:#065f46;">삼성전자 아산 반도체 팹 내달 첫삽…3대 메가 중 처음</a>
+
+================================================================================
+Rank #5: 구글|애플 (Total Sentences: 270, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.mk.co.kr/article/12120962" target="_blank" style="font-weight:600; color:#c41e3a;">144만대 잭팟 ‘갤Z8’ 시리즈…‘ 폴더블 ’ 전쟁은 이제 시작이라는데</a>
+<a href="https://www.mk.co.kr/article/12120962" target="_blank" style="font-weight:600; color:#c41e3a;">144만대 잭팟 ‘갤Z8’ 시리즈…‘ 폴더블 ’ 전쟁은 이제 시작이라는데</a>
+<a href="https://www.ddaily.co.kr/page/view/2026081312105729080" target="_blank" style="font-weight:600; color:#c41e3a;">"폴드8 울트라급 화면을 기본형 가격에?"… '구글 픽셀 11 폴드' 삼성에...</a>
+
+================================================================================
+Rank #6: lg디스플레이|삼성디스플레이 (Total Sentences: 250, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.m-i.kr/news/articleView.html?idxno=1399614" target="_blank" style="font-weight:600; color:#c41e3a;">칩플레이션·中 추격 넘는다… LG ·삼성D, OLED '초격차 승부수'</a>
+<a href="https://www.m-i.kr/news/articleView.html?idxno=1399614" target="_blank" style="font-weight:600; color:#c41e3a;">칩플레이션·中 추격 넘는다… LG ·삼성D, OLED '초격차 승부수'</a>
+<a href="http://www.fnnews.com/news/202608111820129823" target="_blank" style="font-weight:600; color:#c41e3a;">中 첨단산업 키워주는 애플… 공급망 앞세워 한국에 견제구</a>
+
+================================================================================
+Rank #7: 마이크로소프트|아마존 (Total Sentences: 169, Type: neutral)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newsis.com/view/NISX20260728_0003726259" target="_blank" style="color:#555;">美빅테크 성적표 줄줄이…K반도체 하반기 수요 보인다</a>
+<a href="https://www.newsis.com/view/NISX20260728_0003726259" target="_blank" style="color:#555;">美빅테크 성적표 줄줄이…K반도체 하반기 수요 보인다</a>
+<a href="https://www.viewsnnews.com/article?q=237517" target="_blank" style="color:#555;">SK하이닉스 ADR, 마이크론 또 8%대 급락</a>
+
+================================================================================
+Rank #8: 애플|엔비디아 (Total Sentences: 165, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newspim.com/news/view/20260730000030" target="_blank" style="font-weight:600; color:#065f46;">[GAM] 코닝 ② 생산능력 부족으로 공급 제약…수요 약세도 변수</a>
+<a href="https://www.gamevu.co.kr/news/articleView.html?idxno=59562" target="_blank" style="font-weight:600; color:#065f46;">[ICT 종합] 네이버, 엔비디아와 대규모 투자 협력 소식 외</a>
+<a href="https://www.newspim.com/news/view/20260730000030" target="_blank" style="font-weight:600; color:#065f46;">[GAM] 코닝 ② 생산능력 부족으로 공급 제약…수요 약세도 변수</a>
+
+================================================================================
+Rank #9: lg전자|엔비디아 (Total Sentences: 149, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.thelec.kr/news/articleView.html?idxno=60344" target="_blank" style="font-weight:600; color:#065f46;">LG전자 2026년 2분기 실적발표 컨퍼런스콜 전문</a>
+<a href="https://www.seoul.co.kr/news/economy/industry/2026/08/14/20260814500241?wlog_tag3=naver" target="_blank" style="font-weight:600; color:#065f46;">‘로봇·엔비디아’ 부스터에  LG 전자 소액주주 100만명 돌파…구광모 L...</a>
+<a href="https://it.chosun.com/news/articleView.html?idxno=2023092166997" target="_blank" style="font-weight:600; color:#065f46;">LG전자 "엔비디아와 전략적 파트너십 추진…AIDC 수주 6000억 돌파"</a>
+
+================================================================================
+Rank #10: 아마존|애플 (Total Sentences: 140, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newspim.com/news/view/20260730000030" target="_blank" style="font-weight:600; color:#065f46;">[GAM] 코닝 ② 생산능력 부족으로 공급 제약…수요 약세도 변수</a>
+<a href="https://news.einfomax.co.kr/news/articleView.html?idxno=4427959" target="_blank" style="font-weight:600; color:#065f46;">[뉴욕 마켓 브리핑](31일)</a>
+<a href="https://www.newspim.com/news/view/20260730000030" target="_blank" style="font-weight:600; color:#065f46;">[GAM] 코닝 ② 생산능력 부족으로 공급 제약…수요 약세도 변수</a>
