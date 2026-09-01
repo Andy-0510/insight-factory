@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "반도체",
+        "설계",
+        "연구",
+        "교육",
+        "소자"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "전기차",
+        "충전",
+        "전기",
+        "주행",
+        "차량"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "할인",
+        "구매",
+        "혜택을",
+        "에어컨",
+        "비스포크"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "미니",
+        "led",
+        "미니 led",
+        "tv",
+        "tcl은"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "oled",
+        "폴더블",
+        "중국",
+        "제품"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "투자",
+        "디스플레이",
+        "첨단산업",
+        "삼성디스플레이",
+        "차세대"
+      ]
+    }
+  ],
+  "evidence": {}
+}
