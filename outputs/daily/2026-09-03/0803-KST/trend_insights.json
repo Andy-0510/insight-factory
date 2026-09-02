@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "반도체",
+        "기술",
+        "사업",
+        "전장",
+        "led"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "led",
+        "미니",
+        "미니 led",
+        "tcl은",
+        "삼성전자가"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "할인",
+        "구매",
+        "혜택을",
+        "에어컨",
+        "비스포크"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "갤럭시",
+        "ifa",
+        "컴패니언",
+        "유럽"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "투자",
+        "충남",
+        "첨단산업",
+        "디스플레이",
+        "삼성디스플레이"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "rog",
+        "pc",
+        "ai",
+        "게이밍",
+        "노트북"
+      ]
+    }
+  ],
+  "evidence": {}
+}
