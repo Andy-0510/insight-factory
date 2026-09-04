@@ -1,0 +1,30 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "모빌리티",
+        "실증",
+        "자동차",
+        "미래 모빌리티",
+        "미래"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ai",
+        "oled",
+        "기술을",
+        "기술",
+        "반도체"
+      ]
+    }
+  ],
+  "evidence": {}
+}
