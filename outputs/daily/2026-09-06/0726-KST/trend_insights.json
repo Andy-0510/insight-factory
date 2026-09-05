@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "교육",
+        "hmi",
+        "장비와",
+        "plc",
+        "실제"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "모빌리티",
+        "실증",
+        "자동차",
+        "미래",
+        "인공지능"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "폴더블",
+        "가격",
+        "기술",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ai",
+        "삼성",
+        "ifa",
+        "크리에이터",
+        "tv"
+      ]
+    }
+  ],
+  "evidence": {}
+}
