@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "문제는",
+        "으로",
+        "kb",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "채용",
+        "삼성전자",
+        "삼성은",
+        "성과급",
+        "공채"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "레노버",
+        "개인용",
+        "pc",
+        "레노버는"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "ifa",
+        "ai",
+        "유럽",
+        "가전",
+        "ifa 2026"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "플레오스",
+        "차량",
+        "플레오스 커넥트",
+        "커넥트",
+        "서비스를"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "oled",
+        "반도체",
+        "메모리",
+        "가격",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "폴더블",
+        "아이폰",
+        "애플이",
+        "갤럭시",
+        "애플"
+      ]
+    }
+  ],
+  "evidence": {}
+}
