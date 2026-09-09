@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "모니터",
+        "삼성전자",
+        "반도체",
+        "조명"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ai",
+        "ifa",
+        "가전",
+        "유럽",
+        "로봇"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "문제는",
+        "오디오",
+        "으로",
+        "차량",
+        "이었다"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "하락했다",
+        "코스닥",
+        "모두",
+        "주가는",
+        "크게"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "아산",
+        "지역",
+        "대규모",
+        "산업",
+        "삼성의"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "애플",
+        "프로",
+        "듀오",
+        "폴더블"
+      ]
+    }
+  ],
+  "evidence": {}
+}
