@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 53.455664267s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 53\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 반도체 배터리",
+      "summary": "AI, 반도체, 배터리 기술을 중심으로 한 첨단 기술 사업 경쟁과 관련된 내용을 다룹니다. 특히 중국, 미국 등 주요 국가 및 기업들의 차세대 제품 개발과 디스플레이, 스마트폰, 로봇 등 관련 산업 동향을 분석합니다.",
+      "words": [
+        "ai",
+        "반도체",
+        "문제는",
+        "기술",
+        "으로"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "IFA 2026 가전AI",
+      "summary": "IFA 2026에서 공개될 삼성, LG 등 주요 기업들의 AI 기반 혁신 가전 제품 및 폴더블, 게이밍 등 최신 기술 동향을 다룹니다.",
+      "words": [
+        "ai",
+        "ifa",
+        "아이폰",
+        "가전",
+        "유럽"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "AI 반도체 디스플레이",
+      "summary": "AI, OLED, 반도체, 메모리, 디스플레이, HBM 등의 기술 트렌드를 중심으로 미국, 중국 등 글로벌 시장의 투자, 생산, 공급망, 가격 동향을 분석합니다.",
+      "words": [
+        "ai",
+        "oled",
+        "반도체",
+        "메모리",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "플레오스 차량 AI",
+      "summary": "BMW의 새로운 차량용 AI 플랫폼 '플레오스 커넥트'를 이용한 주행, 오디오, 음악 서비스에 대한 내용입니다.",
+      "words": [
+        "차량",
+        "플레오스",
+        "주행",
+        "서비스를",
+        "플레오스 커넥트"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "모빌리티",
+        "실증",
+        "산업",
+        "지역",
+        "아산"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "할인",
+        "구매",
+        "혜택을",
+        "상품을",
+        "추석"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "채용",
+        "삼성은",
+        "공채",
+        "교육",
+        "하반기"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "미니",
+        "led",
+        "미니 led",
+        "tv",
+        "tcl은"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "천안",
+        "푸르지오",
+        "분양",
+        "단지",
+        "두정역"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "색을",
+        "교수는",
+        "색과",
+        "교수",
+        "나노"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "건강",
+        "심장",
+        "그래서",
+        "수술",
+        "그런"
+      ]
+    }
+  ],
+  "evidence": {}
+}
