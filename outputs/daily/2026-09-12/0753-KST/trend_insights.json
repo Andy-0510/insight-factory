@@ -1,0 +1,66 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "산업",
+        "자동차",
+        "아산시",
+        "화장품",
+        "바이오"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "투자해",
+        "공장을",
+        "부지에",
+        "원을",
+        "원을 투자해"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "에디션",
+        "전동화",
+        "사운드",
+        "전시",
+        "주행"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "프로",
+        "아이폰18",
+        "단말",
+        "구매",
+        "아이폰"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "아이폰",
+        "폴더블",
+        "led",
+        "반도체"
+      ]
+    }
+  ],
+  "evidence": {}
+}
