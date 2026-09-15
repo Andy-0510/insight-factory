@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "가장",
+        "반도체",
+        "ict",
+        "달러로"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "qled",
+        "차세대",
+        "웨어러블",
+        "발광",
+        "최고"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "차량",
+        "pv7",
+        "주행",
+        "기아",
+        "전동화"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "음향",
+        "전문가용",
+        "반주기",
+        "tj미디어",
+        "전문가용 반주기"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "rog",
+        "게이밍",
+        "pc",
+        "브랜드",
+        "에이수스"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "패널",
+        "폴더블",
+        "출하량은",
+        "전년",
+        "상반기"
+      ]
+    }
+  ],
+  "evidence": {}
+}
