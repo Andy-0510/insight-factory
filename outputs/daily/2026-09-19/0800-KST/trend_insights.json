@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "투명",
+        "ai",
+        "ai가",
+        "기술을",
+        "기능을"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "할인",
+        "추석",
+        "판매한다",
+        "구매",
+        "선보인다"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "게임",
+        "신작",
+        "일본",
+        "캐릭터",
+        "게임의"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "화면을",
+        "듀오",
+        "프로",
+        "화면"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "반도체",
+        "후공정",
+        "아산테크노밸리",
+        "소부장",
+        "신혼부부"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "3분기",
+        "환율",
+        "수익성",
+        "oled",
+        "연구원은"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "mlcc",
+        "반도체",
+        "부품",
+        "범용"
+      ]
+    }
+  ],
+  "evidence": {}
+}
