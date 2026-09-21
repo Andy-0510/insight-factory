@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "하이브리드",
+        "주행",
+        "현대차는",
+        "적용했다",
+        "suv"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "스냅드래곤",
+        "안드로이드",
+        "엘리트",
+        "구글북",
+        "노트북"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "oled",
+        "ai",
+        "중국",
+        "디스플레이",
+        "게이밍"
+      ]
+    }
+  ],
+  "evidence": {}
+}
