@@ -3830,6 +3830,17 @@
     ]
   },
   "weekly": {
+    "2026-09-25": [
+      {
+        "time": "0921-KST",
+        "reports": [
+          {
+            "name": "weekly_report.html",
+            "path": "outputs/weekly/2026-09-25/0921-KST/weekly_report.html"
+          }
+        ]
+      }
+    ],
     "2026-09-18": [
       {
         "time": "0859-KST",
