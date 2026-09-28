@@ -1,0 +1,82 @@
+--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---
+Generated at: 2026-09-28T00:49:13.179694Z
+
+================================================================================
+Rank #1: sk하이닉스|삼성전자 (Total Sentences: 1261, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://biz.heraldcorp.com/article/10855790?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">“CXMT DDR5, SK하이닉스와 성능 1% 차”…거세지는 ‘레드칩 어택’에 ...</a>
+<a href="https://www.viva100.com/article/20260830500365" target="_blank" style="font-weight:600; color:#c41e3a;">D램 이어 낸드도⋯ 중·일 낸드 공세에 삼성·SK ‘긴장’</a>
+<a href="http://www.inews24.com/view/1999756" target="_blank" style="font-weight:600; color:#c41e3a;">“중국 D램 무섭게 컸다”…CXMT, 삼성·SK하이닉스 턱밑 추격</a>
+
+================================================================================
+Rank #2: lg전자|삼성전자 (Total Sentences: 914, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.g-enews.com/view.php?ud=202608280823241190c8c1c064d_1" target="_blank" style="font-weight:600; color:#c41e3a;">"초대형·미니LED로 브라질 잡는다"… LG전자, 라인업 혁신과 파라나 거...</a>
+<a href="https://www.newsis.com/view/NISX20260827_0003765196" target="_blank" style="font-weight:600; color:#c41e3a;">"중국이 못 따라온다"…저가 공세속 'B2B 확대'나선 삼성·LG전자</a>
+<a href="https://www.ziksir.com/news/articleView.html?idxno=144962" target="_blank" style="font-weight:600; color:#c41e3a;">유럽 안방 치고 들어온 中가전…삼성·LG, '기술·AS 격차'로 맞불</a>
+
+================================================================================
+Rank #3: 삼성전자|애플 (Total Sentences: 632, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.financialpost.co.kr/news/articleView.html?idxno=275218" target="_blank" style="font-weight:600; color:#c41e3a;">애플 참전으로 불붙은 ' 폴더블 ' 판세…'7년 뚝심' 삼성전자가 웃는 이유</a>
+<a href="https://www.mydaily.co.kr/page/view/2026091111584621151" target="_blank" style="font-weight:600; color:#c41e3a;">삼성, 애플 참전에도  폴더블  1위 수성…올해 점유율 35.1% 전망</a>
+<a href="https://www.goodkyung.com/news/articleView.html?idxno=291637" target="_blank" style="font-weight:600; color:#c41e3a;">[심층진단] 경쟁 치열해지는 스마트폰 시장…삼성전자, '왕좌' 지킨다</a>
+
+================================================================================
+Rank #4: 삼성디스플레이|삼성전자 (Total Sentences: 368, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.todaykorea.co.kr/news/articleView.html?idxno=406088" target="_blank" style="font-weight:600; color:#065f46;">추석 앞두고 '상생 행보' 나선  삼성 , 협력사 대금 1.3조 조기 지급</a>
+<a href="http://www.dtnews24.com/news/articleView.html?idxno=814886" target="_blank" style="font-weight:600; color:#065f46;">충남 아산에 풀리는 삼성 113조 원 투자…대한민국 이끌 '첨단산업 중심...</a>
+<a href="https://www.etnews.com/20260908000144" target="_blank" style="font-weight:600; color:#065f46;">씨에프테크놀로지,'기술 자립' 도전...수입 장비의 빈자리 국산 기술로...</a>
+
+================================================================================
+Rank #5: tcl|삼성전자 (Total Sentences: 266, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.edaily.co.kr/News/Read?newsId=02450166645576184&mediaCodeNo=257&utm_source=naver&utm_medium=referral&utm_campaign=news_syndication&utm_content=original_article" target="_blank" style="font-weight:600; color:#c41e3a;">[MUST KNOW5]엔비디아 ‘AI 생태계’ 확장·글로벌 국채금리 급등…오늘...</a>
+<a href="http://www.newstomato.com/ReadNews.aspx?no=1312271&inflow=N" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 대 TCL, 미니LED 주도권 다툼 ‘법정으로’</a>
+<a href="http://www.4th.kr/news/articleView.html?idxno=2117288" target="_blank" style="font-weight:600; color:#c41e3a;">中 TCL, 삼성전자 美서 제소… 미니LED  허위광고 공방</a>
+
+================================================================================
+Rank #6: 삼성디스플레이|애플 (Total Sentences: 230, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://it.chosun.com/news/articleView.html?idxno=2023092168972" target="_blank" style="font-weight:600; color:#065f46;">메모리값에 맞은 애플…화풀이는 韓 OLED에</a>
+<a href="http://www.seouleconews.com/news/articleView.html?idxno=93392" target="_blank" style="font-weight:600; color:#065f46;">애플, 아이폰 원가 방어 나섰다… OLED  낮추고 메모리 공급망 흔든다</a>
+<a href="https://zdnet.co.kr/view/?no=20260908111537" target="_blank" style="font-weight:600; color:#065f46;">삼성 디스플레이 , 내년 애플  폴더블 ·아이패드 OLED 공급 목표 대폭 상향</a>
+
+================================================================================
+Rank #7: lg디스플레이|삼성디스플레이 (Total Sentences: 219, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://it.chosun.com/news/articleView.html?idxno=2023092168972" target="_blank" style="font-weight:600; color:#065f46;">메모리값에 맞은 애플…화풀이는 韓 OLED에</a>
+<a href="http://www.seouleconews.com/news/articleView.html?idxno=93392" target="_blank" style="font-weight:600; color:#065f46;">애플, 아이폰 원가 방어 나섰다… OLED  낮추고 메모리 공급망 흔든다</a>
+<a href="https://www.etnews.com/20260908000144" target="_blank" style="font-weight:600; color:#065f46;">씨에프테크놀로지,'기술 자립' 도전...수입 장비의 빈자리 국산 기술로...</a>
+
+================================================================================
+Rank #8: 구글|애플 (Total Sentences: 191, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://biz.heraldcorp.com/article/10855323?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">팀 쿡 후임은 25년차 ‘애플맨’…AI 격랑 속 혁신 이룰까</a>
+<a href="https://www.wikitree.co.kr/articles/1155487" target="_blank" style="font-weight:600; color:#c41e3a;">샤오미18 폴드 실사 또 유출, 갤럭시Z폴드8 닮은 와이드폼팩터에 트리플...</a>
+<a href="https://www.mt.co.kr/finance/2026/08/28/2026082810114457555" target="_blank" style="font-weight:600; color:#c41e3a;">농협은행, 모바일 신분증 ISMS-P 인증 획득…금융권 최초</a>
+
+================================================================================
+Rank #9: tcl|하이센스 (Total Sentences: 170, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="http://www.4th.kr/news/articleView.html?idxno=2117288" target="_blank" style="font-weight:600; color:#c41e3a;">中 TCL, 삼성전자 美서 제소… 미니LED  허위광고 공방</a>
+<a href="https://www.g-enews.com/view.php?ud=202608280823241190c8c1c064d_1" target="_blank" style="font-weight:600; color:#c41e3a;">"초대형·미니LED로 브라질 잡는다"… LG전자, 라인업 혁신과 파라나 거...</a>
+<a href="http://www.inews24.com/view/1999239" target="_blank" style="font-weight:600; color:#c41e3a;">월드컵 특수 탄 TV 시장…2분기 글로벌 출하량 3.6%↑</a>
+
+================================================================================
+Rank #10: 애플|엔비디아 (Total Sentences: 168, Type: neutral)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.ajunews.com/view/20260826143443539" target="_blank" style="color:#555;">[강준영 칼럼]  韓·대만 반도체 '공존의 지혜' 찾아야</a>
+<a href="https://www.seoulfn.com/news/articleView.html?idxno=636670" target="_blank" style="color:#555;">[뉴욕증시] 엔비디아발 AI 낙관론 재점화···세일즈포스 22%↑·옥타 28...</a>
+<a href="http://www.newsprime.co.kr/news/article.html?no=745653" target="_blank" style="color:#555;">[해외시황] 뉴욕증시, 워시 매파 발언·금리 인상 우려에 '하락'…나스닥...</a>
