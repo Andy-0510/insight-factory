@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "lg전자는",
+        "미디어",
+        "경험을",
+        "몰입형",
+        "lg전자가"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "청소기",
+        "구매",
+        "상품을",
+        "할인",
+        "이사"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "투자",
+        "기업",
+        "아산의",
+        "산업단지",
+        "산업"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "신형",
+        "차량",
+        "ai",
+        "기능을",
+        "하이브리드"
+      ]
+    }
+  ],
+  "evidence": {}
+}
