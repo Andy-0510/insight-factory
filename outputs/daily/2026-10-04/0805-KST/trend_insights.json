@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "t1",
+        "rtx",
+        "게이밍",
+        "e스포츠",
+        "소프트"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "청소기",
+        "구매",
+        "웨딩",
+        "혜택을",
+        "이사"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "투자",
+        "기업",
+        "투자를",
+        "산업단지",
+        "산업"
+      ]
+    }
+  ],
+  "evidence": {}
+}
