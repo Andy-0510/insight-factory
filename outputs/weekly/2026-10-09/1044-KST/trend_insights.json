@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite\nPlease retry in 22h20m39.603615141s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 80439\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 디스플레이 사업",
+      "summary": "AI 기술이 OLED, LCD 등 디스플레이 사업에 미치는 영향과 중국, 미국 기업들의 경쟁, 그리고 폴더블 스마트폰 및 PC 시장에서의 활용 등을 다룹니다.",
+      "words": [
+        "ai",
+        "디스플레이",
+        "사업",
+        "oled",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "삼성전자 실적",
+      "summary": "삼성전자의 3분기 반도체, 디스플레이 등 핵심 부품 사업의 영업이익 및 매출 실적, 중국발 공급 및 원가 변동, AI 기술 로봇 등에 따른 영향 등을 분석합니다.",
+      "words": [
+        "ai",
+        "3분기",
+        "반도체",
+        "메모리",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "AI 시대 IT 신제품",
+      "summary": "AI 기술을 기반으로 한 삼성 갤럭시, 애플 아이폰, 엔비디아 RTX, XPS 노트북 등 다양한 IT 신제품 출시와 스마트홈 지원, 크리에이터를 위한 제품 등 최신 IT 트렌드를 다룹니다.",
+      "words": [
+        "ai",
+        "갤럭시",
+        "s12",
+        "rtx",
+        "갤럭시 s12"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "웨딩&이사 할인",
+      "summary": "청소기 브랜드(로보락, 다이슨 등)의 웨딩 및 이사 시즌 맞이 특별 할인 행사 및 혜택 정보를 다룹니다.",
+      "words": [
+        "청소기",
+        "웨딩",
+        "브랜드",
+        "구매",
+        "행사"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "아산 첨단산업 투자",
+      "summary": "충남 아산 산업단지에 삼성 등 대규모 기업의 첨단산업 투자가 이루어지고 있으며, 이를 위한 주거 및 금융 여건 조성 등 정주 여건 개선에 관한 내용입니다.",
+      "words": [
+        "투자",
+        "기업",
+        "아산",
+        "산업단지",
+        "아산의"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "삼성tv 영국미술",
+      "summary": "삼성전자의 스마트 TV가 영국 박물관의 19세기 명작들을 아트 스토어를 통해 감상할 수 있도록 지원하며, 특히 조지프 말로드 윌리엄 터너의 작품들이 소개된다.",
+      "words": [
+        "영국",
+        "삼성",
+        "아트",
+        "삼성 아트",
+        "작품을"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "신형",
+        "하이브리드",
+        "플레오스",
+        "터보",
+        "주행"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "투명",
+        "투명 oled",
+        "자극을",
+        "oled",
+        "안경을"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "레노버",
+        "기기를",
+        "상당의",
+        "한국레노버",
+        "기기는"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "e스포츠 공간",
+      "summary": "e스포츠 경기, 게이밍 체험을 위한 PC방, 다이닝 공간, 선수 및 팬들을 위한 공간에 대한 내용을 다룹니다. RTX 그래픽 카드, 로지텍 등 관련 기기와 로고도 언급됩니다.",
+      "words": [
+        "t1",
+        "e스포츠",
+        "게이밍",
+        "pc방",
+        "공간"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "대한항공",
+        "sky",
+        "사용",
+        "shop",
+        "차량"
+      ]
+    }
+  ],
+  "evidence": {}
+}
