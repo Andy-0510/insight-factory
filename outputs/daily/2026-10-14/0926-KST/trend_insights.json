@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "반도체",
+        "인텔리전스",
+        "사람이",
+        "삼성전자"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "전기차",
+        "복합",
+        "프리미엄",
+        "배터리",
+        "시스템"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "수면",
+        "쿠팡",
+        "브랜드",
+        "상품을",
+        "할인"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "lg",
+        "ai",
+        "로봇",
+        "레이어",
+        "솔루션"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "갤럭시",
+        "폴드8",
+        "비스포크",
+        "비스포크 ai"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "갤럭시",
+        "lg",
+        "기술을",
+        "가전"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "애플",
+        "ai홈",
+        "기기",
+        "iot",
+        "실내"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "msi",
+        "아이폰",
+        "작업",
+        "지원한다",
+        "코어"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "pc",
+        "3분기",
+        "출하량",
+        "메모리",
+        "가격"
+      ]
+    }
+  ],
+  "evidence": {}
+}
