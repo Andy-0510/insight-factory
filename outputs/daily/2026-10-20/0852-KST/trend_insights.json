@@ -1,0 +1,54 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "현장",
+        "프로",
+        "ai",
+        "dell",
+        "기반"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "아트",
+        "삼성 아트",
+        "파리",
+        "삼성",
+        "바젤"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "요가",
+        "rtx",
+        "요가 프로",
+        "레노버",
+        "엔비디아"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "oled",
+        "ai",
+        "기술",
+        "디스플레이",
+        "반도체"
+      ]
+    }
+  ],
+  "evidence": {}
+}
