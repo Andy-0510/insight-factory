@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "앤커",
+        "ai",
+        "기술",
+        "반도체",
+        "게임"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "전월",
+        "상승했다",
+        "상승",
+        "하락했다",
+        "컴퓨터"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ai",
+        "rtx",
+        "프로",
+        "기반",
+        "엔비디아"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "페로브스카이트",
+        "소재",
+        "sk머티리얼즈",
+        "디스플레이",
+        "차세대"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "현대차",
+        "주행",
+        "전기차",
+        "차량",
+        "전기"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "갤럭시",
+        "듀오",
+        "아이폰 듀오",
+        "폴더블"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "oled",
+        "ai",
+        "패널",
+        "디스플레이",
+        "중국"
+      ]
+    }
+  ],
+  "evidence": {}
+}
