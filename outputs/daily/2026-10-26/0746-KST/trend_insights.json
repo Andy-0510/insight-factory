@@ -1,0 +1,66 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "기업",
+        "반도체",
+        "영업이익",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "pc",
+        "가격",
+        "출하량이",
+        "전년",
+        "출하량"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "삼성은",
+        "하반기",
+        "공채",
+        "채용",
+        "gsat"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "내부",
+        "화면",
+        "듀오",
+        "아이폰 듀오"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "사업",
+        "ai",
+        "반도체",
+        "삼성전자는",
+        "데이터센터"
+      ]
+    }
+  ],
+  "evidence": {}
+}
