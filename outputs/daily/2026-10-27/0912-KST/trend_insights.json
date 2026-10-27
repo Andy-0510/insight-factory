@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "공기청정기",
+        "게임",
+        "출시",
+        "asus",
+        "rog"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "결제",
+        "삼성월렛",
+        "텐센트",
+        "중국",
+        "해외"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "오디오",
+        "하만의",
+        "하만",
+        "로저스",
+        "자동차"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "힌지",
+        "듀오",
+        "폴더블",
+        "아이폰 듀오"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "lg",
+        "회장은",
+        "사업",
+        "경영"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "아이패드",
+        "프로",
+        "oled",
+        "a20",
+        "애플"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "pc",
+        "가격",
+        "출하량이",
+        "출하량",
+        "메모리"
+      ]
+    }
+  ],
+  "evidence": {}
+}
