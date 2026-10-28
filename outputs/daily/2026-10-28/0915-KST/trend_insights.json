@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "위성",
+        "가전",
+        "서비스",
+        "아마존은",
+        "구매"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "삼성전자",
+        "게임",
+        "1위를",
+        "연속",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "맥북",
+        "애플",
+        "신형",
+        "아이패드",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "화면",
+        "듀오",
+        "아이폰 듀오",
+        "갤럭시"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "수면",
+        "갤럭시",
+        "호흡",
+        "기능은",
+        "장애"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "회장은",
+        "로봇",
+        "ai",
+        "주식",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "투자",
+        "기업별",
+        "아산",
+        "지역",
+        "기업"
+      ]
+    }
+  ],
+  "evidence": {}
+}
