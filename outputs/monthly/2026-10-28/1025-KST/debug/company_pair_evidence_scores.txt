@@ -1,0 +1,82 @@
+--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---
+Generated at: 2026-10-28T01:23:37.089670Z
+
+================================================================================
+Rank #1: sk하이닉스|삼성전자 (Total Sentences: 1268, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.the-today.com/news/articleView.html?idxno=91955" target="_blank" style="font-weight:600; color:#065f46;">[투데이온] 컨트롤러 삼킨 'NVHBM'…삼성이 '적수' TSMC와 손잡은 속사정</a>
+<a href="https://www.greened.kr/news/articleView.html?idxno=350825" target="_blank" style="font-weight:600; color:#065f46;">이재용·최태원 회장, 뉴욕서 젠슨 황 CEO 만나 무슨 얘기 나눌까...HBM·...</a>
+<a href="https://weekly.donga.com/3/all/11/6405016/1" target="_blank" style="font-weight:600; color:#065f46;">AI가 영리해지는 만큼 메모리 몸값 치솟을 것</a>
+
+================================================================================
+Rank #2: lg전자|삼성전자 (Total Sentences: 565, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://kpenews.com/View.aspx?No=4254279" target="_blank" style="font-weight:600; color:#c41e3a;">"터너·컨스터블 명작 안방서 본다"..삼성 아트 스토어, 영국박물관 소...</a>
+<a href="https://www.pinpointnews.co.kr/news/articleView.html?idxno=492921" target="_blank" style="font-weight:600; color:#c41e3a;">연말 대목 앞두고 들썩이는 中 패널값에...원가 부담 커지는 삼성·LG TV</a>
+<a href="https://kpenews.com/View.aspx?No=4253570" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 전자, HBM4·메모리 호조..3분기 영업이익 100조 돌파 전망</a>
+
+================================================================================
+Rank #3: lg전자|애플 (Total Sentences: 337, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.sedaily.com/article/20099243?ref=naver" target="_blank" style="font-weight:600; color:#065f46;">LG·애플 기기 32억대 결합…고성장 ‘AI 홈’ 선점</a>
+<a href="https://www.etoday.co.kr/news/view/2633895" target="_blank" style="font-weight:600; color:#065f46;">TVㆍ모니터에서 AI 가전까지⋯ LG ㆍ애플 동맹, 스마트홈으로 전선 확대</a>
+<a href="https://www.newstopkorea.com/news/articleView.html?idxno=48189" target="_blank" style="font-weight:600; color:#065f46;">LG·애플, 더 강화된 연대..아이폰 넘어 AI홈 기기까지</a>
+
+================================================================================
+Rank #4: 삼성전자|애플 (Total Sentences: 327, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.industrynews.co.kr/news/articleView.html?idxno=86841" target="_blank" style="font-weight:600; color:#c41e3a;">메모리·AP·기판 '품귀' 가속…삼성 갤럭시, 원가 방어 고심</a>
+<a href="https://www.asiatoday.co.kr/kn/view.php?key=20261006010001175" target="_blank" style="font-weight:600; color:#c41e3a;">애플  폴더블  국내 상륙 앞두고… 삼성, 53g 다이어트로 맞불</a>
+<a href="https://kpenews.com/View.aspx?No=4254279" target="_blank" style="font-weight:600; color:#c41e3a;">"터너·컨스터블 명작 안방서 본다"..삼성 아트 스토어, 영국박물관 소...</a>
+
+================================================================================
+Rank #5: 삼성디스플레이|삼성전자 (Total Sentences: 249, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.sedaily.com/article/20104448?ref=naver" target="_blank" style="font-weight:600; color:#065f46;">이재용의 ‘승어부’…“협력사가 잘돼야  삼성 도 잘돼” 代 잇는 상생</a>
+<a href="https://www.hankyung.com/article/2026102312217" target="_blank" style="font-weight:600; color:#065f46;">"취업 걱정 덜자"…삼전닉스 잘나가니 반도체고 경쟁률 '껑충'</a>
+<a href="https://www.gukjenews.com/news/articleView.html?idxno=3707668" target="_blank" style="font-weight:600; color:#065f46;">아산시, 서울서 투자유치 설명회…첨단기업 200곳 공략</a>
+
+================================================================================
+Rank #6: 마이크로소프트|엔비디아 (Total Sentences: 231, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newsquest.co.kr/news/articleView.html?idxno=301843" target="_blank" style="font-weight:600; color:#065f46;">[굿모닝! 글로벌 뉴욕증시] PCE는 식었는데 장기금리는 또 뛰었다…기술...</a>
+<a href="https://www.mk.co.kr/article/12163365" target="_blank" style="font-weight:600; color:#065f46;">실적 전망 낮췄는데 목표가는 올렸다… LG전자 의 역설 [오늘 나온 보고서...</a>
+<a href="https://www.newspim.com/news/view/20260928001123" target="_blank" style="font-weight:600; color:#065f46;">[AI MY 뉴스] 뉴욕 반도체주 프리뷰...유가·금리 급등에 반도체주 약세...</a>
+
+================================================================================
+Rank #7: 애플|엔비디아 (Total Sentences: 209, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://kpenews.com/View.aspx?No=4254279" target="_blank" style="font-weight:600; color:#c41e3a;">"터너·컨스터블 명작 안방서 본다"..삼성 아트 스토어, 영국박물관 소...</a>
+<a href="https://kpenews.com/View.aspx?No=4253570" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 전자, HBM4·메모리 호조..3분기 영업이익 100조 돌파 전망</a>
+<a href="https://kpenews.com/View.aspx?No=4258904" target="_blank" style="font-weight:600; color:#c41e3a;">삼성전자, 美 포브스 스마트홈 평가서 편의성 호평..패밀리허브·무빙스...</a>
+
+================================================================================
+Rank #8: 구글|애플 (Total Sentences: 200, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.the-today.com/news/articleView.html?idxno=91494" target="_blank" style="font-weight:600; color:#c41e3a;">[투데이온] 아이폰18 프맥, 갤S26 울트라에 카메라 판정승…"완성도 앞서...</a>
+<a href="https://www.wikitree.co.kr/articles/1162241" target="_blank" style="font-weight:600; color:#c41e3a;">갤럭시 S27 출시일 언제쯤… 가격 예상은?</a>
+<a href="https://www.ekoreanews.co.kr/news/articleView.html?idxno=88333" target="_blank" style="font-weight:600; color:#c41e3a;">메타 AI 글라스로 네이버 길찾기...韓시장 선점 경쟁 본격화</a>
+
+================================================================================
+Rank #9: lg디스플레이|삼성디스플레이 (Total Sentences: 181, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://zdnet.co.kr/view/?no=20261001150621" target="_blank" style="font-weight:600; color:#065f46;">LCD 보다 빠른 中 OLED 굴기…삼성·LGD "정부 정책 지원 절실"</a>
+<a href="https://www.dt.co.kr/article/12089764?ref=naver" target="_blank" style="font-weight:600; color:#065f46;">애플 노트북도 OLED로…삼성D·LGD "땡큐"</a>
+<a href="https://www.cwn.kr/news/articleView.html?idxno=59638" target="_blank" style="font-weight:600; color:#065f46;">삼성디스플레이·LG디스플레이, 애플 신제품 출시 앞두고 'OLED 사업' 성...</a>
+
+================================================================================
+Rank #10: hp|레노버 (Total Sentences: 173, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://zdnet.co.kr/view/?no=20261013085143" target="_blank" style="font-weight:600; color:#065f46;">AMD, 에이전틱 AI용 랙스케일 플랫폼 '헬리온' 공개</a>
+<a href="https://daily.hankooki.com/news/articleView.html?idxno=1415764" target="_blank" style="font-weight:600; color:#065f46;">中  OLED  3사, 노트북 공략 강화…삼성D 독주에 도전장</a>
+<a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=708991" target="_blank" style="font-weight:600; color:#065f46;">엔비디아, 베라 루빈 AI 팩토리를 컨테이너 하나에…데이터센터 구축 6...</a>
