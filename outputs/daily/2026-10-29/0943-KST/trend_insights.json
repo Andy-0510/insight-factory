@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "oled",
+        "결제",
+        "led",
+        "거래",
+        "백색"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "투자",
+        "아산",
+        "지역",
+        "주거",
+        "삼성"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "맥북",
+        "터치",
+        "프로",
+        "애플",
+        "m5"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "화면",
+        "문제가",
+        "일부",
+        "듀오"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "ai",
+        "보안",
+        "dell",
+        "양자",
+        "지원한다"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "ai",
+        "pc",
+        "반도체",
+        "메모리",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "3분기",
+        "lg전자는",
+        "tv",
+        "영업이익",
+        "매출"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "소재",
+        "실적",
+        "장비",
+        "반도체",
+        "같습니다"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "oled",
+        "전문가",
+        "시험",
+        "환자의"
+      ]
+    }
+  ],
+  "evidence": {}
+}
