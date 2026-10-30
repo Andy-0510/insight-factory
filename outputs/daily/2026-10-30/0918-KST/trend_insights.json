@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "게이밍",
+        "게임",
+        "투자",
+        "주행"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "할인",
+        "행사",
+        "소상공인",
+        "모바일",
+        "비스포크"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "배터리",
+        "ess",
+        "lfp",
+        "3분기",
+        "미국"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "맥북",
+        "아이폰",
+        "애플",
+        "애플은",
+        "애플이"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "갤럭시",
+        "a18",
+        "ai",
+        "기능",
+        "기능을"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "lg전자는",
+        "tv",
+        "3분기",
+        "사업",
+        "누적"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "rtx",
+        "운영",
+        "gpu",
+        "인프라"
+      ]
+    }
+  ],
+  "evidence": {}
+}
