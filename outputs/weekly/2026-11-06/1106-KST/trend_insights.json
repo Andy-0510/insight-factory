@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://ai.google.dev/gemini-api/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite, description: Generate content requests per day limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\nPlease retry in 5h58m50.888710117s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://ai.google.dev/gemini-api/docs/rate-limits\"\n}\n, violations {\n  description: \"Generate content requests per day limit exceeded on Free Tier. See https://ai.google.dev/gemini-api/docs/rate-limits.\"\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 21530\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "ai",
+        "청력",
+        "갤럭시",
+        "oled",
+        "기술을"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "oled",
+        "반도체",
+        "중국",
+        "디스플레이",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "아이폰",
+        "ai",
+        "화면",
+        "애플",
+        "애플은"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "주행",
+        "음성",
+        "차량",
+        "기어",
+        "정보"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "할인",
+        "상품을",
+        "할인한다",
+        "판매한다",
+        "쓱데이"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "AI 반도체 증시",
+      "summary": "AI 열풍 속 미국 반도체 기업들의 3분기 실적 발표와 SK하이닉스, AMD 등 주요 기업 주가 동향, 그리고 증시에 미치는 영향과 투자 심리를 다룹니다.",
+      "words": [
+        "ai",
+        "미국",
+        "반도체",
+        "실적",
+        "투자"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "미국",
+        "계열사는",
+        "해외",
+        "중국",
+        "계열사"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "투자",
+        "인허가",
+        "첨단산업",
+        "행정",
+        "기업별"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "펌프",
+        "데이터센터",
+        "센서리스",
+        "냉각",
+        "고효율"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "퀴즈",
+        "이다",
+        "게임을",
+        "정답을",
+        "html5"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "시분할",
+        "구동",
+        "디스플레이",
+        "대학",
+        "차량용"
+      ]
+    }
+  ],
+  "evidence": {}
+}
