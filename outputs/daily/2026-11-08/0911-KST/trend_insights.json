@@ -1,0 +1,90 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "태블릿",
+        "삼성전자는",
+        "삼성전자",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "할인",
+        "구매",
+        "혜택을",
+        "가전",
+        "상품을"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "삼성디스플레이",
+        "투자",
+        "아산시의회",
+        "지역경제",
+        "기업의"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "첨단",
+        "기술",
+        "연구개발",
+        "차세대"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "oled",
+        "중국",
+        "공급",
+        "6세대",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "3분기",
+        "매출",
+        "반도체",
+        "실적",
+        "유지"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "ai",
+        "rtx",
+        "아이폰",
+        "기능을",
+        "갤럭시"
+      ]
+    }
+  ],
+  "evidence": {}
+}
