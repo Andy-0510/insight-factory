@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "기본",
+        "자동화",
+        "ai",
+        "차량",
+        "안전"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "ai",
+        "3분기",
+        "화면",
+        "oled",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "첨단",
+        "기술",
+        "차세대",
+        "연구개발"
+      ]
+    }
+  ],
+  "evidence": {}
+}
