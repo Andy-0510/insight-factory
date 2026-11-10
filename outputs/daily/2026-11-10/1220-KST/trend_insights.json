@@ -1,0 +1,126 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "보안",
+        "삼성디스플레이",
+        "사이버",
+        "사업",
+        "완성차"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "올레드",
+        "lg",
+        "혁신상을",
+        "ces",
+        "무선"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "gv90",
+        "주행",
+        "제네시스",
+        "충전",
+        "루프"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "시험",
+        "수능",
+        "모든",
+        "당일",
+        "반드시"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "정답",
+        "이다",
+        "사용자",
+        "ai",
+        "이용자"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "사장",
+        "삼성전자",
+        "미래",
+        "배터리",
+        "반도체"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "할인",
+        "연말",
+        "상품을",
+        "혜택을",
+        "삼성"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "에이수스",
+        "ai",
+        "시계",
+        "노트북",
+        "지원한다"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "듀오",
+        "화면",
+        "아이폰 듀오",
+        "중고"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "구동",
+        "기술",
+        "방안을",
+        "디스플레이",
+        "현지"
+      ]
+    }
+  ],
+  "evidence": {}
+}
