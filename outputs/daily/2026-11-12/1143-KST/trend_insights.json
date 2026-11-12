@@ -1,0 +1,126 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "이다",
+        "보안",
+        "전력",
+        "자동차"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "할인",
+        "행사",
+        "상품",
+        "구매",
+        "판매한다"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "ar",
+        "안경",
+        "영상을",
+        "빛의",
+        "밝은"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "대통령은",
+        "첨단",
+        "투자",
+        "삼성전자",
+        "지역"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "배터리",
+        "미래",
+        "현대차",
+        "공동",
+        "로봇"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "특허",
+        "oled",
+        "oled tv",
+        "tv",
+        "베젤"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "기술",
+        "ax",
+        "혁신",
+        "차세대",
+        "ai"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "반도체",
+        "오른",
+        "사업을",
+        "디스플레이",
+        "부품"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "게이밍",
+        "ai",
+        "게임",
+        "공식",
+        "pc"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "올레드",
+        "혁신상을",
+        "lg",
+        "ces",
+        "최고"
+      ]
+    }
+  ],
+  "evidence": {}
+}
