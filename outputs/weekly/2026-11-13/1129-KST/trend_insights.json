@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 20, model: gemini-2.5-flash-lite, description: Generate content requests per day limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.\nPlease retry in 5h35m58.345697081s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://aistudio.google.com/docs/rate-limits\"\n}\n, violations {\n  description: \"Generate content requests per day limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.\"\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerDayPerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 20\n}\n, retry_delay {\n  seconds: 20158\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 반도체 신기술",
+      "summary": "AI, 반도체, 디스플레이, 메모리, 소재 등 신기술과 제품 동향, 특히 삼성전자와 아이폰 관련 기업들의 사업 및 공급 경쟁을 다룹니다.",
+      "words": [
+        "ai",
+        "반도체",
+        "rtx",
+        "기술을",
+        "디스플레이"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "LG 올레드 혁신",
+      "summary": "LG전자가 CES에서 공개한 혁신적인 올레드 디스플레이 기술과 신제품들을 중심으로, TV, 스마트폰, 모니터 등 다양한 분야에서의 기술 발전과 프리미엄 제품 라인업을 소개합니다.",
+      "words": [
+        "oled",
+        "lg",
+        "올레드",
+        "기술",
+        "혁신상을"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "폴더블 폰 신기술",
+      "summary": "애플, 삼성, 구글 등 IT 기업들의 폴더블 폰 신제품 출시와 관련 기술(AI, 힌지, 카메라, 디스플레이) 동향, 그리고 관련 제품(아이폰 듀오, 젠틀몬스터 안경) 정보를 다룹니다.",
+      "words": [
+        "아이폰",
+        "화면",
+        "듀오",
+        "아이폰 듀오",
+        "출시"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "첨단산업 충청권 투자",
+      "summary": "삼성전자 등 기업들이 충청권에 차세대 반도체, 디스플레이, HBM 등 첨단산업 메가프로젝트 투자를 추진하며 AI 핵심 기술 연구개발에 힘쓰고 있습니다.",
+      "words": [
+        "첨단",
+        "디스플레이",
+        "투자",
+        "충청권",
+        "메가프로젝트"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "삼성 현대차 협력",
+      "summary": "삼성과 현대차그룹이 배터리, 로봇, AI 등 미래 신사업 분야에서 협력 방안을 논의하고 있습니다.",
+      "words": [
+        "삼성전자",
+        "현대차",
+        "사장",
+        "배터리",
+        "미래"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "할인",
+        "구매",
+        "행사",
+        "상품",
+        "혜택을"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "ai",
+        "미국",
+        "반도체",
+        "데이터센터",
+        "오른"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "수능 부정행위 금지",
+      "summary": "2027학년도 수능에서 AI, 스마트안경 등 전자기기 반입 금지 및 부정행위 시 시험 무효 조치에 대한 내용입니다.",
+      "words": [
+        "시험",
+        "수능",
+        "ai",
+        "안경",
+        "안경을"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "제네시스 GV90 전기 SUV",
+      "summary": "현대차그룹의 제네시스 GV90 전기 SUV는 플래그십 모델로, 최초로 적용된 전용 차체와 배터리 기술을 통해 1회 충전 시 가장 긴 주행 거리를 자랑하며, 고급스러운 실내와 안전 기능을 갖춘 것이 특징입니다.",
+      "words": [
+        "gv90",
+        "주행",
+        "bmw",
+        "플래그십",
+        "차체"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "퀴즈",
+        "정답은",
+        "정답",
+        "이다",
+        "정답을"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "지분",
+        "루멘스바이오스",
+        "사업",
+        "최대주주",
+        "추가"
+      ]
+    }
+  ],
+  "evidence": {}
+}
