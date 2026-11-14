@@ -1,0 +1,42 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "생산",
+        "프리미엄",
+        "역량을",
+        "에너지",
+        "핵심"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "행사",
+        "할인",
+        "상품",
+        "노트북",
+        "게이밍"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "투자",
+        "hbm",
+        "삼성전자",
+        "반도체",
+        "첨단"
+      ]
+    }
+  ],
+  "evidence": {}
+}
