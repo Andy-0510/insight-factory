@@ -1,0 +1,114 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "시험",
+        "ict",
+        "증가",
+        "초소형"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "올레드",
+        "tv",
+        "lg 올레드",
+        "lg",
+        "유럽"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "테슬라",
+        "삼성전자",
+        "경품",
+        "qled",
+        "경품을"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "차세대",
+        "기술",
+        "핵심",
+        "미래"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "상품을",
+        "가전",
+        "구매",
+        "행사",
+        "게이밍"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "중국",
+        "모니터",
+        "게이밍",
+        "oled",
+        "패널"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "oled",
+        "상반기",
+        "출하량",
+        "한국",
+        "점유율"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "ai",
+        "갤럭시",
+        "xr",
+        "갤럭시 ai",
+        "교육"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "3분기",
+        "누적",
+        "반도체",
+        "3분기 누적",
+        "매출"
+      ]
+    }
+  ],
+  "evidence": {}
+}
