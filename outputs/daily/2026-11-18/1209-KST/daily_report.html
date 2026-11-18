@@ -1,0 +1,847 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Briefing (2026-11-18)</title>
+    <style>
+        /* CSS 스타일은 제공해주신 내용과 동일하게 유지합니다. */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #f5f7fa;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .email-container {
+            max-width: 100%; /* 960px -> 100%로 변경 */
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .header {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            padding: 32px 40px;
+            color: #ffffff;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .logo {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #0066ff; /* 로고 색상 유지 또는 변경 가능 */
+            text-transform: uppercase;
+        }
+        .date {
+            font-size: 13px;
+            color: #a0aec0;
+        }
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #cbd5e0;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .section-number {
+            width: 32px;
+            height: 32px;
+            background: #0066ff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            margin-right: 12px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        .section-subtitle { 
+            font-size: 14px;
+            color: #718096;
+            margin-left: auto;
+        }
+        /* 그래프 이미지를 위한 스타일 추가 (선택 사항) */
+        img.report-graph {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #e2e8f0;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            display: block; /* 가운데 정렬 등을 위해 block으로 설정 */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .metric-box {
+            background: #f7fafc;
+            border-left: 4px solid #0066ff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            align-items: baseline; /* 값과 레이블 정렬 */
+        }
+        .metric-label {
+            font-size: 13px;
+            color: #718096;
+            font-weight: 500;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        .metric-change {
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .change-up { color: #38a169; } /* 초록색으로 변경 */
+        .change-down { color: #e53e3e; } /* 빨간색으로 변경 */
+        .change-neutral { color: #718096; }
+        .spike-alert {
+            background: #fff5e6;
+            border: 1px solid #ff9500; /* 테두리 약간 얇게 */
+            border-left: 4px solid #ff9500; /* 왼쪽 강조 */
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .alert-icon {
+            font-size: 20px;
+            margin-right: 12px;
+            color: #ff9500; /* 아이콘 색상 */
+        }
+        .alert-text {
+            font-size: 14px;
+            color: #744210;
+            line-height: 1.5;
+        }
+        .topic-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .topic-rank {
+            background: #0066ff;
+            color: white;
+            min-width: 28px; /* 최소 너비 보장 */
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 0 4px; /* 내용 길어질 경우 대비 */
+        }
+        .topic-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a2332;
+            flex: 1;
+            margin-left: 12px;
+        }
+        .topic-score {
+            font-size: 13px;
+            color: #718096;
+            background: #f7fafc;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+        .topic-description {
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+        .action-block {
+            background: #f7fafc;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .action-item { margin-bottom: 12px; }
+        .action-item:last-child { margin-bottom: 0; }
+        .action-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0066ff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .action-text {
+            font-size: 13px;
+            color: #2d3748;
+            line-height: 1.5;
+        }
+        .event-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #00b8a9;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .event-meta {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #718096;
+        }
+        .event-type {
+            background: #00b8a9;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-right: 8px;
+            text-transform: uppercase; /* 이벤트 타입 대문자 */
+        }
+        .event-company {
+            font-weight: 600;
+            color: #1a2332;
+        }
+        .event-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 8px;
+        }
+        .event-impact {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+        .article-link {
+            display: block;
+            background: #f7fafc;
+            border-left: 3px solid #0066ff;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: inherit;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .article-link:hover {
+            background: #edf2f7;
+            border-left-color: #00b8a9;
+        }
+        .article-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 4px;
+        }
+        /* 기사 요약 스타일 추가 */
+        .article-summary {
+            font-size: 13px;
+            color: #4a5568;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        .article-meta {
+            font-size: 12px;
+            color: #718096;
+        }
+        .footer {
+            background: #f7fafc;
+            padding: 24px 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #718096;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer-links { margin-top: 12px; }
+        .footer-link {
+            color: #0066ff;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        /* --- ▼▼▼ Spike Action Item CSS ▼▼▼ --- */
+        .alert-action-list {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #ffc966; /* 주황색 구분선 */
+            list-style-type: none; /* 기본 불릿 제거 */
+            padding-left: 0;
+        }
+        .alert-action-item {
+            font-size: 13px;
+            font-weight: 600;
+            color: #744210; /* 어두운 주황색 계열 텍스트 */
+            position: relative;
+            padding-left: 20px; /* 아이콘을 위한 공간 */
+            margin-bottom: 6px;
+        }
+        .alert-action-item::before {
+            content: '➡️'; /* 액션 아이콘 */
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #ff9500; /* 아이콘 색상 */
+        }
+        .action-label-interpretation {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0066ff; /* 테마 파란색 */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .action-text-interpretation {
+            font-size: 13px;
+            color: #0066ff; /* 테마 파란색 */
+            font-weight: 600; /* 굵게 */
+            line-height: 1.5;
+        }
+        /* --- ▼▼▼ 2xN Grid CSS (신호용) ▼▼▼ --- */
+        .signal-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+            align-items: start;
+        }
+        /* 화면이 600px보다 작아지면 1줄로 변경 */
+        @media (max-width: 600px) {
+            .signal-grid-2col { grid-template-columns: 1fr; }
+        }
+        /* --- ▼▼▼ Event Fact Summary CSS ▼▼▼ --- */
+        .event-fact-summary {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.5;
+            margin-top: 10px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        .section-support {
+            font-size: 14px;
+            color: #535a64;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        /* --- ▲▲▲ CSS 추가 완료 ▲▲▲ --- */
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">Insight Factory</div>
+                <div class="date">2026.11.18 (수)</div>
+            </div>
+            <div class="title">Daily Briefing</div>
+            <div class="subtitle">오늘의 시장 트렌드 한눈에 보기</div>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <div class="section-title">시장 활동 지표</div>
+                    <div class="section-subtitle">기사량 추세 & 이상 징후 탐지</div>
+                </div>
+                <div class="section-support">
+                시장의 '전체 기사량'이 평소보다 비정상적으로 급증했는지(Spike)를 차트로 확인하고, LLM이 분석한 급등의 핵심 원인을 파악할 수 있음
+                </div> <br>
+
+                <img src="fig/timeseries.png" alt="시장 활동량 시계열 그래프" class="report-graph">
+                <div class="section-subtitle">고관여 기사란? 산업 연관 키워드로 수집된 기사들 중 디스플레이 키워드에 가중치를 반영하여 도출된 관련성 높은 기사</div>
+
+                <div class="metric-box">
+                    <div class="metric-row">
+                        <div class="metric-label">수집된 기사 수 (2026-11-17)</div>
+                        <div>
+                            <span class="metric-value">569</span>
+                            <span class="metric-change change-neutral">-1% WoW</span>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">기사량 변동 수준 (7일 이동평균 대비)</div>
+                        <div>
+                            <span class="metric-value">±6.7% 이하</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+            <br><br>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <div class="section-title">오늘의 키워드</div>
+                    <div class="section-subtitle">급격한 관심 ↑, 주목해야 할 키워드</div>
+                </div>
+
+                <div class="signal-grid-2col">
+
+                    
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">1</div>
+                            <div class="topic-name">oled</div>
+                            <div class="topic-score">+8.7σ</div>
+                        </div>
+                        <div class="topic-description">
+                            삼성D·LGD가 중국 게이밍 OLED 시장 선점을 위해 공급을 확대하며 경쟁이 심화되고 있습니다.
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 78, 전일 대비: +63</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">중국 게이밍 OLED 시장 공략 가속</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">핵심 토픽 &#39;OLED_Topic&#39; 관련 신호입니다. 3번 섹션(키워드 감성분석)에서 해당 토픽의 감성 변동을 교차 확인하세요.</div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">2</div>
+                            <div class="topic-name">올레드</div>
+                            <div class="topic-score">+7.3σ</div>
+                        </div>
+                        <div class="topic-description">
+                            LG 올레드 TV가 유럽 소비자 매체 평가에서 전 사이즈 1위를 석권하며 높은 기술력을 입증했습니다.
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 30, 전일 대비: +30</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">OLED 기술 우위 재확인</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">&#39;올레드&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">3</div>
+                            <div class="topic-name">tv</div>
+                            <div class="topic-score">+6.6σ</div>
+                        </div>
+                        <div class="topic-description">
+                            삼성 &#39;더 프레임 프로&#39;가 오프라 윈프리 추천 선물 2년 연속 선정되며 TV 키워드가 급증했습니다.
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 37, 전일 대비: +33</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">삼성 브랜드 위상 강화</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">&#39;tv&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">4</div>
+                            <div class="topic-name">xr</div>
+                            <div class="topic-score">+3.6σ</div>
+                        </div>
+                        <div class="topic-description">
+                            삼성전자의 &#39;갤럭시 XR&#39;가 미래 AI 교육 도입에 활용되며 XR 기술 교육 시장의 부상 가능성을 시사합니다.
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 14, 전일 대비: +14</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">XR 디스플레이 수요 증대</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">&#39;xr&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
+                            </div>
+                        </div>
+                    </div>
+                         </div>
+                    </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <div class="section-title">실시간 Risk 키워드</div>
+                    <div class="section-subtitle">경계해야 할 시그널 탐지</div>                    
+                </div>
+                <div class="section-support">
+                특정 토픽의 부정 감성 점수가 급등할 때 이를 즉시 탐지하고, "근거 기사" 링크를 통해 리스크의 실체를 빠르게 파악할 수 있음
+                </div> <br>
+                
+                
+                    
+                    <div class="topic-card" style="border-left: 4px solid #e53e3e;"> 
+                        <div class="topic-header">
+                            <div class="topic-rank" style="background-color: #e53e3e;">!</div>
+                            <div class="topic-name">AI 기반 시험 부정행위 방지 기술</div> 
+                            <div class="topic-score" style="color: #e53e3e;">하락폭: 0.06</div>
+                        </div>
+                        <div class="topic-description">
+                            <ul>     <li><strong>AI 기반 시험 부정행위 방지 기술의 부정적 인식 확대:</strong> 최근 '젠슨 황 쇼크'와 '고금리·AI 불확실성' 관련 기사들이 AI 기술에 대한 투자 심리 위축 및 불확실성을 야기하고 있습니다. 이러한 전반적인 AI 기술에 대한 부정적 감성 확산이 'AI 기반 시험 부정행위 방지 기술' 역시 잠재적 위험이나 윤리적 문제에 대한 우려를 증폭시켜 감성 점수 하락을 초래한 것으로 분석됩니다. 디스플레이 제조 기업의 경우, 향후 AI 기술 도입 시 예상치 못한 규제 강화, 기술 도입 지연, 혹은 부정적인 여론에 따른 브랜드 이미지 훼손 등의 리스크에 직면할 수 있습니다.</li>     <li><strong>시험 부정행위 방지 기술의 실효성 및 편향성 논란 가능성:</strong> '수능 D-1, 단추 달린 옷 피하세요'와 같은 기사는 시험 부정행위 방지를 위한 노력이 강화되고 있음을 시사합니다. 만약 AI 기반 기술이 예상보다 높은 오탐률을 보이거나, 특정 집단에게 불리한 편향성을 드러낼 경우, 기술의 신뢰성에 대한 의문이 제기될 수 있습니다. 이는 디스플레이 제조 기업이 해당 기술을 시험 환경에 적용하려는 시도에 대해 사용자(학생, 감독관 등)의 거부감이나 불신을 야기할 수 있으며, 기술 채택 실패로 이어져 투자 손실 및 기술 개발 로드맵 수정이라는 부정적인 영향을 미칠 수 있습니다.</li> </ul> 
+                        </div>
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Current Status</div>
+                                <div class="action-text">오늘 점수: 0.47, 7일 평균: 0.53</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Key Evidence Article (Most Negative)</div>
+                                <div class="action-text">
+                                    <a href="https://www.betanews.net/article/view/beta202611180035" target="_blank" style="color: #2d3748; text-decoration: underline;">
+                                        올해의 베스트 게임 메이플 키우기, 구글플레이 올해를 빛낸 수상작 202...
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="topic-card" style="border-left: 4px solid #e53e3e;"> 
+                        <div class="topic-header">
+                            <div class="topic-rank" style="background-color: #e53e3e;">!</div>
+                            <div class="topic-name">TV_Display_Topic</div> 
+                            <div class="topic-score" style="color: #e53e3e;">하락폭: 0.05</div>
+                        </div>
+                        <div class="topic-description">
+                            <ul><li>AI 분석 실패 (ResourceExhausted)</li></ul> 
+                        </div>
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Current Status</div>
+                                <div class="action-text">오늘 점수: 0.47, 7일 평균: 0.52</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Key Evidence Article (Most Negative)</div>
+                                <div class="action-text">
+                                    <a href="https://www.socialvalue.kr/news/view/1065574145126542" target="_blank" style="color: #2d3748; text-decoration: underline;">
+                                        오프라가 고른 연말 선물에 또 삼성 TV…&#39;더 프레임 프로&#39; 2년 연속 이름...
+                                    </a>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                    
+                
+            </div>
+
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <div class="section-title">주요 이벤트 모니터링</div>
+                    <div class="section-subtitle">실시간 산업 동향 파악을 위한 주요 활동</div>
+                </div>
+                <div class="section-support">
+                최근 발생한 주요 기업들의 신제품 출시, 투자 등 주요 이벤트를 제공하여 매일 경쟁사 동향을 확인할 수 있음
+                </div> <br>
+
+                
+                <div class="event-item" style="border-left-color: #10b981;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #10b981;">INVEST</span>
+                        <span> · 2026-11-18</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.mtnews.net/news/articleView.html?idxno=26581" target="_blank" style="color: inherit; text-decoration: none;">
+                            AI 투자, 메모리 시장 2026년 1조 달러 돌파 전망
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        AI 인프라 투자가 확대되면서 메모리 반도체 시장 규모가 2026년 1조 달러에 달할 것으로 예상됩니다. 이는 AI 기술 발전 및 고도화에 따른 고성능 메모리 수요 증가에 기인합니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">AI 관련 고성능 디스플레이 및 차세대 디스플레이 기술 수요 증가로 이어져 관련 부품 및 소재 시장에 긍정적인 영향을 줄 수 있습니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">AI용 디스플레이 솔루션 및 고대역폭 메모리(HBM)와 연계된 디스플레이 기술 개발 및 파트너십 강화 방안을 모색해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #10b981;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #10b981;">INVEST</span>
+                        <span> · 2026-11-18</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://kpenews.com/View.aspx?No=4317802" target="_blank" style="color: inherit; text-decoration: none;">
+                            삼성·LG 머뭇거리는 사이, 韓 소부장 기업 중국 진출 가속화
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        삼성디스플레이와 LG디스플레이의 소극적인 투자 행보로 인해, 국내 디스플레이 소재·부품·장비(소부장) 기업들이 중국 시장으로의 진출을 가속화하고 있다. 이는 한국 디스플레이 산업의 기술 유출 및 경쟁력 약화 우려를 낳고 있다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">국내 디스플레이 소부장 기업의 중국 이탈은 기술 경쟁력 약화와 공급망 불안정성을 심화시켜, 한국 디스플레이 산업 전반의 위기를 초래할 수 있다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">디스플레이 제조 기업은 국내 소부장 기업과의 협력을 강화하고, 투자 및 기술 개발 지원을 통해 경쟁력을 유지하며 공급망 안정화를 도모해야 한다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #10b981;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #10b981;">INVEST</span>
+                        <span> · 2026-11-18</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.itdaily.kr/news/articleView.html?idxno=243010" target="_blank" style="color: inherit; text-decoration: none;">
+                            샤오미 18 프로 맥스, 후면 디스플레이 탑재 스마트폰 국내 출시
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        샤오미가 후면 디스플레이를 탑재한 &#39;18 프로 맥스&#39; 스마트폰을 국내에 출시했습니다. 이는 스마트폰 디자인 및 기능 혁신의 새로운 시도로 볼 수 있습니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">이러한 후면 디스플레이 탑재는 스마트폰의 사용성과 디자인 측면에서 새로운 트렌드를 형성하며, 관련 디스플레이 기술 및 패널 시장의 수요를 변화시킬 수 있습니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">기존 스마트폰 디스플레이 제조 기업들은 후면 디스플레이 적용을 위한 기술 개발 및 생산 능력 확보를 검토해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #3b82f6;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #3b82f6;">LAUNCH</span>
+                        <span> · 2026-11-18</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="http://www.financialreview.co.kr/news/articleView.html?idxno=46383" target="_blank" style="color: inherit; text-decoration: none;">
+                            삼성전자·LG전자, 오늘 전자 신제품 출시
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        삼성전자와 LG전자가 오늘(날짜 불명확) 전자 제품 관련 신제품을 출시했습니다. 구체적인 제품 사양이나 출시 모델에 대한 정보는 제공되지 않았습니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">두 주요 기업의 신제품 출시는 디스플레이 시장의 경쟁 구도 변화, 새로운 기술 트렌드 형성, 그리고 관련 부품 및 소재 산업에 파급 효과를 가져올 수 있습니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">경쟁사의 신제품 상세 스펙 및 기술 동향을 면밀히 분석하여 자사의 제품 경쟁력을 강화하고 차별화 전략을 수립해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #10b981;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #10b981;">INVEST</span>
+                        <span> · 2026-11-18</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.wikitree.co.kr/articles/1175445" target="_blank" style="color: inherit; text-decoration: none;">
+                            아이폰 마이크 오류, 녹음 허용 안 해도 녹음되는 심각한 결함 발견
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        아이폰에서 사용자가 마이크 접근을 허용하지 않았음에도 불구하고 녹음이 되는 오디오 서비스 결함이 발견되었습니다. 이는 기기 작동의 근본적인 오류로 8가지 결함 중 하나로 보고되었습니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">이번 사안은 디스플레이 제조 기업에게는 직접적인 디스플레이 성능과는 무관하지만, 스마트폰 완제품의 신뢰성 및 보안 문제로 이어져 브랜드 이미지 하락 및 소비자 신뢰도 저하를 야기할 수 있으며, 이는 장기적으로 디스플레이 수요에도 간접적인 영향을 줄 수 있습니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">디스플레이 제조 기업은 이번 사건과 같은 완제품의 신뢰성 문제를 면밀히 모니터링하며, 자사 디스플레이 패널의 품질 및 보안 안정성을 더욱 강화하고 관련 부품과의 연동성 테스트를 철저히 해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                 </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">5</div>
+                    <div class="section-title">지금 주목해야 할 뉴스 TOP 3</div>
+                </div>
+
+                
+                <a href="http://www.financialreview.co.kr/news/articleView.html?idxno=46383" class="article-link" target="_blank"> <div class="article-title">
+                        [오늘의 전자] 삼성전자· LG 전자
+                    </div>
+                    <div class="article-meta">파이낸셜리뷰 · 2026-11-18</div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+                <a href="https://kpenews.com/View.aspx?No=4317802" class="article-link" target="_blank"> <div class="article-title">
+                        삼성디스플레이·LG디스플레이, 머뭇거리는 사이..韓 소부장 기업 중국...
+                    </div>
+                    <div class="article-meta">한국정경신문 · Wed, 18 No</div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+                <a href="http://www.worktoday.co.kr/news/articleView.html?idxno=92210" class="article-link" target="_blank"> <div class="article-title">
+                        삼성전자 라이프스타일 TV, 美 오프라 추천 선물 선정 … 더 프레임 프로...
+                    </div>
+                    <div class="article-meta">워크투데이 · 2026-11-18</div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>
+                “이 보고서는 AI 기반 트렌드 분석 시스템을 통해 작성되었습니다.”<br>
+                문의:  thecki85@gmail.com | 010.5353.1145 <br>
+                - Business Development Team -
+            </div>
+            <!--
+            <div class="footer-links">
+                <a href="#" class="footer-link">대시보드 보기</a> |
+                <a href="#" class="footer-link">설정 변경</a> |
+                <a href="#" class="footer-link">수신거부</a>
+            </div>
+            -->
+        </div>
+    </div>
+</body>
+</html>

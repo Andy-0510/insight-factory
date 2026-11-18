@@ -1,0 +1,138 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "ai",
+        "lg",
+        "갤럭시",
+        "반도체",
+        "올레드"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "선물",
+        "프레임",
+        "tv",
+        "프로",
+        "2년 연속"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "할인",
+        "상품을",
+        "퀴즈",
+        "구매",
+        "정답은"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "시험",
+        "수능",
+        "시험장",
+        "ai",
+        "부정행위"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "후면",
+        "샤오미",
+        "화소",
+        "샤오미 18",
+        "카메라"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "아이폰",
+        "잠금",
+        "얼굴",
+        "듀오",
+        "아이폰 듀오"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "Topic #6",
+      "summary": "",
+      "words": [
+        "oled",
+        "상반기",
+        "출하량",
+        "한국",
+        "중국"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "Topic #7",
+      "summary": "",
+      "words": [
+        "중국",
+        "모니터",
+        "게이밍",
+        "oled",
+        "게임"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "Topic #8",
+      "summary": "",
+      "words": [
+        "디스플레이",
+        "차세대",
+        "기술",
+        "기술개발",
+        "장비"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "",
+      "words": [
+        "장비",
+        "ald",
+        "oled",
+        "공정",
+        "ap시스템"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "Topic #10",
+      "summary": "",
+      "words": [
+        "3분기",
+        "누적",
+        "매출",
+        "전년",
+        "반도체"
+      ]
+    }
+  ],
+  "evidence": {}
+}
