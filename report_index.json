@@ -4435,6 +4435,17 @@
     ]
   },
   "weekly": {
+    "2026-11-20": [
+      {
+        "time": "1200-KST",
+        "reports": [
+          {
+            "name": "weekly_report.html",
+            "path": "outputs/weekly/2026-11-20/1200-KST/weekly_report.html"
+          }
+        ]
+      }
+    ],
     "2026-11-13": [
       {
         "time": "1129-KST",
