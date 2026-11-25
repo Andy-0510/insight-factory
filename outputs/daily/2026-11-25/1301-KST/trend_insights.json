@@ -1,0 +1,78 @@
+{
+  "summary": "일간 실행에서는 LLM 요약이 생성되지 않습니다.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "Topic #0",
+      "summary": "",
+      "words": [
+        "lg전자",
+        "가전",
+        "과제를",
+        "실제",
+        "살균"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "Topic #1",
+      "summary": "",
+      "words": [
+        "lg",
+        "디자인",
+        "패키지",
+        "공간",
+        "사운드"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "Topic #2",
+      "summary": "",
+      "words": [
+        "3분기",
+        "2년",
+        "기업",
+        "가장",
+        "2024년"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "Topic #3",
+      "summary": "",
+      "words": [
+        "탠덤",
+        "e스포츠",
+        "게이밍",
+        "woled",
+        "공식"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "Topic #4",
+      "summary": "",
+      "words": [
+        "승진",
+        "oled",
+        "상무",
+        "기여한",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "Topic #5",
+      "summary": "",
+      "words": [
+        "게임",
+        "ip",
+        "특별",
+        "캐릭터",
+        "출시"
+      ]
+    }
+  ],
+  "evidence": {}
+}
