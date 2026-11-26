@@ -1,0 +1,761 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Daily Briefing (2026-11-26)</title>
+    <style>
+        /* CSS 스타일은 제공해주신 내용과 동일하게 유지합니다. */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #f5f7fa;
+            padding: 20px;
+            line-height: 1.6;
+        }
+        .email-container {
+            max-width: 100%; /* 960px -> 100%로 변경 */
+            margin: 0 auto;
+            background: #ffffff;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .header {
+            background: linear-gradient(135deg, #1a2332 0%, #2d3e50 100%);
+            padding: 32px 40px;
+            color: #ffffff;
+        }
+        .header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 16px;
+        }
+        .logo {
+            font-size: 12px;
+            font-weight: 600;
+            letter-spacing: 2px;
+            color: #0066ff; /* 로고 색상 유지 또는 변경 가능 */
+            text-transform: uppercase;
+        }
+        .date {
+            font-size: 13px;
+            color: #a0aec0;
+        }
+        .title {
+            font-size: 28px;
+            font-weight: 700;
+            margin-bottom: 8px;
+        }
+        .subtitle {
+            font-size: 14px;
+            color: #cbd5e0;
+        }
+        .content {
+            padding: 40px;
+        }
+        .section {
+            margin-bottom: 40px;
+        }
+        .section-header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 12px;
+            border-bottom: 2px solid #e2e8f0;
+        }
+        .section-number {
+            width: 32px;
+            height: 32px;
+            background: #0066ff;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            margin-right: 12px;
+        }
+        .section-title {
+            font-size: 18px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        .section-subtitle { 
+            font-size: 14px;
+            color: #718096;
+            margin-left: auto;
+        }
+        /* 그래프 이미지를 위한 스타일 추가 (선택 사항) */
+        img.report-graph {
+            max-width: 100%;
+            height: auto;
+            border: 1px solid #e2e8f0;
+            margin-top: 10px;
+            margin-bottom: 20px;
+            display: block; /* 가운데 정렬 등을 위해 block으로 설정 */
+            margin-left: auto;
+            margin-right: auto;
+        }
+        .metric-box {
+            background: #f7fafc;
+            border-left: 4px solid #0066ff;
+            padding: 20px;
+            margin-bottom: 20px;
+            border-radius: 4px;
+        }
+        .metric-row {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 12px;
+            align-items: baseline; /* 값과 레이블 정렬 */
+        }
+        .metric-label {
+            font-size: 13px;
+            color: #718096;
+            font-weight: 500;
+        }
+        .metric-value {
+            font-size: 24px;
+            font-weight: 700;
+            color: #1a2332;
+        }
+        .metric-change {
+            font-size: 14px;
+            font-weight: 600;
+            margin-left: 8px;
+        }
+        .change-up { color: #38a169; } /* 초록색으로 변경 */
+        .change-down { color: #e53e3e; } /* 빨간색으로 변경 */
+        .change-neutral { color: #718096; }
+        .spike-alert {
+            background: #fff5e6;
+            border: 1px solid #ff9500; /* 테두리 약간 얇게 */
+            border-left: 4px solid #ff9500; /* 왼쪽 강조 */
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+            display: flex;
+            align-items: flex-start;
+        }
+        .alert-icon {
+            font-size: 20px;
+            margin-right: 12px;
+            color: #ff9500; /* 아이콘 색상 */
+        }
+        .alert-text {
+            font-size: 14px;
+            color: #744210;
+            line-height: 1.5;
+        }
+        .topic-card {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            padding: 20px;
+            margin-bottom: 16px;
+        }
+        .topic-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 12px;
+        }
+        .topic-rank {
+            background: #0066ff;
+            color: white;
+            min-width: 28px; /* 최소 너비 보장 */
+            height: 28px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+            font-size: 14px;
+            padding: 0 4px; /* 내용 길어질 경우 대비 */
+        }
+        .topic-name {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1a2332;
+            flex: 1;
+            margin-left: 12px;
+        }
+        .topic-score {
+            font-size: 13px;
+            color: #718096;
+            background: #f7fafc;
+            padding: 4px 12px;
+            border-radius: 12px;
+        }
+        .topic-description {
+            font-size: 14px;
+            color: #4a5568;
+            margin-bottom: 16px;
+            line-height: 1.6;
+        }
+        .action-block {
+            background: #f7fafc;
+            border-radius: 6px;
+            padding: 16px;
+            margin-top: 12px;
+        }
+        .action-item { margin-bottom: 12px; }
+        .action-item:last-child { margin-bottom: 0; }
+        .action-label {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0066ff;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .action-text {
+            font-size: 13px;
+            color: #2d3748;
+            line-height: 1.5;
+        }
+        .event-item {
+            background: #ffffff;
+            border: 1px solid #e2e8f0;
+            border-left: 4px solid #00b8a9;
+            border-radius: 6px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+        .event-meta {
+            display: flex;
+            align-items: center;
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #718096;
+        }
+        .event-type {
+            background: #00b8a9;
+            color: white;
+            padding: 2px 8px;
+            border-radius: 4px;
+            font-weight: 600;
+            margin-right: 8px;
+            text-transform: uppercase; /* 이벤트 타입 대문자 */
+        }
+        .event-company {
+            font-weight: 600;
+            color: #1a2332;
+        }
+        .event-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 8px;
+        }
+        .event-impact {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.5;
+        }
+        .article-link {
+            display: block;
+            background: #f7fafc;
+            border-left: 3px solid #0066ff;
+            padding: 12px 16px;
+            margin-bottom: 12px;
+            text-decoration: none;
+            color: inherit;
+            border-radius: 4px;
+            transition: all 0.2s;
+        }
+        .article-link:hover {
+            background: #edf2f7;
+            border-left-color: #00b8a9;
+        }
+        .article-title {
+            font-size: 14px;
+            font-weight: 600;
+            color: #1a2332;
+            margin-bottom: 4px;
+        }
+        /* 기사 요약 스타일 추가 */
+        .article-summary {
+            font-size: 13px;
+            color: #4a5568;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        .article-meta {
+            font-size: 12px;
+            color: #718096;
+        }
+        .footer {
+            background: #f7fafc;
+            padding: 24px 40px;
+            text-align: center;
+            font-size: 12px;
+            color: #718096;
+            border-top: 1px solid #e2e8f0;
+        }
+        .footer-links { margin-top: 12px; }
+        .footer-link {
+            color: #0066ff;
+            text-decoration: none;
+            margin: 0 8px;
+        }
+
+        /* --- ▼▼▼ Spike Action Item CSS ▼▼▼ --- */
+        .alert-action-list {
+            margin-top: 12px;
+            padding-top: 12px;
+            border-top: 1px solid #ffc966; /* 주황색 구분선 */
+            list-style-type: none; /* 기본 불릿 제거 */
+            padding-left: 0;
+        }
+        .alert-action-item {
+            font-size: 13px;
+            font-weight: 600;
+            color: #744210; /* 어두운 주황색 계열 텍스트 */
+            position: relative;
+            padding-left: 20px; /* 아이콘을 위한 공간 */
+            margin-bottom: 6px;
+        }
+        .alert-action-item::before {
+            content: '➡️'; /* 액션 아이콘 */
+            position: absolute;
+            left: 0;
+            top: 0;
+            color: #ff9500; /* 아이콘 색상 */
+        }
+        .action-label-interpretation {
+            font-size: 12px;
+            font-weight: 700;
+            color: #0066ff; /* 테마 파란색 */
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            margin-bottom: 4px;
+        }
+        .action-text-interpretation {
+            font-size: 13px;
+            color: #0066ff; /* 테마 파란색 */
+            font-weight: 600; /* 굵게 */
+            line-height: 1.5;
+        }
+        /* --- ▼▼▼ 2xN Grid CSS (신호용) ▼▼▼ --- */
+        .signal-grid-2col {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 24px;
+            margin-top: 24px;
+            align-items: start;
+        }
+        /* 화면이 600px보다 작아지면 1줄로 변경 */
+        @media (max-width: 600px) {
+            .signal-grid-2col { grid-template-columns: 1fr; }
+        }
+        /* --- ▼▼▼ Event Fact Summary CSS ▼▼▼ --- */
+        .event-fact-summary {
+            font-size: 13px;
+            color: #4a5568;
+            line-height: 1.5;
+            margin-top: 10px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        .section-support {
+            font-size: 14px;
+            color: #535a64;
+            margin-top: 8px;
+            padding-left: 10px;
+            border-left: 2px solid #cbd5e0;
+        }
+        /* --- ▲▲▲ CSS 추가 완료 ▲▲▲ --- */
+    </style>
+</head>
+<body>
+    <div class="email-container">
+        <div class="header">
+            <div class="header-top">
+                <div class="logo">Insight Factory</div>
+                <div class="date">2026.11.26 (목)</div>
+            </div>
+            <div class="title">Daily Briefing</div>
+            <div class="subtitle">오늘의 시장 트렌드 한눈에 보기</div>
+        </div>
+
+        <div class="content">
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">1</div>
+                    <div class="section-title">시장 활동 지표</div>
+                    <div class="section-subtitle">기사량 추세 & 이상 징후 탐지</div>
+                </div>
+                <div class="section-support">
+                시장의 '전체 기사량'이 평소보다 비정상적으로 급증했는지(Spike)를 차트로 확인하고, LLM이 분석한 급등의 핵심 원인을 파악할 수 있음
+                </div> <br>
+
+                <img src="fig/timeseries.png" alt="시장 활동량 시계열 그래프" class="report-graph">
+                <div class="section-subtitle">고관여 기사란? 산업 연관 키워드로 수집된 기사들 중 디스플레이 키워드에 가중치를 반영하여 도출된 관련성 높은 기사</div>
+
+                <div class="metric-box">
+                    <div class="metric-row">
+                        <div class="metric-label">수집된 기사 수 (2026-11-25)</div>
+                        <div>
+                            <span class="metric-value">503</span>
+                            <span class="metric-change change-neutral">+0% WoW</span>
+                        </div>
+                    </div>
+                    <div class="metric-row">
+                        <div class="metric-label">기사량 변동 수준 (7일 이동평균 대비)</div>
+                        <div>
+                            <span class="metric-value">±6.7% 이하</span>
+                        </div>
+                    </div>
+                </div>
+
+                
+            <br><br>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">2</div>
+                    <div class="section-title">오늘의 키워드</div>
+                    <div class="section-subtitle">급격한 관심 ↑, 주목해야 할 키워드</div>
+                </div>
+
+                <div class="signal-grid-2col">
+
+                    
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">1</div>
+                            <div class="topic-name">lg전자</div>
+                            <div class="topic-score">+6.5σ</div>
+                        </div>
+                        <div class="topic-description">
+                            LG전자의 TV 사업 반등, TCL 추격, 올레드 넘어 LCD 강화, 웹OS 수익화 시도 등 다각적 호재 영향
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 51, 전일 대비: +44</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">시장 점유율 확대 및 수익 다각화</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">&#39;lg전자&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">2</div>
+                            <div class="topic-name">lg디스플레이</div>
+                            <div class="topic-score">+3.7σ</div>
+                        </div>
+                        <div class="topic-description">
+                            신기술 투자, 재무 건전성 확보, e스포츠 파트너십 등 다각적인 이슈 부각
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 24, 전일 대비: +13</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">기술력, 재무 회복 기대</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">&#39;lg디스플레이&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">3</div>
+                            <div class="topic-name">양산</div>
+                            <div class="topic-score">+3.1σ</div>
+                        </div>
+                        <div class="topic-description">
+                            신규 유리 기판 및 IT OLED 양산 가속화, 폴더블폰 생산 등 긍정적 뉴스가 주가 급등을 견인했습니다.
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 11, 전일 대비: +7</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">양산 확대, 수주 증가 기대</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">&#39;양산&#39; 관련 상세 기사 및 경쟁사 반응 모니터링</div>
+                            </div>
+                        </div>
+                    </div>
+                        
+                    <div class="topic-card">
+                        <div class="topic-header">
+                            <div class="topic-rank">4</div>
+                            <div class="topic-name">woled</div>
+                            <div class="topic-score">+2.7σ</div>
+                        </div>
+                        <div class="topic-description">
+                            LG디스플레이, 라이엇 게임즈와 파트너십으로 탠덤 WOLED 기술 홍보에 박차
+                        </div>
+
+                        <div class="action-block">
+                            <div class="action-item">
+                                <div class="action-label">Related Metrics</div>
+                                <div class="action-text">금일 언급량: 6, 전일 대비: +6</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Interpretation</div>
+                                <div class="action-text">WOLED 기술 채택 확대 기대</div>
+                            </div>
+                            <div class="action-item">
+                                <div class="action-label">Next Step</div>
+                                <div class="action-text">핵심 토픽 &#39;OLED_Topic&#39; 관련 신호입니다. 3번 섹션(키워드 감성분석)에서 해당 토픽의 감성 변동을 교차 확인하세요.</div>
+                            </div>
+                        </div>
+                    </div>
+                         </div>
+                    </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">3</div>
+                    <div class="section-title">실시간 Risk 키워드</div>
+                    <div class="section-subtitle">경계해야 할 시그널 탐지</div>                    
+                </div>
+                <div class="section-support">
+                특정 토픽의 부정 감성 점수가 급등할 때 이를 즉시 탐지하고, "근거 기사" 링크를 통해 리스크의 실체를 빠르게 파악할 수 있음
+                </div> <br>
+                
+                
+                    <p>키워드 분석 결과, 오늘은 걱정할 만한 하락 신호가 없습니다. (부정 언급량 변화: +1.5σ 이내)</p>
+                
+            </div>
+
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">4</div>
+                    <div class="section-title">주요 이벤트 모니터링</div>
+                    <div class="section-subtitle">실시간 산업 동향 파악을 위한 주요 활동</div>
+                </div>
+                <div class="section-support">
+                최근 발생한 주요 기업들의 신제품 출시, 투자 등 주요 이벤트를 제공하여 매일 경쟁사 동향을 확인할 수 있음
+                </div> <br>
+
+                
+                <div class="event-item" style="border-left-color: #10b981;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #10b981;">INVEST</span>
+                        <span> · 2026-11-25</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.smartbizn.com/news/articleView.html?idxno=160616" target="_blank" style="color: inherit; text-decoration: none;">
+                            삼성디스플레이, ams오스람 지분 확보로 마이크로 LED 기술 강화
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        삼성디스플레이가 ams오스람의 최대주주 지위를 확보했습니다. 이는 마이크로 LED 기술 경쟁력을 강화하려는 전략의 일환으로 해석됩니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">이번 투자는 마이크로 LED 디스플레이 시장의 기술 개발 및 상용화를 가속화하고, 관련 소재 및 부품 공급망에도 변화를 가져올 수 있습니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">경쟁사들은 마이크로 LED 기술 개발 로드맵을 재검토하고, 핵심 소재 및 기술 파트너십 확보를 위한 움직임을 강화해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #3b82f6;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #3b82f6;">LAUNCH</span>
+                        <span> · 2026-11-25</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.the-today.com/news/articleView.html?idxno=94053" target="_blank" style="color: inherit; text-decoration: none;">
+                            알팅스, 1500달러 미만 TV 평가: LG C6 최상위, 경쟁 제품 분석
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        알팅스(Rtings.com)가 1500달러 미만 TV 4종에 대한 평가를 발표했으며, LG C6 모델이 최상위로 선정되었다. 나머지 3종의 TV에 대한 평가 결과는 추가 분석이 필요하다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">LG C6의 우수한 평가 결과는 해당 가격대 TV 시장에서의 LG전자 점유율 확대 및 경쟁사들의 제품 개선 및 가격 전략 재검토를 유도할 수 있다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">경쟁사들은 LG C6의 성능 및 가격 경쟁력을 면밀히 분석하고, 자사 제품의 차별화 전략을 강화하거나 가격 조정을 검토해야 한다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #10b981;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #10b981;">INVEST</span>
+                        <span> · 2026-11-25</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.asiatime.co.kr/article/20261125500307" target="_blank" style="color: inherit; text-decoration: none;">
+                            LG전자, 2026 우수디자인 9개 제품 선정, 장관상 수상
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        LG전자가 &#39;2026 우수디자인&#39;에 9개 제품을 선정되었으며, 이 중 일부는 장관상을 수상하는 쾌거를 이루었습니다. 이는 LG전자의 디자인 혁신성과 기술력을 다시 한번 인정받은 결과입니다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">LG전자의 디자인 경쟁력 강화는 소비자의 제품 선택에 긍정적인 영향을 미칠 수 있으며, 프리미엄 디스플레이 시장에서 브랜드 이미지 제고 및 시장 점유율 확대에 기여할 것으로 예상됩니다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">경쟁사 디스플레이 기업은 LG전자의 디자인 성과를 분석하여 차별화된 디자인 전략 수립 및 기술 개발에 더욱 집중해야 합니다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                
+                <div class="event-item" style="border-left-color: #3b82f6;">
+                    <div class="event-meta">
+                        <span class="event-type" style="background-color: #3b82f6;">LAUNCH</span>
+                        <span> · 2026-11-25</span>
+                    </div>
+
+                    <div class="event-title">
+                        <a href="https://www.wikitree.co.kr/articles/1177806" target="_blank" style="color: inherit; text-decoration: none;">
+                            샤오미 18 프로, 뒷면 화면 &#39;킬러 기능&#39; 앞세워 글로벌 출시
+                        </a>
+                    </div>
+
+                    <div class="event-fact-summary">
+                        샤오미가 새로운 스마트폰 &#39;18 프로&#39;를 글로벌 시장에 출시하며, 최초로 공개된 뒷면 화면이 &#39;킬러 기능&#39;으로 호평받고 있다. 이 기능은 사용자들에게 새로운 경험과 편의성을 제공할 것으로 기대된다.
+                    </div>
+
+                    
+                    <div class="action-block">
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Impact</div>
+                            <div class="action-text">샤오미 18 프로의 성공적인 뒷면 화면 채택은 향후 스마트폰 시장에서 &#39;듀얼 스크린&#39; 또는 &#39;보조 디스플레이&#39; 기능에 대한 수요를 증대시키고, 관련 디스플레이 기술 및 패널 시장의 성장을 촉진할 수 있다.</div>
+                        </div>
+                        
+
+                        
+                        <div class="action-item">
+                            <div class="action-label">Next Step</div>
+                            <div class="action-text">디스플레이 제조 기업은 샤오미 18 프로에 탑재된 뒷면 디스플레이 기술의 강점과 소비자 반응을 면밀히 분석하여, 자체적인 듀얼 디스플레이 솔루션 개발 및 양산 역량을 강화하는 방안을 검토해야 한다.</div>
+                        </div>
+                        
+                    </div>
+                    
+                </div>
+                 </div>
+
+            <div class="section">
+                <div class="section-header">
+                    <div class="section-number">5</div>
+                    <div class="section-title">지금 주목해야 할 뉴스 TOP 3</div>
+                </div>
+
+                
+                <a href="https://www.asiaa.co.kr/news/articleView.html?idxno=272926" class="article-link" target="_blank"> <div class="article-title">
+                        &#34;책상부터 거실까지&#34; 삼성·LG, 글로벌 게이머 공략 &#39;속도&#39;
+                    </div>
+                    <div class="article-meta">아시아에이 · 2026-11-26</div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+                <a href="http://www.issuenbiz.com/news/articleView.html?idxno=82029" class="article-link" target="_blank"> <div class="article-title">
+                        [뉴스이슈&amp;비즈] 삼성디스플레이, 3,100억원 베팅 …  마이크로LED  핵심기...
+                    </div>
+                    <div class="article-meta">이슈앤비즈 · 2026-11-26</div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+                <a href="https://www.m-i.kr/news/articleView.html?idxno=2023765" class="article-link" target="_blank"> <div class="article-title">
+                        디스플레이산업협회, 마이크로LED 실증 확대…신규 수요 발굴
+                    </div>
+                    <div class="article-meta">매일일보 · 2026-11-26</div>
+                    <div class="article-summary">
+                        &gt; 요약 모델 초기화 실패. </div>
+                </a>
+                
+            </div>
+        </div>
+
+        <div class="footer">
+            <div>
+                “이 보고서는 AI 기반 트렌드 분석 시스템을 통해 작성되었습니다.”<br>
+                문의:  thecki85@gmail.com | 010.5353.1145 <br>
+                - Business Development Team -
+            </div>
+            <!--
+            <div class="footer-links">
+                <a href="#" class="footer-link">대시보드 보기</a> |
+                <a href="#" class="footer-link">설정 변경</a> |
+                <a href="#" class="footer-link">수신거부</a>
+            </div>
+            -->
+        </div>
+    </div>
+</body>
+</html>
