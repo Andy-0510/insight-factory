@@ -4512,6 +4512,17 @@
     ]
   },
   "weekly": {
+    "2026-11-27": [
+      {
+        "time": "1305-KST",
+        "reports": [
+          {
+            "name": "weekly_report.html",
+            "path": "outputs/weekly/2026-11-27/1305-KST/weekly_report.html"
+          }
+        ]
+      }
+    ],
     "2026-11-20": [
       {
         "time": "1200-KST",
