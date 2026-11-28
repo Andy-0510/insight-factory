@@ -1,0 +1,138 @@
+{
+  "summary": "(요약 생성 실패: 429 You exceeded your current quota, please check your plan and billing details. For more information on this error, head to: https://aistudio.google.com/docs/rate-limits. To monitor your current usage, head to: https://ai.dev/rate-limit. \n* Quota exceeded for metric: generativelanguage.googleapis.com/generate_content_free_tier_requests, limit: 10, model: gemini-2.5-flash-lite, description: Generate content requests per minute limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.\nPlease retry in 40.668448646s. [links {\n  description: \"Learn more about Gemini API quotas\"\n  url: \"https://aistudio.google.com/docs/rate-limits\"\n}\n, violations {\n  description: \"Generate content requests per minute limit exceeded on Free Tier. See https://aistudio.google.com/docs/rate-limits.\"\n  quota_metric: \"generativelanguage.googleapis.com/generate_content_free_tier_requests\"\n  quota_id: \"GenerateRequestsPerMinutePerProjectPerModel-FreeTier\"\n  quota_dimensions {\n    key: \"model\"\n    value: \"gemini-2.5-flash-lite\"\n  }\n  quota_dimensions {\n    key: \"location\"\n    value: \"global\"\n  }\n  quota_value: 10\n}\n, retry_delay {\n  seconds: 40\n}\n]) 키워드와 토픽 기반으로 우선 과제를 정리하세요.",
+  "top_topics": [
+    {
+      "topic_id": 0,
+      "topic_name": "AI 반도체 격전",
+      "summary": "AI 및 반도체 산업에서 삼성전자, 중국, 미국 등의 경쟁이 심화되고 있으며, OLED 디스플레이, 스마트폰, 로봇 등 다양한 사업 분야에서 기술 투자와 생산 경쟁이 치열하게 펼쳐지고 있다.",
+      "words": [
+        "ai",
+        "반도체",
+        "oled",
+        "디스플레이",
+        "3분기"
+      ]
+    },
+    {
+      "topic_id": 1,
+      "topic_name": "AI 디스플레이 기술",
+      "summary": "AI 기술을 활용한 OLED 디스플레이 TV, 스마트폰 등 제품 경쟁 및 중국, 미국 등 주요 국가 및 삼성전자, LG 등 기업들의 반도체, 패널, 배터리 사업 동향을 다룹니다.",
+      "words": [
+        "ai",
+        "oled",
+        "디스플레이",
+        "tv",
+        "기술"
+      ]
+    },
+    {
+      "topic_id": 2,
+      "topic_name": "AI 반도체 시장 동향",
+      "summary": "AI 및 반도체 분야에서 미국, 중국 등 주요국의 투자 및 공급망 변화, 엔비디아 등 기업의 3분기 실적, 스마트폰 부품 가격 변동 등을 다루는 뉴스 토픽입니다.",
+      "words": [
+        "ai",
+        "반도체",
+        "미국",
+        "메모리",
+        "오른"
+      ]
+    },
+    {
+      "topic_id": 3,
+      "topic_name": "하이마트 가전 할인",
+      "summary": "롯데하이마트에서 삼성 갤럭시 노트북 등 인기 가전 상품을 겨울맞이 특별 할인 행사로 판매하며 고객에게 추가 혜택을 제공합니다.",
+      "words": [
+        "할인",
+        "구매",
+        "혜택을",
+        "행사",
+        "상품을"
+      ]
+    },
+    {
+      "topic_id": 4,
+      "topic_name": "충청권 반도체 메가프로젝트",
+      "summary": "대한민국 대통령이 충청권, 특히 아산에 위치한 삼성전자의 첨단 반도체(HBM, 차세대 디스플레이, 무기발광 등) 관련 메가프로젝트 투자를 언급하며 AI 및 첨단산업 육성과 지역 경제 활성화를 강조하는 내용입니다.",
+      "words": [
+        "디스플레이",
+        "투자",
+        "첨단",
+        "충청권",
+        "메가프로젝트"
+      ]
+    },
+    {
+      "topic_id": 5,
+      "topic_name": "신규 전기 SUV 비교",
+      "summary": "BMW, 벤츠 등 주요 제조사의 신규 전기 SUV 모델들의 주행 성능, 실내 기능, 차체 디자인, 하이브리드 및 일렉트릭 파워트레인 적용 여부 등을 비교 분석합니다.",
+      "words": [
+        "주행",
+        "bmw",
+        "차량",
+        "gv90",
+        "suv"
+      ]
+    },
+    {
+      "topic_id": 6,
+      "topic_name": "수능 부정행위 예방",
+      "summary": "2027학년도 수능에서 스마트안경 등 통신 및 전자기기를 이용한 부정행위를 금지하고 시험장 반입을 엄격히 통제하여 공정한 시험 환경을 조성하겠다는 내용입니다.",
+      "words": [
+        "시험",
+        "수능",
+        "시험장",
+        "부정행위",
+        "스마트안경"
+      ]
+    },
+    {
+      "topic_id": 7,
+      "topic_name": "게임 신작 IP 체험",
+      "summary": "리니지 등 유명 IP를 활용한 신작 게임들이 지스타, AGF 등에서 특별 콘텐츠 체험 및 굿즈 전시를 통해 이용자들에게 선보이며 미래시를 엿볼 수 있는 자리입니다.",
+      "words": [
+        "게임",
+        "리니지",
+        "지스타",
+        "캐릭터",
+        "직접"
+      ]
+    },
+    {
+      "topic_id": 8,
+      "topic_name": "퀴즈 보상 앱",
+      "summary": "퀴즈 풀고 캐시 보상을 받는 모바일 앱 서비스에 대한 내용입니다. 휴대용 무선 온풍기, LFP 배터리 등 다양한 상품을 퀴즈 정답을 통해 얻을 수 있으며, 애플페이 결제 기능 등도 포함될 수 있습니다.",
+      "words": [
+        "퀴즈",
+        "정답은",
+        "이다",
+        "정답",
+        "퀴즈 정답"
+      ]
+    },
+    {
+      "topic_id": 9,
+      "topic_name": "Topic #9",
+      "summary": "(LLM 해석 실패)",
+      "words": [
+        "것이",
+        "근육",
+        "어깨",
+        "근육이",
+        "고개를"
+      ]
+    },
+    {
+      "topic_id": 10,
+      "topic_name": "고효율 펌프 기술",
+      "summary": "효성굿스프링스가 데이터센터 냉각 및 소방 분야에 적용할 센서리스 고효율 펌프 솔루션을 선보이며 에너지 효율을 높이고 왜곡을 줄이는 기술을 소개합니다.",
+      "words": [
+        "펌프",
+        "데이터센터",
+        "센서리스",
+        "효성굿스프링스는",
+        "고효율"
+      ]
+    }
+  ],
+  "evidence": {}
+}

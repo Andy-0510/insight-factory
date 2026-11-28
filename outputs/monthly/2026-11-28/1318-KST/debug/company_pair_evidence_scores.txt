@@ -1,0 +1,82 @@
+--- Top 10 Company Pairs Evidence Scoring Debug Log (Sentence-Based) ---
+Generated at: 2026-11-28T04:16:41.787160Z
+
+================================================================================
+Rank #1: sk하이닉스|삼성전자 (Total Sentences: 1145, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.m-i.kr/news/articleView.html?idxno=2011657" target="_blank" style="font-weight:600; color:#065f46;">이상일 용인특례시장, 네덜란드 ASML·두 도시와 반도체 협력 논의</a>
+<a href="https://www.ajunews.com/view/20261029084214214" target="_blank" style="font-weight:600; color:#065f46;">[마켓 프리뷰] 美 빅테크 실적 엇갈려… 삼성전자  컨콜 주목</a>
+<a href="https://www.thebigdata.co.kr/view.php?ud=2026103014083028260ecbf9426b_23" target="_blank" style="font-weight:600; color:#065f46;">삼성  HBM 내년 물량 완판…SK도 2년치 생산능력 절반 계약</a>
+
+================================================================================
+Rank #2: lg전자|삼성전자 (Total Sentences: 629, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.mt.co.kr/industry/2026/11/10/2026110914472131806" target="_blank" style="font-weight:600; color:#c41e3a;">'블랙프라이데이' 성큼…삼성·LG 연말 TV·가전 판매 총력</a>
+<a href="https://www.bloter.net/news/articleView.html?idxno=678406" target="_blank" style="font-weight:600; color:#c41e3a;">LG 이어 삼성전자까지 제소…대만 특허 인수한 美 NPE 공세</a>
+<a href="https://www.hankyung.com/article/202611196819g" target="_blank" style="font-weight:600; color:#c41e3a;">"중국산 누가 사냐더니"…신혼부부들 쓸어담는 가전의 정체 [테크로그]</a>
+
+================================================================================
+Rank #3: 삼성디스플레이|삼성전자 (Total Sentences: 502, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newsway.co.kr/news/view?ud=2026103020161673379" target="_blank" style="font-weight:600; color:#065f46;">삼성전자, 삼성디스플레이 보유 TCL CSOT 지분 전량 인수…1.27조원 투입</a>
+<a href="http://www.4th.kr/news/articleView.html?idxno=2120831" target="_blank" style="font-weight:600; color:#065f46;">삼성전자, 1.3조에 中 CSOT 지분 인수…패널 공급 협력 강화</a>
+<a href="https://www.mt.co.kr/industry/2026/10/30/2026103017050193289" target="_blank" style="font-weight:600; color:#065f46;">삼성전자, 삼성디스플레이 보유 中 CSOT 지분 1.3조에 전량 인수</a>
+
+================================================================================
+Rank #4: csot|tcl (Total Sentences: 283, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newsway.co.kr/news/view?ud=2026103020161673379" target="_blank" style="font-weight:600; color:#065f46;">삼성전자, 삼성디스플레이 보유 TCL CSOT 지분 전량 인수…1.27조원 투입</a>
+<a href="http://www.srtimes.kr/news/articleView.html?idxno=216375" target="_blank" style="font-weight:600; color:#065f46;">삼성전자, 삼성D 보유 TCL CSOT 지분 10.16% 전량 인수</a>
+<a href="https://www.ziksir.com/news/articleView.html?idxno=151524" target="_blank" style="font-weight:600; color:#065f46;">삼성전자, 삼성디스플레이 中 TCL CSOT 지분 전량 인수</a>
+
+================================================================================
+Rank #5: 삼성전자|애플 (Total Sentences: 283, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.dailian.co.kr/news/view/1707742/?sc=Naver" target="_blank" style="font-weight:600; color:#c41e3a;">"애플, 2027년  폴더블 폰 시장 점유율 30%"…삼성과 격차 좁힐 듯</a>
+<a href="https://www.joongangenews.com/news/articleView.html?idxno=560414" target="_blank" style="font-weight:600; color:#c41e3a;">삼성 전자, 애플 '사과' 자르고 화면 균열 풍자 광고…7년 폴더블 기술력...</a>
+<a href="https://biz.heraldcorp.com/article/10942336?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">판 커지는 ‘AI 안경’ 전쟁…삼성 ‘완판’ 이어 애플도 ‘참전’</a>
+
+================================================================================
+Rank #6: lg디스플레이|삼성디스플레이 (Total Sentences: 220, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://zdnet.co.kr/view/?no=20261029133947" target="_blank" style="font-weight:600; color:#c41e3a;">삼성D "내년 폴더블 등 플래그십 비중 확대...IT 8세대 램프업"</a>
+<a href="https://www.news2day.co.kr/article/20261105500322" target="_blank" style="font-weight:600; color:#c41e3a;">[전자 3형제 경쟁 공식③] ‘고부가 OLED’…삼성-LG, 차세대 시장 선점...</a>
+<a href="https://www.techm.kr/news/articleView.html?idxno=156876" target="_blank" style="font-weight:600; color:#c41e3a;">삼성디스플레이·LG디스플레이, 투자·ESG '차별화' 승부</a>
+
+================================================================================
+Rank #7: amd|엔비디아 (Total Sentences: 214, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.newspim.com/news/view/20261112000421" target="_blank" style="font-weight:600; color:#c41e3a;">젠슨황 사태 일파만파... 황CEO 퇴출 시 앤비디아가 직면할 5대 위험</a>
+<a href="https://www.sedaily.com/article/20114291?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">“엔비디아 빠질 때 30% 급등”…나 홀로 웃은 ‘뜻밖의 수혜주’ 보니</a>
+<a href="https://news.mtn.co.kr/article/2026112010374750272" target="_blank" style="font-weight:600; color:#c41e3a;">전병서 소장 " 삼성 ·하이닉스 성장세 이어지겠지만…과거 같지 않을 수...</a>
+
+================================================================================
+Rank #8: 구글|애플 (Total Sentences: 207, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://biz.heraldcorp.com/article/10942336?ref=naver" target="_blank" style="font-weight:600; color:#c41e3a;">판 커지는 ‘AI 안경’ 전쟁…삼성 ‘완판’ 이어 애플도 ‘참전’</a>
+<a href="http://coinreaders.com/272486" target="_blank" style="font-weight:600; color:#c41e3a;">[AI 모닝브리핑] 맥·아이폰 직접 누르는 AI 비서…애플도 참전 정황</a>
+<a href="https://www.megaeconomy.co.kr/news/newsview.php?ncode=1065602727976611" target="_blank" style="font-weight:600; color:#c41e3a;">0.1인치 디스플레이·빛의 굴절·초저전력 칩…스마트글래스, 하드웨어...</a>
+
+================================================================================
+Rank #9: 구글|삼성전자 (Total Sentences: 202, Type: partnership)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://zdnet.co.kr/view/?no=20261116223144" target="_blank" style="font-weight:600; color:#065f46;">유티아이, 3분기 누적 영업손실 436억...매출 172억의 2.5배</a>
+<a href="https://www.digitaltoday.co.kr/news/articleView.html?idxno=711192" target="_blank" style="font-weight:600; color:#065f46;">입체 음향 넘어 높이, 거리감까지…삼성·구글의 미래 오디오 기술</a>
+<a href="https://it.chosun.com/news/articleView.html?idxno=3000000000034" target="_blank" style="font-weight:600; color:#065f46;">XR  시장 커지는데…LG전자 상용화는 안갯속</a>
+
+================================================================================
+Rank #10: tcl|삼성전자 (Total Sentences: 200, Type: rivalry)
+Top 3 Evidence Links (HTML formatted):
+---------------------
+<a href="https://www.the-today.com/news/articleView.html?idxno=93069" target="_blank" style="font-weight:600; color:#c41e3a;">[단독] 소니 스마트TV '시청 스파잉' 소송, 공개 재판행…美 법원 "보증...</a>
+<a href="https://www.mt.co.kr/industry/2026/11/10/2026110914472131806" target="_blank" style="font-weight:600; color:#c41e3a;">'블랙프라이데이' 성큼…삼성·LG 연말 TV·가전 판매 총력</a>
+<a href="https://www.the-today.com/news/articleView.html?idxno=93810" target="_blank" style="font-weight:600; color:#c41e3a;">[단독] 삼성 "터치스트림, 소송 전 특허 통지 없었다"…일부 청구 기각...</a>

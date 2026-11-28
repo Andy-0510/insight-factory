@@ -1,0 +1,46 @@
+{
+  "timestamp": "2026-11-28T04:16:41Z",
+  "matrix_stats": {},
+  "network_stats": {
+    "num_nodes": 80,
+    "num_edges": 696,
+    "top_pairs": [
+      {
+        "source": "sk하이닉스",
+        "target": "삼성전자",
+        "weight": 1145,
+        "rel_type": "partnership",
+        "evidence": "<a href=\"https://www.m-i.kr/news/articleView.html?idxno=2011657\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">이상일 용인특례시장, 네덜란드 ASML·두 도시와 반도체 협력 논의</a><br><a href=\"https://www.ajunews.com/view/20261029084214214\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">[마켓 프리뷰] 美 빅테크 실적 엇갈려… 삼성전자  컨콜 주목</a><br><a href=\"https://www.thebigdata.co.kr/view.php?ud=2026103014083028260ecbf9426b_23\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">삼성  HBM 내년 물량 완판…SK도 2년치 생산능력 절반 계약</a>"
+      },
+      {
+        "source": "lg전자",
+        "target": "삼성전자",
+        "weight": 629,
+        "rel_type": "rivalry",
+        "evidence": "<a href=\"https://www.mt.co.kr/industry/2026/11/10/2026110914472131806\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">'블랙프라이데이' 성큼…삼성·LG 연말 TV·가전 판매 총력</a><br><a href=\"https://www.bloter.net/news/articleView.html?idxno=678406\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">LG 이어 삼성전자까지 제소…대만 특허 인수한 美 NPE 공세</a><br><a href=\"https://www.hankyung.com/article/202611196819g\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">\"중국산 누가 사냐더니\"…신혼부부들 쓸어담는 가전의 정체 [테크로그]</a>"
+      },
+      {
+        "source": "삼성디스플레이",
+        "target": "삼성전자",
+        "weight": 502,
+        "rel_type": "partnership",
+        "evidence": "<a href=\"https://www.newsway.co.kr/news/view?ud=2026103020161673379\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">삼성전자, 삼성디스플레이 보유 TCL CSOT 지분 전량 인수…1.27조원 투입</a><br><a href=\"http://www.4th.kr/news/articleView.html?idxno=2120831\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">삼성전자, 1.3조에 中 CSOT 지분 인수…패널 공급 협력 강화</a><br><a href=\"https://www.mt.co.kr/industry/2026/10/30/2026103017050193289\" target=\"_blank\" style=\"font-weight:600; color:#065f46;\">삼성전자, 삼성디스플레이 보유 中 CSOT 지분 1.3조에 전량 인수</a>"
+      },
+      {
+        "source": "삼성전자",
+        "target": "애플",
+        "weight": 283,
+        "rel_type": "rivalry",
+        "evidence": "<a href=\"https://www.dailian.co.kr/news/view/1707742/?sc=Naver\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">\"애플, 2027년  폴더블 폰 시장 점유율 30%\"…삼성과 격차 좁힐 듯</a><br><a href=\"https://www.joongangenews.com/news/articleView.html?idxno=560414\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">삼성 전자, 애플 '사과' 자르고 화면 균열 풍자 광고…7년 폴더블 기술력...</a><br><a href=\"https://biz.heraldcorp.com/article/10942336?ref=naver\" target=\"_blank\" style=\"font-weight:600; color:#c41e3a;\">판 커지는 ‘AI 안경’ 전쟁…삼성 ‘완판’ 이어 애플도 ‘참전’</a>"
+      },
+      {
+        "source": "아마존",
+        "target": "알파벳",
+        "weight": 106,
+        "rel_type": "neutral",
+        "evidence": "<a href=\"https://www.junggi.co.kr/news/articleView.html?idxno=38273\" target=\"_blank\" style=\"color:#555;\">AI 투자 외부자금 의존 커졌다…위험은 어디에 쌓이나</a><br><a href=\"https://www.junggi.co.kr/news/articleView.html?idxno=38273\" target=\"_blank\" style=\"color:#555;\">AI 투자 외부자금 의존 커졌다…위험은 어디에 쌓이나</a><br><a href=\"http://www.newsprime.co.kr/news/article.html?no=752868\" target=\"_blank\" style=\"color:#555;\">[해외시황] 뉴욕증시, 연준 금리 동결·반도체주 강세에 '상승'…나스닥...</a>"
+      }
+    ],
+    "top_hub": "삼성전자"
+  }
+}
